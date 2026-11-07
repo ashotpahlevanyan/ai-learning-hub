@@ -18,17 +18,17 @@
     "Multimodal media app",
     "Enterprise agent rollout"
   ],
-  "verifyNotes": "This is the site's own course; Google has no matching exam. Verify every API fact against ai.google.dev/gemini-api/docs and the ADK docs: current model names and aliases, the Interactions API vs legacy generateContent, thinking levels, tool_choice modes, structured output schema support, grounding billing/display rules, caching and Batch pricing, rate-limit tiers. Mark previews as previews.",
+  "verifyNotes": "This is the site's own course; Google has no matching exam. Verify every API fact against aistudio.google.com/docs (formerly ai.google.dev/gemini-api/docs) and the ADK docs: current model names and aliases, the Interactions API vs legacy generateContent, thinking levels, tool_choice modes, structured output schema support, grounding billing/display rules, caching and Batch pricing, rate-limit tiers. Mark previews as previews.",
   "sources": [
-    "https://ai.google.dev/gemini-api/docs",
-    "https://ai.google.dev/gemini-api/docs/models",
-    "https://ai.google.dev/gemini-api/docs/function-calling",
-    "https://ai.google.dev/gemini-api/docs/structured-output",
-    "https://ai.google.dev/gemini-api/docs/google-search",
-    "https://ai.google.dev/gemini-api/docs/caching",
-    "https://ai.google.dev/gemini-api/docs/batch-mode",
-    "https://ai.google.dev/gemini-api/docs/safety-settings",
-    "https://google.github.io/adk-docs/",
+    "https://aistudio.google.com/docs",
+    "https://aistudio.google.com/docs/models",
+    "https://aistudio.google.com/docs/function-calling",
+    "https://aistudio.google.com/docs/structured-output",
+    "https://aistudio.google.com/docs/google-search",
+    "https://aistudio.google.com/docs/caching",
+    "https://aistudio.google.com/docs/batch-mode",
+    "https://aistudio.google.com/docs/safety-settings",
+    "https://adk.dev",
     "https://github.com/google-gemini/cookbook"
   ],
   "domains": [

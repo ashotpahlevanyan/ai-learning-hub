@@ -24,10 +24,10 @@ export const gemini: Track = {
   resources: [
     { title: 'Generative AI Leader certification', url: 'https://cloud.google.com/learn/certification/generative-ai-leader', note: 'Official exam page and exam guide. Check sections and fee before booking.' },
     { title: 'Google Skills', url: 'https://www.skills.google', note: 'Free official learning paths, including the Generative AI Leader path.' },
-    { title: 'Gemini API documentation', url: 'https://ai.google.dev/gemini-api/docs', note: 'Models, prompting, function calling, structured output, caching, Live API.' },
+    { title: 'Gemini API documentation', url: 'https://aistudio.google.com/docs', note: 'Models, prompting, function calling, structured output, caching, Live API.' },
     { title: 'Google AI Studio', url: 'https://aistudio.google.com', note: 'Try prompts and get an API key for free.' },
     { title: 'Gemini cookbook', url: 'https://github.com/google-gemini/cookbook', note: 'Runnable notebooks for every Gemini API feature.' },
-    { title: 'Agent Development Kit', url: 'https://google.github.io/adk-docs/', note: 'Google’s open-source framework for building agents.' },
+    { title: 'Agent Development Kit', url: 'https://adk.dev', note: 'Google’s open-source framework for building agents.' },
   ],
   paths: [
     { who: 'Business or product leader', order: ['gail'], why: 'Generative AI Leader tests strategy, Google’s gen AI offerings and responsible AI, not code.' },
