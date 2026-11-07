@@ -1,0 +1,87 @@
+{
+  "track": "aws",
+  "kind": "exam",
+  "verifyNotes": "This exam launched recently (beta from late 2025): confirm its exact name, code, status (beta or GA), item count, time, fee, passing score, domains and weights against the official AWS exam page and exam guide. If any spec domain or weight differs, follow the official guide and report it. Use current names for Amazon Bedrock features (Knowledge Bases, Agents/AgentCore, Guardrails, Flows, Prompt Management, model evaluation, cross-region inference, provisioned throughput, model distillation), SageMaker AI and Amazon Q. Never copy official sample questions.",
+  "id": "aip-c01",
+  "code": "AIP-C01",
+  "name": "AWS Certified Generative AI Developer – Professional",
+  "level": "AWS · Professional",
+  "price": "$300",
+  "items": 75,
+  "minutes": 180,
+  "passing": 750,
+  "audience": "Developers with 2+ years building on AWS and hands-on experience shipping generative AI applications",
+  "format": "Scenario-based multiple choice and multiple response items; scaled score 100–1000. Confirm the item count, time and passing score on the official page.",
+  "sources": [
+    "https://aws.amazon.com/certification/",
+    "https://docs.aws.amazon.com/aws-certification/latest/userguide/",
+    "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+    "https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/what-is-bedrock-agentcore.html",
+    "https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html",
+    "https://docs.aws.amazon.com/wellarchitected/latest/generative-ai-lens/generative-ai-lens.html",
+    "https://skillbuilder.aws"
+  ],
+  "scenarios": [
+    "Enterprise knowledge assistant",
+    "Customer-support agent with tools",
+    "Document processing at scale",
+    "Regulated financial chatbot",
+    "Multi-tenant SaaS gen AI feature"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Foundation Model Integration, Data Management, and Compliance",
+      "weight": 31,
+      "skills": [
+        "Select and integrate foundation models on Amazon Bedrock and SageMaker AI; cross-region inference; provisioned throughput",
+        "Build RAG: chunking, embeddings, vector stores, Bedrock Knowledge Bases, metadata filtering, reranking",
+        "Prepare and govern data for gen AI: PII handling, lineage, residency, compliance"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Implementation and Integration",
+      "weight": 26,
+      "skills": [
+        "Build agents and tool use with Amazon Bedrock Agents / AgentCore, action groups, MCP",
+        "Orchestrate workflows with Bedrock Flows, Step Functions, Lambda and event-driven patterns",
+        "Manage prompts and versions; integrate gen AI into applications via APIs and SDKs; streaming"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "AI Safety, Security, and Governance",
+      "weight": 20,
+      "skills": [
+        "Apply Amazon Bedrock Guardrails: content filters, denied topics, PII redaction, contextual grounding checks",
+        "Defend against prompt injection and data exfiltration; least-privilege IAM, VPC endpoints, encryption",
+        "Governance: model evaluation records, audit logging (CloudTrail, invocation logging), responsible-AI controls"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Operational Efficiency and Optimization for GenAI Applications",
+      "weight": 12,
+      "skills": [
+        "Optimise cost and latency: model choice, prompt caching, batch inference, provisioned throughput, distillation",
+        "Monitor with CloudWatch metrics and invocation logs; quotas and throttling"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Testing, Validation, and Troubleshooting",
+      "weight": 11,
+      "skills": [
+        "Evaluate models and RAG (Bedrock model and knowledge base evaluation, LLM-as-judge, human review)",
+        "Troubleshoot hallucination, retrieval failures, throttling and guardrail blocks"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 18,
+    "flashcards": 100,
+    "questions": 100
+  },
+  "out": "src/content/tracks/aws/exams/aip-c01.json"
+}

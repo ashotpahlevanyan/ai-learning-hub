@@ -91,6 +91,8 @@ export interface Resource {
 }
 
 export interface Track {
+  /** Short label for the top navigation; defaults to name. */
+  navLabel?: string;
   id: string;
   name: string;
   provider: string;

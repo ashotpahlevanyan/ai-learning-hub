@@ -125,7 +125,7 @@ const assembled = await agent(
 3. Balance correct-answer positions: for questions whose key sits in an over-used position, permute options AND rationales together (keep answer indices pointing at the same text). Target each position 0-3 within ±20% of the mean.
 4. Run: cd ${root} && npx vitest run -t "${spec.track}/${spec.id}" and fix until it passes.
 5. Set the bundle's top-level "review" to {"date": "${args.date || 'YYYY-MM-DD'}", "questionsChecked": <questions that went through blind verification>, "fixed": <fixed count>, "dropped": <dropped count>}. Omit "review" entirely if any domain failed to verify.
-6. Write ${work}/report.md: counts before/after (before: ${JSON.stringify(coverage.existing)}), per-domain counts vs targets, every fix/drop from verification ${JSON.stringify(verified)}, unverified facts ${JSON.stringify(research.unverified)}, and anything a human should review.
+6. You MUST write ${work}/report.md (return its absolute path as reportPath; an empty path is a failure): counts before/after (before: ${JSON.stringify(coverage.existing)}), per-domain counts vs targets, every fix/drop from verification ${JSON.stringify(verified)}, unverified facts ${JSON.stringify(research.unverified)}, and anything a human should review.
 Return the structured result.`,
   {
     label: 'assemble',

@@ -5,6 +5,7 @@ const load = (p: Promise<{ default: unknown }>) => p.then(m => m.default as Exam
 export const openai: Track = {
   id: 'openai',
   name: 'OpenAI GPT',
+  navLabel: 'OpenAI',
   provider: 'OpenAI',
   tagline: 'Use ChatGPT well at work, then build apps and agents on the OpenAI API.',
   description:

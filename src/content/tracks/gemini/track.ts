@@ -5,6 +5,7 @@ const load = (p: Promise<{ default: unknown }>) => p.then(m => m.default as Exam
 export const gemini: Track = {
   id: 'gemini',
   name: 'Google Gemini',
+  navLabel: 'Gemini',
   provider: 'Google',
   tagline: 'Pass the Google Cloud Generative AI Leader exam and build with the Gemini API.',
   description:

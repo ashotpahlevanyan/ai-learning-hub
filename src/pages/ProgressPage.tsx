@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { tracks } from '../content';
 import { replaceState, streak, today, update, useAppState, type AppState } from '../lib/store';
 import { useMeta } from '../lib/useMeta';
+import TodayPanel from '../components/TodayPanel';
 
 export default function ProgressPage() {
   const state = useAppState();
@@ -44,6 +45,8 @@ export default function ProgressPage() {
     <main className="page">
       <h1>My progress</h1>
       <p className="muted">{streak(state.days)} day study streak. Progress is saved in this browser only.</p>
+
+      <TodayPanel />
 
       <div className="card">
         <div className="table-wrap">

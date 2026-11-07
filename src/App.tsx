@@ -11,6 +11,7 @@ const TrackPage = lazy(() => import('./pages/TrackPage'));
 const GuidePage = lazy(() => import('./pages/GuidePage'));
 const ProgressPage = lazy(() => import('./pages/ProgressPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
+const SearchPage = lazy(() => import('./pages/SearchPage'));
 const ExamLayout = lazy(() => import('./exam/ExamLayout'));
 const ExamDashboard = lazy(() => import('./exam/ExamDashboard'));
 const ExamGuide = lazy(() => import('./exam/ExamGuide'));
@@ -49,7 +50,8 @@ export default function App() {
       <header className="topbar">
         <Link to="/" className="brand"><span className="logo" aria-hidden="true">A</span> AI Learning Hub</Link>
         <nav className="topnav" aria-label="Main">
-          {tracks.map(t => <NavLink key={t.id} to={`/${t.id}`}>{t.name.replace(/^(Google|OpenAI) /, '')}</NavLink>)}
+          {tracks.map(t => <NavLink key={t.id} to={`/${t.id}`}>{t.navLabel ?? t.name}</NavLink>)}
+          <NavLink to="/search">Search</NavLink>
           <NavLink to="/progress">My progress</NavLink>
           <ThemeToggle />
         </nav>
@@ -61,6 +63,7 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route path="/progress" element={<ProgressPage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/search" element={<SearchPage />} />
               <Route path="/:trackId" element={<TrackPage />} />
               <Route path="/:trackId/guide" element={<GuidePage />} />
               <Route path="/:trackId/:examId" element={<ExamLayout />}>

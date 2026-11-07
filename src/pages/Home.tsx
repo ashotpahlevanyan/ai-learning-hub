@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { tracks } from '../content';
 import { useMeta } from '../lib/useMeta';
+import TodayPanel from '../components/TodayPanel';
 
 const METHOD = [
   { title: 'Learn', text: 'Short lessons per exam domain, each with key points, exam traps and a hands-on lab.' },
@@ -25,6 +26,8 @@ export default function Home() {
           <a className="btn" href="#tracks">Browse all tracks</a>
         </div>
       </section>
+
+      <TodayPanel title="Continue where you left off" />
 
       <section id="tracks">
         <h2>Tracks</h2>

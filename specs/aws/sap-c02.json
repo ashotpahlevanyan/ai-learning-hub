@@ -1,0 +1,81 @@
+{
+  "track": "aws",
+  "kind": "exam",
+  "verifyNotes": "Confirm item count, time, fee, passing score, domains, weights and any exam-guide update against the official AWS exam page and exam guide. Use current service names and features. Questions are long scenario-based architecture trade-offs: the keyed answer must be the one that best meets every stated requirement (cost, operational overhead, availability, RTO/RPO, security). Never copy official sample questions.",
+  "id": "sap-c02",
+  "code": "SAP-C02",
+  "name": "AWS Certified Solutions Architect – Professional",
+  "level": "AWS · Professional",
+  "price": "$300",
+  "items": 75,
+  "minutes": 180,
+  "passing": 750,
+  "audience": "Solutions architects with 2+ years designing and deploying cloud architecture on AWS",
+  "format": "75 items (65 scored, 10 unscored) in 180 minutes; multiple choice and multiple response; scaled score 100–1000, pass 750.",
+  "sources": [
+    "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
+    "https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/solutions-architect-professional-02.html",
+    "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+    "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html",
+    "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-workloads-on-aws.html",
+    "https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-strategies/",
+    "https://skillbuilder.aws"
+  ],
+  "scenarios": [
+    "Multi-account enterprise landing zone",
+    "Global e-commerce platform",
+    "Hybrid network for a bank",
+    "Data-centre migration",
+    "Cost-optimisation review"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Design Solutions for Organizational Complexity",
+      "weight": 26,
+      "skills": [
+        "Architect network connectivity: Transit Gateway, Direct Connect, VPN, VPC peering, PrivateLink, Route 53 Resolver, IPv4/IPv6 planning",
+        "Prescribe security controls across accounts: IAM Identity Center, SCPs/RCPs, permission boundaries, KMS, Secrets Manager, Security Hub, GuardDuty",
+        "Design reliable, resilient architectures: multi-AZ/multi-Region, RTO/RPO, DR strategies (backup-restore, pilot light, warm standby, active-active)",
+        "Design multi-account environments with AWS Organizations and Control Tower; cost visibility and chargeback"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Design for New Solutions",
+      "weight": 29,
+      "skills": [
+        "Design deployment strategies: CloudFormation, CDK, CI/CD, blue/green and canary",
+        "Design for business continuity and reliability",
+        "Determine security controls for new workloads",
+        "Design for performance and cost: compute, storage, database and caching choices; serverless vs containers vs EC2; purchasing options"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Continuous Improvement for Existing Solutions",
+      "weight": 25,
+      "skills": [
+        "Improve operational excellence: observability, automation, incident response",
+        "Improve security posture and remediate findings",
+        "Improve performance, reliability and cost of running workloads; right-sizing, Savings Plans, storage tiering"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Accelerate Workload Migration and Modernization",
+      "weight": 20,
+      "skills": [
+        "Select workloads and migration strategies (7 Rs); discovery and planning tools (Migration Hub, Application Discovery Service)",
+        "Choose migration tooling: Application Migration Service, DMS/SCT, DataSync, Snow Family, Transfer Family",
+        "Determine new architectures for modernisation: containers, serverless, purpose-built databases, decoupling with SQS/SNS/EventBridge"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 18,
+    "flashcards": 110,
+    "questions": 110
+  },
+  "out": "src/content/tracks/aws/exams/sap-c02.json"
+}

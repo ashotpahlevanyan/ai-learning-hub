@@ -1,0 +1,93 @@
+{
+  "track": "aws",
+  "kind": "exam",
+  "verifyNotes": "Confirm item count, time, fee, passing score, item types, domains and weights, and any recent exam-guide version against the official AWS exam page and exam guide PDF (aws.amazon.com/certification and docs.aws.amazon.com/aws-certification). Use current AWS service names (Amazon Bedrock and its features such as Knowledge Bases, Agents, Guardrails, model evaluation; Amazon SageMaker AI; Amazon Q). Never copy official sample questions.",
+  "id": "aif-c01",
+  "code": "AIF-C01",
+  "name": "AWS Certified AI Practitioner",
+  "level": "AWS · Foundational",
+  "price": "$100",
+  "items": 65,
+  "minutes": 90,
+  "passing": 700,
+  "audience": "Business and technical people who use or evaluate AI/ML and generative AI on AWS (up to 6 months of AWS AI exposure)",
+  "format": "65 items (50 scored, 15 unscored) in 90 minutes; multiple choice, multiple response, ordering, matching and case study items; scaled score 100–1000, pass 700. This site practises multiple choice and multiple response only.",
+  "sources": [
+    "https://aws.amazon.com/certification/certified-ai-practitioner/",
+    "https://docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/ai-practitioner-01.html",
+    "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+    "https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html",
+    "https://aws.amazon.com/ai/responsible-ai/",
+    "https://skillbuilder.aws"
+  ],
+  "scenarios": [
+    "Retail product-description generator",
+    "Contact-centre assistant",
+    "Document search for a law firm",
+    "Fraud detection model review",
+    "Healthcare data governance"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Fundamentals of AI and ML",
+      "weight": 20,
+      "skills": [
+        "Explain AI, ML, deep learning, NLP, computer vision, LLMs and key terms",
+        "Choose supervised, unsupervised or reinforcement learning; inference types (batch, real-time)",
+        "Identify when AI/ML is and is not the right fit; match use cases to AWS AI services (Comprehend, Rekognition, Transcribe, Translate, Textract, Lex, Polly, Personalize)",
+        "Describe the ML lifecycle and MLOps; SageMaker AI capabilities; model metrics (accuracy, F1, AUC) and business metrics"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Fundamentals of Generative AI",
+      "weight": 24,
+      "skills": [
+        "Explain tokens, embeddings, vectors, transformers, foundation models, diffusion and multimodal models",
+        "Identify gen AI use cases, advantages and limitations (hallucination, nondeterminism, interpretability)",
+        "Explain the foundation-model lifecycle",
+        "Choose AWS gen AI infrastructure and services: Amazon Bedrock, SageMaker JumpStart, PartyRock, Amazon Q; cost trade-offs (on-demand vs provisioned throughput)"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Applications of Foundation Models",
+      "weight": 28,
+      "skills": [
+        "Select a foundation model by cost, modality, latency, context size, customisation and multilingual needs",
+        "Set inference parameters (temperature, top-p, max tokens) and understand their effects",
+        "Design RAG with Amazon Bedrock Knowledge Bases and vector stores (OpenSearch, Aurora pgvector, etc.); agents with Amazon Bedrock Agents",
+        "Apply prompt engineering techniques and defend against prompt injection, jailbreaks and poisoning",
+        "Choose between prompting, RAG, fine-tuning, continued pre-training and distillation; data preparation",
+        "Evaluate foundation models: human evaluation, benchmark datasets, ROUGE/BLEU/BERTScore, Bedrock model evaluation"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Guidelines for Responsible AI",
+      "weight": 14,
+      "skills": [
+        "Describe responsible AI features: bias, fairness, inclusivity, robustness, safety, veracity",
+        "Use AWS tools: Amazon Bedrock Guardrails, SageMaker Clarify, SageMaker Model Monitor, Amazon A2I, model cards",
+        "Explain transparency and explainability trade-offs; legal risks (IP, biased outputs, loss of trust)"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Security, Compliance, and Governance for AI Solutions",
+      "weight": 14,
+      "skills": [
+        "Secure AI systems: IAM roles and policies, encryption, Amazon Macie, AWS PrivateLink, shared responsibility model",
+        "Data governance: lineage, cataloguing, retention, data residency, logging",
+        "Compliance and governance services: AWS Config, Amazon Inspector, AWS Audit Manager, AWS Artifact, AWS CloudTrail, Trusted Advisor; governance protocols and frameworks (e.g. Generative AI Security Scoping Matrix)"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 16,
+    "flashcards": 90,
+    "questions": 90
+  },
+  "out": "src/content/tracks/aws/exams/aif-c01.json"
+}
