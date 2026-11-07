@@ -1,0 +1,126 @@
+{
+  "track": "claude",
+  "kind": "exam",
+  "verifyNotes": "Exam facts come from third-party summaries of Anthropic's v1.0 guide (July 2026); the official guide is in Anthropic Partner Academy and not public. Verify Claude product facts (API, Claude Code, MCP, Agent SDK) against docs.claude.com, modelcontextprotocol.io and anthropic.com/engineering.",
+  "sources": [
+    "https://docs.claude.com/en/docs/build-with-claude/tool-use",
+    "https://docs.claude.com/en/docs/build-with-claude/prompt-caching",
+    "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview",
+    "https://docs.claude.com/en/docs/claude-code/overview",
+    "https://docs.claude.com/en/docs/claude-code/memory",
+    "https://docs.claude.com/en/docs/claude-code/settings",
+    "https://docs.claude.com/en/docs/claude-code/hooks",
+    "https://docs.claude.com/en/docs/claude-code/sub-agents",
+    "https://docs.claude.com/en/docs/claude-code/headless",
+    "https://docs.claude.com/en/api/agent-sdk/overview",
+    "https://modelcontextprotocol.io/docs/learn/architecture",
+    "https://www.anthropic.com/engineering/building-effective-agents",
+    "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+    "https://www.anthropic.com/engineering/writing-tools-for-agents"
+  ],
+  "id": "ccdv-f",
+  "code": "CCDV-F",
+  "name": "Claude Certified Developer – Foundations",
+  "level": "Developer · Foundations",
+  "price": "$125 (verify on Partner Academy)",
+  "items": 53,
+  "minutes": 120,
+  "passing": 720,
+  "audience": "Developers with 1–5 years' experience building on the Claude API in Python or TypeScript",
+  "format": "53 multiple-choice and multiple-response items in 120 minutes; scaled score 100–1000, pass 720.",
+  "scenarios": [
+    "Docs assistant with retrieval",
+    "Support chatbot with tools",
+    "Bulk document classification",
+    "MCP server for an internal system"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Agents & Workflows",
+      "weight": 14.7,
+      "skills": [
+        "Agent architecture and the tool-use loop",
+        "Agent construction with Claude and the Agent SDK",
+        "Agent patterns and frameworks"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Applications & Integration",
+      "weight": 33.1,
+      "skills": [
+        "Understanding requirements and success criteria",
+        "Systems life cycle for LLM features",
+        "Claude API mechanics: messages, system, max_tokens, stop_reason, streaming, errors and retries",
+        "Software engineering foundations: idempotency, timeouts, logging",
+        "Claude application design: conversation state, caching, batch",
+        "Configuration management: env-specific config, prompt versioning"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Claude Code",
+      "weight": 3.1,
+      "skills": [
+        "Claude Code operation: CLAUDE.md, permissions, headless -p, slash commands"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Eval, Testing & Debugging",
+      "weight": 2.6,
+      "skills": [
+        "Debugging and error handling with stop_reason, usage and logs"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Model Selection & Optimization",
+      "weight": 16.8,
+      "skills": [
+        "LLM fundamentals: tokens, context window, sampling, hallucination, cutoff",
+        "Technical fundamentals of the Claude models",
+        "Model selection and trade-offs",
+        "Cost and token management: caching, Batch API, token counting, output length"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Prompt & Context Engineering",
+      "weight": 11.0,
+      "skills": [
+        "Context engineering",
+        "Prompt engineering: XML tags, few-shot, chain-of-thought",
+        "Output handling: structured output and validation"
+      ]
+    },
+    {
+      "id": "d7",
+      "name": "Security & Safety",
+      "weight": 8.1,
+      "skills": [
+        "AI application security: prompt injection, output sanitisation",
+        "Guardrails and safe deployment",
+        "Claude Code hooks for policy",
+        "Identity, secrets and key management"
+      ]
+    },
+    {
+      "id": "d8",
+      "name": "Tools & MCPs",
+      "weight": 10.6,
+      "skills": [
+        "Tool implementation: definitions, tool_choice, parallel calls, is_error",
+        "MCP server development with the Python/TS SDKs; stdio vs Streamable HTTP",
+        "Agentic customisation: skills, subagents, commands"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 18,
+    "flashcards": 95,
+    "questions": 95
+  },
+  "out": "src/content/tracks/claude/exams/ccdv-f.json"
+}

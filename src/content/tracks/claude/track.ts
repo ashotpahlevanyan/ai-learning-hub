@@ -12,22 +12,22 @@ export const claude: Track = {
     'Lessons, spaced-repetition flashcards, scenario practice questions and timed mock exams for the Associate, Developer and Architect certifications, plus a full written study runbook.',
   exams: [
     {
-      id: 'ccao-f', code: 'CCAO-F', name: 'Claude Certified Associate', level: 'Associate · Foundations', tier: 'Foundations',
+      kind: 'exam', id: 'ccao-f', code: 'CCAO-F', name: 'Claude Certified Associate', level: 'Associate · Foundations', tier: 'Foundations',
       audience: 'Professionals who use Claude in daily work', items: 60, minutes: 120, price: '$99',
       load: () => load(import('./exams/ccao-f.json')),
     },
     {
-      id: 'ccdv-f', code: 'CCDV-F', name: 'Claude Certified Developer', level: 'Developer · Foundations', tier: 'Foundations',
+      kind: 'exam', id: 'ccdv-f', code: 'CCDV-F', name: 'Claude Certified Developer', level: 'Developer · Foundations', tier: 'Foundations',
       audience: 'Developers building on the Claude API', items: 53, minutes: 120, price: '$125',
       load: () => load(import('./exams/ccdv-f.json')),
     },
     {
-      id: 'ccar-f', code: 'CCAR-F', name: 'Claude Certified Architect', level: 'Architect · Foundations', tier: 'Foundations',
+      kind: 'exam', id: 'ccar-f', code: 'CCAR-F', name: 'Claude Certified Architect', level: 'Architect · Foundations', tier: 'Foundations',
       audience: 'Engineers designing agents, tools and Claude Code setups', items: 60, minutes: 120, price: '$125',
       load: () => load(import('./exams/ccar-f.json')),
     },
     {
-      id: 'ccar-p', code: 'CCAR-P', name: 'Claude Certified Architect', level: 'Architect · Professional', tier: 'Professional',
+      kind: 'exam', id: 'ccar-p', code: 'CCAR-P', name: 'Claude Certified Architect', level: 'Architect · Professional', tier: 'Professional',
       audience: 'Senior architects leading enterprise Claude programs', items: 63, minutes: 120, price: '$175',
       load: () => load(import('./exams/ccar-p.json')),
     },
@@ -40,5 +40,11 @@ export const claude: Track = {
     { title: 'Prompt engineering tutorial', url: 'https://github.com/anthropics/courses', note: 'Interactive notebooks from Anthropic.' },
     { title: 'Claude cookbooks', url: 'https://github.com/anthropics/claude-cookbooks', note: 'Runnable recipes: tool use, RAG, caching, sub-agents.' },
   ],
+  paths: [
+    { who: 'Non-technical (PM, analyst, consultant, ops)', order: ['ccao-f'], why: 'Associate is about using Claude well and safely at work.' },
+    { who: 'Developer', order: ['ccdv-f', 'ccar-f', 'ccar-p'], why: 'Build API fluency first, then architecture.' },
+    { who: 'Senior engineer or architect', order: ['ccar-f', 'ccar-p', 'ccdv-f', 'ccao-f'], why: 'Architect Foundations is the core technical exam; after both Architect exams, the rest is mostly review.' },
+  ],
+  note: 'Who can sit the exams: currently only people at organisations in the Claude Partner Network, who sign in to Anthropic Partner Academy with a work email. Check fees and dates there before booking.',
   loadGuide: () => import('./runbook.md?raw').then(m => m.default),
 };

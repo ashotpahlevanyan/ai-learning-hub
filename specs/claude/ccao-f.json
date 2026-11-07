@@ -1,0 +1,110 @@
+{
+  "track": "claude",
+  "kind": "exam",
+  "verifyNotes": "Exam facts come from third-party summaries of Anthropic's v1.0 guide (July 2026); the official guide is in Anthropic Partner Academy and not public. Verify Claude product facts (API, Claude Code, MCP, Agent SDK) against docs.claude.com, modelcontextprotocol.io and anthropic.com/engineering.",
+  "sources": [
+    "https://www.anthropic.com/ai-fluency",
+    "https://support.claude.com",
+    "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview",
+    "https://www.anthropic.com/legal/aup",
+    "https://www.anthropic.com/news"
+  ],
+  "id": "ccao-f",
+  "code": "CCAO-F",
+  "name": "Claude Certified Associate – Foundations",
+  "level": "Associate · Foundations",
+  "price": "$99 (verify on Partner Academy)",
+  "items": 60,
+  "minutes": 120,
+  "passing": 720,
+  "audience": "Professionals who use Claude in daily work: analysts, marketers, HR, ops, consultants, PMs",
+  "format": "60 multiple-choice and multiple-response items in 120 minutes; scaled score 100–1000, pass 720.",
+  "scenarios": [
+    "Marketing team drafting campaigns",
+    "Analyst summarising reports",
+    "HR policy assistant in a Project",
+    "Sales ops using connectors",
+    "Support lead triaging tickets"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Prompting & Task Execution",
+      "weight": 14,
+      "skills": [
+        "Write prompts with context, role, examples, format and success criteria",
+        "Iterate on prompts and give documents as attachments",
+        "Break larger tasks into steps"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Output Evaluation & Validation",
+      "weight": 21,
+      "skills": [
+        "Spot hallucinations and fabricated citations",
+        "Verify numbers, quotes and sources",
+        "Ask Claude to show reasoning or cite source text",
+        "Recognise bias and missing perspectives",
+        "Apply the AI Fluency 4D framework: Delegation, Description, Discernment, Diligence"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Product & Model Selection",
+      "weight": 12,
+      "skills": [
+        "Choose the right Claude surface for the job (apps, Claude Code, Chrome/Excel/Slack integrations, API)",
+        "Opus vs Sonnet vs Haiku trade-offs",
+        "When to use web search, research or extended thinking"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Workflow Integration & Solution Design",
+      "weight": 16,
+      "skills": [
+        "Fit Claude into team workflows (docs, email, spreadsheets, chat)",
+        "Choose between chat, Projects, artifacts, connectors and research",
+        "Design repeatable workflows with human checkpoints"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Configuration & Knowledge Management",
+      "weight": 12,
+      "skills": [
+        "Set up Projects with knowledge and custom instructions",
+        "Use styles, memory and Skills",
+        "Keep knowledge current and avoid conflicting documents"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Governance, Risk & Responsible Use",
+      "weight": 15,
+      "skills": [
+        "Follow data policy; never share secrets or unapproved PII",
+        "Understand Team/Enterprise admin controls",
+        "Keep human accountability and disclose AI use",
+        "Know the usage policy basics"
+      ]
+    },
+    {
+      "id": "d7",
+      "name": "Troubleshooting & Optimization",
+      "weight": 10,
+      "skills": [
+        "Fix vague, long or off-target output",
+        "Restart drifted long chats with a summary",
+        "Work within usage limits and split large tasks"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 13,
+    "flashcards": 80,
+    "questions": 80
+  },
+  "out": "src/content/tracks/claude/exams/ccao-f.json"
+}

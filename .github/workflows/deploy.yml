@@ -26,9 +26,15 @@ jobs:
       - run: npm ci
       - run: npm test
       # A custom domain (public/CNAME) serves from "/"; otherwise the site lives at /<repo>/.
-      - name: Choose base path
+      - name: Choose base path and site URL
         run: |
-          if [ -f public/CNAME ]; then echo "BASE_PATH=/" >> "$GITHUB_ENV"; else echo "BASE_PATH=/${{ github.event.repository.name }}/" >> "$GITHUB_ENV"; fi
+          if [ -f public/CNAME ]; then
+            echo "BASE_PATH=/" >> "$GITHUB_ENV"
+            echo "SITE_URL=https://$(tr -d '[:space:]' < public/CNAME)" >> "$GITHUB_ENV"
+          else
+            echo "BASE_PATH=/${{ github.event.repository.name }}/" >> "$GITHUB_ENV"
+            echo "SITE_URL=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" >> "$GITHUB_ENV"
+          fi
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

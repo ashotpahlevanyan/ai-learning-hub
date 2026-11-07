@@ -2,11 +2,13 @@ import { Link, useParams } from 'react-router-dom';
 import { useExam } from './ExamLayout';
 import { progressIn, touchDay, update, useProgress } from '../lib/store';
 import Md from '../components/Md';
+import { useMeta } from '../lib/useMeta';
 
 export default function LessonPage() {
   const { exam, key, base, domainName } = useExam();
   const { lessonId } = useParams();
   const p = useProgress(key);
+  useMeta(exam.lessons.find(x => x.id === lessonId)?.title, exam.lessons.find(x => x.id === lessonId)?.summary);
   const i = exam.lessons.findIndex(l => l.id === lessonId);
   const l = exam.lessons[i];
   if (!l) return <p className="empty">Lesson not found. <Link to={`${base}/learn`}>See all lessons</Link></p>;

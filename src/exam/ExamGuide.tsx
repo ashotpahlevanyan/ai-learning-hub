@@ -8,13 +8,13 @@ export default function ExamGuide() {
   const maxW = Math.max(...exam.domains.map(d => d.weight));
   return (
     <>
-      <h1>{exam.code} exam guide</h1>
+      <h1>{exam.code} {exam.kind === 'course' ? 'course guide' : 'exam guide'}</h1>
       <div className="card">
         <dl className="kv">
           <dt>Format</dt><dd>{exam.format}</dd>
           <dt>Items and time</dt><dd>{exam.items} items in {exam.minutes} minutes (about {(exam.minutes / exam.items).toFixed(1)} min per item)</dd>
-          <dt>Passing score</dt><dd>{exam.passing} on a 100–1000 scale</dd>
-          <dt>Fee</dt><dd>{exam.price}</dd>
+          <dt>{exam.kind === 'course' ? 'Target' : 'Passing score'}</dt><dd>{exam.passing} on a 100–1000 scale</dd>
+          <dt>{exam.kind === 'course' ? 'Cost' : 'Fee'}</dt><dd>{exam.price}</dd>
           <dt>Who it's for</dt><dd>{exam.audience}</dd>
         </dl>
       </div>

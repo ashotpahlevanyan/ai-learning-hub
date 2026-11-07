@@ -235,3 +235,8 @@ th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--bord
 select { max-width: 100%; }
 .flash, .q-stem, .opt, .callout, .prose { overflow-wrap: anywhere; }
 .flash pre, .q-stem pre, .prose pre { max-width: 100%; }
+
+/* Skip link: hidden until focused by keyboard. */
+.skip-link { position: absolute; left: 8px; top: -48px; z-index: 100; padding: 8px 12px; border-radius: 6px; background: var(--accent); color: var(--on-accent); font-weight: 600; text-decoration: none; }
+.skip-link:focus { top: 8px; }
+#main:focus { outline: none; }

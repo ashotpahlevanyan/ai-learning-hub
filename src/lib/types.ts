@@ -38,8 +38,12 @@ export interface Question {
   rationales?: string[];
 }
 
+/** "exam" prepares for a real certification; "course" is a skill path with a practice test but no official exam. */
+export type Kind = 'exam' | 'course';
+
 export interface Exam {
   id: string;
+  kind?: Kind;
   code: string;
   name: string;
   level: string;
@@ -54,15 +58,25 @@ export interface Exam {
   lessons: Lesson[];
   flashcards: Flashcard[];
   questions: Question[];
+  /** Set by the cert-prep pipeline when every question passed a blind re-answer check. */
+  review?: Review;
+}
+
+export interface Review {
+  date: string;
+  questionsChecked: number;
+  fixed: number;
+  dropped: number;
 }
 
 /** Lightweight listing info, available without loading the full exam bundle. */
 export interface ExamSummary {
   id: string;
+  kind: Kind;
   code: string;
   name: string;
   level: string;
-  tier: 'Foundations' | 'Professional';
+  tier: string;
   audience: string;
   items: number;
   minutes: number;
@@ -84,6 +98,10 @@ export interface Track {
   description: string;
   exams: ExamSummary[];
   resources: Resource[];
+  /** Suggested order through the track's exams/courses for different roles. */
+  paths?: { who: string; order: string[]; why: string }[];
+  /** Who can sit the exams, booking notes, or "no official exam" notes. */
+  note?: string;
   /** Long-form study guide in Markdown. */
   loadGuide: () => Promise<string>;
 }

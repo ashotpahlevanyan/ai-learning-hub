@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { tracks } from '../content';
+import { useMeta } from '../lib/useMeta';
 
 const METHOD = [
   { title: 'Learn', text: 'Short lessons per exam domain, each with key points, exam traps and a hands-on lab.' },
@@ -9,6 +10,7 @@ const METHOD = [
 ];
 
 export default function Home() {
+  useMeta();
   return (
     <main className="page">
       <section className="hero">

@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { tracks } from './index';
+import { tracks as published } from './index';
+import { gemini } from './tracks/gemini/track';
+import { openai } from './tracks/openai/track';
 import type { Exam } from '../lib/types';
+
+// Published tracks plus drafted ones, so shelved content stays valid.
+const tracks = [...published, gemini, openai];
 
 // Every exam bundle must be well-formed: run on each content change (npm test).
 describe.each(tracks.flatMap(t => t.exams.map(e => [`${t.id}/${e.id}`, e] as const)))('%s', (_, summary) => {
@@ -19,6 +24,10 @@ describe.each(tracks.flatMap(t => t.exams.map(e => [`${t.id}/${e.id}`, e] as con
     expect(exam.code).toBe(summary.code);
     const weights = exam.domains.reduce((s, d) => s + d.weight, 0);
     if (Math.abs(weights - 100) > 1) problems.push(`domain weights sum to ${weights}`);
+    if (exam.review) {
+      const r = exam.review;
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(r.date) || ![r.questionsChecked, r.fixed, r.dropped].every(Number.isInteger)) problems.push('review record is malformed');
+    }
 
     exam.lessons.forEach(l => { check('lesson', l); if (!l.title || !l.sections?.length) problems.push(`lesson ${l.id} is incomplete`); });
     exam.flashcards.forEach(c => { check('card', c); if (!c.front || !c.back) problems.push(`card ${c.id} is incomplete`); });

@@ -3,12 +3,14 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { getTrack } from '../content';
 import Md from '../components/Md';
 import NotFound from './NotFound';
+import { useMeta } from '../lib/useMeta';
 
 export default function GuidePage() {
   const { trackId } = useParams();
   const { hash } = useLocation();
   const track = getTrack(trackId);
   const [text, setText] = useState<string | null>(null);
+  useMeta(track ? `${track.name} study runbook` : undefined, track ? `The complete written study runbook for the ${track.name} track.` : undefined);
 
   useEffect(() => { track?.loadGuide().then(setText); }, [track]);
   // After the Markdown renders, honour a #section link.

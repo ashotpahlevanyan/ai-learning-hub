@@ -2,9 +2,11 @@ import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { tracks } from '../content';
 import { replaceState, streak, today, update, useAppState, type AppState } from '../lib/store';
+import { useMeta } from '../lib/useMeta';
 
 export default function ProgressPage() {
   const state = useAppState();
+  useMeta('My progress');
   const fileRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState('');
 

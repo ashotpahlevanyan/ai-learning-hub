@@ -18,14 +18,14 @@ export default function ReviewPage() {
 
   return (
     <>
-      <h1>Mock result</h1>
+      <h1>{exam.kind === 'course' ? 'Practice test result' : 'Mock result'}</h1>
       <section className="card hero-card">
         <div className="spread">
           <div>
             <div className={`stat tone-${pass ? 'good' : 'bad'}`}>{m.score} <span className="muted small">/ 1000 (estimate)</span></div>
             <div>{m.ok}/{m.n} correct ({pct(m.pct)}%) · {fmtTime(m.secs)}{m.timedOut ? ' · time ran out' : ''}</div>
           </div>
-          <Tag tone={pass ? 'good' : 'bad'}>{pass ? 'Likely pass' : 'Below the pass mark'}</Tag>
+          <Tag tone={pass ? 'good' : 'bad'}>{exam.kind === 'course' ? (pass ? 'On target' : 'Below target') : pass ? 'Likely pass' : 'Below the pass mark'}</Tag>
         </div>
         <div className="table-wrap">
           <table>

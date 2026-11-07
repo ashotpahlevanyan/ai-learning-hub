@@ -11,6 +11,7 @@ export default function MockPage() {
   const p = useProgress(key);
   const navigate = useNavigate();
   const m = p.activeMock;
+  const course = exam.kind === 'course';
   const [now, setNow] = useState(Date.now());
 
   const setMock = (fn: (m: ActiveMock) => void) => update(s => { const am = progressIn(s, key).activeMock; if (am) fn(am); });
@@ -68,17 +69,19 @@ export default function MockPage() {
     const begin = (size: number, minutes: number) => update(s => { progressIn(s, key).activeMock = buildMock(exam, size, minutes); });
     return (
       <>
-        <h1>Mock exam</h1>
+        <h1>{course ? 'Practice test' : 'Mock exam'}</h1>
         <div className="card">
-          <p>A full simulation: <strong>{n} questions</strong> drawn by domain weight, <strong>{exam.minutes} minutes</strong>, and no feedback until you submit. Flag questions to come back to. Your progress survives a page reload.</p>
+          <p>{course ? 'A timed test across every domain of this course:' : 'A full simulation:'} <strong>{n} questions</strong> drawn by domain weight, <strong>{exam.minutes} minutes</strong>, and no feedback until you submit. Flag questions to come back to. Your progress survives a page reload.</p>
           <ul>
-            <li>Pass mark on the real exam is <strong>{exam.passing}/1000</strong>. This site estimates a scaled score linearly from percent correct ({exam.passing} ≈ {pct(pctToPass(exam.passing))}%). The real scaling isn't published, so aim for <strong>85% or more</strong> before booking.</li>
+            {course
+              ? <li>This course has no official exam. Scores use the same 100–1000 scale as the certification tracks; aim for <strong>85% or more</strong> to count the course as mastered.</li>
+              : <li>Pass mark on the real exam is <strong>{exam.passing}/1000</strong>. This site estimates a scaled score linearly from percent correct ({exam.passing} ≈ {pct(pctToPass(exam.passing))}%). The real scaling isn't published, so aim for <strong>85% or more</strong> before booking.</li>}
             <li>Pace: about {(exam.minutes / n).toFixed(1)} minutes per question. If you're stuck past 3 minutes, flag it and move on.</li>
             <li>On "choose N" items every pick must be right to earn credit.</li>
           </ul>
-          {n < exam.items && <p className="muted small">The bank has {n} questions for this exam, fewer than the real {exam.items}.</p>}
+          {n < exam.items && <p className="muted small">The question bank has {n} questions, fewer than the {exam.items} a full test uses.</p>}
           <div className="row">
-            <button className="btn primary" onClick={() => begin(exam.items, exam.minutes)}>Start {exam.minutes}-minute mock</button>
+            <button className="btn primary" onClick={() => begin(exam.items, exam.minutes)}>Start {exam.minutes}-minute {course ? 'test' : 'mock'}</button>
             <button className="btn" onClick={() => begin(20, 20)}>Quick 20-question mock (20 min)</button>
           </div>
         </div>

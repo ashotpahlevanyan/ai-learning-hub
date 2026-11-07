@@ -1,0 +1,2592 @@
+{
+  "id": "gemini-dev",
+  "kind": "course",
+  "code": "GEM-DEV",
+  "name": "Gemini API Developer",
+  "level": "Developer course · no official exam",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "audience": "Developers building apps and agents on Gemini",
+  "format": "This site's course: 40-question practice test in 60 minutes. Google has no matching certification; for an official credential see Professional Machine Learning Engineer.",
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Models & the Interactions API",
+      "weight": 15,
+      "summary": "Pick the right Gemini model for the job and call it through the Interactions API: requests, steps, `output_text`, server-side state and the legacy `generateContent` path."
+    },
+    {
+      "id": "d2",
+      "name": "Prompting & multimodal input",
+      "weight": 15,
+      "summary": "System instructions, clear prompts, thinking levels, and sending images, audio, video and PDFs inline or through the Files API."
+    },
+    {
+      "id": "d3",
+      "name": "Function calling & structured output",
+      "weight": 20,
+      "summary": "Declare tools, run the function-call loop, choose a `tool_choice` mode, and get schema-valid JSON with `response_format`."
+    },
+    {
+      "id": "d4",
+      "name": "Grounding, RAG & long context",
+      "weight": 15,
+      "summary": "Ground answers with Google Search, Maps and URL context, build retrieval with Gemini embeddings, and use the 1M-token context window well."
+    },
+    {
+      "id": "d5",
+      "name": "Agents: ADK, Managed Agents & Agent Platform",
+      "weight": 15,
+      "summary": "Build agents with the Agent Development Kit, call Google-managed agents through the Interactions API, and deploy on the Gemini Enterprise Agent Platform."
+    },
+    {
+      "id": "d6",
+      "name": "Cost, performance & production",
+      "weight": 15,
+      "summary": "Implicit caching, the Batch API, token budgets, rate limits and tiers, retries, background execution and model deprecations."
+    },
+    {
+      "id": "d7",
+      "name": "Safety & responsible AI",
+      "weight": 5,
+      "summary": "Safety filter categories and thresholds, what a block looks like, prompt injection through tools, and human review."
+    }
+  ],
+  "scenarios": [
+    {
+      "title": "Support assistant with live order data",
+      "description": "A retailer wants a chat assistant that answers order questions from its own systems through function calling, keeps conversation state between turns, and never invents order details."
+    },
+    {
+      "title": "Document extraction pipeline",
+      "description": "A finance team needs 200,000 scanned invoices turned into validated JSON overnight, at the lowest possible cost, with low-confidence fields sent to people for review."
+    },
+    {
+      "title": "Grounded research answers",
+      "description": "A news product must answer questions about current events with citations, render Google Search suggestions as required, and keep search costs predictable."
+    },
+    {
+      "title": "Multimodal media app",
+      "description": "A training company wants to ask questions about long lecture videos and audio recordings, some larger than 100 MB, and summarise them by chapter."
+    },
+    {
+      "title": "Enterprise agent rollout",
+      "description": "A platform team is building a multi-step agent with ADK, wants evaluation before launch, and must deploy it on Google Cloud with enterprise controls."
+    }
+  ],
+  "lessons": [
+    {
+      "id": "l1",
+      "domain": "d1",
+      "title": "The Gemini model lineup and how to choose",
+      "minutes": 15,
+      "summary": "Know the model families, what each is for, and how to pick the cheapest model that passes your evals.",
+      "sections": [
+        {
+          "heading": "The families you will actually use",
+          "body": "At the time of writing (November 2026), the Gemini API groups models roughly like this. Model ids change often, so always confirm them on the models page before shipping.\n\n- **Gemini 4 Argon** (`gemini-4-argon`): Google's flagship reasoning model for hard coding, agentic, maths and science work. Its 1,048,576-token context window is shared by input, thinking and output. Inputs can be text, images, audio, video and PDF.\n- **Flash models** (for example `gemini-3.8-flash`, the most capable Flash at the time of writing): fast and much cheaper. They are the default for most production apps and agents.\n- **Flash-Lite models** (for example `gemini-3.5-flash-lite`): the fastest and cheapest, for high-throughput classification, routing and extraction.\n- **Specialised models**: Live models for real-time voice, TTS and transcription models, Nano Banana image models, Gemini Omni Flash for short video, Lyria for music, and Gemini embedding models for search and RAG.\n- **Gemma**: Google's open-weight models, which you download and run yourself (on your own hardware or through Model Garden on Google Cloud). They are not served by the Gemini API model list in the same way."
+        },
+        {
+          "heading": "A selection method that survives model churn",
+          "body": "1. Write a small eval set: 20–50 real inputs with expected outputs or grading rules.\n2. Start with a Flash or Flash-Lite model. Measure quality, latency and cost.\n3. Move up to a bigger model only for the cases that fail, or route by difficulty: Flash-Lite classifies the request, Flash handles most of it, and Argon takes the hard ones.\n4. Re-run the eval whenever you change model, prompt or thinking level.\n\nThe capability, latency and cost triangle never goes away. The right answer is the cheapest model that meets your quality bar *on your own evals*, not the top of a public leaderboard."
+        },
+        {
+          "heading": "Aliases, previews and deprecations",
+          "body": "- **Stable ids** (like `gemini-3.5-flash-lite`) are what production code should pin.\n- **Preview ids** (ending in `-preview`) can change or be shut down with short notice. Use them for evaluation, not for critical paths.\n- **Latest aliases** (such as `gemini-flash-latest`) move to new models automatically. That's convenient for prototypes, but it changes behaviour under you.\n- **Deprecations**: older models get deprecated, then routed or shut down. For example, the docs say `gemini-2.5-flash` and `gemini-2.5-pro` requests route to newer models from 1 December 2026. Track the deprecations page and plan migrations with your eval set."
+        }
+      ],
+      "keyPoints": [
+        "Flash is the default workhorse; Flash-Lite for volume; Argon for the hardest reasoning and agentic work.",
+        "Pin stable model ids in production; previews and `-latest` aliases can change behaviour without a code change.",
+        "Choose models with your own eval set, not a leaderboard.",
+        "Gemma is open-weight: you host it, the Gemini API does not."
+      ],
+      "gotchas": [
+        {
+          "trap": "Defaulting every request to the flagship model \"to be safe\".",
+          "correct": "Start with Flash or Flash-Lite, measure on evals, and route only the hard cases to Argon."
+        },
+        {
+          "trap": "Shipping a `-preview` model id or a `-latest` alias in production.",
+          "correct": "Pin a stable id and migrate deliberately, re-running your eval set."
+        }
+      ],
+      "lab": "Create a free API key in Google AI Studio. Write 10 test prompts for a task you care about (for example classifying support tickets). Run them on a Flash-Lite, a Flash and the Argon model, and record quality, latency and token usage in a small table. Decide which model you'd ship and why."
+    },
+    {
+      "id": "l2",
+      "domain": "d1",
+      "title": "Calling Gemini: the Interactions API",
+      "minutes": 20,
+      "summary": "The Interactions API is the recommended interface for new projects. Learn requests, steps, server-side state and stateless mode.",
+      "sections": [
+        {
+          "heading": "Your first call",
+          "body": "Install the Google Gen AI SDK: `pip install google-genai` (Python) or `npm install @google/genai` (JavaScript). The client reads the API key from the `GEMINI_API_KEY` environment variable.\n\n```python\nfrom google import genai\n\nclient = genai.Client()\n\ninteraction = client.interactions.create(\n    model=\"gemini-3.8-flash\",\n    input=\"Explain retrieval-augmented generation in three bullet points.\",\n)\nprint(interaction.output_text)\n```\n\n```javascript\nimport { GoogleGenAI } from \"@google/genai\";\n\nconst client = new GoogleGenAI();\nconst interaction = await client.interactions.create({\n  model: \"gemini-3.8-flash\",\n  input: \"Explain retrieval-augmented generation in three bullet points.\",\n});\nconsole.log(interaction.output_text);\n```"
+        },
+        {
+          "heading": "Interactions and steps",
+          "body": "An **interaction** is one complete turn. It contains a chronological list of **steps**: the model's thoughts, tool calls, tool results and the final `model_output`. Steps make debugging and UI rendering easier, because you can see exactly what happened.\n\n- `output_text` is a convenience property that gives you the final text.\n- `interactions.create` returns the model-generated steps. `interactions.get` also includes the `user_input` steps."
+        },
+        {
+          "heading": "Server-side state with previous_interaction_id",
+          "body": "By default (`store=True`) the server keeps the interaction, so you can continue a conversation without resending history:\n\n```python\nturn1 = client.interactions.create(model=\"gemini-3.8-flash\", input=\"Hi, my name is Priya.\")\nturn2 = client.interactions.create(\n    model=\"gemini-3.8-flash\",\n    input=\"What is my name?\",\n    previous_interaction_id=turn1.id,\n)\n```\n\nTwo things catch people out:\n\n- **Only the conversation carries over.** `tools`, `system_instruction` and `generation_config` are interaction-scoped, so you must send them again on every turn.\n- **Retention is limited.** At the time of writing, stored interactions are kept for 55 days on the paid tier and 1 day on the free tier."
+        },
+        {
+          "heading": "Stateless mode and the legacy generateContent API",
+          "body": "Set `store=False` if you must not keep data on the server. Then you send the full history yourself on every request, including the model's previous steps unchanged. Stateless mode can't use `previous_interaction_id` or background execution.\n\n`generateContent` (`client.models.generate_content(...)`) is the older API. It remains fully supported, and a few features, such as the Batch API and explicit context caching on supported older models, are documented only for it. New models and capabilities launch on the Interactions API first."
+        }
+      ],
+      "keyPoints": [
+        "Interactions API = recommended for new projects; `generateContent` = legacy but supported.",
+        "`previous_interaction_id` keeps history server-side; tools, system instruction and generation config must be resent each turn.",
+        "`store=False` means stateless: resend full history, no background mode.",
+        "Read `output_text` for the answer and `steps` to see thoughts, tool calls and results."
+      ],
+      "gotchas": [
+        {
+          "trap": "Assuming the system instruction and tools persist when you pass `previous_interaction_id`.",
+          "correct": "Resend `tools`, `system_instruction` and `generation_config` on every turn; only the conversation history is carried."
+        },
+        {
+          "trap": "Turning on `store=False` for privacy and then trying to use background execution.",
+          "correct": "Background execution needs storage. Use stateless mode only for normal synchronous calls."
+        }
+      ],
+      "lab": "Build a 3-turn CLI chat with `previous_interaction_id` and a system instruction (\"You are a terse travel assistant\"). Then remove the system instruction from turns 2 and 3 and watch the tone drift. Finally, re-implement it in stateless mode with `store=False` and send the full history yourself."
+    },
+    {
+      "id": "l3",
+      "domain": "d2",
+      "title": "Prompting Gemini well, and thinking levels",
+      "minutes": 15,
+      "summary": "System instructions, clear task specs, examples, and how to set the reasoning effort on thinking models.",
+      "sections": [
+        {
+          "heading": "A prompt that works",
+          "body": "Good Gemini prompts look like good briefs to a smart new colleague:\n\n- **System instruction** for stable role, rules and output style. Per-request data goes in `input`.\n- **Clear task and success criteria**: audience, length, format, what to do when information is missing.\n- **Structure**: label parts of the prompt (for example with headings or XML-style tags) so instructions, documents and examples don't blur together.\n- **A few diverse examples** (few-shot) when format or tone matters. Models copy examples closely, so vary them.\n- **Long documents first, question last**: put large context at the beginning and the instruction at the end."
+        },
+        {
+          "heading": "Thinking levels",
+          "body": "Gemini's thinking models reason before answering. On Gemini 4 Argon you control the effort with `thinking_level` in `generation_config`: `low`, `medium` (the default) or `high`.\n\n```python\ninteraction = client.interactions.create(\n    model=\"gemini-4-argon\",\n    input=\"Find the race condition in this retry loop and rewrite it safely: ...\",\n    generation_config={\"thinking_level\": \"medium\"},\n)\n```\n\nGoogle's guidance is to test a workload at all three levels and pick the **lowest** one that meets your quality bar. Higher levels cost more tokens and take longer.\n\n- `max_output_tokens` is a hard cap on **thinking plus output combined**. If you set it too low, the model can spend the budget thinking and return a truncated answer. The Argon migration notes suggest raising it if it's below 32,768.\n- Thinking tokens are billed as output tokens."
+        },
+        {
+          "heading": "Sampling parameters on the newest models",
+          "body": "Older models let you tune `temperature`, `top_p` and `top_k`. Gemini 4 Argon ignores them, and Google's migration notes say to remove them rather than tune them. Control quality with the prompt, the thinking level and evals instead. On older models that still support temperature, use low values for extraction and classification and higher values for creative writing."
+        }
+      ],
+      "keyPoints": [
+        "Stable rules in the system instruction; per-request data in the input.",
+        "`thinking_level` low/medium/high on Argon: pick the lowest level that passes your evals.",
+        "`max_output_tokens` covers thinking + output; too low a value truncates answers.",
+        "Argon ignores temperature/top_p/top_k: remove them."
+      ],
+      "gotchas": [
+        {
+          "trap": "Setting `max_output_tokens: 1024` on a hard reasoning task and getting empty or cut-off answers.",
+          "correct": "Thinking shares the cap. Raise `max_output_tokens` (the docs suggest at least 32,768 on Argon) or lower the thinking level."
+        },
+        {
+          "trap": "Lowering temperature on Gemini 4 Argon to make it more deterministic.",
+          "correct": "Argon ignores sampling parameters. Tighten the prompt and add examples, and use structured output for fixed formats."
+        }
+      ],
+      "lab": "Take one hard prompt (a tricky bug or a logic puzzle). Run it on Argon at `low`, `medium` and `high` thinking. Record answer quality, latency and usage tokens. Then set `max_output_tokens` to 2,000 at `high` and observe what happens."
+    },
+    {
+      "id": "l4",
+      "domain": "d2",
+      "title": "Multimodal input and the Files API",
+      "minutes": 15,
+      "summary": "Send images, audio, video and PDFs to Gemini, and know when a file must go through the Files API.",
+      "sections": [
+        {
+          "heading": "Multimodal by default",
+          "body": "Gemini models accept text, images, audio, video and PDFs in the same request. You describe each part with a type and a source:\n\n```python\nmyfile = client.files.upload(file=\"lecture-03.mp3\")\n\ninteraction = client.interactions.create(\n    model=\"gemini-3.8-flash\",\n    input=[\n        {\"type\": \"text\", \"text\": \"Summarise this lecture by topic with timestamps.\"},\n        {\"type\": \"audio\", \"uri\": myfile.uri, \"mime_type\": myfile.mime_type},\n    ],\n)\n```\n\nTypical uses: OCR and document understanding, chart reading, meeting and lecture summaries, video Q&A with timestamps, and screenshot debugging."
+        },
+        {
+          "heading": "When to use the Files API",
+          "body": "- Use the **Files API** when the whole request (files, prompt and system instruction) is larger than **100 MB**, or when you'll reuse the same file across several requests.\n- Limits at the time of writing: up to **2 GB per file** and **20 GB per project**. PDFs are limited to 50 MB.\n- Uploaded files are **kept for 48 hours** and then deleted automatically. You can delete them sooner.\n- You can't download files you uploaded, only see their metadata. Model-generated files (such as videos) can be downloaded.\n- The Files API itself is free."
+        },
+        {
+          "heading": "Prompting with media",
+          "body": "- Put the media first and the question after it, just as with long documents.\n- Ask for **timestamps** or **page numbers** so answers can be checked.\n- For very long videos, ask for a chapter outline first, then drill into one chapter at a time.\n- Media consumes tokens: long videos and audio can use a large share of the context window, so check `usage` and budget accordingly."
+        }
+      ],
+      "keyPoints": [
+        "Text, image, audio, video and PDF can be mixed in one request.",
+        "Files API for requests over 100 MB or files reused across requests; 2 GB/file, 20 GB/project, 48-hour retention.",
+        "Ask for timestamps or page numbers so outputs can be verified."
+      ],
+      "gotchas": [
+        {
+          "trap": "Uploading a file once and expecting it to be available next week.",
+          "correct": "Uploaded files expire after 48 hours. Re-upload, or keep the source in Cloud Storage and upload when needed."
+        },
+        {
+          "trap": "Inlining a 300 MB video in the request body.",
+          "correct": "Requests over 100 MB must use the Files API."
+        }
+      ],
+      "lab": "Upload a 20–40 minute talk (audio or video) with the Files API. Ask for a chaptered summary with timestamps, then ask three follow-up questions about specific chapters. Check two of the timestamps by hand."
+    },
+    {
+      "id": "l5",
+      "domain": "d3",
+      "title": "Function calling end to end",
+      "minutes": 20,
+      "summary": "Declare functions, run the call/result loop, pick a tool_choice mode and handle parallel and chained calls.",
+      "sections": [
+        {
+          "heading": "The loop",
+          "body": "Gemini never runs your code. It *asks* you to:\n\n1. You declare functions: a **name**, a **description** and JSON-schema **parameters**.\n2. You send the prompt and the declarations.\n3. The model returns a `function_call` step with a name, arguments and an id. It does not execute anything.\n4. **Your code** validates the arguments and runs the function.\n5. You send back a `function_result` step linked by `call_id`.\n6. The model uses the result to answer, or asks for another call.\n\n```python\nget_order = {\n    \"type\": \"function\",\n    \"name\": \"get_order\",\n    \"description\": \"Look up an order by its id. Use when the user asks about an order's status or contents.\",\n    \"parameters\": {\n        \"type\": \"object\",\n        \"properties\": {\"order_id\": {\"type\": \"string\", \"description\": \"Order id like A-1234\"}},\n        \"required\": [\"order_id\"],\n    },\n}\n\nfirst = client.interactions.create(model=\"gemini-3.8-flash\", input=\"Where is order A-1234?\", tools=[get_order])\ncall = next(s for s in first.steps if s.type == \"function_call\")\nresult = lookup_order(**call.arguments)  # your code, after validating arguments\n\nfinal = client.interactions.create(\n    model=\"gemini-3.8-flash\",\n    previous_interaction_id=first.id,\n    tools=[get_order],  # resend tools every turn\n    input=[{\"type\": \"function_result\", \"name\": call.name, \"call_id\": call.id,\n            \"result\": [{\"type\": \"text\", \"text\": json.dumps(result)}]}],\n)\nprint(final.output_text)\n```"
+        },
+        {
+          "heading": "tool_choice modes",
+          "body": "Set `tool_choice` in `generation_config`:\n\n- `auto` (default): the model decides whether to call a function or answer directly.\n- `any`: the model must call a function. Useful to force an action or force structured arguments.\n- `none`: no function calls, even though tools are declared.\n- `validated`: the model ensures its calls adhere to your function schema."
+        },
+        {
+          "heading": "Parallel and compositional calls",
+          "body": "- **Parallel**: the model can return several independent calls in one turn (for example weather in three cities). Run them, then return **all** the results.\n- **Compositional**: calls chained across turns, where one result feeds the next call (look up the forecast, then set the thermostat).\n- Keep looping until the model stops asking for calls, with a maximum number of iterations as a safety net."
+        },
+        {
+          "heading": "Designing good tools",
+          "body": "- Descriptions are how the model chooses. Say what the tool does, when to use it and when not to.\n- Use enums, required fields and clear formats in the schema.\n- Keep the toolset small and non-overlapping.\n- Return concise, meaningful results. On failure, return a clear error message in the result (what went wrong and what to try), not an empty string.\n- **Validate arguments in your code before running anything**, and require confirmation for destructive or high-impact actions."
+        }
+      ],
+      "keyPoints": [
+        "The model returns `function_call`; your code runs it and replies with `function_result` matched by `call_id`.",
+        "`tool_choice`: auto (default), any (must call), none (no calls), validated (schema adherence).",
+        "Return all results for parallel calls; loop for compositional calls with an iteration cap.",
+        "Always validate arguments before executing; confirm high-impact actions."
+      ],
+      "gotchas": [
+        {
+          "trap": "Expecting Gemini to execute the declared function itself.",
+          "correct": "Gemini only proposes calls. Your application executes them and returns `function_result` steps."
+        },
+        {
+          "trap": "Returning only the first result when the model asked for three parallel calls.",
+          "correct": "Run every requested call and return every `function_result`, each with its matching `call_id`."
+        }
+      ],
+      "lab": "Build a two-tool assistant: `get_weather(city)` and `set_thermostat(celsius)`. Ask \"It's cold in Oslo, set my heating sensibly\". Log every step, confirm the model chains the calls, and add argument validation that rejects temperatures outside 10–28 °C with a helpful error result."
+    },
+    {
+      "id": "l6",
+      "domain": "d3",
+      "title": "Structured output with JSON schemas",
+      "minutes": 15,
+      "summary": "Get schema-shaped JSON with response_format, validate it in code, and know which schema keywords are enforced.",
+      "sections": [
+        {
+          "heading": "Asking for JSON",
+          "body": "Set `response_format` with a JSON MIME type and a schema. With Pydantic (Python) or Zod (JavaScript) you define the shape once and validate the result with the same model.\n\n```python\nfrom pydantic import BaseModel, Field\nfrom typing import Optional\n\nclass Invoice(BaseModel):\n    vendor: str = Field(description=\"Company that issued the invoice\")\n    invoice_number: str\n    total: float\n    due_date: Optional[str] = Field(description=\"ISO date, or null if not printed\")\n\ninteraction = client.interactions.create(\n    model=\"gemini-3.8-flash\",\n    input=invoice_text,\n    response_format={\n        \"type\": \"text\",\n        \"mime_type\": \"application/json\",\n        \"schema\": Invoice.model_json_schema(),\n    },\n)\ninvoice = Invoice.model_validate_json(interaction.output_text)\n```"
+        },
+        {
+          "heading": "What the schema can and can’t enforce",
+          "body": "Supported at the time of writing: the basic types (including `null` via a type array such as `[\"string\", \"null\"]`), `title` and `description`, `properties`, `required`, `additionalProperties`, string `enum` and `format` (date, time, date-time), numeric `enum`/`minimum`/`maximum`, array `items`/`prefixItems`/`minItems`/`maxItems`, `anyOf`, and recursive `$ref`.\n\n**Silently ignored**: `minLength`, `maxLength`, `minProperties`, `maxProperties`, `uniqueItems`, `contains` and similar. They are stripped without an error, so check them in your own code.\n\nVery complex schemas (too many branches, unions or nesting levels) are rejected with `400 INVALID_ARGUMENT`. Flatten them and shorten property names."
+        },
+        {
+          "heading": "A reliable extraction pattern",
+          "body": "1. Schema with **descriptions** on every field and **nullable** fields for things that may be missing, so the model doesn't invent values.\n2. **Enums** for categories.\n3. **Validate** in code (Pydantic/Zod), including the rules the API ignores.\n4. On a validation failure, **retry once with the error message** included, then route to a person.\n5. Measure field-level accuracy on a labelled sample before going live."
+        }
+      ],
+      "keyPoints": [
+        "`response_format` with `mime_type: application/json` and a `schema` gives schema-shaped JSON.",
+        "Length/uniqueness keywords are ignored: validate them yourself.",
+        "Nullable fields + descriptions stop the model inventing missing values.",
+        "Validate, retry with the error, then escalate."
+      ],
+      "gotchas": [
+        {
+          "trap": "Relying on `maxLength` in the schema to cap a summary field.",
+          "correct": "`maxLength` is stripped silently. Enforce length in your validation code."
+        },
+        {
+          "trap": "Making every field required in an extraction schema.",
+          "correct": "Make fields that may be absent nullable, so the model can return null instead of guessing."
+        }
+      ],
+      "lab": "Write a Pydantic or Zod schema for a receipt (merchant, date, line items, total, currency enum). Extract 10 receipts, validate each, and write a check that the line items add up to the total. Count how often validation catches a problem the schema alone didn't."
+    },
+    {
+      "id": "l7",
+      "domain": "d4",
+      "title": "Grounding with Google Search, Maps and URL context",
+      "minutes": 15,
+      "summary": "Give Gemini fresh, cited facts with built-in grounding tools, render results correctly and control cost.",
+      "sections": [
+        {
+          "heading": "Turning on Search grounding",
+          "body": "Add the built-in tool and the model decides when to search, writes the queries, reads the results and answers with citations:\n\n```python\ninteraction = client.interactions.create(\n    model=\"gemini-3.8-flash\",\n    input=\"Who won the most recent Ballon d'Or?\",\n    tools=[{\"type\": \"google_search\"}],\n)\n```\n\nThe steps include a `google_search_call` (the queries), a `google_search_result` and the `model_output`. Text blocks carry `annotations` of type `url_citation` with `url`, `title` and `start_index`/`end_index`, which tell you exactly which span each source supports."
+        },
+        {
+          "heading": "Display rules and billing",
+          "body": "- The result includes `search_suggestions` HTML. Google's terms require you to **render the search suggestions** when you show grounded answers. Check the terms for the full requirements.\n- On Gemini 3 and newer models, you're billed **per search query the model runs**. At the time of writing, the first 5,000 queries a month are free, then $14 per 1,000. The tool's instructions also add input tokens.\n- Grounding has its own rate limits (for example a default daily cap per project on the paid tier)."
+        },
+        {
+          "heading": "Other grounding tools",
+          "body": "- **URL context**: ground on specific pages you provide, alone or together with Search.\n- **Grounding with Google Maps**: places, routes and local facts. It can be combined with Search on newer Flash models and Argon.\n- **Code execution** and your own **function calling** can be combined with Search on Gemini 3+ models.\n\nUse Search grounding for **public, current** facts. For your **private** documents, build retrieval (next lesson)."
+        }
+      ],
+      "keyPoints": [
+        "Add `{\"type\": \"google_search\"}` to tools; the model decides when to search.",
+        "Citations come as `url_citation` annotations with text spans.",
+        "Render `search_suggestions` as Google requires.",
+        "Gemini 3+ bills per executed search query, beyond a monthly free allowance."
+      ],
+      "gotchas": [
+        {
+          "trap": "Using Google Search grounding to answer questions about your internal HR policies.",
+          "correct": "Search only sees the public web. Use retrieval over your own documents (embeddings + vector search) or put them in context."
+        },
+        {
+          "trap": "Showing grounded answers without the search suggestions widget.",
+          "correct": "Render the `search_suggestions` HTML as the grounding terms require."
+        }
+      ],
+      "lab": "Build a \"today in tech\" answerer with Search grounding. Print each answer with numbered citations built from the `url_citation` spans, render the search suggestions HTML in a simple web page, and log how many search queries each question triggered."
+    },
+    {
+      "id": "l8",
+      "domain": "d4",
+      "title": "RAG with Gemini embeddings, and long context",
+      "minutes": 20,
+      "summary": "When to retrieve and when to just use the 1M-token window, and how to build retrieval that cites its sources.",
+      "sections": [
+        {
+          "heading": "Long context vs retrieval",
+          "body": "Gemini 4 Argon has a 1,048,576-token window shared by input, thinking and output, and Flash models also have very large windows. That changes the RAG decision:\n\n- **Small, stable corpus** (a few hundred pages): put it in context, ideally as a stable prefix so implicit caching can kick in. Simple, and often more accurate than chunked retrieval.\n- **Large or fast-changing corpus**, per-user permissions, or strict cost limits: use **retrieval**. Sending millions of tokens per request is slow and expensive, and quality can drop when the key facts are buried in the middle."
+        },
+        {
+          "heading": "Building retrieval",
+          "body": "1. **Chunk** documents along their structure (headings, sections), with some overlap.\n2. **Embed** chunks with a Gemini embedding model: `gemini-embedding-2` handles text, images, video, audio and PDF; `gemini-embedding-001` is text-only.\n3. **Store** vectors with metadata (source, page, permissions, date).\n4. **Retrieve** the top matches, ideally combining vector search with keyword search, then rerank.\n5. **Generate**: put the retrieved chunks in the prompt with their ids, and ask the model to answer only from them and cite the ids.\n6. **Evaluate** retrieval (was the right chunk retrieved?) separately from generation (was the answer faithful?)."
+        },
+        {
+          "heading": "Prompting over long context",
+          "body": "- Put the documents first and the question last.\n- Label each document with an id and ask for citations by id.\n- Ask the model to quote the relevant passage before answering. It improves accuracy and makes answers checkable.\n- Tell the model what to do when the answer isn't in the documents (\"say you don't know\")."
+        }
+      ],
+      "keyPoints": [
+        "Small stable corpus → long context (+ implicit caching); large/changing/permissioned corpus → retrieval.",
+        "`gemini-embedding-2` is multimodal; `gemini-embedding-001` is text.",
+        "Evaluate retrieval and generation separately.",
+        "Allow \"I don’t know\" and require citations."
+      ],
+      "gotchas": [
+        {
+          "trap": "Building a vector database for a 40-page handbook that rarely changes.",
+          "correct": "Put the handbook in context as a stable prefix; retrieval adds complexity without benefit here."
+        },
+        {
+          "trap": "Blaming the model when answers are wrong, without checking what was retrieved.",
+          "correct": "Log retrieved chunks and measure retrieval recall first; most RAG failures are retrieval failures."
+        }
+      ],
+      "lab": "Embed 50–100 chunks of a document set with a Gemini embedding model and store them in memory. Answer 10 questions with top-5 retrieval and citations. For each wrong answer, record whether the right chunk was retrieved. Then try the same questions with the whole corpus in context and compare."
+    },
+    {
+      "id": "l9",
+      "domain": "d5",
+      "title": "Building agents with the Agent Development Kit (ADK)",
+      "minutes": 20,
+      "summary": "Google’s open-source agent framework: agents, tools, workflow agents, multi-agent systems, sessions and evaluation.",
+      "sections": [
+        {
+          "heading": "What ADK is",
+          "body": "The **Agent Development Kit** is Google's open-source framework for building, debugging and deploying agents. It's available for Python, TypeScript, Go, Java and Kotlin, and it's model-agnostic, though it's optimised for Gemini.\n\n```python\nfrom google.adk import Agent\nfrom google.adk.tools import google_search\n\nagent = Agent(\n    name=\"researcher\",\n    model=\"gemini-flash-latest\",\n    instruction=\"You help users research topics thoroughly and cite sources.\",\n    tools=[google_search],\n)\n```\n\nYou can run agents from a web UI, the command line or an API server during development."
+        },
+        {
+          "heading": "The building blocks",
+          "body": "- **Tools**: Python/JS functions, MCP tools, OpenAPI tools, and built-ins such as Google Search, plus authentication support.\n- **Workflow agents**: **Sequential** (fixed steps in order), **Parallel** (independent steps at the same time) and **Loop** (repeat until a condition). They give you deterministic structure around LLM steps.\n- **Multi-agent systems**: a coordinator routes work to specialist agents.\n- **Graph workflows** (new in ADK 2.0): combine deterministic code and model reasoning in a graph.\n- **Sessions, state, events and memory**: keep conversation and task state across turns and runs, plus context compression.\n- **Callbacks and plugins**: hook into the agent lifecycle for logging, guardrails or policy checks.\n- **Evaluation**: criteria, simulated users and environments, custom metrics."
+        },
+        {
+          "heading": "Design advice",
+          "body": "- Start with **one agent and a few good tools**. Add workflow agents when steps are known in advance, and multi-agent only when the work is truly separable.\n- Put **hard rules in code** (callbacks, tool checks), not only in the instruction.\n- Define **stop conditions** and an iteration or budget cap.\n- Build an **eval set** of tasks with expected outcomes, and run it on every change."
+        }
+      ],
+      "keyPoints": [
+        "ADK: open-source, Python/TypeScript/Go/Java/Kotlin, model-agnostic, Gemini-optimised.",
+        "Workflow agents: Sequential, Parallel, Loop. Multi-agent for separable work.",
+        "Callbacks for deterministic guardrails; sessions/state/memory for continuity.",
+        "Evaluate agents with task-level evals before deploying."
+      ],
+      "gotchas": [
+        {
+          "trap": "Starting with a five-agent hierarchy for a task with three fixed steps.",
+          "correct": "Use a Sequential workflow agent (or one agent) for fixed steps; add agents only when evals show the need."
+        },
+        {
+          "trap": "Enforcing \"never refund over $500\" only in the agent instruction.",
+          "correct": "Enforce it in the tool or a callback so it holds every time."
+        }
+      ],
+      "lab": "Build an ADK agent with two function tools (search a local FAQ, create a ticket) and a callback that blocks ticket creation without an email address. Wrap it in a Sequential workflow: classify → answer or escalate. Write five eval cases and run them."
+    },
+    {
+      "id": "l10",
+      "domain": "d5",
+      "title": "Managed Agents and the Gemini Enterprise Agent Platform",
+      "minutes": 15,
+      "summary": "Call Google-hosted agents such as Deep Research and Antigravity, and deploy your own agents on Google Cloud.",
+      "sections": [
+        {
+          "heading": "Google-managed agents via the Interactions API",
+          "body": "Some agents are hosted by Google and called through the same Interactions API, by passing `agent` instead of only a model:\n\n- **Deep Research** agents plan and run multi-step research across many sources and return cited reports.\n- **Antigravity** is a managed agent that can run code, manage files and browse in a sandbox. It can use Gemini 4 Argon as its model.\n\n```python\ninteraction = client.interactions.create(\n    agent=\"antigravity-preview-09-2026\",\n    input=\"Audit our public docs site for broken links and summarise the fixes as a table.\",\n    environment=\"remote\",\n    agent_config={\"type\": \"antigravity\", \"model\": \"gemini-4-argon\"},\n)\n```\n\nThese are preview models at the time of writing, so check ids and terms before using them in production. Long agent runs can use **background execution** (`background=True`), which you then poll."
+        },
+        {
+          "heading": "The Gemini Enterprise Agent Platform",
+          "body": "In April 2026 Google consolidated **Vertex AI** into the **Gemini Enterprise Agent Platform**. Old names you'll still see in blog posts map roughly like this:\n\n- Vertex AI → Gemini Enterprise Agent Platform\n- Vertex AI Agent Builder → part of the Agent Platform\n- Agent Engine → **Agent Runtime**\n- Vertex AI Model Garden → **Model Garden** (Gemini, Gemma, partner and open models)\n\nUse the Agent Platform when you need Google Cloud enterprise controls: IAM, VPC Service Controls, data residency, customer-managed encryption keys, audit logging and quota management. The Gemini API (AI Studio keys) is the fastest way to prototype. The Google Gen AI SDK can target either; confirm the current client settings for the Agent Platform in its docs."
+        },
+        {
+          "heading": "Deploying ADK agents",
+          "body": "ADK agents can run anywhere. On Google Cloud the documented targets are **Agent Runtime** (managed), **Cloud Run** (containers) and **GKE** (Kubernetes). Choose Agent Runtime for the least infrastructure work, Cloud Run for container control with scale-to-zero, and GKE when you already run a Kubernetes platform."
+        }
+      ],
+      "keyPoints": [
+        "Managed agents (Deep Research, Antigravity) are called with `agent=` on the Interactions API.",
+        "Vertex AI is now the Gemini Enterprise Agent Platform; Agent Engine is now Agent Runtime.",
+        "AI Studio/Gemini API for fast prototyping; Agent Platform for enterprise controls.",
+        "ADK deploy targets on Google Cloud: Agent Runtime, Cloud Run, GKE."
+      ],
+      "gotchas": [
+        {
+          "trap": "Choosing the AI Studio API key path for a regulated workload that needs VPC Service Controls and CMEK.",
+          "correct": "Use the Gemini Enterprise Agent Platform, which provides Google Cloud enterprise controls."
+        },
+        {
+          "trap": "Searching for \"Agent Engine\" settings in the current console.",
+          "correct": "It was renamed Agent Runtime in the April 2026 consolidation."
+        }
+      ],
+      "lab": "Run a Deep Research agent (or another available managed agent) in background mode on a question from your field. Poll until it finishes, then compare its report with what a grounded single call gives you in terms of depth, citations, time and cost."
+    },
+    {
+      "id": "l11",
+      "domain": "d6",
+      "title": "Caching, Batch and token economics",
+      "minutes": 15,
+      "summary": "Cut cost with implicit caching, the Batch API, the right model and a sensible token budget.",
+      "sections": [
+        {
+          "heading": "Implicit caching",
+          "body": "Implicit caching is **on by default** for Gemini 2.5 and newer models, with nothing to configure. When a request reuses a long prefix that was recently processed, the cached tokens are billed at a much lower rate (for Argon, the published cached-input price is a small fraction of normal input).\n\n- Minimum prefix length at the time of writing: **4,096 tokens** for Gemini 3+ and Argon (2,048 for 2.5 models).\n- Cache hits show in `usage.total_cached_tokens`.\n- To get hits: put **large, common content first** (system instruction, documents, examples) and the variable part last, and send similar requests close together in time.\n\n**Explicit caching** (creating cache objects yourself) is not supported on the Interactions API or on Gemini 4 Argon and later. It exists only via `generateContent` on some older models."
+        },
+        {
+          "heading": "The Batch API",
+          "body": "For work nobody is waiting on (evals, back-fills, bulk classification), the Batch API costs **50% of standard pricing**, with a target turnaround of **24 hours** (often much faster).\n\n- Inline requests up to 20 MB in total, or a JSONL file of requests (up to 2 GB) uploaded through the Files API.\n- It's documented for the `generateContent` API.\n\n```python\njob = client.batches.create(model=\"gemini-3.8-flash\", src=inline_requests, config={\"display_name\": \"nightly-invoices\"})\n# poll client.batches.get(name=job.name) until JOB_STATE_SUCCEEDED / FAILED / CANCELLED / EXPIRED\n```"
+        },
+        {
+          "heading": "Other levers",
+          "body": "- **Model choice** is the biggest lever: Flash-Lite and Flash cost a fraction of Argon.\n- **Thinking level**: lower levels use fewer output tokens.\n- **Shorter outputs**: ask for concise formats and set a sensible `max_output_tokens`.\n- **Grounding**: search queries are billed separately, and tool instructions add tokens.\n- **Trim context**: send only what the task needs.\n\nAlways read `usage` on responses and track cost per task, not just per token."
+        }
+      ],
+      "keyPoints": [
+        "Implicit caching is automatic; stable prefix first, ≥4,096 tokens on Gemini 3+/Argon.",
+        "Explicit caching isn’t available on the Interactions API or Argon.",
+        "Batch API = 50% off, ~24h target, for offline jobs.",
+        "Biggest cost levers: model tier, thinking level, output length, context size."
+      ],
+      "gotchas": [
+        {
+          "trap": "Putting the user’s question and a timestamp at the start of a long prompt, then wondering why caching never hits.",
+          "correct": "Put stable content first and variable content last so the prefix matches."
+        },
+        {
+          "trap": "Using the Batch API for a live chat feature to save money.",
+          "correct": "Batch has up to a 24-hour turnaround; use it only for offline work."
+        }
+      ],
+      "lab": "Send the same 10,000-token document with 5 different questions, first with the question at the top, then with the document first. Compare `usage.total_cached_tokens`. Then run 100 classification requests through the Batch API and compare total cost with synchronous calls."
+    },
+    {
+      "id": "l12",
+      "domain": "d6",
+      "title": "Production: rate limits, errors, streaming and background runs",
+      "minutes": 15,
+      "summary": "Ship reliably: understand tiers and quotas, retry the right errors, stream to users, and handle long runs and deprecations.",
+      "sections": [
+        {
+          "heading": "Rate limits and tiers",
+          "body": "Limits are measured as **RPM** (requests per minute), **TPM** (input tokens per minute) and **RPD** (requests per day, resetting at midnight Pacific). Some models and tools have extra limits.\n\n- Limits apply **per project, not per API key**, so creating more keys in the same project doesn't add capacity.\n- Tiers: **Free**, **Tier 1** (billing linked), **Tier 2** and **Tier 3** (unlocked automatically by cumulative spend and time). You can also request increases.\n- Exceeding a limit returns a rate-limit error such as HTTP **429 RESOURCE_EXHAUSTED**."
+        },
+        {
+          "heading": "Errors and retries",
+          "body": "- **Retry with exponential backoff and jitter** on rate-limit (429) and transient server errors (5xx). Put a cap on attempts.\n- **Don't retry 400 INVALID_ARGUMENT unchanged**: fix the request (bad schema, unsupported MIME type, oversized input).\n- Safety blocks also surface as errors (see the safety lesson), so handle them separately from network failures.\n- Set **timeouts** that fit the model: Google recommends at least 15 minutes for hard prompts on Argon, or use background mode."
+        },
+        {
+          "heading": "Streaming and background execution",
+          "body": "- **Streaming** sends output as it's generated, which cuts *perceived* latency in chat UIs.\n- **Background execution** (`background=True`) is for long jobs: the call returns immediately and you poll `interactions.get` until the status leaves `queued`/`in_progress`. On Argon, outputs beyond 64K tokens need background mode and a higher `max_output_tokens`. When a background run finishes, join the text of **all** `model_output` steps.\n- Background mode requires storage (`store=True`)."
+        },
+        {
+          "heading": "Operating over time",
+          "body": "- Pin model ids, watch the deprecations page, and migrate with your eval set.\n- Log prompt version, model id, usage tokens, latency and errors for every call.\n- Keep keys in a secrets manager or environment variables, never in client-side code. For browser or mobile apps, call Gemini from your backend."
+        }
+      ],
+      "keyPoints": [
+        "RPM/TPM/RPD limits are per project; tiers rise with billing and spend.",
+        "Backoff + jitter for 429/5xx; never blindly retry 400s.",
+        "Streaming for perceived latency; background mode for long runs (poll, join all model_output steps).",
+        "Keep API keys server-side."
+      ],
+      "gotchas": [
+        {
+          "trap": "Creating five API keys in one project to get five times the rate limit.",
+          "correct": "Limits are per project. Move up a tier or request a quota increase."
+        },
+        {
+          "trap": "Embedding a Gemini API key in a mobile app.",
+          "correct": "Call Gemini from your backend (or use an approved client-side pattern) so the key is never shipped to users."
+        }
+      ],
+      "lab": "Write a small wrapper around `interactions.create` that retries 429 and 5xx with exponential backoff and jitter (max 5 tries), fails fast on 400, logs usage and latency, and supports a background mode that polls until completion."
+    },
+    {
+      "id": "l13",
+      "domain": "d7",
+      "title": "Safety settings and responsible use",
+      "minutes": 12,
+      "summary": "Configure safety filters, handle blocks gracefully, and defend tool-using apps against prompt injection.",
+      "sections": [
+        {
+          "heading": "Safety filters",
+          "body": "You can set a threshold per harm category: **harassment**, **hate speech**, **sexually explicit**, **dangerous content** and **jailbreak**.\n\n- Thresholds: `off`, `block_only_high`, `block_medium_and_above`, `block_low_and_above` (AI Studio calls the last three \"Block few\", \"Block some\" and \"Block most\").\n- For Gemini 2.5 and later, filters are **off by default**. Set them explicitly if your product needs them.\n- Filters work on the **probability** that content is unsafe, not its severity.\n- Some protections, such as those against content that endangers child safety, are always on and can't be changed."
+        },
+        {
+          "heading": "What a block looks like",
+          "body": "On the Interactions API a blocked request fails with an **HTTP 400** error and no content. The error code is `safety` for safety-filter blocks, and input blocks can also report `jailbreak`, `prohibited_content` or `blocklist`. Background runs end with `status: failed` and the error in `errors`; streams emit an `error` event.\n\nHandle blocks as a normal product state: show a helpful message, log the category, and don't retry the same input in a loop."
+        },
+        {
+          "heading": "Beyond filters",
+          "body": "- **Prompt injection**: text from web pages, emails, documents or tool results can contain instructions. Treat it as data, keep tools least-privilege, and require confirmation for consequential actions.\n- **Human review** for high-impact outputs (money, health, legal, hiring).\n- **Grounding and citations** to reduce hallucination, plus evals that check faithfulness.\n- **Transparency**: tell users when they're interacting with AI, and follow Google's usage policies."
+        }
+      ],
+      "keyPoints": [
+        "Categories: harassment, hate speech, sexually explicit, dangerous content, jailbreak.",
+        "Filters are off by default on Gemini 2.5+; set thresholds explicitly when needed.",
+        "Blocks are HTTP 400 errors with codes like `safety`; handle them as a product state.",
+        "Filters don’t stop prompt injection: least privilege and confirmation do."
+      ],
+      "gotchas": [
+        {
+          "trap": "Assuming Gemini’s safety filters are on by default for a children’s product.",
+          "correct": "They’re off by default on 2.5+ models. Set thresholds explicitly and add your own policy checks."
+        },
+        {
+          "trap": "Retrying a safety-blocked request three times hoping it passes.",
+          "correct": "A block is deterministic for that input. Show a helpful message and log it instead."
+        }
+      ],
+      "lab": "Add `block_medium_and_above` for harassment and hate speech to a chat endpoint. Write five test inputs, including one prompt-injection attempt hidden in a \"document\". Confirm blocks surface as clean user messages, and that the injection can't trigger a tool call without confirmation."
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "f1",
+      "domain": "d1",
+      "front": "What is Gemini 4 Argon for?",
+      "back": "Google’s flagship reasoning model (at the time of writing) for hard coding, agentic, maths and science tasks."
+    },
+    {
+      "id": "f2",
+      "domain": "d1",
+      "front": "How big is Gemini 4 Argon’s context window, and what shares it?",
+      "back": "1,048,576 tokens, shared by input, thinking and output."
+    },
+    {
+      "id": "f3",
+      "domain": "d1",
+      "front": "Which Gemini model family is the default workhorse for most production apps?",
+      "back": "Flash: fast, capable and much cheaper than the flagship."
+    },
+    {
+      "id": "f4",
+      "domain": "d1",
+      "front": "When do you pick a Flash-Lite model?",
+      "back": "High-throughput, cost-sensitive work: classification, routing, simple extraction."
+    },
+    {
+      "id": "f5",
+      "domain": "d1",
+      "front": "What is Gemma?",
+      "back": "Google’s family of open-weight models that you host yourself (or deploy via Model Garden)."
+    },
+    {
+      "id": "f6",
+      "domain": "d1",
+      "front": "Which API does Google recommend for new Gemini projects?",
+      "back": "The Interactions API (`client.interactions.create`). `generateContent` is legacy but still supported."
+    },
+    {
+      "id": "f7",
+      "domain": "d1",
+      "front": "What is an interaction made of?",
+      "back": "A chronological list of steps: thoughts, tool calls, tool results and the final `model_output`."
+    },
+    {
+      "id": "f8",
+      "domain": "d1",
+      "front": "Quickest way to read the model’s text answer from an interaction?",
+      "back": "The `output_text` property."
+    },
+    {
+      "id": "f9",
+      "domain": "d1",
+      "front": "How do you continue a conversation without resending history?",
+      "back": "Pass `previous_interaction_id` with the previous interaction’s id (requires `store=True`, the default)."
+    },
+    {
+      "id": "f10",
+      "domain": "d1",
+      "front": "What does NOT carry over with `previous_interaction_id`?",
+      "back": "`tools`, `system_instruction` and `generation_config`. Resend them on every turn."
+    },
+    {
+      "id": "f11",
+      "domain": "d1",
+      "front": "What does `store=False` change?",
+      "back": "Stateless mode: you send the full history yourself; no `previous_interaction_id` and no background execution."
+    },
+    {
+      "id": "f12",
+      "domain": "d1",
+      "front": "How long are stored interactions kept (at the time of writing)?",
+      "back": "55 days on the paid tier, 1 day on the free tier."
+    },
+    {
+      "id": "f13",
+      "domain": "d1",
+      "front": "Why avoid `-preview` ids and `-latest` aliases in production?",
+      "back": "They can change or be shut down without a code change. Pin stable ids and migrate with evals."
+    },
+    {
+      "id": "f14",
+      "domain": "d1",
+      "front": "Python and JS packages for the Google Gen AI SDK?",
+      "back": "`google-genai` (Python) and `@google/genai` (JavaScript)."
+    },
+    {
+      "id": "f15",
+      "domain": "d2",
+      "front": "Where do stable rules and persona go in a Gemini request?",
+      "back": "The system instruction. Per-request data goes in the input."
+    },
+    {
+      "id": "f16",
+      "domain": "d2",
+      "front": "Prompt ordering for long documents?",
+      "back": "Documents first, question and instructions last."
+    },
+    {
+      "id": "f17",
+      "domain": "d2",
+      "front": "What are the `thinking_level` values on Gemini 4 Argon?",
+      "back": "`low`, `medium` (default) and `high`, set in `generation_config`."
+    },
+    {
+      "id": "f18",
+      "domain": "d2",
+      "front": "Google’s advice for choosing a thinking level?",
+      "back": "Test all three and use the lowest level that meets your quality bar."
+    },
+    {
+      "id": "f19",
+      "domain": "d2",
+      "front": "What does `max_output_tokens` cap on thinking models?",
+      "back": "Thinking plus output combined. Too low a value can truncate the answer."
+    },
+    {
+      "id": "f20",
+      "domain": "d2",
+      "front": "What happens to `temperature`, `top_p` and `top_k` on Gemini 4 Argon?",
+      "back": "They’re ignored. Remove them rather than tuning them."
+    },
+    {
+      "id": "f21",
+      "domain": "d2",
+      "front": "Are thinking tokens billed?",
+      "back": "Yes, as output tokens."
+    },
+    {
+      "id": "f22",
+      "domain": "d2",
+      "front": "Which input types can Gemini combine in one request?",
+      "back": "Text, images, audio, video and PDF."
+    },
+    {
+      "id": "f23",
+      "domain": "d2",
+      "front": "When must you use the Files API?",
+      "back": "When the total request (files + prompt + system instruction) exceeds 100 MB; also handy for reusing a file."
+    },
+    {
+      "id": "f24",
+      "domain": "d2",
+      "front": "Files API limits (at the time of writing)?",
+      "back": "2 GB per file, 20 GB per project, files kept 48 hours. PDFs up to 50 MB."
+    },
+    {
+      "id": "f25",
+      "domain": "d2",
+      "front": "Can you download a file you uploaded with the Files API?",
+      "back": "No, only its metadata. Model-generated files can be downloaded."
+    },
+    {
+      "id": "f26",
+      "domain": "d2",
+      "front": "A good habit when asking about long video or audio?",
+      "back": "Ask for timestamps (or page numbers for PDFs) so answers can be checked."
+    },
+    {
+      "id": "f27",
+      "domain": "d3",
+      "front": "Does Gemini execute the functions you declare?",
+      "back": "No. It returns a `function_call`; your code runs the function and returns a `function_result`."
+    },
+    {
+      "id": "f28",
+      "domain": "d3",
+      "front": "What links a `function_result` to the call it answers?",
+      "back": "The `call_id` (plus the function name)."
+    },
+    {
+      "id": "f29",
+      "domain": "d3",
+      "front": "The three parts of a function declaration?",
+      "back": "A name, a description, and JSON-schema parameters."
+    },
+    {
+      "id": "f30",
+      "domain": "d3",
+      "front": "What does `tool_choice: \"any\"` do?",
+      "back": "Forces the model to call a function."
+    },
+    {
+      "id": "f31",
+      "domain": "d3",
+      "front": "What does `tool_choice: \"none\"` do?",
+      "back": "Prevents function calls even though tools are declared."
+    },
+    {
+      "id": "f32",
+      "domain": "d3",
+      "front": "What does `tool_choice: \"validated\"` do?",
+      "back": "The model ensures its calls adhere to your function schema."
+    },
+    {
+      "id": "f33",
+      "domain": "d3",
+      "front": "Default `tool_choice`?",
+      "back": "`auto`: the model decides whether to call a function or answer."
+    },
+    {
+      "id": "f34",
+      "domain": "d3",
+      "front": "Parallel vs compositional function calling?",
+      "back": "Parallel: several independent calls in one turn. Compositional: chained calls across turns where one result feeds the next."
+    },
+    {
+      "id": "f35",
+      "domain": "d3",
+      "front": "What must you do before running a function the model asked for?",
+      "back": "Validate the arguments, and require confirmation for destructive or high-impact actions."
+    },
+    {
+      "id": "f36",
+      "domain": "d3",
+      "front": "How do you request JSON output that follows a schema?",
+      "back": "`response_format` with `type: \"text\"`, `mime_type: \"application/json\"` and a `schema`."
+    },
+    {
+      "id": "f37",
+      "domain": "d3",
+      "front": "How do you allow a missing value in a Gemini JSON schema?",
+      "back": "Use a type array including null, e.g. `[\"string\", \"null\"]`, or an Optional field in Pydantic."
+    },
+    {
+      "id": "f38",
+      "domain": "d3",
+      "front": "Which JSON schema keywords does Gemini silently ignore?",
+      "back": "Length and uniqueness rules such as `minLength`, `maxLength`, `minProperties`, `maxProperties`, `uniqueItems`, `contains`."
+    },
+    {
+      "id": "f39",
+      "domain": "d3",
+      "front": "What happens with an overly complex response schema?",
+      "back": "It’s rejected with 400 INVALID_ARGUMENT. Flatten nesting, reduce unions and optional fields."
+    },
+    {
+      "id": "f40",
+      "domain": "d3",
+      "front": "Reliable extraction loop?",
+      "back": "Schema with descriptions + nullable fields → validate in code → retry once with the error → human review."
+    },
+    {
+      "id": "f41",
+      "domain": "d3",
+      "front": "Why put descriptions on every schema field?",
+      "back": "They guide the model about what each field means, improving accuracy."
+    },
+    {
+      "id": "f42",
+      "domain": "d4",
+      "front": "How do you enable Google Search grounding?",
+      "back": "Add `{\"type\": \"google_search\"}` to `tools`. The model decides when to search."
+    },
+    {
+      "id": "f43",
+      "domain": "d4",
+      "front": "Where do Search grounding citations appear?",
+      "back": "As `url_citation` annotations on text blocks, with `url`, `title`, `start_index` and `end_index`."
+    },
+    {
+      "id": "f44",
+      "domain": "d4",
+      "front": "What must you render when showing Search-grounded answers?",
+      "back": "The `search_suggestions` HTML, as Google’s grounding terms require."
+    },
+    {
+      "id": "f45",
+      "domain": "d4",
+      "front": "How is Search grounding billed on Gemini 3+ models?",
+      "back": "Per search query executed, after a monthly free allowance (5,000 at the time of writing)."
+    },
+    {
+      "id": "f46",
+      "domain": "d4",
+      "front": "What does URL context grounding do?",
+      "back": "Grounds the answer on specific URLs you provide, alone or with Search."
+    },
+    {
+      "id": "f47",
+      "domain": "d4",
+      "front": "Search grounding vs RAG?",
+      "back": "Search = public, current web facts. RAG = your private documents."
+    },
+    {
+      "id": "f48",
+      "domain": "d4",
+      "front": "Which Gemini embedding model is multimodal?",
+      "back": "`gemini-embedding-2` (text, image, video, audio, PDF). `gemini-embedding-001` is text-only."
+    },
+    {
+      "id": "f49",
+      "domain": "d4",
+      "front": "When is long context better than RAG?",
+      "back": "Small, stable corpora where you can send everything (ideally as a cacheable prefix)."
+    },
+    {
+      "id": "f50",
+      "domain": "d4",
+      "front": "When is RAG better than long context?",
+      "back": "Large or fast-changing corpora, per-user permissions, or tight cost/latency budgets."
+    },
+    {
+      "id": "f51",
+      "domain": "d4",
+      "front": "Most RAG failures are actually…?",
+      "back": "Retrieval failures: the right chunk wasn’t retrieved. Measure retrieval separately."
+    },
+    {
+      "id": "f52",
+      "domain": "d4",
+      "front": "Two prompt habits that make long-context answers checkable?",
+      "back": "Label documents with ids and ask for citations; ask for supporting quotes before the answer."
+    },
+    {
+      "id": "f53",
+      "domain": "d5",
+      "front": "What is ADK?",
+      "back": "Agent Development Kit: Google’s open-source framework to build, debug and deploy agents."
+    },
+    {
+      "id": "f54",
+      "domain": "d5",
+      "front": "Which languages does ADK support?",
+      "back": "Python, TypeScript, Go, Java and Kotlin."
+    },
+    {
+      "id": "f55",
+      "domain": "d5",
+      "front": "ADK workflow agents?",
+      "back": "Sequential, Parallel and Loop (plus custom agents and, in ADK 2.0, graph workflows)."
+    },
+    {
+      "id": "f56",
+      "domain": "d5",
+      "front": "Where should hard business rules live in an ADK agent?",
+      "back": "In code: tool checks or callbacks, not only in the instruction."
+    },
+    {
+      "id": "f57",
+      "domain": "d5",
+      "front": "What do ADK sessions, state and memory give you?",
+      "back": "Continuity of conversation and task state across turns and runs."
+    },
+    {
+      "id": "f58",
+      "domain": "d5",
+      "front": "Name two Google-managed agents callable via the Interactions API.",
+      "back": "Deep Research and Antigravity (preview at the time of writing)."
+    },
+    {
+      "id": "f59",
+      "domain": "d5",
+      "front": "How do you call a managed agent instead of a plain model?",
+      "back": "Pass `agent=\"...\"` (with its config) to `client.interactions.create`."
+    },
+    {
+      "id": "f60",
+      "domain": "d5",
+      "front": "What replaced Vertex AI in April 2026?",
+      "back": "The Gemini Enterprise Agent Platform."
+    },
+    {
+      "id": "f61",
+      "domain": "d5",
+      "front": "What is Agent Engine called now?",
+      "back": "Agent Runtime."
+    },
+    {
+      "id": "f62",
+      "domain": "d5",
+      "front": "What is Model Garden?",
+      "back": "The Agent Platform’s catalogue of Gemini, Gemma, partner and open models."
+    },
+    {
+      "id": "f63",
+      "domain": "d5",
+      "front": "When choose the Agent Platform over AI Studio API keys?",
+      "back": "When you need enterprise controls: IAM, VPC Service Controls, data residency, CMEK, audit logs, quotas."
+    },
+    {
+      "id": "f64",
+      "domain": "d5",
+      "front": "ADK deployment targets on Google Cloud?",
+      "back": "Agent Runtime (managed), Cloud Run (containers), GKE (Kubernetes)."
+    },
+    {
+      "id": "f65",
+      "domain": "d6",
+      "front": "Is implicit caching on by default?",
+      "back": "Yes, for Gemini 2.5 and newer. Nothing to configure."
+    },
+    {
+      "id": "f66",
+      "domain": "d6",
+      "front": "Minimum prefix for implicit caching on Gemini 3+ / Argon?",
+      "back": "4,096 tokens (2,048 on 2.5 models), at the time of writing."
+    },
+    {
+      "id": "f67",
+      "domain": "d6",
+      "front": "Where do you see cache hits?",
+      "back": "`usage.total_cached_tokens`."
+    },
+    {
+      "id": "f68",
+      "domain": "d6",
+      "front": "How do you maximise implicit cache hits?",
+      "back": "Stable content first, variable content last; send similar requests close together."
+    },
+    {
+      "id": "f69",
+      "domain": "d6",
+      "front": "Is explicit context caching available on Gemini 4 Argon?",
+      "back": "No. Nor on the Interactions API. Only via generateContent on some older models."
+    },
+    {
+      "id": "f70",
+      "domain": "d6",
+      "front": "Batch API discount and turnaround?",
+      "back": "50% of standard pricing; target 24 hours, often faster."
+    },
+    {
+      "id": "f71",
+      "domain": "d6",
+      "front": "Batch API input options?",
+      "back": "Inline requests (under 20 MB total) or a JSONL file (up to 2 GB) via the Files API."
+    },
+    {
+      "id": "f72",
+      "domain": "d6",
+      "front": "Rate limit dimensions?",
+      "back": "RPM, TPM (input tokens), RPD, plus some model- and tool-specific limits."
+    },
+    {
+      "id": "f73",
+      "domain": "d6",
+      "front": "Are rate limits per API key or per project?",
+      "back": "Per project."
+    },
+    {
+      "id": "f74",
+      "domain": "d6",
+      "front": "Error when you exceed a rate limit?",
+      "back": "A rate-limit error such as HTTP 429 RESOURCE_EXHAUSTED."
+    },
+    {
+      "id": "f75",
+      "domain": "d6",
+      "front": "Which errors should you retry with backoff?",
+      "back": "429 and transient 5xx, with exponential backoff, jitter and a cap. Not 400."
+    },
+    {
+      "id": "f76",
+      "domain": "d6",
+      "front": "When do you use background execution?",
+      "back": "Long jobs: the call returns immediately and you poll `interactions.get` until done."
+    },
+    {
+      "id": "f77",
+      "domain": "d6",
+      "front": "What’s needed for Argon outputs over 64K tokens?",
+      "back": "`background=True` and `max_output_tokens` above 65,536."
+    },
+    {
+      "id": "f78",
+      "domain": "d6",
+      "front": "After a background run finishes, how do you get the full text?",
+      "back": "Join the text of all `model_output` steps."
+    },
+    {
+      "id": "f79",
+      "domain": "d6",
+      "front": "Recommended timeout for hard Argon prompts?",
+      "back": "At least 15 minutes, or use background mode."
+    },
+    {
+      "id": "f80",
+      "domain": "d7",
+      "front": "Gemini safety filter categories?",
+      "back": "Harassment, hate speech, sexually explicit, dangerous content, jailbreak."
+    },
+    {
+      "id": "f81",
+      "domain": "d7",
+      "front": "Safety threshold values?",
+      "back": "`off`, `block_only_high`, `block_medium_and_above`, `block_low_and_above`."
+    },
+    {
+      "id": "f82",
+      "domain": "d7",
+      "front": "Default safety filter state on Gemini 2.5+?",
+      "back": "Off. Set thresholds explicitly if you need them."
+    },
+    {
+      "id": "f83",
+      "domain": "d7",
+      "front": "What does a safety block look like on the Interactions API?",
+      "back": "An HTTP 400 error with no content; error code such as `safety`, `jailbreak`, `prohibited_content` or `blocklist`."
+    },
+    {
+      "id": "f84",
+      "domain": "d7",
+      "front": "Do safety filters measure severity?",
+      "back": "No, the probability that content is unsafe."
+    },
+    {
+      "id": "f85",
+      "domain": "d7",
+      "front": "What actually defends a tool-using app against prompt injection?",
+      "back": "Treating tool and document content as data, least-privilege tools, and confirmation for consequential actions."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "domain": "d1",
+      "difficulty": "easy",
+      "stem": "A team is starting a new Gemini project in November 2026. Which interface does Google recommend for new projects?",
+      "options": [
+        "The Interactions API (`client.interactions.create`)",
+        "The `generateContent` API, because the Interactions API is experimental",
+        "A raw REST call to the Chat Completions endpoint",
+        "The Batch API for every request"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "The Interactions API is Google’s recommended interface for new Gemini projects. `generateContent` remains supported as the legacy API.",
+      "rationales": [
+        "Correct: Google recommends it for all new projects, and new capabilities launch there first.",
+        "`generateContent` is the legacy path. It is still supported, but not the recommendation for new work.",
+        "That is not the Gemini API’s recommended interface.",
+        "Batch is for offline jobs with up to 24-hour turnaround."
+      ]
+    },
+    {
+      "id": "q2",
+      "domain": "d1",
+      "difficulty": "medium",
+      "scenario": "Support assistant with live order data",
+      "stem": "A chat assistant uses `previous_interaction_id` to continue conversations. After turn 1, it stops following its persona and no longer calls the order-lookup tool. What is the most likely cause?",
+      "options": [
+        "The model needs a higher temperature to keep its persona",
+        "Turns 2+ omit `system_instruction` and `tools`, which are interaction-scoped and must be resent each turn",
+        "The stored interaction expired after one turn",
+        "`previous_interaction_id` only works with `store=False`"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "`tools`, `system_instruction` and `generation_config` are interaction-scoped. With `previous_interaction_id`, the server supplies history, but you must resend those parameters on every turn.",
+      "rationales": [
+        "Persona drift here is caused by the missing system instruction, not sampling.",
+        "Correct: only the conversation history carries over.",
+        "Paid-tier interactions are kept for 55 days.",
+        "It is the other way round: it requires storage (`store=True`, the default)."
+      ]
+    },
+    {
+      "id": "q3",
+      "domain": "d1",
+      "difficulty": "medium",
+      "stem": "A healthcare client must not have prompts stored on Google’s servers between calls. What does choosing `store=False` require of the developer?",
+      "options": [
+        "Using background execution for every call",
+        "Switching to Gemini 4 Argon, the only model that supports stateless mode",
+        "Sending the full conversation history, including prior model steps unchanged, on every request",
+        "Nothing else; `previous_interaction_id` still works"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "With `store=False` the server keeps nothing, so you resend the full history yourself. That also rules out `previous_interaction_id` and background execution.",
+      "rationales": [
+        "Background execution requires storage, so it is unavailable with `store=False`.",
+        "Stateless mode is an API option, not a model feature.",
+        "Correct: stateless mode means you manage history.",
+        "Stateless mode cannot use `previous_interaction_id`."
+      ]
+    },
+    {
+      "id": "q4",
+      "domain": "d1",
+      "difficulty": "easy",
+      "stem": "A team needs to classify 2 million short support tickets into 8 categories cheaply. Which model choice should they evaluate first?",
+      "options": [
+        "Gemini 4 Argon at high thinking",
+        "A Lyria model",
+        "A Live audio model",
+        "A Flash-Lite model"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Start with the cheapest model that might pass your evals. For high-volume classification that is Flash-Lite; escalate only the cases it gets wrong.",
+      "rationales": [
+        "Flagship reasoning is overkill and far more expensive for simple classification.",
+        "Lyria generates music.",
+        "Live models are for real-time voice.",
+        "Correct: fastest and cheapest, built for high-throughput simple tasks."
+      ]
+    },
+    {
+      "id": "q5",
+      "domain": "d1",
+      "difficulty": "medium",
+      "stem": "Why is shipping `gemini-flash-latest` in a production pipeline risky?",
+      "options": [
+        "The alias can move to a new model, changing behaviour without any code change",
+        "Aliases are billed at double the price",
+        "Aliases do not support function calling",
+        "Aliases only work in AI Studio, not the API"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "A `-latest` alias moves to newer models over time. Production code should pin a stable model id and migrate deliberately with an eval set.",
+      "rationales": [
+        "Correct: aliases trade stability for convenience.",
+        "There is no such surcharge.",
+        "Aliases point at real models with their normal features.",
+        "Aliases work in the API."
+      ]
+    },
+    {
+      "id": "q6",
+      "domain": "d1",
+      "difficulty": "medium",
+      "stem": "Which statement about Gemma models is accurate?",
+      "options": [
+        "They are Gemini models specialised for TTS",
+        "They are open-weight models you host yourself or deploy through Model Garden",
+        "They are the Gemini API’s fastest hosted models",
+        "They are only available inside Google Workspace"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Gemma is Google’s open-weight family: you download and run it yourself, or deploy it through Model Garden on Google Cloud.",
+      "rationales": [
+        "TTS has its own Gemini models.",
+        "Correct.",
+        "That describes Flash-Lite, not Gemma.",
+        "Gemma weights are openly downloadable."
+      ]
+    },
+    {
+      "id": "q7",
+      "domain": "d1",
+      "difficulty": "easy",
+      "stem": "In an Interactions API response, where do you find the model’s tool calls, thoughts and final answer?",
+      "options": [
+        "In a separate logs API that must be queried later",
+        "Nowhere; only `output_text` is returned",
+        "In the interaction’s `steps` list",
+        "Only in HTTP response headers"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "An interaction contains a chronological list of steps (thoughts, tool calls, tool results, model output). `output_text` is a shortcut to the final text.",
+      "rationales": [
+        "Steps come back with the interaction.",
+        "`output_text` is a convenience on top of the steps.",
+        "Correct: steps record each action in order.",
+        "Steps are in the response body."
+      ]
+    },
+    {
+      "id": "q8",
+      "domain": "d1",
+      "difficulty": "hard",
+      "stem": "A team uses the Batch API and wants to know which API it is documented for. Which is correct? (Select two.)",
+      "options": [
+        "`generateContent` remains fully supported even though it is the legacy API",
+        "`generateContent` was shut down when the Interactions API launched",
+        "The Batch API only accepts Interactions API requests",
+        "The Batch API is documented for the `generateContent` API"
+      ],
+      "answer": [
+        0,
+        3
+      ],
+      "explanation": "The Interactions API is recommended for new work, but `generateContent` is still supported, and some features (such as the Batch API) are documented only for it.",
+      "rationales": [
+        "Correct.",
+        "It remains supported.",
+        "The docs say it is available with `generateContent`.",
+        "Correct, per the Batch API docs."
+      ]
+    },
+    {
+      "id": "q9",
+      "domain": "d1",
+      "difficulty": "medium",
+      "stem": "Your app pins `gemini-2.5-pro`. The deprecations page says requests will be routed to a newer model on a set date. What is the best response?",
+      "options": [
+        "Run your eval set against the replacement model now and migrate before the routing date",
+        "Do nothing; routing guarantees identical output",
+        "Switch to a `-preview` model to stay ahead",
+        "Raise temperature to compensate for the change"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Deprecations eventually route or shut down old models. Evaluate the replacement on your own eval set and migrate deliberately.",
+      "rationales": [
+        "Correct: plan the migration with evidence.",
+        "A different model can behave differently.",
+        "Previews are less stable, not more.",
+        "That does not address model differences."
+      ]
+    },
+    {
+      "id": "q10",
+      "domain": "d1",
+      "difficulty": "easy",
+      "stem": "Which pair are the Google Gen AI SDK packages?",
+      "options": [
+        "`vertexai` for Python only",
+        "`google-genai` for Python and `@google/genai` for JavaScript",
+        "`google-generativeai` for Python and `@google/generative-ai` for JavaScript",
+        "`gemini-sdk` for both languages"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "The current Google Gen AI SDK is `google-genai` (Python) and `@google/genai` (JavaScript).",
+      "rationales": [
+        "Not the Gen AI SDK.",
+        "Correct.",
+        "Those are older, superseded packages.",
+        "No such official package."
+      ]
+    },
+    {
+      "id": "q11",
+      "domain": "d2",
+      "difficulty": "medium",
+      "stem": "On Gemini 4 Argon, a hard reasoning task returns a truncated answer. `max_output_tokens` is 2,048. What is the most likely fix?",
+      "options": [
+        "Move the question to the system instruction",
+        "Switch to stateless mode",
+        "Raise `max_output_tokens`, because thinking and output share that cap",
+        "Lower the temperature"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "`max_output_tokens` is a hard cap on thinking plus output. Google suggests raising it if it is below 32,768 on Argon, or using a lower thinking level.",
+      "rationales": [
+        "Placement does not change the output cap.",
+        "Unrelated to truncation.",
+        "Correct: thinking consumed the budget.",
+        "Argon ignores sampling parameters, and temperature does not cause truncation."
+      ]
+    },
+    {
+      "id": "q12",
+      "domain": "d2",
+      "difficulty": "easy",
+      "stem": "What is Google’s guidance for choosing `thinking_level` on Gemini 4 Argon?",
+      "options": [
+        "Always use high; it is free",
+        "Always use low; higher levels are deprecated",
+        "Match it to temperature",
+        "Test low, medium and high, and use the lowest level that meets your quality bar"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Thinking levels trade quality against latency and cost. Evaluate all three and pick the lowest that passes.",
+      "rationales": [
+        "Thinking tokens are billed and higher levels are slower.",
+        "All three levels are supported; medium is the default.",
+        "Argon ignores temperature.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q13",
+      "domain": "d2",
+      "difficulty": "medium",
+      "stem": "A developer migrates to Gemini 4 Argon and keeps `temperature: 0.1` to make outputs deterministic. What happens?",
+      "options": [
+        "The parameter is ignored; Google recommends removing it",
+        "The request fails with 400 INVALID_ARGUMENT",
+        "Outputs become fully deterministic",
+        "Thinking is disabled"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Argon ignores `temperature`, `top_p` and `top_k`. Use clear prompts, examples and structured output for consistent results.",
+      "rationales": [
+        "Correct.",
+        "The docs say it is ignored, not rejected.",
+        "Argon does not use the sampling parameters.",
+        "Temperature does not control thinking."
+      ]
+    },
+    {
+      "id": "q14",
+      "domain": "d2",
+      "difficulty": "medium",
+      "scenario": "Multimodal media app",
+      "stem": "A 600 MB lecture video must be analysed. How should it be sent?",
+      "options": [
+        "Use the Batch API so size limits do not apply",
+        "Upload it with the Files API, then reference the file in the request",
+        "Inline it as base64 in the request body",
+        "Split it into 100 frames as images"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Use the Files API when the total request exceeds 100 MB. Files can be up to 2 GB each.",
+      "rationales": [
+        "Batch has its own size limits and does not replace the Files API.",
+        "Correct: requests over 100 MB need the Files API.",
+        "Too large for an inline request.",
+        "Loses audio and timing, and is unnecessary."
+      ]
+    },
+    {
+      "id": "q15",
+      "domain": "d2",
+      "difficulty": "easy",
+      "stem": "How long does the Files API keep an uploaded file (at the time of writing)?",
+      "options": [
+        "30 days",
+        "Only for the duration of one request",
+        "48 hours, then it is deleted automatically",
+        "Until you delete it"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Uploaded files are stored for 48 hours. Keep your own copy (for example in Cloud Storage) and re-upload when needed.",
+      "rationales": [
+        "Not the documented retention.",
+        "Files can be reused within the 48-hour window.",
+        "Correct.",
+        "Files expire automatically."
+      ]
+    },
+    {
+      "id": "q16",
+      "domain": "d2",
+      "difficulty": "medium",
+      "stem": "Which prompt structure is best for asking questions about a 300-page contract?",
+      "options": [
+        "Question first, then the contract",
+        "Summarise the contract to one page yourself first",
+        "Put the contract in the system instruction and leave the input empty",
+        "Contract text first, labelled, with the question and instructions at the end"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "For long-context prompts, put the documents first and the question last, label documents, and ask for quotes or citations.",
+      "rationales": [
+        "Ordering instructions after the long content works better.",
+        "Loses detail the model could use.",
+        "The question still needs to be asked clearly, and stable-vs-variable placement matters for caching.",
+        "Correct: long content first, question last."
+      ]
+    },
+    {
+      "id": "q17",
+      "domain": "d2",
+      "difficulty": "medium",
+      "stem": "Which two practices make answers about long audio and video easier to verify? (Select two.)",
+      "options": [
+        "Ask for timestamps for each claim",
+        "Ask for a chapter outline first, then drill into chapters",
+        "Raise temperature for more detail",
+        "Remove the system instruction"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Timestamps (or page numbers) let people check claims, and breaking long media into chapters keeps answers focused.",
+      "rationales": [
+        "Correct.",
+        "Correct: smaller, checkable steps.",
+        "Does not improve verifiability.",
+        "Irrelevant to verifiability."
+      ]
+    },
+    {
+      "id": "q18",
+      "domain": "d2",
+      "difficulty": "easy",
+      "stem": "Where should a stable persona and rules such as \"always answer in British English\" go?",
+      "options": [
+        "A file uploaded with the Files API",
+        "The system instruction",
+        "A function declaration",
+        "The response schema"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Stable role, rules and style belong in the system instruction; per-request content goes in the input.",
+      "rationales": [
+        "Files hold content, not instructions.",
+        "Correct.",
+        "Function declarations describe tools.",
+        "The schema shapes JSON output, not behaviour rules."
+      ]
+    },
+    {
+      "id": "q19",
+      "domain": "d2",
+      "difficulty": "medium",
+      "stem": "Are thinking tokens billed on Gemini thinking models?",
+      "options": [
+        "Only on the free tier",
+        "Only when thinking_level is high",
+        "Yes, they are billed as output tokens",
+        "No, thinking is free"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Thinking tokens count as output tokens, which is why higher thinking levels cost more.",
+      "rationales": [
+        "Billing applies on paid usage.",
+        "All thinking tokens count.",
+        "Correct.",
+        "Thinking tokens are billed."
+      ]
+    },
+    {
+      "id": "q20",
+      "domain": "d2",
+      "difficulty": "hard",
+      "stem": "You can download which of these from the Files API?",
+      "options": [
+        "Any file you uploaded in the last 48 hours",
+        "Files from other projects",
+        "Deleted files within 7 days",
+        "Files the model generated, such as a generated video"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "You cannot download files you uploaded (only their metadata), but model-generated files can be downloaded with `files.download`.",
+      "rationales": [
+        "You can read metadata of uploads but not download them.",
+        "Files are project-scoped.",
+        "Deleted files are gone.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q21",
+      "domain": "d3",
+      "difficulty": "easy",
+      "stem": "After you send a prompt with function declarations, Gemini returns a `function_call` step. What happens next?",
+      "options": [
+        "Your application validates the arguments, runs the function and sends a `function_result` with the matching `call_id`",
+        "Gemini runs the function on Google’s servers and returns the result",
+        "Gemini waits for a webhook from your server",
+        "The interaction is complete; you show the call to the user"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "The model only proposes calls. Your code executes them and returns `function_result` steps linked by `call_id`.",
+      "rationales": [
+        "Correct.",
+        "Gemini never executes your functions.",
+        "You send the result back in the next request.",
+        "You must return the result so the model can answer."
+      ]
+    },
+    {
+      "id": "q22",
+      "domain": "d3",
+      "difficulty": "medium",
+      "stem": "You need the model to always call one of your tools on this turn, never answer in plain text. Which `tool_choice` fits?",
+      "options": [
+        "`required_text`",
+        "`any`",
+        "`auto`",
+        "`none`"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "`tool_choice: \"any\"` forces a function call; `auto` lets the model choose; `none` blocks calls; `validated` enforces schema adherence.",
+      "rationales": [
+        "Not a mode.",
+        "Correct: the model must predict a function call.",
+        "Lets the model decide, so it may answer directly.",
+        "Prohibits calls."
+      ]
+    },
+    {
+      "id": "q23",
+      "domain": "d3",
+      "difficulty": "medium",
+      "stem": "The model returns three `function_call` steps in one turn (weather for three cities). What should your code do?",
+      "options": [
+        "Merge them into one call with three cities",
+        "Reject parallel calls by setting `tool_choice: none`",
+        "Run all three and return all three `function_result` steps, each with its own `call_id`",
+        "Run only the first; the model will ask again for the others"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Parallel calls are independent. Execute each and return every result, matched by `call_id`.",
+      "rationales": [
+        "Changes the contract the model asked for.",
+        "Disables tools entirely.",
+        "Correct.",
+        "It expects all results."
+      ]
+    },
+    {
+      "id": "q24",
+      "domain": "d3",
+      "difficulty": "medium",
+      "scenario": "Support assistant with live order data",
+      "stem": "A `cancel_order` tool must never run for orders already shipped. Where should that rule be enforced?",
+      "options": [
+        "Only in the system instruction",
+        "In the function description",
+        "By setting `tool_choice: none`",
+        "In the tool’s own code, which checks shipping status before cancelling"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Business rules that must always hold belong in code. Descriptions and instructions help the model choose but cannot guarantee behaviour.",
+      "rationales": [
+        "Prompts make it likely, not guaranteed.",
+        "Descriptions guide choice; they do not enforce.",
+        "That disables all tools.",
+        "Correct: deterministic enforcement."
+      ]
+    },
+    {
+      "id": "q25",
+      "domain": "d3",
+      "difficulty": "medium",
+      "stem": "Which two make a function declaration more likely to be chosen correctly? (Select two.)",
+      "options": [
+        "A description that says what the tool does and when to use it",
+        "Parameters with enums and clear descriptions",
+        "A very short, generic name like `do`",
+        "Many overlapping tools for the same job"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Clear descriptions and precise schemas are the main levers for correct tool selection. Keep toolsets small and distinct.",
+      "rationales": [
+        "Correct.",
+        "Correct.",
+        "Vague names hurt selection.",
+        "Overlap confuses selection."
+      ]
+    },
+    {
+      "id": "q26",
+      "domain": "d3",
+      "difficulty": "easy",
+      "stem": "How do you ask Gemini for JSON that matches a schema in the Interactions API?",
+      "options": [
+        "Use the Files API to upload a schema",
+        "Set `response_format` with `mime_type: \"application/json\"` and a `schema`",
+        "Add \"respond in JSON\" to the prompt and parse whatever comes back",
+        "Set `tool_choice: none`"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Structured output uses `response_format` with a JSON MIME type and a schema (for example from Pydantic or Zod).",
+      "rationales": [
+        "Schemas go in `response_format`.",
+        "Correct.",
+        "Works sometimes; not schema-guaranteed.",
+        "Unrelated."
+      ]
+    },
+    {
+      "id": "q27",
+      "domain": "d3",
+      "difficulty": "hard",
+      "stem": "Your schema sets `maxLength: 200` on a summary field, but you sometimes get 400-character summaries. Why?",
+      "options": [
+        "The schema was too complex and was ignored entirely",
+        "Thinking was set too high",
+        "`maxLength` is one of the keywords Gemini strips silently, so you must enforce it in code",
+        "`maxLength` counts tokens, not characters"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Gemini ignores length and uniqueness keywords such as `minLength`, `maxLength` and `uniqueItems`. Validate them in your application.",
+      "rationales": [
+        "Complex schemas are rejected with 400, not ignored.",
+        "Unrelated.",
+        "Correct.",
+        "It is ignored, not reinterpreted."
+      ]
+    },
+    {
+      "id": "q28",
+      "domain": "d3",
+      "difficulty": "medium",
+      "scenario": "Document extraction pipeline",
+      "stem": "Invoices sometimes lack a due date, and the model invents one. What schema change helps most?",
+      "options": [
+        "Make `due_date` required",
+        "Remove the field and parse dates with regex later",
+        "Add `minLength: 10` to the field",
+        "Make `due_date` nullable (for example `[\"string\", \"null\"]`) and describe when to return null"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Nullable fields let the model say \"not present\" instead of guessing. Pair them with a description that says when to use null.",
+      "rationales": [
+        "Forces a value, encouraging invention.",
+        "Loses a field the model can extract when present.",
+        "Ignored, and it would push toward invented values anyway.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q29",
+      "domain": "d3",
+      "difficulty": "medium",
+      "stem": "A deeply nested schema with many unions fails with `400 INVALID_ARGUMENT`. What should you do?",
+      "options": [
+        "Flatten the nesting, reduce unions and optional fields, and shorten property names",
+        "Retry the same request with backoff",
+        "Switch to the Batch API",
+        "Raise thinking_level to high"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Overly complex schemas are rejected. Simplify the schema; retries will not help.",
+      "rationales": [
+        "Correct, per the docs.",
+        "400 means fix the request.",
+        "Same schema limits apply.",
+        "Schema complexity is validated before generation."
+      ]
+    },
+    {
+      "id": "q30",
+      "domain": "d3",
+      "difficulty": "medium",
+      "stem": "Which pattern is the most reliable way to turn documents into validated records?",
+      "options": [
+        "Ask the model to grade its own output and skip validation",
+        "Schema with descriptions and nullable fields, validate in code, retry once with the validation error, then route to a person",
+        "Trust schema-constrained output without validation",
+        "Retry failed records indefinitely until they validate"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Constrained output plus code validation plus a bounded retry and human fallback is the dependable extraction loop.",
+      "rationales": [
+        "Self-grading is not validation.",
+        "Correct.",
+        "Some constraints are ignored, and values can still be wrong.",
+        "Unbounded retries waste money and may never pass."
+      ]
+    },
+    {
+      "id": "q31",
+      "domain": "d3",
+      "difficulty": "hard",
+      "stem": "Which statements about Gemini structured output are correct? (Select three.)",
+      "options": [
+        "Recursive schemas can use `$ref`",
+        "`uniqueItems` is enforced on arrays",
+        "`anyOf` is supported for alternative object shapes",
+        "String `enum` values can restrict a field to fixed categories"
+      ],
+      "answer": [
+        0,
+        2,
+        3
+      ],
+      "explanation": "Gemini supports enums, `anyOf` and recursive `$ref`, among others. Uniqueness and length keywords are ignored.",
+      "rationales": [
+        "Correct.",
+        "It is silently ignored.",
+        "Correct.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q32",
+      "domain": "d3",
+      "difficulty": "medium",
+      "stem": "In a compositional flow (get forecast → set thermostat), what should your loop include besides executing calls?",
+      "options": [
+        "A rule to stop after the first call",
+        "Parsing the model’s text for the word \"done\"",
+        "`tool_choice: any` on every turn",
+        "A maximum number of iterations as a safety net"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Keep looping while the model asks for calls, and add an iteration cap so a misbehaving loop cannot run forever.",
+      "rationales": [
+        "Compositional flows need several calls.",
+        "Use the absence of further calls, not text parsing.",
+        "Would force calls even when the model should answer.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q33",
+      "domain": "d3",
+      "difficulty": "medium",
+      "stem": "A tool call fails because the customer id does not exist. What should the `function_result` contain?",
+      "options": [
+        "A clear error message saying what failed and what to try next",
+        "An empty string",
+        "Nothing; skip sending a result",
+        "A made-up placeholder customer"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Return actionable errors in the result so the model can ask the user or try another approach.",
+      "rationales": [
+        "Correct: the model can recover.",
+        "The model may misread it as success or no data.",
+        "The model is waiting for it.",
+        "Invents data."
+      ]
+    },
+    {
+      "id": "q34",
+      "domain": "d4",
+      "difficulty": "easy",
+      "scenario": "Grounded research answers",
+      "stem": "How do you let Gemini answer with current, cited web information?",
+      "options": [
+        "Use a Live model",
+        "Add `{\"type\": \"google_search\"}` to `tools`",
+        "Set `thinking_level` to high",
+        "Upload yesterday’s news with the Files API"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Grounding with Google Search lets the model search, read results and cite sources.",
+      "rationales": [
+        "Live models are for real-time audio.",
+        "Correct.",
+        "Thinking does not add web access.",
+        "Static and quickly stale."
+      ]
+    },
+    {
+      "id": "q35",
+      "domain": "d4",
+      "difficulty": "medium",
+      "stem": "Where are citations for a Search-grounded answer exposed?",
+      "options": [
+        "Only in the AI Studio UI",
+        "In the `usage` object",
+        "As `url_citation` annotations on text blocks, with url, title and start/end indexes",
+        "In a footnote string appended to `output_text` only"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Each text block carries annotations; `url_citation` gives the source and the exact text span it supports.",
+      "rationales": [
+        "They are in the API response.",
+        "`usage` reports tokens.",
+        "Correct.",
+        "The structured annotations are the reliable source."
+      ]
+    },
+    {
+      "id": "q36",
+      "domain": "d4",
+      "difficulty": "medium",
+      "stem": "A product shows Search-grounded answers. What must it also display, per Google’s grounding terms?",
+      "options": [
+        "The raw search queries in red text",
+        "The model’s thinking steps",
+        "A link to AI Studio",
+        "The `search_suggestions` HTML returned with the results"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Grounded results include search suggestions that must be rendered. Check the terms for full display requirements.",
+      "rationales": [
+        "Not a requirement.",
+        "Not required.",
+        "Not required.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q37",
+      "domain": "d4",
+      "difficulty": "medium",
+      "stem": "How is Google Search grounding billed on Gemini 3 and newer models (at the time of writing)?",
+      "options": [
+        "Per search query the model executes, after a monthly free allowance",
+        "A flat monthly subscription",
+        "Per prompt, regardless of searches",
+        "It is free with no limits"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "On Gemini 3+ you pay per executed search query beyond the free monthly allowance, plus the tokens the tool adds.",
+      "rationales": [
+        "Correct.",
+        "It is usage-based.",
+        "That was the model for 2.5 and older.",
+        "It has a free allowance, then a per-query price, and rate limits."
+      ]
+    },
+    {
+      "id": "q38",
+      "domain": "d4",
+      "difficulty": "medium",
+      "stem": "Employees ask an assistant about internal HR policies that are not public. Which approach is correct?",
+      "options": [
+        "Use URL context with the intranet URL",
+        "Retrieve from the policy documents (embeddings + vector search) or put them in context",
+        "Enable Google Search grounding",
+        "Raise thinking_level so the model recalls the policies"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Search grounding is for public facts. Private documents need retrieval over your own data or direct inclusion in context.",
+      "rationales": [
+        "Private intranet pages are not reachable by Google.",
+        "Correct: private data needs your own retrieval.",
+        "Search only sees the public web.",
+        "The model has never seen them."
+      ]
+    },
+    {
+      "id": "q39",
+      "domain": "d4",
+      "difficulty": "medium",
+      "stem": "A 60-page product manual changes twice a year. Users ask questions about it. What is the simplest effective design?",
+      "options": [
+        "Fine-tune a model on the manual",
+        "Use Google Search grounding",
+        "Put the manual in context as a stable prefix and let implicit caching reduce cost",
+        "Build a vector database with hybrid search and reranking"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "For a small, stable corpus, long context is simpler and often more accurate than retrieval; implicit caching keeps repeated prefixes cheap.",
+      "rationales": [
+        "Costly and harder to update.",
+        "The manual may not be public, and search adds cost.",
+        "Correct.",
+        "Overkill for a small, stable document."
+      ]
+    },
+    {
+      "id": "q40",
+      "domain": "d4",
+      "difficulty": "easy",
+      "stem": "Which Gemini embedding model can embed images, video, audio and PDF as well as text?",
+      "options": [
+        "`gemini-embedding-001`",
+        "`gemini-3.8-flash`",
+        "`gemini-3.5-transcribe`",
+        "`gemini-embedding-2`"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "`gemini-embedding-2` is multimodal; `gemini-embedding-001` handles text.",
+      "rationales": [
+        "Text only.",
+        "A generative model, not an embedding model.",
+        "Speech-to-text.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q41",
+      "domain": "d4",
+      "difficulty": "hard",
+      "stem": "A RAG assistant gives wrong answers. What should you check first?",
+      "options": [
+        "Whether the right chunks were retrieved for those questions",
+        "Whether thinking_level is high enough",
+        "Whether the system instruction is long enough",
+        "Whether the embeddings use the newest model, and switch immediately"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Log retrieved chunks and measure retrieval recall separately from answer faithfulness.",
+      "rationales": [
+        "Correct: most RAG failures are retrieval failures.",
+        "Reasoning cannot fix missing evidence.",
+        "Unlikely root cause.",
+        "Measure before changing components."
+      ]
+    },
+    {
+      "id": "q42",
+      "domain": "d4",
+      "difficulty": "medium",
+      "stem": "Which two prompt habits make long-context answers easier to audit? (Select two.)",
+      "options": [
+        "Ask for the answer with no explanation to save tokens",
+        "Label each document with an id and require citations by id",
+        "Ask the model to quote the supporting passage before answering",
+        "Put the question before the documents"
+      ],
+      "answer": [
+        1,
+        2
+      ],
+      "explanation": "Ids, citations and supporting quotes make answers checkable.",
+      "rationales": [
+        "Harder to audit.",
+        "Correct.",
+        "Correct.",
+        "Documents first, question last."
+      ]
+    },
+    {
+      "id": "q43",
+      "domain": "d4",
+      "difficulty": "medium",
+      "stem": "You want answers grounded in three specific public web pages your team picked. Which tool fits best?",
+      "options": [
+        "Code execution",
+        "The Batch API",
+        "URL context",
+        "Google Maps grounding"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "URL context grounds responses on specific URLs, alone or combined with Search.",
+      "rationales": [
+        "Runs code, does not fetch your chosen pages.",
+        "A cost mode, not a grounding tool.",
+        "Correct: grounds on URLs you provide.",
+        "For places and routes."
+      ]
+    },
+    {
+      "id": "q44",
+      "domain": "d5",
+      "difficulty": "easy",
+      "stem": "What is the Agent Development Kit (ADK)?",
+      "options": [
+        "A paid Workspace add-on for end users",
+        "A model id for agentic tasks",
+        "A Google Cloud console for billing",
+        "Google’s open-source framework for building, debugging and deploying agents"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "ADK is open source, available in Python, TypeScript, Go, Java and Kotlin, and optimised for Gemini while model-agnostic.",
+      "rationales": [
+        "ADK is a developer framework.",
+        "ADK is a framework, not a model.",
+        "Unrelated.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q45",
+      "domain": "d5",
+      "difficulty": "medium",
+      "stem": "A process always runs three fixed steps: extract → validate → summarise. Which ADK construct fits best?",
+      "options": [
+        "A Sequential workflow agent",
+        "A Loop agent",
+        "A multi-agent hierarchy with a coordinator",
+        "A Parallel agent"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Use workflow agents for known step orders: Sequential for fixed order, Parallel for independent steps, Loop for repetition.",
+      "rationales": [
+        "Correct: fixed steps in order.",
+        "Loops repeat until a condition.",
+        "More complex than needed.",
+        "The steps depend on each other."
+      ]
+    },
+    {
+      "id": "q46",
+      "domain": "d5",
+      "difficulty": "medium",
+      "stem": "In an ADK agent, how should you guarantee that ticket creation never happens without a customer email?",
+      "options": [
+        "A longer tool description",
+        "A callback or tool check in code that blocks the action",
+        "A sentence in the agent instruction",
+        "A higher thinking level"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Callbacks and tool code give deterministic guardrails; instructions only influence behaviour.",
+      "rationales": [
+        "Guides but does not enforce.",
+        "Correct.",
+        "Not guaranteed.",
+        "Does not enforce rules."
+      ]
+    },
+    {
+      "id": "q47",
+      "domain": "d5",
+      "difficulty": "medium",
+      "stem": "How do you call a Google-managed agent such as Antigravity through the Interactions API?",
+      "options": [
+        "Use `tool_choice: any`",
+        "Call it through the Batch API only",
+        "Pass `agent=\"...\"` with its configuration to `client.interactions.create`",
+        "Deploy it yourself on GKE first"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Managed agents (Deep Research, Antigravity) are invoked with the `agent` parameter on the Interactions API.",
+      "rationales": [
+        "Unrelated.",
+        "Not required.",
+        "Correct.",
+        "Managed agents are hosted by Google."
+      ]
+    },
+    {
+      "id": "q48",
+      "domain": "d5",
+      "difficulty": "easy",
+      "stem": "What did Google call Vertex AI after the April 2026 consolidation?",
+      "options": [
+        "Google AI Studio",
+        "Gemini Workspace Cloud",
+        "Agent Builder Pro",
+        "Gemini Enterprise Agent Platform"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Vertex AI became part of the Gemini Enterprise Agent Platform; Agent Engine was renamed Agent Runtime.",
+      "rationales": [
+        "AI Studio is the developer console for the Gemini API.",
+        "Not a product name.",
+        "Agent Builder became part of the Agent Platform.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q49",
+      "domain": "d5",
+      "difficulty": "medium",
+      "scenario": "Enterprise agent rollout",
+      "stem": "A bank needs VPC Service Controls, customer-managed encryption keys and audit logs for its agent. Which path fits?",
+      "options": [
+        "Build on the Gemini Enterprise Agent Platform",
+        "Use an AI Studio API key from a personal account",
+        "Embed the API key in the mobile app",
+        "Use Gemma on a laptop"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "The Agent Platform provides IAM, VPC Service Controls, CMEK, data residency and audit logging.",
+      "rationales": [
+        "Correct: Google Cloud enterprise controls.",
+        "Lacks the required enterprise controls.",
+        "Insecure.",
+        "Does not meet the stated controls."
+      ]
+    },
+    {
+      "id": "q50",
+      "domain": "d5",
+      "difficulty": "medium",
+      "stem": "Which are documented Google Cloud deployment targets for ADK agents? (Select three.)",
+      "options": [
+        "Google Sheets Apps Script triggers",
+        "Agent Runtime",
+        "Cloud Run",
+        "GKE"
+      ],
+      "answer": [
+        1,
+        2,
+        3
+      ],
+      "explanation": "ADK agents can run anywhere; on Google Cloud the docs list Agent Runtime, Cloud Run and GKE.",
+      "rationales": [
+        "Not a documented ADK deploy target.",
+        "Correct.",
+        "Correct.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q51",
+      "domain": "d5",
+      "difficulty": "hard",
+      "stem": "A team proposes five cooperating agents for a FAQ bot that answers from one knowledge base. What should you recommend first?",
+      "options": [
+        "Use a Loop agent so it keeps retrying",
+        "Replace the knowledge base with web search",
+        "One agent with a retrieval tool, measured with an eval set; add agents only if evals show a need",
+        "Keep five agents for resilience"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Start with the simplest design that can work and let evals justify extra complexity.",
+      "rationales": [
+        "Does not address design.",
+        "Private content is not on the web.",
+        "Correct.",
+        "Adds cost and failure points without evidence."
+      ]
+    },
+    {
+      "id": "q52",
+      "domain": "d5",
+      "difficulty": "medium",
+      "stem": "What is Model Garden in the Agent Platform?",
+      "options": [
+        "A prompt template library in AI Studio",
+        "Google’s billing dashboard",
+        "The ADK test runner",
+        "A catalogue of Gemini, Gemma, partner and open models you can use or deploy"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Model Garden is the Agent Platform’s model catalogue, including Google, partner and open models.",
+      "rationales": [
+        "Not what Model Garden is.",
+        "Unrelated.",
+        "Unrelated.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q53",
+      "domain": "d5",
+      "difficulty": "medium",
+      "stem": "A Deep Research run takes 20 minutes. How should the app handle it?",
+      "options": [
+        "Use background execution and poll the interaction until it completes",
+        "Hold an HTTP request open with a 30-second timeout",
+        "Use `store=False`",
+        "Split it into 40 short Flash calls"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Long agent runs use `background=True`; you poll `interactions.get` until the status is final.",
+      "rationales": [
+        "Correct.",
+        "Too short for long runs.",
+        "Background mode requires storage.",
+        "Loses the managed agent’s planning."
+      ]
+    },
+    {
+      "id": "q54",
+      "domain": "d6",
+      "difficulty": "medium",
+      "stem": "A 20,000-token policy document is sent with every question, but `usage.total_cached_tokens` is always 0. The prompt starts with the user question and a timestamp. What is the fix?",
+      "options": [
+        "Switch to stateless mode",
+        "Put the stable document first and the variable question last",
+        "Create an explicit cache with `caches.create` on Gemini 4 Argon",
+        "Shorten the document below 4,096 tokens"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Implicit caching is automatic but needs a matching prefix of at least 4,096 tokens on Gemini 3+/Argon. Stable content first, variable last.",
+      "rationales": [
+        "Unrelated to prefix matching.",
+        "Correct: implicit caching matches prefixes.",
+        "Explicit caching is not supported on Argon or the Interactions API.",
+        "That would prevent caching."
+      ]
+    },
+    {
+      "id": "q55",
+      "domain": "d6",
+      "difficulty": "easy",
+      "scenario": "Document extraction pipeline",
+      "stem": "Overnight extraction of 200,000 invoices must be as cheap as possible; results are needed by the next afternoon. What should you use?",
+      "options": [
+        "Gemini 4 Argon at high thinking",
+        "Streaming responses",
+        "The Batch API, at 50% of standard pricing with a ~24-hour target",
+        "Synchronous calls at maximum concurrency"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "The Batch API halves the cost for offline work, with results usually well within 24 hours.",
+      "rationales": [
+        "Expensive for routine extraction.",
+        "Streaming improves perceived latency, not cost.",
+        "Correct.",
+        "Full price and rate-limit pressure."
+      ]
+    },
+    {
+      "id": "q56",
+      "domain": "d6",
+      "difficulty": "medium",
+      "stem": "A team creates four API keys in the same project to get four times the rate limit. What happens?",
+      "options": [
+        "Limits quadruple",
+        "Keys are banned automatically",
+        "Each key gets free-tier limits only",
+        "Nothing changes; limits apply per project, not per key"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Rate limits are per project. To get more capacity, move up a tier or request an increase.",
+      "rationales": [
+        "Limits are per project.",
+        "No such rule is documented.",
+        "Tier is a project property.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q57",
+      "domain": "d6",
+      "difficulty": "medium",
+      "stem": "Which errors should a Gemini client retry with exponential backoff and jitter? (Select two.)",
+      "options": [
+        "429 RESOURCE_EXHAUSTED",
+        "Transient 5xx server errors",
+        "400 INVALID_ARGUMENT from an over-complex schema",
+        "A safety block on the input"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Retry rate limits and transient server errors with backoff. Fix 400s and handle safety blocks as product states.",
+      "rationales": [
+        "Correct: rate limit.",
+        "Correct.",
+        "Fix the request.",
+        "Deterministic for that input."
+      ]
+    },
+    {
+      "id": "q58",
+      "domain": "d6",
+      "difficulty": "hard",
+      "stem": "You need a 150,000-token output from Gemini 4 Argon. What must the request include?",
+      "options": [
+        "An explicit cache",
+        "`background=True` and `max_output_tokens` above 65,536",
+        "`store=False` to avoid storage limits",
+        "`temperature: 0`"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Outputs beyond 64K tokens need background execution and a higher `max_output_tokens`; then join all `model_output` steps.",
+      "rationales": [
+        "Not supported on Argon.",
+        "Correct, per the long-decode docs.",
+        "Background mode requires storage.",
+        "Ignored on Argon."
+      ]
+    },
+    {
+      "id": "q59",
+      "domain": "d6",
+      "difficulty": "medium",
+      "stem": "After a background interaction completes, the text looks incomplete. What did the code likely miss?",
+      "options": [
+        "It used `previous_interaction_id`",
+        "It polled too slowly",
+        "It read only one `model_output` step instead of joining all of them",
+        "It forgot to set temperature"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Long background runs can produce several `model_output` steps. Join their text to get the full answer.",
+      "rationales": [
+        "Not the issue.",
+        "Polling speed does not drop text.",
+        "Correct.",
+        "Irrelevant."
+      ]
+    },
+    {
+      "id": "q60",
+      "domain": "d6",
+      "difficulty": "easy",
+      "stem": "Which change usually cuts Gemini cost the most for a routine workload?",
+      "options": [
+        "Removing the system instruction",
+        "Streaming responses",
+        "Using more API keys",
+        "Moving from the flagship model to Flash or Flash-Lite after evals confirm quality"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Model tier is the biggest cost lever, followed by thinking level, output length and context size.",
+      "rationales": [
+        "Saves few tokens and hurts quality.",
+        "Does not change price.",
+        "Does not change price or limits.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q61",
+      "domain": "d6",
+      "difficulty": "medium",
+      "stem": "A mobile app calls the Gemini API directly with an embedded API key. What is the main problem and fix?",
+      "options": [
+        "The key can be extracted from the app; call Gemini from your backend instead",
+        "Mobile apps are not allowed to use Gemini",
+        "The key expires after 48 hours",
+        "Mobile networks cannot reach the API"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Never ship API keys to clients. Proxy calls through your backend, and keep keys in a secrets manager.",
+      "rationales": [
+        "Correct.",
+        "They can, through a safe architecture.",
+        "That is the Files API retention.",
+        "They can."
+      ]
+    },
+    {
+      "id": "q62",
+      "domain": "d6",
+      "difficulty": "medium",
+      "stem": "Users complain a chat feels slow, though total generation time is acceptable. What helps most?",
+      "options": [
+        "Use background mode for every chat turn",
+        "Stream the response so text appears as it is generated",
+        "Use the Batch API",
+        "Raise thinking_level"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Streaming reduces perceived latency in interactive UIs.",
+      "rationales": [
+        "Adds polling delay.",
+        "Correct: improves perceived latency.",
+        "Increases latency.",
+        "Usually slower."
+      ]
+    },
+    {
+      "id": "q63",
+      "domain": "d6",
+      "difficulty": "hard",
+      "stem": "Which statements about implicit caching are correct (at the time of writing)? (Select two.)",
+      "options": [
+        "You must call `caches.create` before every request",
+        "It requires `store=False`",
+        "It is on by default for Gemini 2.5 and newer models",
+        "Cache hits are reported in `usage.total_cached_tokens`"
+      ],
+      "answer": [
+        2,
+        3
+      ],
+      "explanation": "Implicit caching is automatic and visible in usage; explicit caching is a separate, older mechanism.",
+      "rationales": [
+        "That is explicit caching.",
+        "It works in both stateful and stateless modes.",
+        "Correct.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q64",
+      "domain": "d7",
+      "difficulty": "easy",
+      "stem": "What is the default state of Gemini’s adjustable safety filters on Gemini 2.5 and newer models?",
+      "options": [
+        "Block most content by default",
+        "Block medium and above for every category",
+        "They cannot be configured",
+        "Off; you set thresholds explicitly if needed"
+      ],
+      "answer": [
+        3
+      ],
+      "explanation": "Adjustable filters are off by default on 2.5+ models. Some core protections, such as for child safety, are always on.",
+      "rationales": [
+        "Not for 2.5+.",
+        "Not the default.",
+        "They can, per category.",
+        "Correct."
+      ]
+    },
+    {
+      "id": "q65",
+      "domain": "d7",
+      "difficulty": "medium",
+      "stem": "How does a safety-filter block surface on the Interactions API?",
+      "options": [
+        "An HTTP 400 error with no content and an error code such as `safety`",
+        "A normal response whose text says \"blocked\"",
+        "A 429 rate-limit error",
+        "A silent empty `output_text`"
+      ],
+      "answer": [
+        0
+      ],
+      "explanation": "Blocks return a 400 error (codes like `safety`, `jailbreak`, `prohibited_content`, `blocklist`). Handle them as a product state.",
+      "rationales": [
+        "Correct.",
+        "The request fails instead.",
+        "Different error class.",
+        "It is an explicit error."
+      ]
+    },
+    {
+      "id": "q66",
+      "domain": "d7",
+      "difficulty": "medium",
+      "stem": "An email-triage agent reads incoming emails and can send replies. Which measures best reduce prompt-injection risk? (Select two.)",
+      "options": [
+        "Raise thinking_level to high",
+        "Treat email content as data and require human confirmation before sending replies",
+        "Give the agent only the tools and permissions it needs",
+        "Set every safety filter to `block_low_and_above`"
+      ],
+      "answer": [
+        1,
+        2
+      ],
+      "explanation": "Injection is mitigated by least privilege, treating untrusted content as data, and confirmation for consequential actions.",
+      "rationales": [
+        "Does not prevent injection.",
+        "Correct.",
+        "Correct: least privilege.",
+        "Filters target harmful content, not injected instructions."
+      ]
+    },
+    {
+      "id": "q67",
+      "domain": "d7",
+      "difficulty": "easy",
+      "stem": "Gemini safety filters decide based on…",
+      "options": [
+        "The user’s account age",
+        "The length of the prompt",
+        "The probability that content is unsafe",
+        "The severity of the harm"
+      ],
+      "answer": [
+        2
+      ],
+      "explanation": "Filters are probability-based, so a severe harm with low probability may pass a low-sensitivity setting. Add your own checks where needed.",
+      "rationales": [
+        "Not a factor.",
+        "Not a factor.",
+        "Correct.",
+        "They use probability, not severity."
+      ]
+    }
+  ]
+}

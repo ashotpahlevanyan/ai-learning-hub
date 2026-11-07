@@ -38,6 +38,31 @@ One-time setup: in the repo go to **Settings → Pages → Build and deployment 
 
 Without `public/CNAME` the site builds for `https://<user>.github.io/<repo>/`.
 
+### What the production build includes
+
+- `404.html` copy of the app, so deep links work on Pages
+- `sitemap.xml`, `robots.txt` and absolute Open Graph URLs (the workflow sets `SITE_URL` from `public/CNAME`, or from the github.io address)
+- A Content-Security-Policy meta tag (scripts from the site only, fonts from Google Fonts)
+- A web app manifest and icons, so the site can be added to a phone's home screen
+- Lazy-loaded pages and per-exam content bundles
+
+To check a production build locally:
+
+```bash
+BASE_PATH=/ai-learning-hub/ SITE_URL=https://example.github.io/ai-learning-hub npm run build
+npx vite preview --base /ai-learning-hub/
+```
+
+Pages serves the SPA fallback with HTTP status 404, so search engines index only the home page reliably. The sitemap helps, but don't expect deep pages to rank.
+
+## Content pipeline
+
+Each exam's content is produced by one run of `pipeline/cert-prep.workflow.js` (a Claude Code Workflow script) against a spec in `specs/<track>/<exam>.json`. The spec holds the exam facts, the domains with their skills, the sources and the item targets.
+
+The stages are Research (check facts against the sources) → Coverage (gap analysis against the skills) → Write (one agent per domain) → Verify (a blind re-answer of every question without the key, then fix or drop) → Assemble (merge, balance answer positions, run the tests, write `.pipeline/<track>-<exam>/report.md`).
+
+Run it from Claude Code with args `{ "root": "<path to web>", "spec": "<path to spec>", "date": "YYYY-MM-DD" }`. Assemble stamps a `review` record on the bundle, and the exam dashboard shows it. Read the report and the diff before committing.
+
 ## Disclaimer
 
 Independent study resource, not affiliated with or endorsed by Anthropic. Practice items are original, not real exam questions. Exam facts come from third-party summaries of the official guides; confirm them with the provider.

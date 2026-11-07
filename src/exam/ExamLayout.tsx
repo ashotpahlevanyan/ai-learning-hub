@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink, Outlet, useOutletContext, useParams } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useOutletContext, useParams } from 'react-router-dom';
 import { getExamSummary, getTrack } from '../content';
 import type { Exam, ExamSummary, Track } from '../lib/types';
 import NotFound from '../pages/NotFound';
+import { useMeta } from '../lib/useMeta';
 
 export interface ExamCtx {
   track: Track;
@@ -28,6 +29,8 @@ export default function ExamLayout() {
   const key = `${trackId}/${examId}`;
   const [exam, setExam] = useState<Exam | undefined>(cache.get(key));
   const [failed, setFailed] = useState(false);
+  const { pathname } = useLocation();
+  useMeta(summary ? `${summary.code} ${summary.name}` : undefined, summary ? `${summary.kind === 'course' ? 'Course' : 'Exam prep'} for ${summary.name} (${summary.level}): lessons, flashcards, practice questions and timed mock exams.` : undefined, !/\/learn\/[^/]+$/.test(pathname));
 
   useEffect(() => {
     if (!summary || cache.has(key)) { setExam(cache.get(key)); return; }
@@ -45,7 +48,7 @@ export default function ExamLayout() {
           <div className="crumbs small"><Link to={`/${track.id}`}>{track.name}</Link> / <strong>{summary.code}</strong> <span className="muted">{summary.level}</span></div>
           <nav className="tabs" aria-label="Exam sections">
             {TABS.map(([path, label]) => (
-              <NavLink key={path} to={path ? `${base}/${path}` : base} end={!path}>{label}</NavLink>
+              <NavLink key={path} to={path ? `${base}/${path}` : base} end={!path}>{path === 'mock' && summary.kind === 'course' ? 'Practice test' : label}</NavLink>
             ))}
           </nav>
         </div>

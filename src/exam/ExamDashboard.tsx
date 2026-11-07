@@ -40,7 +40,12 @@ export default function ExamDashboard() {
           <div>
             <div className="muted small">{exam.level}</div>
             <h1>{exam.name}</h1>
-            <div className="muted small">{exam.items} items · {exam.minutes} min · pass {exam.passing}/1000 · {exam.price}</div>
+            <div className="muted small">{exam.kind === 'course'
+              ? `Course · ${exam.items}-question practice test in ${exam.minutes} min · ${exam.price}`
+              : `${exam.items} items · ${exam.minutes} min · pass ${exam.passing}/1000 · ${exam.price}`}</div>
+            <div className="muted small">{exam.review
+              ? <>Questions verified {exam.review.date}: {exam.review.questionsChecked} re-answered blind, {exam.review.fixed} fixed, {exam.review.dropped} dropped. <Link to="/about">How</Link></>
+              : <>Questions not yet independently verified. <Link to="/about">What this means</Link></>}</div>
           </div>
           <div className="readiness">
             <div className="muted small">Readiness</div>
@@ -58,7 +63,7 @@ export default function ExamDashboard() {
         <StatCard label="Lessons" value={`${done}/${exam.lessons.length}`}><Bar value={exam.lessons.length ? done / exam.lessons.length : 0} tone="accent" /></StatCard>
         <StatCard label="Questions seen" value={`${seen}/${exam.questions.length}`} note={att ? `${pct(cor / att)}% accuracy over ${att} answers` : 'No answers yet'} />
         <StatCard label="Flashcards today" value={cards.due.length + cards.fresh.length} note={`${cards.learned}/${cards.total} learned`} />
-        <StatCard label="Best mock" value={best || '—'} note={last ? `${p.mocks.length} taken · last ${last.score}` : 'None taken yet'} />
+        <StatCard label={exam.kind === 'course' ? 'Best practice test' : 'Best mock'} value={best || '—'} note={last ? `${p.mocks.length} taken · last ${last.score}` : 'None taken yet'} />
       </div>
 
       <section className="card">
@@ -78,7 +83,7 @@ export default function ExamDashboard() {
 
       {p.mocks.length > 0 && (
         <section className="card">
-          <h2 className="flush">Mock history</h2>
+          <h2 className="flush">{exam.kind === 'course' ? 'Practice test history' : 'Mock history'}</h2>
           <div className="table-wrap">
             <table>
               <thead><tr><th>Date</th><th>Score</th><th>Correct</th><th>Time</th><th /></tr></thead>

@@ -1,0 +1,127 @@
+{
+  "track": "claude",
+  "kind": "exam",
+  "verifyNotes": "Exam facts come from third-party summaries of Anthropic's v1.0 guide (July 2026); the official guide is in Anthropic Partner Academy and not public. Verify Claude product facts (API, Claude Code, MCP, Agent SDK) against docs.claude.com, modelcontextprotocol.io and anthropic.com/engineering.",
+  "sources": [
+    "https://docs.claude.com/en/docs/build-with-claude/tool-use",
+    "https://docs.claude.com/en/docs/build-with-claude/prompt-caching",
+    "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview",
+    "https://docs.claude.com/en/docs/claude-code/overview",
+    "https://docs.claude.com/en/docs/claude-code/memory",
+    "https://docs.claude.com/en/docs/claude-code/settings",
+    "https://docs.claude.com/en/docs/claude-code/hooks",
+    "https://docs.claude.com/en/docs/claude-code/sub-agents",
+    "https://docs.claude.com/en/docs/claude-code/headless",
+    "https://docs.claude.com/en/api/agent-sdk/overview",
+    "https://modelcontextprotocol.io/docs/learn/architecture",
+    "https://www.anthropic.com/engineering/building-effective-agents",
+    "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+    "https://www.anthropic.com/engineering/writing-tools-for-agents"
+  ],
+  "id": "ccar-p",
+  "code": "CCAR-P",
+  "name": "Claude Certified Architect – Professional",
+  "level": "Architect · Professional",
+  "price": "$175 (verify on Partner Academy)",
+  "items": 63,
+  "minutes": 120,
+  "passing": 720,
+  "audience": "Senior architects (3+ years systems architecture, 6+ months production LLM work)",
+  "format": "63 multiple-choice and multiple-response items in 120 minutes; scaled score 100–1000, pass 720.",
+  "scenarios": [
+    "Regulated healthcare assistant",
+    "Enterprise RAG knowledge platform",
+    "Multi-agent operations automation",
+    "Coding-agent rollout to 500 engineers",
+    "Customer-facing financial chatbot"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Solution Design & Architecture",
+      "weight": 17,
+      "skills": [
+        "Translate business problems into architectures",
+        "Choose workflow, agentic or augmented-LLM patterns",
+        "Multi-agent orchestration and when not to use it",
+        "Align designs to business value"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Claude Models, Prompting & Context Engineering",
+      "weight": 13,
+      "skills": [
+        "Model selection trade-offs and cascades",
+        "System prompts and guardrails",
+        "Context-window and token optimisation; caching economics",
+        "Agent Skills and progressive disclosure"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Integration",
+      "weight": 19,
+      "skills": [
+        "Tool and capability bloat",
+        "Least privilege and user-scoped authorisation (confused deputy)",
+        "RAG pipeline design: chunking, hybrid search, contextual retrieval, reranking, citations",
+        "Connection protocols: MCP, API/CLI, agent-to-agent",
+        "Accuracy–latency trade-offs",
+        "Observability at scale"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Evaluation, Testing & Optimization",
+      "weight": 16,
+      "skills": [
+        "Eval metrics, graders (code, LLM-as-judge, human) and test frameworks",
+        "A/B testing",
+        "Diagnose prompt failure vs hallucination vs model mismatch vs retrieval failure",
+        "Cost, latency and token optimisation",
+        "Monitoring and drift"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Governance, Safety & Risk Management",
+      "weight": 14,
+      "skills": [
+        "Layered guardrails and safety controls",
+        "LLM failure modes incl. direct/indirect prompt injection",
+        "Risk-tiered human-in-the-loop",
+        "Compliance: GDPR, HIPAA, FedRAMP",
+        "Ethical AI: bias, fairness, transparency"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Stakeholder Communication & Lifecycle Management",
+      "weight": 14,
+      "skills": [
+        "Structured discovery",
+        "Communicating trade-offs",
+        "Feedback loops and SLA alignment",
+        "Documentation and handoff",
+        "Lifecycle phases from POC to retirement"
+      ]
+    },
+    {
+      "id": "d7",
+      "name": "Developer Productivity & Operational Enablement",
+      "weight": 7,
+      "skills": [
+        "Configure Claude tooling (Claude Code) for teams",
+        "AI-assisted developer workflows",
+        "Operational debugging"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 17,
+    "flashcards": 105,
+    "questions": 105
+  },
+  "out": "src/content/tracks/claude/exams/ccar-p.json"
+}
