@@ -33,6 +33,6 @@ export const gemini: Track = {
     { who: 'Business or product leader', order: ['gail'], why: 'Generative AI Leader tests strategy, Google’s gen AI offerings and responsible AI, not code.' },
     { who: 'Developer', order: ['gemini-dev', 'gail'], why: 'Build with the API first; the Leader exam then becomes mostly product review.' },
   ],
-  note: 'Generative AI Leader is a real Google Cloud certification delivered by Kryterion (online or onsite). Gemini API Developer is this site’s course with a practice test; Google has no matching exam. For an ML engineering certification, see Google’s Professional Machine Learning Engineer exam, which added generative AI in its June 2026 refresh.',
+  note: 'Generative AI Leader is a real Google Cloud certification delivered by Pearson VUE (online or at a test centre). Gemini API Developer is this site’s course with a practice test; Google has no matching exam. For an ML engineering certification, see Google’s Professional Machine Learning Engineer exam, which added generative AI in its June 2026 refresh.',
   loadGuide: () => import('./runbook.md?raw').then(m => m.default),
 };
