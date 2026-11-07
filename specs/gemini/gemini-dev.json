@@ -1,0 +1,115 @@
+{
+  "track": "gemini",
+  "kind": "course",
+  "id": "gemini-dev",
+  "code": "GEM-DEV",
+  "name": "Gemini API Developer",
+  "level": "Developer course · no official exam",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "audience": "Developers building apps and agents on Gemini",
+  "format": "This site's course: 40-question practice test in 60 minutes. Google has no matching certification; for an official credential see Professional Machine Learning Engineer.",
+  "scenarios": [
+    "Support assistant with live order data",
+    "Document extraction pipeline",
+    "Grounded research answers",
+    "Multimodal media app",
+    "Enterprise agent rollout"
+  ],
+  "verifyNotes": "This is the site's own course; Google has no matching exam. Verify every API fact against ai.google.dev/gemini-api/docs and the ADK docs: current model names and aliases, the Interactions API vs legacy generateContent, thinking levels, tool_choice modes, structured output schema support, grounding billing/display rules, caching and Batch pricing, rate-limit tiers. Mark previews as previews.",
+  "sources": [
+    "https://ai.google.dev/gemini-api/docs",
+    "https://ai.google.dev/gemini-api/docs/models",
+    "https://ai.google.dev/gemini-api/docs/function-calling",
+    "https://ai.google.dev/gemini-api/docs/structured-output",
+    "https://ai.google.dev/gemini-api/docs/google-search",
+    "https://ai.google.dev/gemini-api/docs/caching",
+    "https://ai.google.dev/gemini-api/docs/batch-mode",
+    "https://ai.google.dev/gemini-api/docs/safety-settings",
+    "https://google.github.io/adk-docs/",
+    "https://github.com/google-gemini/cookbook"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Models & the Interactions API",
+      "weight": 15,
+      "skills": [
+        "Choose a Gemini model (Pro, Flash, Flash-Lite) by quality, latency and cost",
+        "Handle aliases, previews and deprecations",
+        "Call Gemini with the Interactions API; steps, server-side state and stateless mode",
+        "Know the legacy generateContent API and when you meet it"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Prompting & multimodal input",
+      "weight": 15,
+      "skills": [
+        "Write effective Gemini prompts and system instructions",
+        "Set thinking levels and sampling parameters on current models",
+        "Send images, audio, video and PDFs; use the Files API for large or reused media",
+        "Prompt well with media inputs"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Function calling & structured output",
+      "weight": 20,
+      "skills": [
+        "Run the function-calling loop end to end",
+        "Use tool_choice modes and parallel/compositional calls",
+        "Design clear tool declarations",
+        "Produce JSON with response schemas; know what schemas can't enforce; validate and retry"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Grounding, RAG & long context",
+      "weight": 15,
+      "skills": [
+        "Ground answers with Google Search, Maps and URL context; follow display and billing rules",
+        "Choose long context vs retrieval",
+        "Build RAG with Gemini embeddings",
+        "Prompt over long context (documents first, question last)"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Agents: ADK, Managed Agents & Agent Platform",
+      "weight": 15,
+      "skills": [
+        "Build agents with the Agent Development Kit: agents, tools, sessions, multi-agent",
+        "Use Google-managed agents via the Interactions API",
+        "Deploy agents on the Gemini Enterprise Agent Platform"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Cost, performance & production",
+      "weight": 15,
+      "skills": [
+        "Cut cost with implicit and explicit caching, the Batch API and token counting",
+        "Handle rate limits, tiers, errors and retries with backoff",
+        "Stream responses and run long work in the background"
+      ]
+    },
+    {
+      "id": "d7",
+      "name": "Safety & responsible AI",
+      "weight": 5,
+      "skills": [
+        "Configure safety settings and read block reasons",
+        "Apply responsible-AI practices beyond filters"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 14,
+    "flashcards": 80,
+    "questions": 70
+  },
+  "out": "src/content/tracks/gemini/exams/gemini-dev.json"
+}

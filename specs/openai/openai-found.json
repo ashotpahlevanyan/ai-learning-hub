@@ -1,0 +1,96 @@
+{
+  "track": "openai",
+  "kind": "course",
+  "id": "openai-found",
+  "code": "OAI-FND",
+  "name": "AI Foundations with ChatGPT",
+  "level": "Business course · no official exam yet",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "audience": "Professionals in any role who use ChatGPT for everyday work: drafting, summarising, analysis, research and simple automation. No coding needed.",
+  "format": "This site's course with a 40-question practice test. OpenAI's own certification is in invite-only pilot; this course follows the topics of OpenAI Academy's free courses.",
+  "scenarios": [
+    "Marketing manager",
+    "Finance analyst",
+    "HR business partner",
+    "Sales operations lead",
+    "Team lead rolling out ChatGPT"
+  ],
+  "verifyNotes": "This is the site's own course; OpenAI has no public certification exam (an invite-only pilot exists). Align topics to OpenAI Academy's free courses. Verify ChatGPT feature names and plan availability against help.openai.com (features rename often, e.g. connectors -> apps); say 'check current plans' rather than asserting plan details that may change.",
+  "sources": [
+    "https://academy.openai.com",
+    "https://help.openai.com",
+    "https://openai.com/policies/usage-policies/",
+    "https://openai.com/chatgpt/pricing/",
+    "https://openai.com/enterprise-privacy/"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "How LLMs work and their limits",
+      "weight": 15,
+      "skills": [
+        "Explain next-token prediction, tokens, context window and knowledge cutoff",
+        "Explain why the same prompt gives different answers",
+        "Recognise hallucination and other failure modes and reduce the risk"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Prompting for work",
+      "weight": 22,
+      "skills": [
+        "Write work prompts with goal, context, role, format, examples and constraints",
+        "Iterate like an editor and decompose big tasks",
+        "Use everyday prompt patterns: summarise, draft in your voice, analyse, brainstorm, meeting prep"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Checking and improving output",
+      "weight": 20,
+      "skills": [
+        "Scale checking to the stakes; verify facts, numbers and sources",
+        "Critique drafts against criteria; use a fresh review over self-review",
+        "Check for bias and gaps; know when to stop iterating"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "ChatGPT features and workflows",
+      "weight": 18,
+      "skills": [
+        "Choose the right ChatGPT tool: search, deep research, canvas, data analysis, image, agent",
+        "Choose a model and reasoning setting for the task",
+        "Use custom instructions, memory, Projects, custom GPTs and apps"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Agents and automation basics",
+      "weight": 10,
+      "skills": [
+        "Explain what an agent is and which tasks to delegate",
+        "Add human checkpoints; turn prompts into repeatable workflows"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Safe and responsible use",
+      "weight": 15,
+      "skills": [
+        "Follow company policy; minimise sensitive data; know what workspace plans add",
+        "Keep accountability and disclose AI use",
+        "Handle bias, IP, confidentiality and over-reliance; know usage policy basics"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 13,
+    "flashcards": 70,
+    "questions": 60
+  },
+  "out": "src/content/tracks/openai/exams/openai-found.json"
+}

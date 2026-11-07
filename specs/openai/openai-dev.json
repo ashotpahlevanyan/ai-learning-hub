@@ -1,0 +1,104 @@
+{
+  "track": "openai",
+  "kind": "course",
+  "id": "openai-dev",
+  "code": "OAI-DEV",
+  "name": "OpenAI API & Agents Developer",
+  "level": "Developer course · no official exam",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "audience": "Developers with Python or TypeScript experience who build apps and agents on the OpenAI API",
+  "format": "This site's course with a 40-question practice test in 60 minutes. OpenAI has no public developer certification.",
+  "scenarios": [
+    "Support assistant with order tools",
+    "Research agent with web search",
+    "Document extraction pipeline",
+    "Coding agent for a repository",
+    "Voice concierge"
+  ],
+  "verifyNotes": "This is the site's own course; OpenAI has no public developer certification. Verify every API fact against developers.openai.com/api/docs and the Agents SDK docs: current models and reasoning effort, Responses API output items and conversation state, tool_choice, built-in tools and remote MCP, Structured Outputs strict-mode rules, Agents SDK primitives, caching/Batch/background pricing and behaviour, evals and fine-tuning availability. Note deprecations (Assistants API) with dates.",
+  "sources": [
+    "https://developers.openai.com/api/docs",
+    "https://developers.openai.com/api/docs/guides/agents",
+    "https://developers.openai.com/api/docs/guides/function-calling",
+    "https://developers.openai.com/api/docs/guides/structured-outputs",
+    "https://developers.openai.com/api/docs/guides/conversation-state",
+    "https://developers.openai.com/api/docs/guides/prompt-caching",
+    "https://developers.openai.com/api/docs/guides/batch",
+    "https://developers.openai.com/api/docs/guides/evals",
+    "https://openai.github.io/openai-agents-python/",
+    "https://cookbook.openai.com"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Models & the Responses API",
+      "weight": 20,
+      "skills": [
+        "Choose a GPT model and reasoning effort",
+        "Make Responses API requests; read output items; stream events",
+        "Know Chat Completions and the Assistants deprecation",
+        "Manage conversation state: manual, previous_response_id, conversations, retention"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Tools & Function Calling",
+      "weight": 20,
+      "skills": [
+        "Define function tools and run the loop; parallel calls and tool_choice",
+        "Design good tools",
+        "Use built-in tools: web search, file search, code interpreter, computer use",
+        "Connect remote MCP servers; hosted vs your own tools"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Structured Outputs & Prompting",
+      "weight": 15,
+      "skills": [
+        "Use Structured Outputs with JSON Schema and strict-mode rules; still validate",
+        "JSON mode vs Structured Outputs",
+        "Prompt reasoning models; instructions vs input; prompt objects and versioning"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Agents: SDK & Agents API",
+      "weight": 20,
+      "skills": [
+        "Choose between the Responses API, Agents SDK and Agents API; decide if you need an agent",
+        "Build with the Agents SDK: agents, tools, handoffs, multi-agent",
+        "Add guardrails, human approval, sessions and tracing"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Evals, Cost & Production",
+      "weight": 15,
+      "skills": [
+        "Cut cost and latency with prompt caching, Batch and background mode",
+        "Handle rate limits and retries",
+        "Run evals with graders before shipping; know when fine-tuning helps"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Safety & Security",
+      "weight": 10,
+      "skills": [
+        "Defend against prompt injection, especially via tools and retrieved content",
+        "Use moderation; manage keys and data",
+        "Handle agent-specific risks: least privilege, approvals, sandboxing"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 14,
+    "flashcards": 75,
+    "questions": 65
+  },
+  "out": "src/content/tracks/openai/exams/openai-dev.json"
+}

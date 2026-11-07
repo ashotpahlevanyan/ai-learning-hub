@@ -1,0 +1,89 @@
+{
+  "track": "gemini",
+  "kind": "exam",
+  "id": "gail",
+  "code": "GAIL",
+  "name": "Google Cloud Generative AI Leader",
+  "level": "Google Cloud · Foundational",
+  "price": "$99 plus tax (verify on the official page)",
+  "items": 50,
+  "minutes": 90,
+  "passing": 720,
+  "audience": "Anyone who shapes gen AI adoption: business leaders, product and project managers, consultants, sales and technical staff. No hands-on technical experience required.",
+  "format": "50–60 multiple-choice questions in 90 minutes, online-proctored or at a test centre, in English, Japanese or Spanish. Valid for 3 years. Results are pass/fail and Google does not publish the cut score; this site targets 720/1000 (about 69%) on its mocks, and you should aim for 85%+.",
+  "scenarios": [
+    "Retail customer service",
+    "Employee knowledge and productivity",
+    "Regulated financial services",
+    "Marketing content at scale",
+    "Build or buy for a product team"
+  ],
+  "verifyNotes": "GAIL is a real Google Cloud certification. Confirm section names, weights, item count, duration, fee, languages, delivery (Kryterion) and validity against the official exam page and exam guide PDF. Google renames products often (Vertex AI -> Gemini Enterprise Agent Platform, Agentspace -> Gemini Enterprise, Duet AI -> Gemini for Workspace): use current names and mention former names where learners will meet them. Never copy the official sample questions.",
+  "sources": [
+    "https://cloud.google.com/learn/certification/generative-ai-leader",
+    "https://www.skills.google",
+    "https://cloud.google.com/products/gemini-enterprise",
+    "https://cloud.google.com/vertex-ai/docs",
+    "https://cloud.google.com/security/ai",
+    "https://ai.google/responsibility/principles/",
+    "https://workspace.google.com/solutions/ai/"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Fundamentals of gen AI",
+      "weight": 30,
+      "skills": [
+        "Explain AI, ML, deep learning, gen AI, foundation models and LLMs in plain language",
+        "Compare supervised, unsupervised and reinforcement learning and the ML lifecycle on Google Cloud",
+        "Judge data quality, structured vs unstructured and labelled vs unlabelled data",
+        "Describe the gen AI landscape layers (infrastructure, models, platforms, agents, applications)",
+        "Choose among Google models (Gemini, Gemma, Imagen, Veo) by modality, cost and latency",
+        "Identify business use cases where gen AI creates value"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Google Cloud’s gen AI offerings",
+      "weight": 35,
+      "skills": [
+        "Explain why Google Cloud for gen AI: AI-optimized infrastructure (TPUs), openness, security",
+        "Position the Gemini app, Gems, Gemini Enterprise and Gemini for Google Workspace",
+        "Use customer experience offerings: Agent Search and the Customer Engagement Suite",
+        "Describe the Gemini Enterprise Agent Platform: Model Garden, agent building, tools, evaluation",
+        "Choose between low-code agent building and Google AI Studio"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Techniques to improve gen AI model output",
+      "weight": 20,
+      "skills": [
+        "Name model limitations: hallucination, knowledge cutoff, bias, data dependency, edge cases",
+        "Apply Google-recommended mitigations: grounding, RAG, prompt engineering, fine-tuning, human in the loop",
+        "Use prompting techniques: zero-shot, few-shot, role, chain-of-thought, ReAct, prompt chaining",
+        "Explain grounding with Google Search, enterprise data and third-party data",
+        "Set sampling parameters (temperature, top-p, top-k, output length) and safety settings",
+        "Monitor and evaluate models in production"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Business strategies for a successful gen AI solution",
+      "weight": 15,
+      "skills": [
+        "Choose the right gen AI solution by need, skills, cost and control (buy, build, customise)",
+        "Integrate gen AI into an organisation: change management, sponsorship, skills",
+        "Measure impact with KPIs and ROI",
+        "Apply Google's Secure AI Framework (SAIF) and Google Cloud security tools",
+        "Apply responsible AI: fairness, privacy, transparency, accountability, explainability"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 15,
+    "flashcards": 85,
+    "questions": 80
+  },
+  "out": "src/content/tracks/gemini/exams/gail.json"
+}
