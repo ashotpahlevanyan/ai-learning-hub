@@ -44,7 +44,7 @@ export default function ExamDashboard() {
               ? `Course · ${exam.items}-question practice test in ${exam.minutes} min · ${exam.price}`
               : `${exam.items} items · ${exam.minutes} min · pass ${exam.passing}/1000 · ${exam.price}`}</div>
             <div className="muted small">{exam.review
-              ? <>Questions verified {exam.review.date}: {exam.review.questionsChecked} re-answered blind, {exam.review.fixed} fixed, {exam.review.dropped} dropped. <Link to="/about">How</Link></>
+              ? <>Questions verified {exam.review.date}: {exam.review.questionsChecked} re-answered blind, {exam.review.fixed} corrections, {exam.review.dropped} dropped. <Link to="/about">How</Link></>
               : <>Questions not yet independently verified. <Link to="/about">What this means</Link></>}</div>
           </div>
           <div className="readiness">

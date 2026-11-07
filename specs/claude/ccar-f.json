@@ -11,18 +11,18 @@
   "passing": 720,
   "audience": "Engineers who design and ship Claude-based systems: agents, tools, Claude Code setups and extraction pipelines",
   "format": "60 scenario-based multiple-choice items in 120 minutes; scaled score 100–1000, pass 720. Four scenarios drawn from a bank of six.",
-  "verifyNotes": "Exam facts come from third-party summaries of Anthropic's v1.0 guide (July 2026); the official guide is in Anthropic Partner Academy and not public. Verify Claude product facts (API, Claude Code, MCP, Agent SDK) against docs.claude.com, modelcontextprotocol.io and anthropic.com/engineering.",
+  "verifyNotes": "Exam facts come from third-party summaries of Anthropic's v1.0 guide (July 2026); the official guide is in Anthropic Partner Academy and not public. Verify Claude product facts (API, Claude Code, MCP, Agent SDK) against platform.claude.com/docs, code.claude.com/docs, modelcontextprotocol.io and anthropic.com/engineering.",
   "sources": [
-    "https://docs.claude.com/en/docs/build-with-claude/tool-use",
-    "https://docs.claude.com/en/docs/build-with-claude/prompt-caching",
-    "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview",
-    "https://docs.claude.com/en/docs/claude-code/overview",
-    "https://docs.claude.com/en/docs/claude-code/memory",
-    "https://docs.claude.com/en/docs/claude-code/settings",
-    "https://docs.claude.com/en/docs/claude-code/hooks",
-    "https://docs.claude.com/en/docs/claude-code/sub-agents",
-    "https://docs.claude.com/en/docs/claude-code/headless",
-    "https://docs.claude.com/en/api/agent-sdk/overview",
+    "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
+    "https://code.claude.com/docs/en/overview",
+    "https://code.claude.com/docs/en/memory",
+    "https://code.claude.com/docs/en/settings",
+    "https://code.claude.com/docs/en/hooks",
+    "https://code.claude.com/docs/en/sub-agents",
+    "https://code.claude.com/docs/en/headless",
+    "https://code.claude.com/docs/en/agent-sdk/overview",
     "https://modelcontextprotocol.io/docs/learn/architecture",
     "https://www.anthropic.com/engineering/building-effective-agents",
     "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
@@ -37,53 +37,82 @@
     "Structured data extraction"
   ],
   "domains": [
-    { "id": "d1", "name": "Agentic Architecture & Orchestration", "weight": 27, "skills": [
-      "Control an agent loop with stop_reason (end_turn, tool_use, max_tokens, pause_turn, refusal); iteration and budget caps as safety nets only",
-      "Choose workflow vs agent and pick among prompt chaining, routing, parallelization, orchestrator-workers and evaluator-optimizer",
-      "Design orchestrator/sub-agent systems with clear objectives, output formats, tool allowlists and context isolation",
-      "Decompose tasks statically or dynamically",
-      "Design escalation and human-in-the-loop triggers and structured handoffs",
-      "Place enforcement on the spectrum from prompt guidance to schemas, hooks, permissions and code",
-      "Use Claude Agent SDK concepts: hooks, permissions, subagents, sessions, max turns and budgets",
-      "Handle failures: transient retries, alternate strategies, stopping and reporting instead of looping"
-    ]},
-    { "id": "d2", "name": "Claude Code Configuration & Workflows", "weight": 20, "skills": [
-      "Place instructions in the CLAUDE.md hierarchy (managed, user, project, local) and use @imports",
-      "Use path-scoped rules in .claude/rules",
-      "Configure settings.json scopes and allow/ask/deny permissions; managed settings for org policy",
-      "Choose between hooks, subagents, skills and slash commands",
-      "Use plan mode for risky or unfamiliar changes",
-      "Run Claude Code headless in CI with -p, JSON output, restricted tools and turn limits; GitHub Actions",
-      "Share team configuration: committed settings, .mcp.json, shared skills and agents"
-    ]},
-    { "id": "d3", "name": "Prompt Engineering & Structured Output", "weight": 20, "skills": [
-      "Write clear, direct prompts with context and motivation",
-      "Structure prompts with XML tags and use diverse few-shot examples",
-      "Elicit reasoning with chain-of-thought or extended thinking",
-      "Prefer principles over long conditional rule lists; avoid instruction dilution",
-      "Produce structured output with structured outputs or forced tool use; validate and retry with errors",
-      "Split stable system-prompt content from per-request user content",
-      "Version prompts and run regression evals on changes"
-    ]},
-    { "id": "d4", "name": "Tool Design & MCP Integration", "weight": 18, "skills": [
-      "Write tool descriptions and input schemas that steer correct tool choice",
-      "Keep toolsets small, distinct and well named; consolidate overlapping tools",
-      "Use tool_choice (auto, any, tool, none) and handle parallel tool calls",
-      "Return structured errors with is_error; distinguish transient, permanent and uncertain-state failures; idempotency",
-      "Explain MCP architecture: hosts, clients, servers; tools, resources, prompts; sampling, roots, elicitation",
-      "Choose transports (stdio, Streamable HTTP) and scopes (local, project .mcp.json, user)",
-      "Apply MCP trust and least privilege; treat tool results as untrusted data (prompt injection)"
-    ]},
-    { "id": "d5", "name": "Context Management & Reliability", "weight": 15, "skills": [
-      "Budget the context window; lost-in-the-middle and recency effects",
-      "Use prompt caching with stable prefixes first and variable content last",
-      "Compact long sessions and keep structured notes or memory files",
-      "Isolate context with sub-agents and just-in-time retrieval",
-      "Order long documents first and the question last; quote extraction; provenance and citations",
-      "Retry 429/529 with backoff and jitter; timeouts; fallbacks; Batch API for offline work",
-      "Use independent reviewer instances instead of self-review"
-    ]}
+    {
+      "id": "d1",
+      "name": "Agentic Architecture & Orchestration",
+      "weight": 27,
+      "skills": [
+        "Control an agent loop with stop_reason (end_turn, tool_use, max_tokens, stop_sequence, pause_turn, refusal, model_context_window_exceeded); iteration and budget caps as safety nets only",
+        "Choose workflow vs agent and pick among prompt chaining, routing, parallelization, orchestrator-workers and evaluator-optimizer",
+        "Design orchestrator/sub-agent systems with clear objectives, output formats, tool allowlists and context isolation",
+        "Decompose tasks statically or dynamically",
+        "Design escalation and human-in-the-loop triggers and structured handoffs",
+        "Place enforcement on the spectrum from prompt guidance to schemas, hooks, permissions and code",
+        "Use Claude Agent SDK concepts: hooks, permissions, subagents, sessions, max turns and budgets",
+        "Handle failures: transient retries, alternate strategies, stopping and reporting instead of looping"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Claude Code Configuration & Workflows",
+      "weight": 20,
+      "skills": [
+        "Place instructions in the CLAUDE.md hierarchy (managed, user, project, local) and use @imports",
+        "Use path-scoped rules in .claude/rules",
+        "Configure settings.json scopes and allow/ask/deny permissions; managed settings for org policy",
+        "Choose between hooks, subagents, skills and slash commands",
+        "Use plan mode for risky or unfamiliar changes",
+        "Run Claude Code headless in CI with -p, JSON output, restricted tools and turn limits; GitHub Actions",
+        "Share team configuration: committed settings, .mcp.json, shared skills and agents"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Prompt Engineering & Structured Output",
+      "weight": 20,
+      "skills": [
+        "Write clear, direct prompts with context and motivation",
+        "Structure prompts with XML tags and use diverse few-shot examples",
+        "Elicit reasoning with adaptive thinking and output_config.effort (manual extended thinking is removed on current models)",
+        "Prefer principles over long conditional rule lists; avoid instruction dilution",
+        "Produce structured output with structured outputs (output_config.format) or strict tools; validate and retry with errors",
+        "Split stable system-prompt content from per-request user content",
+        "Version prompts and run regression evals on changes"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Tool Design & MCP Integration",
+      "weight": 18,
+      "skills": [
+        "Write tool descriptions and input schemas that steer correct tool choice",
+        "Keep toolsets small, distinct and well named; consolidate overlapping tools",
+        "Use tool_choice (auto, none; forced any/tool is unsupported on current models) and handle parallel tool calls",
+        "Return structured errors with is_error; distinguish transient, permanent and uncertain-state failures; idempotency",
+        "Explain MCP architecture: hosts, clients, servers; tools, resources, prompts; elicitation (sampling and roots are deprecated in protocol 2026-07-28)",
+        "Choose transports (stdio, Streamable HTTP) and scopes (local, project .mcp.json, user)",
+        "Apply MCP trust and least privilege; treat tool results as untrusted data (prompt injection)"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Context Management & Reliability",
+      "weight": 15,
+      "skills": [
+        "Budget the context window; context rot as inputs grow",
+        "Use prompt caching with stable prefixes first and variable content last",
+        "Compact long sessions and keep structured notes or memory files",
+        "Isolate context with sub-agents and just-in-time retrieval",
+        "Order long documents first and the question last; quote extraction; provenance and citations",
+        "Retry 429/529 with backoff and jitter; timeouts; fallbacks; Batch API for offline work",
+        "Use independent reviewer instances instead of self-review"
+      ]
+    }
   ],
-  "targets": { "lessons": 15, "flashcards": 100, "questions": 100 },
+  "targets": {
+    "lessons": 15,
+    "flashcards": 100,
+    "questions": 100
+  },
   "out": "src/content/tracks/claude/exams/ccar-f.json"
 }

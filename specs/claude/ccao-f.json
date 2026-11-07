@@ -1,11 +1,11 @@
 {
   "track": "claude",
   "kind": "exam",
-  "verifyNotes": "Exam facts come from third-party summaries of Anthropic's v1.0 guide (July 2026); the official guide is in Anthropic Partner Academy and not public. Verify Claude product facts (API, Claude Code, MCP, Agent SDK) against docs.claude.com, modelcontextprotocol.io and anthropic.com/engineering.",
+  "verifyNotes": "Exam facts come from third-party summaries of Anthropic's v1.0 guide (July 2026); the official guide is in Anthropic Partner Academy and not public. Verify Claude product facts (API, Claude Code, MCP, Agent SDK) against platform.claude.com/docs, code.claude.com/docs, modelcontextprotocol.io and anthropic.com/engineering.",
   "sources": [
     "https://www.anthropic.com/ai-fluency",
     "https://support.claude.com",
-    "https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview",
+    "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview",
     "https://www.anthropic.com/legal/aup",
     "https://www.anthropic.com/news"
   ],
