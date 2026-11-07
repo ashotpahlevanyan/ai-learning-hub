@@ -1,6 +1,6 @@
 # AI Learning Hub
 
-Free, structured study paths for AI and LLM certifications. The first track covers Anthropic's four Claude certifications (CCAO-F, CCDV-F, CCAR-F, CCAR-P): lessons, spaced-repetition flashcards, scenario practice questions, timed mock exams and a full written runbook.
+Free, structured study paths for AI and LLM certifications. Tracks: Anthropic Claude (CCAO-F, CCDV-F, CCAR-F, CCAR-P), Google Gemini (Generative AI Leader exam, Gemini API Developer course) and OpenAI (AI Foundations and API & Agents Developer courses). Each has lessons, spaced-repetition flashcards, scenario practice questions, timed mock exams and a written runbook.
 
 React + TypeScript + Vite. No backend: progress is stored in the browser and can be exported and imported.
 

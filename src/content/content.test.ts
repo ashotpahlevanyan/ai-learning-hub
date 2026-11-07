@@ -1,11 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { tracks as published } from './index';
-import { gemini } from './tracks/gemini/track';
-import { openai } from './tracks/openai/track';
+import { tracks } from './index';
 import type { Exam } from '../lib/types';
-
-// Published tracks plus drafted ones, so shelved content stays valid.
-const tracks = [...published, gemini, openai];
 
 // Every exam bundle must be well-formed: run on each content change (npm test).
 describe.each(tracks.flatMap(t => t.exams.map(e => [`${t.id}/${e.id}`, e] as const)))('%s', (_, summary) => {

@@ -18,15 +18,15 @@ export default function Home() {
         <h1 className="display">Learn the AI platforms you build on, then prove it.</h1>
         <p className="lede">
           AI Learning Hub turns official documentation and exam blueprints into study paths you can finish: lessons,
-          flashcards, practice questions and timed mocks. It starts with Anthropic's Claude certifications.
+          flashcards, practice questions and timed mocks for Anthropic Claude, Google Gemini and OpenAI.
         </p>
         <div className="row">
           <Link className="btn primary" to="/claude">Start the Claude track</Link>
-          <Link className="btn" to="/claude/guide">Read the study runbook</Link>
+          <a className="btn" href="#tracks">Browse all tracks</a>
         </div>
       </section>
 
-      <section>
+      <section id="tracks">
         <h2>Tracks</h2>
         <div className="grid tracks">
           {tracks.map(t => (
