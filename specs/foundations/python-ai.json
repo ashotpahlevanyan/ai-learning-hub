@@ -1,0 +1,102 @@
+{
+  "track": "foundations",
+  "kind": "course",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "id": "python-ai",
+  "code": "PY-AI",
+  "name": "Python for AI Engineering",
+  "level": "Deep-foundations course · no official exam",
+  "audience": "Developers and architects who want fluent, idiomatic Python for data, ML and LLM applications. Basic programming experience assumed.",
+  "format": "This site's course with a 40-question practice test mixing code-reading, debugging and design questions.",
+  "scenarios": [
+    "Building a RAG service",
+    "Cleaning and analysing an eval dataset",
+    "Training a small PyTorch model",
+    "Calling LLM APIs at scale",
+    "Reviewing a teammate’s Python PR"
+  ],
+  "verifyNotes": "This is the site's own deep-foundations course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources) and on current library APIs. Goal: the learner should be able to explain and derive these ideas confidently in an interview or design review. Lessons go deep: intuition first, then the formal definition, then a fully worked numeric example, then exactly where it shows up in modern AI/LLMs, then a common misconception. Write math in LaTeX between double dollars only: $$...$$ (inline or on its own line for display); NEVER single-dollar math (single $ renders literally). In JSON strings escape backslashes (\\\\frac). Code in fenced ```python blocks that run as-is. Every lesson has a hands-on lab: a small Python exercise with the expected output. Question mix: ~40% concept/judgment, ~35% compute-or-predict (give numbers or code, ask for the result), ~25% debug-or-choose-the-right-approach. Verifiers MUST run every compute and code-output question with /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/py/bin/python (Python 3.9 with NumPy 2.0, pandas 2.3, scikit-learn 1.6, PyTorch 2.8). Code that uses Python 3.10+ syntax (match, X | Y unions, 3.12 type-parameter syntax) cannot run there: label such items \"(Python 3.10+)\" in the stem and verify them by careful reasoning against docs.python.org and fix keys that disagree; state any randomness seed in the stem. Sources: official library docs and primary/canonical teaching material only (see src/content/official-domains.json, track \"foundations\"); no blogs or Medium. Target Python 3.12+ and current NumPy 2.x, pandas 2.x, PyTorch 2.x and scikit-learn APIs (no deprecated calls). For LLM API code, keep it provider-neutral or show the official SDK pattern of Anthropic, OpenAI or Google exactly as their docs show it; never invent SDK methods. Include implementing attention and a training loop from scratch in PyTorch.",
+  "sources": [
+    "https://docs.python.org/3/tutorial/",
+    "https://docs.python.org/3/reference/datamodel.html",
+    "https://docs.python.org/3/library/asyncio.html",
+    "https://numpy.org/doc/stable/user/basics.broadcasting.html",
+    "https://pandas.pydata.org/docs/user_guide/index.html",
+    "https://scikit-learn.org/stable/user_guide.html",
+    "https://docs.pytorch.org/tutorials/beginner/basics/intro.html",
+    "https://docs.pytest.org/en/stable/",
+    "https://packaging.python.org/en/latest/",
+    "https://docs.pydantic.dev/latest/"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Python core and idioms",
+      "weight": 22,
+      "skills": [
+        "Data model: mutability, identity vs equality, references, copying",
+        "Comprehensions, iterators, generators and itertools",
+        "Functions: closures, decorators, *args/**kwargs, keyword-only, default-argument pitfalls",
+        "Classes, dataclasses, protocols and type hints; Pydantic models for validated data",
+        "Exceptions, context managers, packaging and virtual environments (venv, pip, uv, pyproject.toml)"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "NumPy and pandas for data work",
+      "weight": 22,
+      "skills": [
+        "ndarray shapes, dtypes, views vs copies, indexing and boolean masks",
+        "Broadcasting rules and vectorisation instead of loops; einsum",
+        "Linear algebra in NumPy: matmul, norms, solving, SVD",
+        "pandas DataFrames: selection, groupby, merge/join, reshaping, missing data",
+        "Performance and memory: dtypes, chunking, avoiding chained assignment"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Machine learning with scikit-learn and PyTorch",
+      "weight": 24,
+      "skills": [
+        "scikit-learn workflow: train/test split, pipelines, cross-validation, leakage, metrics",
+        "PyTorch tensors, devices, autograd and computational graphs",
+        "nn.Module, losses, optimisers and a correct training loop (zero_grad, backward, step, eval mode, no_grad)",
+        "Datasets and DataLoaders, batching and padding",
+        "Implementing embeddings, scaled dot-product attention and a tiny transformer block from scratch"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Building LLM applications in Python",
+      "weight": 20,
+      "skills": [
+        "HTTP and official SDK clients, API keys from the environment, timeouts",
+        "async/await with asyncio: concurrency limits (Semaphore), gather, cancellation",
+        "Streaming responses, retries with exponential backoff and jitter, rate limits",
+        "Structured output with JSON Schema/Pydantic; tool-calling loops",
+        "Embeddings, cosine similarity search and a minimal RAG pipeline"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Testing, performance and reproducibility",
+      "weight": 12,
+      "skills": [
+        "pytest: fixtures, parametrize, mocking external APIs",
+        "Logging and debugging (pdb, tracebacks)",
+        "Profiling; the GIL, threads vs processes vs asyncio",
+        "Reproducibility: seeds, pinned dependencies, deterministic evals",
+        "Notebook-to-module hygiene"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 20,
+    "flashcards": 110,
+    "questions": 110
+  },
+  "out": "src/content/tracks/foundations/exams/python-ai.json"
+}

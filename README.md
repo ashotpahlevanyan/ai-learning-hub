@@ -1,6 +1,6 @@
 # AI Learning Hub
 
-Free, structured study paths for AI and LLM certifications. Tracks: Anthropic Claude (CCAO-F, CCDV-F, CCAR-F, CCAR-P), Google Gemini (Generative AI Leader exam, Gemini API Developer course) OpenAI (AI Foundations and API & Agents Developer courses) and AWS (AI Practitioner, Generative AI Developer – Professional, Solutions Architect – Professional). Each has lessons, spaced-repetition flashcards, scenario practice questions, timed mock exams and a written runbook.
+Free, structured study paths for AI and LLM certifications. Tracks: Anthropic Claude (CCAO-F, CCDV-F, CCAR-F, CCAR-P), Google Gemini (Generative AI Leader exam, Gemini API Developer course), OpenAI (AI Foundations and API & Agents Developer courses) and AWS (AI Practitioner, Generative AI Developer – Professional, Solutions Architect – Professional SAP-C02 and SAP-C03), plus AI Foundations (Mathematics for AI and LLMs, Python for AI Engineering). Each has lessons, spaced-repetition flashcards, scenario practice questions, timed mock exams and a written runbook.
 
 React + TypeScript + Vite. No backend: progress is stored in the browser and can be exported and imported.
 
@@ -34,6 +34,8 @@ npm run check:links  # every source/resource URL still resolves (network)
    - optionally a long-form `runbook.md` guide
 2. Add the track to `src/content/index.ts`.
 3. Run `npm test`. It validates every exam bundle (ids, domains, answer keys, weights, official sources). Add the provider's documentation domains to `src/content/official-domains.json`.
+
+Markdown bodies can include math between double dollars (`$$\frac{a}{b}$$`). KaTeX loads only on pages that contain it, and a single `$` stays literal so prices are safe.
 
 Routes are generated from the registry: `/<track>`, `/<track>/guide`, `/<track>/<exam>/…`.
 

@@ -1,0 +1,102 @@
+{
+  "track": "foundations",
+  "kind": "course",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "id": "math-ai",
+  "code": "MATH-AI",
+  "name": "Mathematics for AI and LLMs",
+  "level": "Deep-foundations course · no official exam",
+  "audience": "Engineers, architects and technical leaders who want to really understand how models learn and how LLMs compute, and explain it with confidence. High-school algebra assumed; everything else is built up.",
+  "format": "This site's course with a 40-question practice test mixing concept, calculation and judgment questions.",
+  "scenarios": [
+    "Explaining embeddings and similarity search to a team",
+    "Debugging a training run that diverges",
+    "Sizing GPU memory for an LLM",
+    "Reading an ML paper",
+    "Designing an eval and judging if a difference is real"
+  ],
+  "verifyNotes": "This is the site's own deep-foundations course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources) and on current library APIs. Goal: the learner should be able to explain and derive these ideas confidently in an interview or design review. Lessons go deep: intuition first, then the formal definition, then a fully worked numeric example, then exactly where it shows up in modern AI/LLMs, then a common misconception. Write math in LaTeX between double dollars only: $$...$$ (inline or on its own line for display); NEVER single-dollar math (single $ renders literally). In JSON strings escape backslashes (\\\\frac). Code in fenced ```python blocks that run as-is. Every lesson has a hands-on lab: a small Python exercise with the expected output. Question mix: ~40% concept/judgment, ~35% compute-or-predict (give numbers or code, ask for the result), ~25% debug-or-choose-the-right-approach. Verifiers MUST run every compute and code-output question with /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/py/bin/python (Python 3.9 with NumPy 2.0, pandas 2.3, scikit-learn 1.6, PyTorch 2.8). Code that uses Python 3.10+ syntax (match, X | Y unions, 3.12 type-parameter syntax) cannot run there: label such items \"(Python 3.10+)\" in the stem and verify them by careful reasoning against docs.python.org and fix keys that disagree; state any randomness seed in the stem. Sources: official library docs and primary/canonical teaching material only (see src/content/official-domains.json, track \"foundations\"); no blogs or Medium. Check every formula and worked example numerically in Python. Use canonical notation (e.g. attention = softmax(QK^T / sqrt(d_k)) V, cross-entropy, KL). For memory/FLOP estimates state the assumptions (bytes per parameter, 2N FLOPs per token for a forward pass, ~6N per token for training).",
+  "sources": [
+    "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/",
+    "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/",
+    "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/",
+    "https://d2l.ai/chapter_appendix-mathematics-for-deep-learning/index.html",
+    "https://www.deeplearningbook.org/",
+    "https://cs229.stanford.edu/",
+    "https://arxiv.org/abs/1706.03762",
+    "https://arxiv.org/abs/2001.08361",
+    "https://arxiv.org/abs/2203.15556",
+    "https://arxiv.org/abs/2106.09685"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Linear algebra for embeddings and models",
+      "weight": 22,
+      "skills": [
+        "Vectors, norms, dot product, cosine similarity and why embeddings are compared with them",
+        "Matrices as linear maps; matrix multiplication and shape reasoning (batch x seq x dim)",
+        "Transpose, inverse, rank, linear independence, projections",
+        "Eigenvalues/eigenvectors, SVD and PCA; low-rank approximation and why LoRA works",
+        "Tensors and broadcasting as the language of deep learning"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Calculus and optimisation",
+      "weight": 22,
+      "skills": [
+        "Derivatives, partial derivatives, gradients and directional derivatives",
+        "Chain rule, computational graphs and backpropagation by hand",
+        "Jacobians, Hessians and curvature intuition",
+        "Gradient descent, learning rate, SGD and mini-batches, momentum, Adam/AdamW, weight decay, schedules and warmup",
+        "Convexity, local minima, saddle points, vanishing/exploding gradients, gradient clipping"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Probability and statistics",
+      "weight": 20,
+      "skills": [
+        "Random variables, distributions (Bernoulli, categorical, Gaussian), expectation and variance",
+        "Conditional probability, independence and Bayes’ theorem with base rates",
+        "Maximum likelihood and MAP; why training minimises negative log-likelihood",
+        "Sampling, law of large numbers, central limit theorem, standard error",
+        "Confidence intervals, hypothesis tests, p-values, multiple comparisons and A/B tests for model evals"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Information theory, losses and decoding",
+      "weight": 16,
+      "skills": [
+        "Logits, softmax, sigmoid and log-sum-exp stability",
+        "Entropy, cross-entropy, KL divergence and their relationship",
+        "Perplexity and bits per token",
+        "Temperature, top-k, top-p and greedy decoding as operations on a distribution",
+        "Common losses and metrics: MSE, cross-entropy, precision/recall/F1, calibration"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "The mathematics of transformers and LLMs",
+      "weight": 20,
+      "skills": [
+        "Tokens, embedding matrices and positional information (sinusoidal, RoPE)",
+        "Scaled dot-product attention step by step, causal masking, multi-head attention",
+        "Residual connections, layer normalisation, MLP blocks; parameter counting",
+        "Compute and memory arithmetic: FLOPs per token, scaling laws (Kaplan, Chinchilla), KV-cache size, context length cost",
+        "Numerics: fp32/fp16/bf16, quantisation (int8/int4) and its error"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 20,
+    "flashcards": 110,
+    "questions": 110
+  },
+  "out": "src/content/tracks/foundations/exams/math-ai.json"
+}

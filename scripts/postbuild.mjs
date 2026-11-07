@@ -47,7 +47,8 @@ const examIds = readdirSync(tracksDir).flatMap(t => {
   const dir = join(tracksDir, t, 'exams');
   return existsSync(dir) ? readdirSync(dir).filter(f => f.endsWith('.json')).map(f => f.replace(/\.json$/, '')) : [];
 });
-const onDemand = new RegExp(`^(${[...examIds, 'runbook'].map(x => x.replace(/[-]/g, '\\-')).join('|')})-[\\w-]{8}\\.js$`);
+// Math rendering (the KaTeX chunk, its stylesheet and fonts) is also on demand: only math pages need it.
+const onDemand = new RegExp(`^((${[...examIds, 'runbook', 'math'].map(x => x.replace(/[-]/g, '\\-')).join('|')})-[\\w-]{8}\\.(js|css)|KaTeX_.*)$`);
 const shell = [
   'index.html', 'manifest.webmanifest', 'favicon.svg', 'icon-192.png', 'apple-touch-icon.png',
   ...readdirSync(join(dist, 'assets')).filter(f => !onDemand.test(f)).map(f => `assets/${f}`),

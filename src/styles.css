@@ -267,3 +267,6 @@ select { max-width: 100%; }
 .sources ul { margin: 0; padding-left: 18px; }
 .sources li { overflow-wrap: anywhere; }
 .card > .sources:first-child { margin-top: 0; }
+
+/* KaTeX: wide display equations scroll inside their own box instead of widening the page */
+.katex-display { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }

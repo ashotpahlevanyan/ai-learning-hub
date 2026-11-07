@@ -1,6 +1,61 @@
 {
-  "claude": ["anthropic.com", "claude.com", "claude.ai", "modelcontextprotocol.io", "github.com/anthropics", "github.com/modelcontextprotocol"],
-  "gemini": ["ai.google.dev", "cloud.google.com", "developers.google.com", "aistudio.google.com", "adk.dev", "google.github.io/adk-docs", "blog.google", "grow.google", "skills.google", "github.com/google", "github.com/googleapis", "github.com/google-gemini"],
-  "openai": ["openai.com", "github.com/openai"],
-  "aws": ["aws.amazon.com", "docs.aws.amazon.com", "skillbuilder.aws", "github.com/aws", "github.com/awslabs", "github.com/aws-samples"]
+  "claude": [
+    "anthropic.com",
+    "claude.com",
+    "claude.ai",
+    "modelcontextprotocol.io",
+    "github.com/anthropics",
+    "github.com/modelcontextprotocol"
+  ],
+  "gemini": [
+    "ai.google.dev",
+    "cloud.google.com",
+    "developers.google.com",
+    "aistudio.google.com",
+    "adk.dev",
+    "google.github.io/adk-docs",
+    "blog.google",
+    "grow.google",
+    "skills.google",
+    "github.com/google",
+    "github.com/googleapis",
+    "github.com/google-gemini"
+  ],
+  "openai": [
+    "openai.com",
+    "github.com/openai"
+  ],
+  "aws": [
+    "aws.amazon.com",
+    "docs.aws.amazon.com",
+    "skillbuilder.aws",
+    "github.com/aws",
+    "github.com/awslabs",
+    "github.com/aws-samples"
+  ],
+  "foundations": [
+    "python.org",
+    "numpy.org",
+    "pandas.pydata.org",
+    "scikit-learn.org",
+    "pytorch.org",
+    "pytest.org",
+    "pydantic.dev",
+    "docs.astral.sh",
+    "jupyter.org",
+    "scipy.org",
+    "ocw.mit.edu",
+    "mit.edu",
+    "stanford.edu",
+    "d2l.ai",
+    "deeplearningbook.org",
+    "arxiv.org",
+    "khanacademy.org",
+    "huggingface.co",
+    "anthropic.com",
+    "claude.com",
+    "openai.com",
+    "ai.google.dev",
+    "cloud.google.com"
+  ]
 }
