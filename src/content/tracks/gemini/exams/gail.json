@@ -95,7 +95,17 @@
           "correct": "Start from a foundation model and customise with prompting, grounding or tuning."
         }
       ],
-      "lab": "Open the Gemini app or Google AI Studio and ask the same question three ways: a bare question, the question with a role (\"You are a CFO…\"), and with two examples of the answer format you want. Note how output changes without any model training. That is prompt engineering."
+      "lab": "Open the Gemini app or Google AI Studio and ask the same question three ways: a bare question, the question with a role (\"You are a CFO…\"), and with two examples of the answer format you want. Note how output changes without any model training. That is prompt engineering.",
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
+      ]
     },
     {
       "id": "l2",
@@ -128,7 +138,17 @@
           "correct": "Model management (monitoring, drift, retraining) is a stage of its own."
         }
       ],
-      "lab": "List one dataset at your organisation for each approach: something labelled (supervised), something you would segment (unsupervised), and a process with a clear reward signal (reinforcement). For one of them, sketch which Google Cloud tool you would use at each lifecycle stage."
+      "lab": "List one dataset at your organisation for each approach: something labelled (supervised), something you would segment (unsupervised), and a process with a clear reward signal (reinforcement). For one of them, sketch which Google Cloud tool you would use at each lifecycle stage.",
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
+      ]
     },
     {
       "id": "l3",
@@ -157,7 +177,17 @@
           "correct": "Relevant, consistent, current data beats a bigger messy pile, especially for grounding."
         }
       ],
-      "lab": "Pick one knowledge source your team would ground an assistant on (a policy folder, a wiki). Score it 1–5 on each quality dimension. The lowest score is your first data-readiness task."
+      "lab": "Pick one knowledge source your team would ground an assistant on (a policy folder, a wiki). Score it 1–5 on each quality dimension. The lowest score is your first data-readiness task.",
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
+      ]
     },
     {
       "id": "l4",
@@ -199,7 +229,21 @@
           "correct": "Start with Flash or Flash-Lite where latency and cost dominate; reserve Pro for complex reasoning where quality justifies the cost."
         }
       ],
-      "lab": "In Google AI Studio, give Gemini an image and a short PDF and ask questions that need both. Then list one task your team has for each of Gemini, Gemma, Imagen and Veo."
+      "lab": "In Google AI Studio, give Gemini an image and a short PDF and ask questions that need both. Then list one task your team has for each of Gemini, Gemma, Imagen and Veo.",
+      "sources": [
+        {
+          "title": "Google models on Agent Platform — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/google-models"
+        },
+        {
+          "title": "Gemini models — Google AI Studio docs",
+          "url": "https://aistudio.google.com/docs/models"
+        },
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
+      ]
     },
     {
       "id": "l5",
@@ -227,7 +271,17 @@
           "correct": "Start with assistive, human-reviewed use cases, then expand."
         }
       ],
-      "lab": "List five tasks in your team. Tag each with one of the four verbs and score value (1–5) and risk (1–5). Your best first pilot is high value, low risk."
+      "lab": "List five tasks in your team. Tag each with one of the four verbs and score value (1–5) and risk (1–5). Your best first pilot is high value, low risk.",
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        },
+        {
+          "title": "Gemini Enterprise docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini/enterprise/docs"
+        }
+      ]
     },
     {
       "id": "l6",
@@ -260,7 +314,21 @@
           "correct": "Google Cloud does not use customer data to train its foundation models without permission."
         }
       ],
-      "lab": "Browse Model Garden in the Google Cloud console (or its product page). Find one first-party, one third-party and one open model, and note one reason a business might pick each."
+      "lab": "Browse Model Garden in the Google Cloud console (or its product page). Find one first-party, one third-party and one open model, and note one reason a business might pick each.",
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        },
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
+      ]
     },
     {
       "id": "l7",
@@ -302,7 +370,21 @@
           "correct": "NotebookLM was renamed Gemini Notebook in July 2026; it is the same product."
         }
       ],
-      "lab": "Create a Gem in the Gemini app for a task you repeat weekly (for example \"summarise a customer call into a CRM note\"). Give it instructions and one example file, then test it on a real input."
+      "lab": "Create a Gem in the Gemini app for a task you repeat weekly (for example \"summarise a customer call into a CRM note\"). Give it instructions and one example file, then test it on a real input.",
+      "sources": [
+        {
+          "title": "Gemini Enterprise docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini/enterprise/docs"
+        },
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        },
+        {
+          "title": "Gemini Notebook (NotebookLM) — Google blog",
+          "url": "https://blog.google/innovation-and-ai/products/gemini-notebook/notebooklm-gemini-notebook/"
+        }
+      ]
     },
     {
       "id": "l8",
@@ -334,7 +416,17 @@
           "correct": "Trend and driver analysis is Conversational Insights."
         }
       ],
-      "lab": "Draw a customer's support journey (website → chat → phone → follow-up). Mark where Agent Search, Conversational Agents, Agent Assist and Conversational Insights would each help, and the KPI each would move."
+      "lab": "Draw a customer's support journey (website → chat → phone → follow-up). Mark where Agent Search, Conversational Agents, Agent Assist and Conversational Insights would each help, and the KPI each would move.",
+      "sources": [
+        {
+          "title": "Customer Engagement Suite — Google Cloud",
+          "url": "https://cloud.google.com/solutions/customer-engagement-ai"
+        },
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
+      ]
     },
     {
       "id": "l9",
@@ -372,7 +464,21 @@
           "correct": "Move to Agent Platform for IAM, data governance, compliance and SLAs."
         }
       ],
-      "lab": "In Google AI Studio, build a prompt that extracts fields from a sample invoice into JSON. Then list what would need to change to run it in production on Agent Platform: data location, access control, logging, monitoring."
+      "lab": "In Google AI Studio, build a prompt that extracts fields from a sample invoice into JSON. Then list what would need to change to run it in production on Agent Platform: data location, access control, logging, monitoring.",
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Google AI Studio vs Agent Studio — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/migrate/migrate-google-ai"
+        },
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        }
+      ]
     },
     {
       "id": "d2-l10",
@@ -418,7 +524,21 @@
           "correct": "Agent Runtime is the managed option for deploying and scaling agents."
         }
       ],
-      "lab": "Pick one internal process (for example answering HR policy questions). Write down which build path you'd use (no-code, low-code or ADK) and why, which retrieval option grounds it, and five test questions with expected answers you would use in Gen AI evals before launch."
+      "lab": "Pick one internal process (for example answering HR policy questions). Write down which build path you'd use (no-code, low-code or ADK) and why, which retrieval option grounds it, and five test questions with expected answers you would use in Gen AI evals before launch.",
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        },
+        {
+          "title": "Agent Gallery — Gemini Enterprise docs",
+          "url": "https://docs.cloud.google.com/gemini/enterprise/docs/agent-gallery"
+        }
+      ]
     },
     {
       "id": "l10",
@@ -455,7 +575,21 @@
           "correct": "Evaluate new versions against your test set before switching."
         }
       ],
-      "lab": "Ask the Gemini app a question about a very recent event with and without Google Search grounding (or compare to a source). Note how grounding changes accuracy and whether it cites sources."
+      "lab": "Ask the Gemini app a question about a very recent event with and without Google Search grounding (or compare to a source). Note how grounding changes accuracy and whether it cites sources.",
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Safety settings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-settings"
+        },
+        {
+          "title": "Grounding with Google Search — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/google-search"
+        }
+      ]
     },
     {
       "id": "l11",
@@ -487,7 +621,21 @@
           "correct": "Give one or more examples (few-shot)."
         }
       ],
-      "lab": "Write a zero-shot prompt that classifies five customer emails into billing / technical / sales. Then add three examples (few-shot) and compare consistency."
+      "lab": "Write a zero-shot prompt that classifies five customer emails into billing / technical / sales. Then add three examples (few-shot) and compare consistency.",
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        },
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        },
+        {
+          "title": "Thinking — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking"
+        }
+      ]
     },
     {
       "id": "l12",
@@ -520,7 +668,17 @@
           "correct": "Ground on first-party data (Agent Search / RAG)."
         }
       ],
-      "lab": "In Google AI Studio, run the same brainstorming prompt at temperature 0 and at a high temperature three times each. Then run a fact-extraction prompt at both. Note where variety helps and where it hurts."
+      "lab": "In Google AI Studio, run the same brainstorming prompt at temperature 0 and at a high temperature three times each. Then run a fact-extraction prompt at both. Note where variety helps and where it hurts.",
+      "sources": [
+        {
+          "title": "Grounding with Google Search — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/google-search"
+        },
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
+      ]
     },
     {
       "id": "l13",
@@ -567,7 +725,17 @@
           "correct": "Include integration, data preparation, training, change management and operations."
         }
       ],
-      "lab": "For one use case, write a one-page brief: business goal, users, data needed, the rung of the ladder you'd start on, two KPIs with their current baseline, and the pilot group."
+      "lab": "For one use case, write a one-page brief: business goal, users, data needed, the rung of the ladder you'd start on, two KPIs with their current baseline, and the pilot group.",
+      "sources": [
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        },
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
+      ]
     },
     {
       "id": "l14",
@@ -604,7 +772,17 @@
           "correct": "SAIF is a framework; IAM, Security Command Center and monitoring tools are the products that implement controls."
         }
       ],
-      "lab": "For a planned assistant, list its data sources and the actions it can take. For each, write who should have access (IAM role) and what you'd log."
+      "lab": "For a planned assistant, list its data sources and the actions it can take. For each, write who should have access (IAM role) and what you'd log.",
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        },
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
+      ]
     },
     {
       "id": "l15",
@@ -638,7 +816,17 @@
           "correct": "Keep a human decision-maker, test for bias and keep explanations."
         }
       ],
-      "lab": "Take one AI use case and write a short \"AI fact sheet\": purpose, data used, known limitations, who is accountable, how users are told it's AI, and how someone can appeal an outcome."
+      "lab": "Take one AI use case and write a short \"AI fact sheet\": purpose, data used, known limitations, who is accountable, how users are told it's AI, and how someone can appeal an outcome.",
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        },
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
+      ]
     }
   ],
   "flashcards": [
@@ -1408,6 +1596,12 @@
         "Neural networks power both predictive and generative systems; architecture doesn’t make it generative.",
         "Correct: forecasting an outcome is predictive ML.",
         "Being in production says nothing about whether a model is a broad, adaptable foundation model."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1430,6 +1624,12 @@
         "Where a model runs doesn’t make it a foundation model.",
         "That describes a task-specific model, the opposite of a foundation model.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1452,6 +1652,12 @@
         "Training from scratch is the slowest and most expensive option.",
         "Correct.",
         "Prompt tuning trains a small set of soft-prompt parameters, which is still training."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1474,6 +1680,12 @@
         "They differ: one involves training, the other doesn’t.",
         "Changing all weights describes full fine-tuning.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1496,6 +1708,12 @@
         "Supervised learning needs labelled examples, which they don’t have.",
         "Reinforcement learning learns from rewards for actions, not from clustering records.",
         "Prompt tuning adapts a language model; it isn’t a way to segment records."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1518,6 +1736,12 @@
         "Clustering groups data; it doesn’t optimise for rewarded behaviour.",
         "Correct.",
         "Ingestion is a lifecycle stage, not a learning approach."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1540,6 +1764,12 @@
         "Ingestion brings raw data into the system.",
         "Correct.",
         "Data preparation is cleaning and transforming data before training."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1562,6 +1792,12 @@
         "Model management covers models after deployment.",
         "No model is being trained in this step.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1584,6 +1820,12 @@
         "Fixed columns make this structured.",
         "A defined schema makes this structured.",
         "A table of IDs and dates is structured."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1606,6 +1848,12 @@
         "Cost isn’t what causes contradictory answers.",
         "The documents are readable; their format isn’t the issue.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1628,6 +1876,12 @@
         "Labels improve training and evaluation; they don’t replace human oversight.",
         "Correct.",
         "Foundation models answer out of the box without your labels."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1650,6 +1904,12 @@
         "Gemini, Imagen and Veo are the models.",
         "Applications are finished end-user experiences such as Gemini for Workspace.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -1672,6 +1932,12 @@
         "Infrastructure gives the most control and needs the most engineering.",
         "Running models directly still needs engineering around them.",
         "Building on a platform takes more effort than adopting an application."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -1695,6 +1961,12 @@
         "Calling Gemini through the API requires a connection to Google’s managed service, which an air-gapped environment does not allow, and it does not give you the weights to fine-tune freely.",
         "Correct.",
         "Veo generates video."
+      ],
+      "sources": [
+        {
+          "title": "Google models on Agent Platform — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/google-models"
+        }
       ]
     },
     {
@@ -1718,6 +1990,12 @@
         "Document AI extracts data from documents.",
         "Correct.",
         "Imagen produces images, not video."
+      ],
+      "sources": [
+        {
+          "title": "Google models on Agent Platform — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/google-models"
+        }
       ]
     },
     {
@@ -1743,6 +2021,12 @@
         "The task is understanding content, not generating images.",
         "Correct: 900 pages need a long context window.",
         "Correct: scanned exhibits need image understanding."
+      ],
+      "sources": [
+        {
+          "title": "Google models on Agent Platform — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/google-models"
+        }
       ]
     },
     {
@@ -1765,6 +2049,12 @@
         "That is IAM.",
         "SynthID marks content; it doesn’t generate training data.",
         "That is Speech-to-Text."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -1787,6 +2077,12 @@
         "Automate is running multi-step processes.",
         "Create is producing new drafts or assets.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1809,6 +2105,12 @@
         "Unreviewed changes to production data are high risk.",
         "Correct.",
         "Autonomous credit decisions are high risk and heavily regulated."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1831,6 +2133,12 @@
         "Labelling isn’t required for models to read documents or for RAG.",
         "This is a strong reason to adopt it, not a blocker.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1856,6 +2164,12 @@
         "Imagen generates images; Veo generates video.",
         "Invoice extraction is Document AI.",
         "Gemma weights are downloadable and run wherever you choose."
+      ],
+      "sources": [
+        {
+          "title": "Google models on Agent Platform — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/google-models"
+        }
       ]
     },
     {
@@ -1878,6 +2192,12 @@
         "Bigger models still produce poor results from incomplete inputs.",
         "Correct.",
         "Higher temperature adds randomness; it doesn’t fix bad data."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -1901,6 +2221,12 @@
         "A model generates content but on its own does not orchestrate tool calls across systems.",
         "Correct: reasoning, planning and tool use to finish a multi-step task is what defines an agent.",
         "A platform is where agents are built, deployed and governed, not the capability itself."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -1924,6 +2250,12 @@
         "Training from scratch is slow and costly; foundation models exist to avoid this.",
         "Veo generates video; it is not a text classifier.",
         "Correct: Flash and Flash-Lite are designed for fast, cost-efficient, high-volume work."
+      ],
+      "sources": [
+        {
+          "title": "Google models on Agent Platform — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/google-models"
+        }
       ]
     },
     {
@@ -1947,6 +2279,12 @@
         "Nothing requires on-device or self-hosted use, and a lightweight model is a weaker fit for hard multi-document reasoning.",
         "Imagen generates images; it does not analyse documents.",
         "Correct: Pro is the tier for complex reasoning where quality justifies cost."
+      ],
+      "sources": [
+        {
+          "title": "Google models on Agent Platform — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/google-models"
+        }
       ]
     },
     {
@@ -1971,6 +2309,12 @@
         "Correct: Lyria generates music.",
         "Veo generates video; invoice extraction needs document understanding (for example Gemini or Document AI).",
         "Correct: Veo generates video from text or images."
+      ],
+      "sources": [
+        {
+          "title": "Google models on Agent Platform — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/google-models"
+        }
       ]
     },
     {
@@ -1994,6 +2338,16 @@
         "Data preparation happens before training, not after.",
         "Model Registry tracks versions in the management stage; it does not serve live traffic by itself.",
         "Ingestion brings data in; the model already exists."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -2017,6 +2371,12 @@
         "Writing new descriptions is the create pattern.",
         "Correct: synthesising findings across many reports is discover.",
         "Running a multi-step process and updating systems is automate."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -2040,6 +2400,12 @@
         "Correct: the right data exists but cannot be accessed by the system.",
         "Cost of collection or storage is not the issue described.",
         "The gap is in the grounding source the assistant can reach, not in the model's pre-training data."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -2063,6 +2429,12 @@
         "Reinforcement learning learns from rewards for actions taken, not from tagged historic records.",
         "Generating video does not classify claims.",
         "Correct: tagged examples plus a prediction target is supervised learning."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -2085,6 +2457,16 @@
         "The contact-centre offering is the Customer Engagement Suite.",
         "Correct.",
         "That describes the Gemini app."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Agent Platform release notes — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes"
+        }
       ]
     },
     {
@@ -2108,6 +2490,16 @@
         "Conversational Insights analyses contact-centre conversations.",
         "Vision is a single pre-built image API.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Agent Platform release notes — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes"
+        }
       ]
     },
     {
@@ -2130,6 +2522,16 @@
         "Third-party and open models are available too.",
         "Openness refers to choice and standards, not sharing data.",
         "Openness doesn’t remove enterprise security."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Agent Platform release notes — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes"
+        }
       ]
     },
     {
@@ -2152,6 +2554,12 @@
         "Correct.",
         "This contradicts Google Cloud’s data commitments.",
         "Model Garden is a model catalogue, not a store of customer prompts."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -2174,6 +2582,12 @@
         "That describes the Natural Language API.",
         "Correct.",
         "TPUs are hardware accelerators, not databases."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -2196,6 +2610,12 @@
         "AutoML trains custom ML models.",
         "Document Translation translates documents.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini/enterprise/docs"
+        }
       ]
     },
     {
@@ -2219,6 +2639,16 @@
         "Workspace integration works inside Google’s apps; it isn’t cross-system enterprise search.",
         "AI Studio is a developer prototyping tool.",
         "Agent Assist supports contact-centre agents."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini/enterprise/docs"
+        },
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        }
       ]
     },
     {
@@ -2241,6 +2671,12 @@
         "Correct.",
         "The platform is for building custom solutions, which is unnecessary here.",
         "Conversational Insights analyses contact-centre calls."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini/enterprise/docs"
+        }
       ]
     },
     {
@@ -2267,6 +2703,16 @@
         "Correct.",
         "Correct.",
         "TPUs are infrastructure, not part of Gemini Enterprise."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini/enterprise/docs"
+        },
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        }
       ]
     },
     {
@@ -2290,6 +2736,12 @@
         "Conversational Insights analyses conversations after the fact.",
         "Workspace is an employee productivity tool.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Customer Engagement Suite — Google Cloud",
+          "url": "https://cloud.google.com/solutions/customer-engagement-ai"
+        }
       ]
     },
     {
@@ -2313,6 +2765,12 @@
         "Conversational Agents automate conversations instead of assisting humans.",
         "Insights analyses trends, not live assistance.",
         "AutoML trains custom models."
+      ],
+      "sources": [
+        {
+          "title": "Customer Engagement Suite — Google Cloud",
+          "url": "https://cloud.google.com/solutions/customer-engagement-ai"
+        }
       ]
     },
     {
@@ -2336,6 +2794,12 @@
         "Correct.",
         "Agent Assist helps agents in the moment.",
         "Conversational Agents handle conversations; they don’t report on trends."
+      ],
+      "sources": [
+        {
+          "title": "Customer Engagement Suite — Google Cloud",
+          "url": "https://cloud.google.com/solutions/customer-engagement-ai"
+        }
       ]
     },
     {
@@ -2359,6 +2823,16 @@
         "Video Intelligence analyses video content.",
         "Correct.",
         "Google Search grounding uses the public web, not the retailer’s catalogue."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Customer Engagement Suite — Google Cloud",
+          "url": "https://cloud.google.com/solutions/customer-engagement-ai"
+        }
       ]
     },
     {
@@ -2381,6 +2855,12 @@
         "Insights is analytics.",
         "Model Garden is a model catalogue.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Customer Engagement Suite — Google Cloud",
+          "url": "https://cloud.google.com/solutions/customer-engagement-ai"
+        }
       ]
     },
     {
@@ -2404,6 +2884,12 @@
         "This reverses the roles.",
         "Workspace isn’t a development tool.",
         "Insights analyses contact-centre conversations."
+      ],
+      "sources": [
+        {
+          "title": "Google AI Studio vs Agent Studio — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/migrate/migrate-google-ai"
+        }
       ]
     },
     {
@@ -2426,6 +2912,12 @@
         "Correct.",
         "Natural Language analyses text sentiment and entities but isn’t built for document field extraction.",
         "Translation converts languages."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2448,6 +2940,12 @@
         "Vision analyses images.",
         "Correct.",
         "Plain text translation loses document layout."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2470,6 +2968,12 @@
         "The model still does the reasoning; tools extend what it can do.",
         "Tools are used at run time when the agent works.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2495,6 +2999,12 @@
         "Vision works on images.",
         "AutoML trains custom models, which isn’t needed here.",
         "Document AI works on documents."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2517,6 +3027,12 @@
         "Correct.",
         "That is Gemini in Workspace.",
         "That is CCaaS."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2542,6 +3058,12 @@
         "Correct.",
         "Correct.",
         "Starting from scratch is the opposite of democratisation."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2564,6 +3086,12 @@
         "Google emphasises an open, multi-model approach.",
         "Enterprise platforms are monitored and governed.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -2587,6 +3115,12 @@
         "Workspace Gemini works within Google’s apps; it isn’t a custom agent wired to your database.",
         "Image models don’t address any of these tasks.",
         "Web search can’t see the private database or manuals."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2609,6 +3143,12 @@
         "Correct.",
         "It is infrastructure, not a model.",
         "Agent builders are platform or application tools."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -2632,6 +3172,12 @@
         "AI Studio is a developer prototyping tool, not an employee product.",
         "Correct.",
         "There’s no reason to remove Workspace; the products complement each other."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini/enterprise/docs"
+        }
       ]
     },
     {
@@ -2654,6 +3200,12 @@
         "Workspace is a productivity integration.",
         "Document AI extracts document data.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        }
       ]
     },
     {
@@ -2680,6 +3232,12 @@
         "Insights reports on trends; it neither automates chats nor assists live.",
         "Model Garden is a model catalogue, not a contact-centre product.",
         "AutoML trains custom models."
+      ],
+      "sources": [
+        {
+          "title": "Customer Engagement Suite — Google Cloud",
+          "url": "https://cloud.google.com/solutions/customer-engagement-ai"
+        }
       ]
     },
     {
@@ -2703,6 +3261,12 @@
         "Model benchmarks don't cover this specific agent, its data or its tools.",
         "Correct.",
         "Temperature changes randomness; it doesn't measure quality."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2726,6 +3290,12 @@
         "Sessions keep the current conversation, not memory across conversations.",
         "AutoML trains custom models; it doesn't store user memory.",
         "Search grounding brings in public web information, not a customer's preferences."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2749,6 +3319,12 @@
         "Correct.",
         "Workspace is an employee productivity product.",
         "Insights analyses contact-centre conversations."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2772,6 +3348,16 @@
         "AutoML trains custom ML models, not conversational agents.",
         "AI Studio is a developer tool that requires API work and lacks enterprise controls.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini/enterprise/docs"
+        },
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        }
       ]
     },
     {
@@ -2798,6 +3384,12 @@
         "Gemini is also available through the Gemini API used by AI Studio.",
         "AI Studio prompts work; the gap is enterprise controls.",
         "Evaluation is still needed on any platform."
+      ],
+      "sources": [
+        {
+          "title": "Google AI Studio vs Agent Studio — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/generative-ai/docs/migrate/migrate-google-ai"
+        }
       ]
     },
     {
@@ -2821,6 +3413,12 @@
         "AutoML trains custom ML models.",
         "Vision analyses images.",
         "Conversational Agents build customer-facing virtual agents."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Notebook (NotebookLM) — Google blog",
+          "url": "https://blog.google/innovation-and-ai/products/gemini-notebook/notebooklm-gemini-notebook/"
+        }
       ]
     },
     {
@@ -2844,6 +3442,12 @@
         "Correct.",
         "Feature Store manages ML features for models.",
         "CCaaS runs contact centres."
+      ],
+      "sources": [
+        {
+          "title": "Agent Gallery — Gemini Enterprise docs",
+          "url": "https://docs.cloud.google.com/gemini/enterprise/docs/agent-gallery"
+        }
       ]
     },
     {
@@ -2866,6 +3470,16 @@
         "AI Studio is a prototyping tool for the Gemini API.",
         "Correct.",
         "Gemini Notebook is the renamed NotebookLM."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Agent Platform release notes — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes"
+        }
       ]
     },
     {
@@ -2889,6 +3503,12 @@
         "Google Search grounds on the public web, not private research.",
         "Workspace isn't a retrieval pipeline for an application.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2912,6 +3532,12 @@
         "Model Registry tracks model versions; it doesn't provide sample agents.",
         "Insights is contact-centre analytics.",
         "Video Intelligence analyses video."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2938,6 +3564,12 @@
         "Large models still hallucinate and misuse tools.",
         "Quality changes over time, so monitoring must continue.",
         "Fluent answers can still be wrong or ungrounded."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -2960,6 +3592,12 @@
         "Correct.",
         "CCaaS is a contact-centre platform.",
         "AutoML trains custom models."
+      ],
+      "sources": [
+        {
+          "title": "Generative AI Leader exam — Google Cloud",
+          "url": "https://cloud.google.com/learn/certification/generative-ai-leader"
+        }
       ]
     },
     {
@@ -2982,6 +3620,12 @@
         "Correct.",
         "Drift is gradual change in production data over time.",
         "Prompt chaining is a technique for multi-step tasks."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3005,6 +3649,12 @@
         "Without context the model can’t know internal policies.",
         "Correct.",
         "Monthly fine-tuning is costly and still lags behind changes."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3027,6 +3677,12 @@
         "Citations come from retrieval.",
         "Fine-tuning requires labelled examples.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3050,6 +3706,12 @@
         "More randomness increases risk.",
         "More context doesn’t guarantee correctness.",
         "Chaining helps structure tasks but doesn’t add oversight."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3072,6 +3734,12 @@
         "Correct.",
         "Zero-shot includes no examples.",
         "Chain-of-thought asks for step-by-step reasoning."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -3094,6 +3762,12 @@
         "Zero-shot alone can’t retrieve live data.",
         "Correct.",
         "Chain-of-thought reasons but doesn’t act with tools."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -3116,6 +3790,12 @@
         "A shorter output can cut off the reasoning.",
         "Fewer instructions won’t improve reasoning.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -3138,6 +3818,12 @@
         "Few-shot means including examples.",
         "Prompt tuning trains soft prompts.",
         "Search grounding adds web data."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -3160,6 +3846,12 @@
         "Correct.",
         "Internal documents won’t contain today’s public news.",
         "A model tuned last quarter predates today’s news."
+      ],
+      "sources": [
+        {
+          "title": "Grounding with Google Search — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/google-search"
+        }
       ]
     },
     {
@@ -3186,6 +3878,12 @@
         "Correct.",
         "Correct.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3208,6 +3906,12 @@
         "Temperature directly affects variability.",
         "High temperature works against consistency.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -3231,6 +3935,12 @@
         "Zero temperature makes output even more repetitive.",
         "Shorter outputs don’t add variety.",
         "Removing guidance degrades quality rather than adding useful variety."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -3253,6 +3963,12 @@
         "Correct.",
         "Low temperature affects randomness, not length.",
         "Top-p affects which tokens are sampled, not where output stops."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -3278,6 +3994,12 @@
         "Correct.",
         "Correct.",
         "Without logging you can’t detect or diagnose problems."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3300,6 +4022,12 @@
         "Refusing upgrades forgoes improvements and security fixes.",
         "Context window size alone isn’t a quality test.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3323,6 +4051,12 @@
         "Correct.",
         "Temperature controls randomness, not systematic skew.",
         "The problem is a consistent pattern, not rare inputs, and output length is irrelevant."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3346,6 +4080,12 @@
         "Knowledge cutoff is about events after training, not rare categories.",
         "Nothing changed over time; the weakness is on rare inputs from the start.",
         "Prompt injection is a malicious input attack, not a coverage gap."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3369,6 +4109,12 @@
         "More randomness does not supply missing facts.",
         "Correct.",
         "Tuning on incomplete, inconsistent data bakes the flaws in."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3392,6 +4138,12 @@
         "Correct.",
         "ReAct adds tool actions; it does not set a persona.",
         "Chaining splits a task into steps; it does not set tone."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -3414,6 +4166,12 @@
         "Fine-tuning is costly and unnecessary for a task the model already handles.",
         "Examples help with specific formats, but they are not needed first for a common task.",
         "Tool use adds complexity the task does not require."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -3436,6 +4194,12 @@
         "Correct.",
         "Prompt tuning trains learned soft prompts rather than adding an example to the text.",
         "Chain-of-thought asks for step-by-step reasoning, not examples."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -3463,6 +4227,12 @@
         "Correct.",
         "Grounding ties answers to external verifiable sources; the model's own output is not one.",
         "Weights encode training, not a verifiable source to cite at answer time."
+      ],
+      "sources": [
+        {
+          "title": "Grounding with Google Search — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/google-search"
+        }
       ]
     },
     {
@@ -3486,6 +4256,12 @@
         "Correct.",
         "RAG APIs work but require building and maintaining the pipeline.",
         "Fine-tuning does not give current, cited answers and needs retraining when documents change."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3509,6 +4285,12 @@
         "This caps length, not word choice.",
         "Safety settings block harmful categories; they do not narrow normal sampling.",
         "Context window is how much input fits, not how output is sampled."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs — Google AI Studio",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -3532,6 +4314,12 @@
         "Correct.",
         "Longer outputs do not reduce harm.",
         "Removing instructions weakens control over behaviour."
+      ],
+      "sources": [
+        {
+          "title": "Safety settings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-settings"
+        }
       ]
     },
     {
@@ -3555,6 +4343,12 @@
         "Correct.",
         "Search grounding adds world data; it does not compare versions.",
         "Feature Store manages ML features, not output evaluation."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3578,6 +4372,12 @@
         "Search grounding supplies public web data, not model features.",
         "Role prompting sets a persona in a prompt.",
         "Workspace with Gemini is a productivity offering."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3604,6 +4404,12 @@
         "Higher temperature increases the chance of unsupported text.",
         "Tuning per document is impractical and does not tie output to sources.",
         "Longer output adds more room for errors rather than checking them."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        }
       ]
     },
     {
@@ -3626,6 +4432,12 @@
         "Building from scratch adds cost and time without need.",
         "Waiting delays value.",
         "Training a model is unnecessary when a product already does the job."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        }
       ]
     },
     {
@@ -3648,6 +4460,12 @@
         "Correct.",
         "Anecdotes aren’t measurement.",
         "Prompt counts show activity, not value."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        }
       ]
     },
     {
@@ -3673,6 +4491,12 @@
         "Correct.",
         "Correct.",
         "Big-bang launches without measurement can’t show value or catch problems."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        }
       ]
     },
     {
@@ -3695,6 +4519,12 @@
         "It isn’t a model.",
         "It isn’t a certification.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -3717,6 +4547,12 @@
         "Drift is gradual change in data.",
         "Distillation compresses models.",
         "Pseudonymisation is a privacy technique."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -3739,6 +4575,12 @@
         "Correct.",
         "Agent Assist is a contact-centre tool.",
         "Model Garden is a model catalogue."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -3761,6 +4603,12 @@
         "Open access is risky even in a pilot.",
         "Correct.",
         "Admin rights maximise the impact of any mistake or attack."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -3784,6 +4632,12 @@
         "This is about identifiers, not network encryption.",
         "Poisoning is malicious tampering, not a privacy technique.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -3809,6 +4663,12 @@
         "Removing humans removes accountability; models can carry their own bias.",
         "Transparency about AI use is a responsible-AI practice.",
         "Past hiring data can encode historical bias."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -3831,6 +4691,12 @@
         "Correct.",
         "Responsible AI isn’t a performance optimisation.",
         "Security and responsibility work together."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -3854,6 +4720,12 @@
         "Temperature has nothing to do with transparency.",
         "Correct.",
         "Hiding AI origin undermines transparency."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -3881,6 +4753,12 @@
         "Audit logs are needed for investigation; privacy is protected by access control and data minimisation instead.",
         "Correct.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -3904,6 +4782,16 @@
         "Customising a model is the highest rung; it isn't justified before simpler options are tried.",
         "Correct.",
         "Keyword search doesn't meet the natural-language goal and still needs custom build work."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform docs — Google Cloud",
+          "url": "https://docs.cloud.google.com/vertex-ai/docs"
+        },
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        }
       ]
     },
     {
@@ -3927,6 +4815,12 @@
         "Correct.",
         "An unchanged pre-built assistant can't deliver the specialised behaviour required.",
         "Waiting delays value and doesn't address control needs."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        }
       ]
     },
     {
@@ -3952,6 +4846,12 @@
         "Correct.",
         "Clear policies build confidence; removing them adds risk.",
         "Adoption metrics are what show whether the fixes work."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        }
       ]
     },
     {
@@ -3975,6 +4875,12 @@
         "Correct.",
         "This is benefit divided by cost (2.5) expressed as a percentage, which ignores subtracting the cost.",
         "This is net benefit divided by benefit, not by cost."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        }
       ]
     },
     {
@@ -3997,6 +4903,12 @@
         "Metrics chosen after launch have no baseline to compare against.",
         "Prompt counts show activity, not value.",
         "Generic benchmarks don't measure this organisation's business outcomes."
+      ],
+      "sources": [
+        {
+          "title": "Gemini Enterprise — Google Cloud",
+          "url": "https://cloud.google.com/products/gemini-enterprise"
+        }
       ]
     },
     {
@@ -4020,6 +4932,12 @@
         "Hiding the gap removes transparency without fixing the cause; proxies for region could remain.",
         "Correct.",
         "Retrying doesn't give a real appeal or address bias."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -4045,6 +4963,12 @@
         "Correct.",
         "Gems are custom Gemini personas.",
         "Model Garden is a model catalogue."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     },
     {
@@ -4067,6 +4991,12 @@
         "Correct.",
         "This describes the older, superseded version of the principles.",
         "These are important topics but not the principles' structure."
+      ],
+      "sources": [
+        {
+          "title": "Secure AI — Google Cloud",
+          "url": "https://cloud.google.com/security/ai"
+        }
       ]
     }
   ],

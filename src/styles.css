@@ -260,3 +260,10 @@ select { max-width: 100%; }
 .results { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px; }
 .results li { min-width: 0; overflow-wrap: anywhere; }
 .results p { margin: 4px 0 0; color: var(--muted); }
+
+/* Official-docs links under lessons and answer explanations */
+.sources { margin-top: 10px; font-size: 0.9em; }
+.sources-h { font-weight: 600; margin-bottom: 4px; }
+.sources ul { margin: 0; padding-left: 18px; }
+.sources li { overflow-wrap: anywhere; }
+.card > .sources:first-child { margin-top: 0; }

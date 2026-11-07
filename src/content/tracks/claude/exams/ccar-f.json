@@ -123,7 +123,21 @@
           "correct": "Refusals arrive as HTTP 200 with stop_reason \"refusal\". Your loop must branch on it explicitly."
         }
       ],
-      "lab": "Write a ~40-line Python or TypeScript loop with the Anthropic SDK and two fake tools (get_weather, get_time). Log stop_reason on every iteration. Then force max_tokens=50 and watch your code take the truncation branch. Finally add a max_iterations guard and make it raise a clear error rather than return silently."
+      "lab": "Write a ~40-line Python or TypeScript loop with the Anthropic SDK and two fake tools (get_weather, get_time). Log stop_reason on every iteration. Then force max_tokens=50 and watch your code take the truncation branch. Finally add a max_iterations guard and make it raise a clear error rather than return silently.",
+      "sources": [
+        {
+          "title": "Handling stop reasons — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+        },
+        {
+          "title": "Agent loop — Agent SDK docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/agent-loop"
+        },
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        }
+      ]
     },
     {
       "id": "l2",
@@ -162,7 +176,13 @@
           "correct": "Parallelization has predefined subtasks. An orchestrator decides the subtasks at runtime."
         }
       ],
-      "lab": "Take one business process you know (e.g. expense approval). Sketch it three ways: as a prompt chain, as a router, and as an orchestrator-workers system. For each, note cost, latency, testability and failure modes, then pick one and justify it in three sentences."
+      "lab": "Take one business process you know (e.g. expense approval). Sketch it three ways: as a prompt chain, as a router, and as an orchestrator-workers system. For each, note cost, latency, testability and failure modes, then pick one and justify it in three sentences.",
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
+      ]
     },
     {
       "id": "l3",
@@ -211,7 +231,21 @@
           "correct": "Current Claude Code allows nesting up to a configurable depth (default 3). Flatten only if you choose to."
         }
       ],
-      "lab": "In Claude Code, create .claude/agents/researcher.md with a description, a restricted tool list (Read, Grep, Glob) and a system prompt requiring a bullet summary with file:line citations. Ask the main session to use it on your repo, and compare main-context usage with doing the same exploration inline."
+      "lab": "In Claude Code, create .claude/agents/researcher.md with a description, a restricted tool list (Read, Grep, Glob) and a system prompt requiring a bullet summary with file:line citations. Ask the main session to use it on your repo, and compare main-context usage with doing the same exploration inline.",
+      "sources": [
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        },
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        },
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
+      ]
     },
     {
       "id": "l4",
@@ -251,7 +285,21 @@
           "correct": "Resolve what is safe, escalate the specific part that needs a human, and include a structured summary."
         }
       ],
-      "lab": "Design a refund tool whose server-side handler rejects amounts above a threshold with {\"is_error\": true, \"content\": \"APPROVAL_REQUIRED: amount exceeds agent limit; create escalation ticket\"}. Write the escalation-ticket tool schema (customer_id, summary, attempted_actions, requested_action, urgency)."
+      "lab": "Design a refund tool whose server-side handler rejects amounts above a threshold with {\"is_error\": true, \"content\": \"APPROVAL_REQUIRED: amount exceeds agent limit; create escalation ticket\"}. Write the escalation-ticket tool schema (customer_id, summary, attempted_actions, requested_action, urgency).",
+      "sources": [
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        },
+        {
+          "title": "Hooks — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/hooks"
+        },
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
+      ]
     },
     {
       "id": "l5",
@@ -299,7 +347,25 @@
           "correct": "result exists only when subtype is \"success\". Check the subtype first."
         }
       ],
-      "lab": "Using the Agent SDK quickstart, build an agent restricted to Read/Grep/Glob that answers questions about a repo. Add a PreToolUse hook that logs every tool call to a JSONL file, and a max-turns guard that reports \"incomplete\" when it trips."
+      "lab": "Using the Agent SDK quickstart, build an agent restricted to Read/Grep/Glob that answers questions about a repo. Add a PreToolUse hook that logs every tool call to a JSONL file, and a max-turns guard that reports \"incomplete\" when it trips.",
+      "sources": [
+        {
+          "title": "Agent SDK overview — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/overview"
+        },
+        {
+          "title": "Agent loop — Agent SDK docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/agent-loop"
+        },
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        },
+        {
+          "title": "Hooks — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/hooks"
+        }
+      ]
     },
     {
       "id": "d1-l1",
@@ -346,7 +412,21 @@
           "correct": "If the steps never change, hard-code them as a chain or sectioned parallel step."
         }
       ],
-      "lab": "Take an agent loop you already have and add a failure classifier around tool execution: transient (backoff, at most 3 attempts), correctable (is_error with a fix hint), persistent (stop). Add a no-progress detector that trips when the same tool and arguments fail twice, and make the loop return a structured report {attempted, failed, partial_results, needs_decision} instead of silently looping."
+      "lab": "Take an agent loop you already have and add a failure classifier around tool execution: transient (backoff, at most 3 attempts), correctable (is_error with a fix hint), persistent (stop). Add a no-progress detector that trips when the same tool and arguments fail twice, and make the loop return a structured report {attempted, failed, partial_results, needs_decision} instead of silently looping.",
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        },
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        },
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
+      ]
     },
     {
       "id": "l9",
@@ -394,7 +474,17 @@
           "correct": "Imports load the same content. To save context, use path-scoped rules, subdirectory files or skills."
         }
       ],
-      "lab": "Run /init on a repo, then trim the result to under 60 lines. Move API conventions to .claude/rules/api.md with a paths: glob, add an @import for docs/architecture.md, create a git-ignored CLAUDE.local.md with your sandbox URL, and verify with /memory which files load before and after you open a file under src/api/."
+      "lab": "Run /init on a repo, then trim the result to under 60 lines. Move API conventions to .claude/rules/api.md with a paths: glob, add an @import for docs/architecture.md, create a git-ignored CLAUDE.local.md with your sandbox URL, and verify with /memory which files load before and after you open a file under src/api/.",
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        },
+        {
+          "title": "Settings — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/settings"
+        }
+      ]
     },
     {
       "id": "l10",
@@ -455,7 +545,25 @@
           "correct": "Exit 2 blocks (stderr is the reason); exit 1 is non-blocking."
         }
       ],
-      "lab": "Add to a repo: (1) .claude/settings.json with a deny rule for .env, an ask rule for git push and an allow rule for your test command; (2) a PostToolUse hook on Edit|Write that runs your formatter; (3) a .claude/skills/review/SKILL.md invoked as /review; (4) a read-only code-reviewer subagent; (5) a .mcp.json using ${VAR} for its token. Commit everything except settings.local.json and CLAUDE.local.md."
+      "lab": "Add to a repo: (1) .claude/settings.json with a deny rule for .env, an ask rule for git push and an allow rule for your test command; (2) a PostToolUse hook on Edit|Write that runs your formatter; (3) a .claude/skills/review/SKILL.md invoked as /review; (4) a read-only code-reviewer subagent; (5) a .mcp.json using ${VAR} for its token. Commit everything except settings.local.json and CLAUDE.local.md.",
+      "sources": [
+        {
+          "title": "Settings — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/settings"
+        },
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        },
+        {
+          "title": "Hooks — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/hooks"
+        },
+        {
+          "title": "Skills — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/skills"
+        }
+      ]
     },
     {
       "id": "l11",
@@ -508,7 +616,21 @@
           "correct": "Read `structured_output` and handle the case where it is missing."
         }
       ],
-      "lab": "Write a GitHub Actions job using anthropics/claude-code-action@v1 (or claude -p) that reviews the PR diff with claude_args \"--max-turns 5 --allowedTools Read,Grep,Glob\", requests JSON findings via --json-schema, posts them as a PR comment, and fails only on your deterministic test step. Then repeat the review locally in plan mode and compare."
+      "lab": "Write a GitHub Actions job using anthropics/claude-code-action@v1 (or claude -p) that reviews the PR diff with claude_args \"--max-turns 5 --allowedTools Read,Grep,Glob\", requests JSON findings via --json-schema, posts them as a PR comment, and fails only on your deterministic test step. Then repeat the review locally in plan mode and compare.",
+      "sources": [
+        {
+          "title": "Permission modes (plan mode) — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permission-modes"
+        },
+        {
+          "title": "Headless mode — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/headless"
+        },
+        {
+          "title": "GitHub Actions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/github-actions"
+        }
+      ]
     },
     {
       "id": "l12",
@@ -551,7 +673,17 @@
           "correct": "On newer models aggressive wording overtriggers. Use plain, direct language and explain why the rule exists."
         }
       ],
-      "lab": "Pick a classification task. Write v1 (bare instruction), v2 (plus XML-tagged input and an explicit label set), and v3 (plus 4 diverse examples). Score each on 30 labelled samples and record accuracy in a table."
+      "lab": "Pick a classification task. Write v1 (bare instruction), v2 (plus XML-tagged input and an explicit label set), and v3 (plus 4 diverse examples). Score each on 30 labelled samples and record accuracy in a table.",
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        },
+        {
+          "title": "Prompt engineering overview — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"
+        }
+      ]
     },
     {
       "id": "l13",
@@ -594,7 +726,21 @@
           "correct": "Check stop_reason (refusal, max_tokens) and validate ranges and business rules in code; the schema can't express them."
         }
       ],
-      "lab": "Build an invoice extractor: a Pydantic/Zod schema (nullable optional fields, enum currency, additionalProperties: false on every object) passed through structured outputs, a stop_reason check, validation of sum(line_items) == total, and one feedback retry. Test it on 5 invoices, including one missing a due date."
+      "lab": "Build an invoice extractor: a Pydantic/Zod schema (nullable optional fields, enum currency, additionalProperties: false on every object) passed through structured outputs, a stop_reason check, validation of sum(line_items) == total, and one feedback retry. Test it on 5 invoices, including one missing a due date.",
+      "sources": [
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        },
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        },
+        {
+          "title": "Define tools — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+        }
+      ]
     },
     {
       "id": "d3-l1",
@@ -632,7 +778,13 @@
           "correct": "That can trigger reasoning_extraction refusals. Use a short \"explanation\" field and rely on built-in thinking."
         }
       ],
-      "lab": "Take one hard analysis task. Run it with adaptive thinking at two effort levels and record accuracy, latency and output tokens for each. Then build a draft, review, refine chain and compare it with the single-call result on the same 10 inputs."
+      "lab": "Take one hard analysis task. Run it with adaptive thinking at two effort levels and record accuracy, latency and output tokens for each. Then build a draft, review, refine chain and compare it with the single-call result on the same 10 inputs.",
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
+      ]
     },
     {
       "id": "d3-l2",
@@ -670,7 +822,21 @@
           "correct": "Run old and new versions on the same eval set and compare."
         }
       ],
-      "lab": "Move a prompt into git. Write 20 eval cases (including 5 edge cases) with code-graded checks. Make one prompt change, run both versions, and write a one-paragraph go/no-go based on the score diff."
+      "lab": "Move a prompt into git. Write 20 eval cases (including 5 edge cases) with code-graded checks. Make one prompt change, run both versions, and write a one-paragraph go/no-go based on the score diff.",
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        },
+        {
+          "title": "Prompt caching — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        },
+        {
+          "title": "Prompt engineering overview — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"
+        }
+      ]
     },
     {
       "id": "l6",
@@ -714,7 +880,17 @@
           "correct": "Check model support. On models that reject forced tool use, use structured outputs or auto plus a strict tool."
         }
       ],
-      "lab": "Take three overlapping tools from a real API you use and redesign them into one or two task-shaped tools. Write full descriptions, then test with 10 varied user prompts and count wrong-tool selections before and after."
+      "lab": "Take three overlapping tools from a real API you use and redesign them into one or two task-shaped tools. Write full descriptions, then test with 10 varied user prompts and count wrong-tool selections before and after.",
+      "sources": [
+        {
+          "title": "Define tools — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+        },
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        }
+      ]
     },
     {
       "id": "l7",
@@ -748,7 +924,21 @@
           "correct": "Query the payment status, or retry with the same idempotency key."
         }
       ],
-      "lab": "Wrap a flaky fake API in a tool handler: retry 429/503 with exponential backoff (max 3), map 404 to an actionable is_error, and map a timeout on a POST to a status check before any retry."
+      "lab": "Wrap a flaky fake API in a tool handler: retry 429/503 with exponential backoff (max 3), map 404 to an actionable is_error, and map a timeout on a POST to a status check before any retry.",
+      "sources": [
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        },
+        {
+          "title": "API errors — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/api/errors"
+        },
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        }
+      ]
     },
     {
       "id": "l8",
@@ -793,7 +983,21 @@
           "correct": "Reference an environment variable. Never commit secrets."
         }
       ],
-      "lab": "Write a tiny MCP server (Python FastMCP or the TypeScript SDK) exposing one tool and one resource. Register it in a repo with project scope, commit .mcp.json using an env var for its token, and verify it with /mcp in Claude Code."
+      "lab": "Write a tiny MCP server (Python FastMCP or the TypeScript SDK) exposing one tool and one resource. Register it in a repo with project scope, commit .mcp.json using an env var for its token, and verify it with /mcp in Claude Code.",
+      "sources": [
+        {
+          "title": "MCP architecture — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/architecture"
+        },
+        {
+          "title": "MCP in Claude Code — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/mcp"
+        },
+        {
+          "title": "MCP client concepts — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/client-concepts"
+        }
+      ]
     },
     {
       "id": "d4-l1",
@@ -849,7 +1053,17 @@
           "correct": "Sampling is deprecated in the current revision; call a model from the server directly if it needs one."
         }
       ],
-      "lab": "Sketch the clients, connections and primitives for a host connected to three servers (a local git server, a remote ticketing server and a docs server). For each capability, decide whether it should be a tool, a resource or a prompt, and justify the choice by who should control it."
+      "lab": "Sketch the clients, connections and primitives for a host connected to three servers (a local git server, a remote ticketing server and a docs server). For each capability, decide whether it should be a tool, a resource or a prompt, and justify the choice by who should control it.",
+      "sources": [
+        {
+          "title": "MCP architecture — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/architecture"
+        },
+        {
+          "title": "MCP client concepts — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/client-concepts"
+        }
+      ]
     },
     {
       "id": "l14",
@@ -897,7 +1111,25 @@
           "correct": "Below the minimum cacheable length nothing is cached; check cache_creation_input_tokens."
         }
       ],
-      "lab": "Send the same 20k-token document with three different questions, with and without cache_control on the document block. Compare the usage fields (cache_creation_input_tokens, cache_read_input_tokens) and the latency."
+      "lab": "Send the same 20k-token document with three different questions, with and without cache_control on the document block. Compare the usage fields (cache_creation_input_tokens, cache_read_input_tokens) and the latency.",
+      "sources": [
+        {
+          "title": "Prompt caching — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        },
+        {
+          "title": "Compaction — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/compaction"
+        },
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        },
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
+      ]
     },
     {
       "id": "l15",
@@ -945,7 +1177,21 @@
           "correct": "Match every result to its request by custom_id."
         }
       ],
-      "lab": "Create a 20-case eval set for one prompt, with a code-graded checker and an LLM-judge rubric. Make a prompt change, run both versions, and decide from the numbers. Add backoff retries to your API client and simulate 529s."
+      "lab": "Create a 20-case eval set for one prompt, with a code-graded checker and an LLM-judge rubric. Make a prompt change, run both versions, and decide from the numbers. Add backoff retries to your API client and simulate 529s.",
+      "sources": [
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        },
+        {
+          "title": "API errors — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/api/errors"
+        },
+        {
+          "title": "Prompt engineering overview — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"
+        }
+      ]
     },
     {
       "id": "d5-l3",
@@ -984,7 +1230,21 @@
           "correct": "Return a condensed, sourced summary; isolation is the point."
         }
       ],
-      "lab": "Run a long Claude Code task twice: once with no notes file, once instructing the agent to maintain NOTES.md. Force a /compact midway and compare how well each run resumes. Add a PreCompact hook that copies the current plan to disk."
+      "lab": "Run a long Claude Code task twice: once with no notes file, once instructing the agent to maintain NOTES.md. Force a /compact midway and compare how well each run resumes. Add a PreCompact hook that copies the current plan to disk.",
+      "sources": [
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        },
+        {
+          "title": "Compaction — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/compaction"
+        },
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        }
+      ]
     }
   ],
   "flashcards": [
@@ -2109,6 +2369,16 @@
         "Self-reported status is still model text. stop_reason already exists for this.",
         "A cap is a safety net. It would cut legitimate multi-step work short and doesn't detect completion.",
         "Correct. It uses the API's structured signal for tool requests and completion."
+      ],
+      "sources": [
+        {
+          "title": "Handling stop reasons — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+        },
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        }
       ]
     },
     {
@@ -2132,6 +2402,12 @@
         "Silently drops data and hides the root cause.",
         "Might reduce frequency, but doesn't handle the condition and may hurt report quality.",
         "Correct. It detects and handles truncation explicitly."
+      ],
+      "sources": [
+        {
+          "title": "Handling stop reasons — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+        }
       ]
     },
     {
@@ -2155,6 +2431,12 @@
         "Leaves the cost risk unbounded.",
         "Correct. A safety net plus explicit handling of the abnormal outcome.",
         "Model self-counting is unreliable. Enforce limits in code."
+      ],
+      "sources": [
+        {
+          "title": "Handling stop reasons — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+        }
       ]
     },
     {
@@ -2178,6 +2460,12 @@
         "Results belong together in one user message.",
         "Tool results go in the user role as tool_result blocks.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        }
       ]
     },
     {
@@ -2201,6 +2489,12 @@
         "Correct.",
         "Dynamic planning is for subtasks that can't be known in advance.",
         "A monolithic prompt can't be validated between steps and is harder to debug."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2224,6 +2518,12 @@
         "Triples cost and doesn't specialize the handling.",
         "Useful for quality refinement, but not for dispatching distinct categories.",
         "Tool bloat and a diluted prompt reduce accuracy, and every request pays for the largest model."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2247,6 +2547,12 @@
         "No such requirement.",
         "Correct.",
         "Voting is the other form of parallelization. Sectioning splits distinct subtasks."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2270,6 +2576,12 @@
         "More randomness doesn't fix systematic failures.",
         "Doesn't verify the output. Instruction dilution may get worse.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2293,6 +2605,12 @@
         "Slower, and still doesn't fix the vague tasks.",
         "That defeats context isolation, which is the main benefit of subagents.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2316,6 +2634,12 @@
         "Postpones the problem, and irrelevant context still degrades quality.",
         "Makes the orchestrator's context problem worse.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2339,6 +2663,16 @@
         "Five times the cost, and it doesn't address coupling.",
         "Correct.",
         "Unreviewed merges of conflicting changes are risky."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        },
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        }
       ]
     },
     {
@@ -2362,6 +2696,16 @@
         "Helps, but doesn't guarantee compliance.",
         "Doesn't create a guarantee.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        },
+        {
+          "title": "Hooks — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/hooks"
+        }
       ]
     },
     {
@@ -2385,6 +2729,12 @@
         "Correct.",
         "Acts outside policy and the customer's request.",
         "Poor experience. The status lookup is safe."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2408,6 +2758,12 @@
         "Missing context.",
         "Correct.",
         "Irrelevant to the human's decision."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2432,6 +2788,12 @@
         "Too vague without defined criteria.",
         "Correct. Deterministic and enforced in code.",
         "An arbitrary threshold that escalates normal conversations."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2455,6 +2817,16 @@
         "Runs after the damage is done.",
         "Model self-checks aren't enforcement.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Hooks — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/hooks"
+        },
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        }
       ]
     },
     {
@@ -2478,6 +2850,16 @@
         "Model trust doesn't remove the risk of mistakes or prompt injection.",
         "Highest-risk environment.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        },
+        {
+          "title": "Agent SDK overview — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/overview"
+        }
       ]
     },
     {
@@ -2501,6 +2883,12 @@
         "That's the Claude apps.",
         "Not what the SDK is.",
         "Not what the SDK is."
+      ],
+      "sources": [
+        {
+          "title": "Agent SDK overview — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/overview"
+        }
       ]
     },
     {
@@ -2525,6 +2913,16 @@
         "The context window is finite, and restarts lose in-memory state.",
         "Correct.",
         "Output size isn't the main issue, and truncation adds risk."
+      ],
+      "sources": [
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        },
+        {
+          "title": "Agent loop — Agent SDK docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/agent-loop"
+        }
       ]
     },
     {
@@ -2548,6 +2946,12 @@
         "Costly and not yet justified.",
         "Correct.",
         "Unnecessary risk and cost."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2571,6 +2975,16 @@
         "Fabrication.",
         "Wrong conclusion from a timeout.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        },
+        {
+          "title": "API errors — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/api/errors"
+        }
       ]
     },
     {
@@ -2594,6 +3008,16 @@
         "No such hard limit.",
         "Not the concern.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        },
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        }
       ]
     },
     {
@@ -2617,6 +3041,12 @@
         "Loses the benefit for complex queries.",
         "Doesn't address effort allocation.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2641,6 +3071,16 @@
         "Read-only and low risk.",
         "Correct.",
         "Read-only and low risk."
+      ],
+      "sources": [
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        },
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2664,6 +3104,12 @@
         "Correct.",
         "Unrelated.",
         "Conversation state isn't kept automatically between Messages API calls."
+      ],
+      "sources": [
+        {
+          "title": "Handling stop reasons — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+        }
       ]
     },
     {
@@ -2687,6 +3133,16 @@
         "Blind retries waste money and repeat failures.",
         "Correct.",
         "Denials are important signals."
+      ],
+      "sources": [
+        {
+          "title": "Agent loop — Agent SDK docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/agent-loop"
+        },
+        {
+          "title": "Agent SDK overview — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/overview"
+        }
       ]
     },
     {
@@ -2710,6 +3166,12 @@
         "Skips required checks.",
         "Unnecessary unpredictability for a fixed set of checks.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2733,6 +3195,12 @@
         "Server tools run on Anthropic's side; there is no client tool_use to answer.",
         "That handles max_tokens, a different condition.",
         "Correct. Resending lets the paused server-side work resume."
+      ],
+      "sources": [
+        {
+          "title": "Handling stop reasons — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+        }
       ]
     },
     {
@@ -2756,6 +3224,12 @@
         "Partial or refused output is not a valid extraction.",
         "Correct. Distinct branch, bounded fallback, then review.",
         "Refusal is not caused by the token limit."
+      ],
+      "sources": [
+        {
+          "title": "Handling stop reasons — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+        }
       ]
     },
     {
@@ -2779,6 +3253,16 @@
         "Correct.",
         "tool_result blocks must come first; text before them is rejected.",
         "The response was not truncated; it ended naturally with no content."
+      ],
+      "sources": [
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        },
+        {
+          "title": "Handling stop reasons — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+        }
       ]
     },
     {
@@ -2803,6 +3287,12 @@
         "A natural end of turn.",
         "Correct. The context window filled during generation.",
         "An intentional stop you configured."
+      ],
+      "sources": [
+        {
+          "title": "Handling stop reasons — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+        }
       ]
     },
     {
@@ -2826,6 +3316,12 @@
         "Dynamic planning is for subtasks that cannot be known in advance.",
         "Adds unpredictability for a fixed process.",
         "There are no distinct input categories to route between."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2849,6 +3345,12 @@
         "Predefined checks cannot adapt to what the traces reveal.",
         "Correct.",
         "Floods the context and gives no way to dig deeper."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2872,6 +3374,12 @@
         "Turn caps do not ensure any particular step runs.",
         "Loses dynamic planning where it is valuable.",
         "Correct. Static stages guarantee the required steps."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -2895,6 +3403,12 @@
         "There is a default depth limit.",
         "Each subagent gets a fresh context; only forks inherit.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        }
       ]
     },
     {
@@ -2918,6 +3432,12 @@
         "Omitting tools affects tool inheritance, not conversation context.",
         "Model inheritance does not carry the conversation.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        }
       ]
     },
     {
@@ -2941,6 +3461,12 @@
         "The description controls delegation, not tool access.",
         "Correct.",
         "There is no such default; the issue is tool inheritance."
+      ],
+      "sources": [
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        }
       ]
     },
     {
@@ -2964,6 +3490,16 @@
         "Correct.",
         "Probabilistic, and the configuration still allows edits.",
         "Turn caps are not access control."
+      ],
+      "sources": [
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        },
+        {
+          "title": "Agent SDK overview — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/overview"
+        }
       ]
     },
     {
@@ -2987,6 +3523,12 @@
         "The cap tripped, as the subtype shows.",
         "The subtype names the budget, not turns.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent loop — Agent SDK docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/agent-loop"
+        }
       ]
     },
     {
@@ -3011,6 +3553,12 @@
         "Removes safety nets and still leaves error_during_execution.",
         "Correct.",
         "Presents incomplete work as a finished result."
+      ],
+      "sources": [
+        {
+          "title": "Agent loop — Agent SDK docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/agent-loop"
+        }
       ]
     },
     {
@@ -3034,6 +3582,12 @@
         "Read-only planning; it is not the mode for auto-denying calls that would otherwise prompt.",
         "Approves edits; it does not deny unapproved calls.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        }
       ]
     },
     {
@@ -3057,6 +3611,16 @@
         "Explains the rule but does not enforce it.",
         "Correct.",
         "Still guidance, and developers control that file."
+      ],
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        },
+        {
+          "title": "Settings — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/settings"
+        }
       ]
     },
     {
@@ -3081,6 +3645,16 @@
         "Correct. Must happen every time, which suits a hook.",
         "Style guidance belongs in the prompt.",
         "A judgment call for the model."
+      ],
+      "sources": [
+        {
+          "title": "Hooks — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/hooks"
+        },
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        }
       ]
     },
     {
@@ -3105,6 +3679,16 @@
         "Correct. Correctable error fed back to the model.",
         "Identical retries cannot fix an invalid input.",
         "Gives up on recoverable failures."
+      ],
+      "sources": [
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        },
+        {
+          "title": "API errors — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/api/errors"
+        }
       ]
     },
     {
@@ -3128,6 +3712,16 @@
         "Does not change the strategy or add a stopping rule.",
         "Hides the failure and produces wrong code.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        },
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
       ]
     },
     {
@@ -3151,6 +3745,12 @@
         "Correct.",
         "The cap applies to the organisation, not one model.",
         "More retries of a persistent failure."
+      ],
+      "sources": [
+        {
+          "title": "API errors — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/api/errors"
+        }
       ]
     },
     {
@@ -3174,6 +3774,16 @@
         "Bypass removes every check; the prompt is not a gate.",
         "Blocks email entirely instead of gating it.",
         "Not an approval mechanism, and it breaks normal work."
+      ],
+      "sources": [
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        },
+        {
+          "title": "Agent loop — Agent SDK docs",
+          "url": "https://code.claude.com/docs/en/agent-sdk/agent-loop"
+        }
       ]
     },
     {
@@ -3197,6 +3807,12 @@
         "Does not create a structured, deterministic log.",
         "Not a reliable audit record.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Hooks — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/hooks"
+        }
       ]
     },
     {
@@ -3220,6 +3836,16 @@
         "Still in the part of the conversation that gets compacted.",
         "Correct.",
         "Cuts legitimate work short."
+      ],
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        },
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
       ]
     },
     {
@@ -3243,6 +3869,12 @@
         "Not loaded automatically as memory.",
         "Correct.",
         "Personal and not shared."
+      ],
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
       ]
     },
     {
@@ -3266,6 +3898,12 @@
         "Correct.",
         "Irrelevant.",
         "That's for subtree-specific project guidance."
+      ],
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
       ]
     },
     {
@@ -3289,6 +3927,12 @@
         "Manual and error-prone.",
         "Overkill.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
       ]
     },
     {
@@ -3312,6 +3956,16 @@
         "Guidance, not enforcement.",
         "Obscurity, not control.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        },
+        {
+          "title": "Settings — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/settings"
+        }
       ]
     },
     {
@@ -3335,6 +3989,12 @@
         "Requires manual invocation.",
         "Correct.",
         "Model-invoked and not guaranteed."
+      ],
+      "sources": [
+        {
+          "title": "Hooks — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/hooks"
+        }
       ]
     },
     {
@@ -3358,6 +4018,12 @@
         "Correct.",
         "Irrelevant.",
         "Prompt format isn't the issue."
+      ],
+      "sources": [
+        {
+          "title": "Headless mode — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/headless"
+        }
       ]
     },
     {
@@ -3381,6 +4047,12 @@
         "Adds detail but isn't structured for parsing.",
         "Fragile text parsing.",
         "Not automatable."
+      ],
+      "sources": [
+        {
+          "title": "Headless mode — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/headless"
+        }
       ]
     },
     {
@@ -3405,6 +4077,16 @@
         "Dangerous where secrets exist.",
         "Correct.",
         "Violates least privilege."
+      ],
+      "sources": [
+        {
+          "title": "Headless mode — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/headless"
+        },
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        }
       ]
     },
     {
@@ -3428,6 +4110,16 @@
         "Compiling isn't correctness.",
         "Irrelevant.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "GitHub Actions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/github-actions"
+        },
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        }
       ]
     },
     {
@@ -3451,6 +4143,12 @@
         "Correct.",
         "Removes verification.",
         "Context bloat and no plan."
+      ],
+      "sources": [
+        {
+          "title": "Permission modes (plan mode) — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permission-modes"
+        }
       ]
     },
     {
@@ -3474,6 +4172,12 @@
         "Hooks are for lifecycle automation, not procedures.",
         "Correct.",
         "Heavier and not designed for this."
+      ],
+      "sources": [
+        {
+          "title": "Skills — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/skills"
+        }
       ]
     },
     {
@@ -3497,6 +4201,12 @@
         "Always-on memory, not an on-demand command, and it costs context every session.",
         "Settings hold configuration, not commands, and this file is personal.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Skills — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/skills"
+        }
       ]
     },
     {
@@ -3520,6 +4230,12 @@
         "The opposite.",
         "Tools can and should be restricted.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        }
       ]
     },
     {
@@ -3543,6 +4259,16 @@
         "Correct.",
         "Not how precedence works.",
         "Not how precedence works."
+      ],
+      "sources": [
+        {
+          "title": "Settings — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/settings"
+        },
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        }
       ]
     },
     {
@@ -3566,6 +4292,12 @@
         "Unnecessary.",
         "Correct.",
         "Re-adds the noise."
+      ],
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
       ]
     },
     {
@@ -3590,6 +4322,12 @@
         "Correct.",
         "Manual and wastes context.",
         "Wrong file type for memory, and not shared."
+      ],
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
       ]
     },
     {
@@ -3613,6 +4351,12 @@
         "Not an integration.",
         "Not scalable or secure.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "GitHub Actions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/github-actions"
+        }
       ]
     },
     {
@@ -3636,6 +4380,12 @@
         "Doesn't fix the dilution.",
         "Adds bulk.",
         "Doesn't scale and is the same problem."
+      ],
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
       ]
     },
     {
@@ -3659,6 +4409,12 @@
         "Correct.",
         "Requires manual invocation.",
         "Doesn't enforce test success."
+      ],
+      "sources": [
+        {
+          "title": "Hooks — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/hooks"
+        }
       ]
     },
     {
@@ -3682,6 +4438,16 @@
         "Removes verification.",
         "Correct.",
         "Delays feedback."
+      ],
+      "sources": [
+        {
+          "title": "Permission modes (plan mode) — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permission-modes"
+        },
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
       ]
     },
     {
@@ -3705,7 +4471,13 @@
         "Guidance the model may not follow, and it lasts beyond this task.",
         "Correct."
       ],
-      "id": "d2-q1"
+      "id": "d2-q1",
+      "sources": [
+        {
+          "title": "Permission modes (plan mode) — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permission-modes"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3728,7 +4500,13 @@
         "Cross-service impact: plan the order and rollback first.",
         "Correct: small, local and well understood."
       ],
-      "id": "d2-q2"
+      "id": "d2-q2",
+      "sources": [
+        {
+          "title": "Permission modes (plan mode) — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permission-modes"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3751,7 +4529,17 @@
         "Correct.",
         "Removes every safeguard."
       ],
-      "id": "d2-q3"
+      "id": "d2-q3",
+      "sources": [
+        {
+          "title": "Permission modes (plan mode) — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permission-modes"
+        },
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3774,7 +4562,17 @@
         "Probabilistic guidance, not a mode change.",
         "Blocks implementation entirely, even after a plan is approved."
       ],
-      "id": "d2-q4"
+      "id": "d2-q4",
+      "sources": [
+        {
+          "title": "Permission modes (plan mode) — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permission-modes"
+        },
+        {
+          "title": "Settings — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/settings"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3797,7 +4595,13 @@
         "Files on the path to the cwd load at launch; subtree files load on demand.",
         "CLAUDE.local.md is appended, not an override, and it is personal."
       ],
-      "id": "d2-q5"
+      "id": "d2-q5",
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3820,7 +4624,13 @@
         "Correct.",
         "Rules under .claude/ are normally committed and shared."
       ],
-      "id": "d2-q6"
+      "id": "d2-q6",
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3843,7 +4653,17 @@
         "Guidance, user-editable and unenforced.",
         "Correct."
       ],
-      "id": "d2-q7"
+      "id": "d2-q7",
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        },
+        {
+          "title": "Settings — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/settings"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3866,7 +4686,13 @@
         "Memory files are Markdown; there is no compression.",
         "Correct."
       ],
-      "id": "d2-q8"
+      "id": "d2-q8",
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3889,7 +4715,13 @@
         "Changes the scope to personal, still unconditional.",
         "Correct."
       ],
-      "id": "d2-q9"
+      "id": "d2-q9",
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3912,7 +4744,13 @@
         "Correct.",
         "Rules are deterministic; there is no tie-break prompt."
       ],
-      "id": "d2-q10"
+      "id": "d2-q10",
+      "sources": [
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3936,7 +4774,17 @@
         "Correct.",
         "Trust gates project allow rules, but bypassPermissions is never honoured from project files."
       ],
-      "id": "d2-q11"
+      "id": "d2-q11",
+      "sources": [
+        {
+          "title": "Settings — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/settings"
+        },
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3959,7 +4807,17 @@
         "Prompts for tests and auto-approves pushes: inverted.",
         "Correct."
       ],
-      "id": "d2-q12"
+      "id": "d2-q12",
+      "sources": [
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        },
+        {
+          "title": "Settings — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/settings"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -3982,7 +4840,13 @@
         "PostToolUse runs after the command already executed.",
         "Guidance only; it does not repair the hook."
       ],
-      "id": "d2-q13"
+      "id": "d2-q13",
+      "sources": [
+        {
+          "title": "Hooks — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/hooks"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -4005,7 +4869,13 @@
         "Correct.",
         "Adds an MCP server, not context isolation."
       ],
-      "id": "d2-q14"
+      "id": "d2-q14",
+      "sources": [
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -4028,7 +4898,13 @@
         "Always-on context that Claude may act on without an explicit command.",
         "Deploys on every turn: dangerous and not on demand."
       ],
-      "id": "d2-q15"
+      "id": "d2-q15",
+      "sources": [
+        {
+          "title": "Skills — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/skills"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -4051,7 +4927,13 @@
         "Verbosity does not grant permissions.",
         "Correct."
       ],
-      "id": "d2-q16"
+      "id": "d2-q16",
+      "sources": [
+        {
+          "title": "Headless mode — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/headless"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -4075,7 +4957,17 @@
         "Correct.",
         "Hooks run outside the model; instructions cannot stop them, and the fork controls CLAUDE.md anyway."
       ],
-      "id": "d2-q17"
+      "id": "d2-q17",
+      "sources": [
+        {
+          "title": "Headless mode — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/headless"
+        },
+        {
+          "title": "Settings — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/settings"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -4098,7 +4990,13 @@
         "Correct.",
         "Not automatable."
       ],
-      "id": "d2-q18"
+      "id": "d2-q18",
+      "sources": [
+        {
+          "title": "Headless mode — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/headless"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -4121,7 +5019,13 @@
         "CLAUDE.md is memory, not the automation prompt.",
         "direct_prompt is the old input name."
       ],
-      "id": "d2-q19"
+      "id": "d2-q19",
+      "sources": [
+        {
+          "title": "GitHub Actions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/github-actions"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -4145,7 +5049,17 @@
         "Guidance cannot enforce a limit.",
         "Observability, not a control."
       ],
-      "id": "d2-q20"
+      "id": "d2-q20",
+      "sources": [
+        {
+          "title": "Headless mode — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/headless"
+        },
+        {
+          "title": "GitHub Actions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/github-actions"
+        }
+      ]
     },
     {
       "domain": "d2",
@@ -4168,7 +5082,17 @@
         "Manual and drifts; local-scope servers are not shared.",
         "Commits a secret, and CLAUDE.local.md is personal."
       ],
-      "id": "d2-q21"
+      "id": "d2-q21",
+      "sources": [
+        {
+          "title": "MCP in Claude Code — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/mcp"
+        },
+        {
+          "title": "Settings — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/settings"
+        }
+      ]
     },
     {
       "id": "q66",
@@ -4191,6 +5115,12 @@
         "Correct.",
         "Loses needed guidance.",
         "Same content, less structure."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4214,6 +5144,12 @@
         "Increases variability.",
         "Loses data.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4237,6 +5173,12 @@
         "Works often, but gives no guarantee.",
         "Fragile and breaks on nested braces or prose.",
         "Self-checking gives no structural guarantee."
+      ],
+      "sources": [
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        }
       ]
     },
     {
@@ -4260,6 +5202,16 @@
         "Vague and unenforced.",
         "Correct.",
         "Loses data."
+      ],
+      "sources": [
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        },
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        }
       ]
     },
     {
@@ -4283,6 +5235,16 @@
         "Randomness isn't feedback.",
         "Loses structure.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        },
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        }
       ]
     },
     {
@@ -4306,6 +5268,12 @@
         "No diversity, and invites copying.",
         "Cosmetic.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4329,6 +5297,12 @@
         "Correct.",
         "Classic CoT is a fallback for models without thinking. On the newest models it can trigger a reasoning_extraction refusal.",
         "Manual extended thinking returns a 400 on Claude 4.7+ models."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4352,6 +5326,16 @@
         "Still prefill, and invalid JSON.",
         "Correct.",
         "Less reliable and harder to validate."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        },
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        }
       ]
     },
     {
@@ -4375,6 +5359,12 @@
         "Inverted.",
         "The system prompt carries role, policies and tone; the model name is a request parameter, not prompt content.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4398,6 +5388,12 @@
         "Length alone isn't the point.",
         "Irrelevant.",
         "Not deterministic."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4421,6 +5417,12 @@
         "Correct.",
         "Loses the constraint.",
         "Loses data."
+      ],
+      "sources": [
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        }
       ]
     },
     {
@@ -4446,6 +5448,12 @@
         "Correct.",
         "Increases pressure to fabricate.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        }
       ]
     },
     {
@@ -4469,6 +5477,12 @@
         "Uncontrolled.",
         "Timing doesn't add safety.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Prompt engineering overview — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"
+        }
       ]
     },
     {
@@ -4492,6 +5506,12 @@
         "Correct.",
         "Vague.",
         "Doesn't target style."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4515,6 +5535,12 @@
         "Instruction dilution.",
         "Expensive and still opaque.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4538,6 +5564,12 @@
         "Doesn't fix the bias.",
         "Correct.",
         "Count isn't the problem."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4561,6 +5593,16 @@
         "Not expressive enough.",
         "Without stated guidance the model may use dollars, strings or cents inconsistently.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Define tools — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+        },
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        }
       ]
     },
     {
@@ -4584,6 +5626,12 @@
         "Correct.",
         "Not feasible.",
         "Likely overkill and expensive."
+      ],
+      "sources": [
+        {
+          "title": "Message Batches — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing"
+        }
       ]
     },
     {
@@ -4608,6 +5656,16 @@
         "Brittle and diluting.",
         "Correct.",
         "Causes inconsistency."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        },
+        {
+          "title": "Prompt engineering overview — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"
+        }
       ]
     },
     {
@@ -4631,6 +5689,12 @@
         "Vague prompts produce inconsistent results.",
         "Correct.",
         "Missing goal and context."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4654,6 +5718,12 @@
         "Correct.",
         "Asking the newest models to write visible reasoning can trigger reasoning_extraction refusals, and it drops the supported adaptive thinking control instead of fixing the request.",
         "Thinking can't be disabled on Opus 5.5."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4677,6 +5747,16 @@
         "Still requests extracted reasoning, and aggressive wording overtriggers.",
         "Correct.",
         "Loses schema guarantees and still requests visible reasoning."
+      ],
+      "sources": [
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        },
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4700,6 +5780,12 @@
         "Correct.",
         "Manual extended thinking returns a 400 on Claude 4.7+.",
         "Prompt text doesn't control the thinking budget reliably."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4724,6 +5810,12 @@
         "Correct.",
         "May trigger a reasoning_extraction refusal on the newest models.",
         "Returns a 400 on Claude 4.7+ models."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4747,6 +5839,12 @@
         "Loses useful structure; the real problem is the missing flag.",
         "Correct.",
         "Prefill is unsupported on Claude 4.6+ models."
+      ],
+      "sources": [
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        }
       ]
     },
     {
@@ -4771,6 +5869,16 @@
         "Correct.",
         "Unnecessary on conforming output; check stop_reason instead.",
         "JSON key order isn't a correctness issue."
+      ],
+      "sources": [
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        },
+        {
+          "title": "Handling stop reasons — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons"
+        }
       ]
     },
     {
@@ -4794,6 +5902,16 @@
         "Prefill is unsupported on Claude 4.6+ models.",
         "Correct.",
         "Works sometimes but gives no schema guarantee."
+      ],
+      "sources": [
+        {
+          "title": "Define tools — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+        },
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        }
       ]
     },
     {
@@ -4817,6 +5935,12 @@
         "Loses the system prompt's role, and the policy would still sit behind changing content.",
         "The question at the top still breaks the prefix.",
         "Loses needed policy."
+      ],
+      "sources": [
+        {
+          "title": "Prompt caching — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        }
       ]
     },
     {
@@ -4840,6 +5964,12 @@
         "Correct.",
         "Emphasis doesn't fix ordering or structure.",
         "Discarding the source loses detail needed for clause-level answers."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4863,6 +5993,12 @@
         "Loses needed grounding.",
         "Correct.",
         "Randomness doesn't fix the trigger."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4887,6 +6023,12 @@
         "Correct.",
         "Biased and not repeatable.",
         "Customers become the test suite."
+      ],
+      "sources": [
+        {
+          "title": "Prompt engineering overview — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"
+        }
       ]
     },
     {
@@ -4910,6 +6052,12 @@
         "Records data the user never asked for.",
         "Abandons a recoverable error.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        }
       ]
     },
     {
@@ -4933,6 +6081,16 @@
         "Correct.",
         "Doesn't fix the ambiguity.",
         "Forces a call but not the right one."
+      ],
+      "sources": [
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        },
+        {
+          "title": "Define tools — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+        }
       ]
     },
     {
@@ -4956,6 +6114,16 @@
         "Correct.",
         "Prefill is rejected on current models.",
         "A 400 is a permanent request error; retrying will not help."
+      ],
+      "sources": [
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        },
+        {
+          "title": "Define tools — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+        }
       ]
     },
     {
@@ -4979,6 +6147,16 @@
         "Crashes on an expected failure.",
         "Fabricated data is dangerous.",
         "Not actionable for the model."
+      ],
+      "sources": [
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        },
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        }
       ]
     },
     {
@@ -5002,6 +6180,16 @@
         "Possibly false, and risks a duplicate.",
         "Model guessing about side effects is unsafe.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        },
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        }
       ]
     },
     {
@@ -5025,6 +6213,12 @@
         "Correct.",
         "Unbounded.",
         "Misleading. It looks like \"no results\"."
+      ],
+      "sources": [
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        }
       ]
     },
     {
@@ -5048,6 +6242,12 @@
         "Can't reliably detect plausible fabrications.",
         "Increases the pressure to fill it.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Structured outputs — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs"
+        }
       ]
     },
     {
@@ -5071,6 +6271,12 @@
         "Too generic, so the model must know endpoint details and validation is weak.",
         "Correct.",
         "Worst of both."
+      ],
+      "sources": [
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        }
       ]
     },
     {
@@ -5094,6 +6300,12 @@
         "Application-controlled.",
         "A client feature (now deprecated) that advertised filesystem boundaries; never model-invoked and never a security boundary.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "MCP architecture — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/architecture"
+        }
       ]
     },
     {
@@ -5117,6 +6329,12 @@
         "Correct.",
         "Secrets in git are a leak risk.",
         "Local scope is private to one user."
+      ],
+      "sources": [
+        {
+          "title": "MCP in Claude Code — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/mcp"
+        }
       ]
     },
     {
@@ -5140,6 +6358,16 @@
         "Correct.",
         "Not an MCP transport.",
         "Not an MCP transport."
+      ],
+      "sources": [
+        {
+          "title": "MCP architecture — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/architecture"
+        },
+        {
+          "title": "MCP in Claude Code — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/mcp"
+        }
       ]
     },
     {
@@ -5164,6 +6392,16 @@
         "Correct.",
         "Not a control.",
         "Overcorrects and loses functionality."
+      ],
+      "sources": [
+        {
+          "title": "MCP in Claude Code — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/mcp"
+        },
+        {
+          "title": "MCP architecture — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/architecture"
+        }
       ]
     },
     {
@@ -5187,6 +6425,12 @@
         "Doesn't fix waste.",
         "Still pays the tokens.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        }
       ]
     },
     {
@@ -5212,6 +6456,12 @@
         "Correct.",
         "Correct.",
         "Irrelevant and wastes tokens."
+      ],
+      "sources": [
+        {
+          "title": "Define tools — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+        }
       ]
     },
     {
@@ -5235,6 +6485,12 @@
         "Doesn't fix the bloat.",
         "Cosmetic.",
         "Guidance doesn't remove the bloat."
+      ],
+      "sources": [
+        {
+          "title": "MCP in Claude Code — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/mcp"
+        }
       ]
     },
     {
@@ -5258,6 +6514,12 @@
         "Breaks legitimate multi-refund cases and doesn't fix retries.",
         "Correct.",
         "Makes timeouts more frequent."
+      ],
+      "sources": [
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        }
       ]
     },
     {
@@ -5281,6 +6543,16 @@
         "Correct.",
         "Loses the read capability.",
         "Human vigilance isn't a control."
+      ],
+      "sources": [
+        {
+          "title": "Permissions — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/permissions"
+        },
+        {
+          "title": "MCP in Claude Code — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/mcp"
+        }
       ]
     },
     {
@@ -5304,6 +6576,12 @@
         "Wrong role.",
         "Breaks the tool-use protocol.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        }
       ]
     },
     {
@@ -5327,6 +6605,12 @@
         "Not the concern.",
         "Correct.",
         "Both transports can be configured."
+      ],
+      "sources": [
+        {
+          "title": "MCP in Claude Code — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/mcp"
+        }
       ]
     },
     {
@@ -5350,6 +6634,12 @@
         "Correct.",
         "Servers expose capabilities; the host owns the model.",
         "Servers are not clients of each other in this design."
+      ],
+      "sources": [
+        {
+          "title": "MCP architecture — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/architecture"
+        }
       ]
     },
     {
@@ -5373,6 +6663,12 @@
         "Loses application and user control over context and templates.",
         "Correct.",
         "Also mismatched on every item."
+      ],
+      "sources": [
+        {
+          "title": "MCP architecture — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/architecture"
+        }
       ]
     },
     {
@@ -5396,6 +6692,16 @@
         "Correct.",
         "Roots are not enforced.",
         "Transport choice does not turn roots into a boundary."
+      ],
+      "sources": [
+        {
+          "title": "MCP client concepts — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/client-concepts"
+        },
+        {
+          "title": "MCP architecture — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/architecture"
+        }
       ]
     },
     {
@@ -5419,6 +6725,12 @@
         "Form mode is for ordinary structured input, not secrets.",
         "Correct.",
         "Shared hard-coded secrets break least privilege."
+      ],
+      "sources": [
+        {
+          "title": "MCP client concepts — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/client-concepts"
+        }
       ]
     },
     {
@@ -5442,6 +6754,12 @@
         "stdio is a local subprocess transport, not load-balanced.",
         "Deprecated, and unrelated to scaling.",
         "Roots are advisory and deprecated, with no routing role."
+      ],
+      "sources": [
+        {
+          "title": "MCP architecture — Model Context Protocol",
+          "url": "https://modelcontextprotocol.io/docs/learn/architecture"
+        }
       ]
     },
     {
@@ -5465,6 +6783,12 @@
         "Entries do not merge field by field.",
         "Correct.",
         "Duplicates are resolved by precedence."
+      ],
+      "sources": [
+        {
+          "title": "MCP in Claude Code — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/mcp"
+        }
       ]
     },
     {
@@ -5488,6 +6812,16 @@
         "Correct.",
         "Model size is not the issue.",
         "Changing scope does not solve authentication."
+      ],
+      "sources": [
+        {
+          "title": "MCP in Claude Code — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/mcp"
+        },
+        {
+          "title": "Headless mode — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/headless"
+        }
       ]
     },
     {
@@ -5511,6 +6845,12 @@
         "Correct.",
         "Causes truncation, not sequencing.",
         "Guidance, not a guarantee."
+      ],
+      "sources": [
+        {
+          "title": "Define tools — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+        }
       ]
     },
     {
@@ -5535,6 +6875,12 @@
         "Correct.",
         "Structured outputs and strict tools also guarantee schema conformance.",
         "Changing tool_choice invalidates cached messages."
+      ],
+      "sources": [
+        {
+          "title": "Define tools — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+        }
       ]
     },
     {
@@ -5558,6 +6904,16 @@
         "Correct.",
         "Understates a security problem.",
         "False, and not the concern."
+      ],
+      "sources": [
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        },
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        }
       ]
     },
     {
@@ -5582,6 +6938,12 @@
         "Correct.",
         "Opaque IDs are harder for the model to use correctly.",
         "Creates overlapping, confusing tools."
+      ],
+      "sources": [
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        }
       ]
     },
     {
@@ -5605,6 +6967,12 @@
         "Overcorrects and loses needed systems.",
         "Forces some call, not the right one.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        }
       ]
     },
     {
@@ -5628,6 +6996,12 @@
         "Examples that do not validate are rejected.",
         "Hides the contract and invites more ambiguity.",
         "Descriptions are the main lever; keep them."
+      ],
+      "sources": [
+        {
+          "title": "Define tools — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools"
+        }
       ]
     },
     {
@@ -5651,6 +7025,16 @@
         "Correct.",
         "May be false.",
         "May be false and leads to a duplicate."
+      ],
+      "sources": [
+        {
+          "title": "Writing tools for agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/writing-tools-for-agents"
+        },
+        {
+          "title": "Handle tool calls — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls"
+        }
       ]
     },
     {
@@ -5674,6 +7058,12 @@
         "Question-first is the common habit, but it underperforms for long inputs.",
         "Repetition and fragmentation add tokens without the documented benefit of query-last ordering.",
         "Correct: long document first, question last."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -5697,6 +7087,12 @@
         "The timestamp changes the prefix, so the cache never hits.",
         "Correct.",
         "The API is stateless. Omitting it loses the instructions."
+      ],
+      "sources": [
+        {
+          "title": "Prompt caching — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        }
       ]
     },
     {
@@ -5720,6 +7116,12 @@
         "Correct.",
         "Wrong order.",
         "Caching is order-sensitive."
+      ],
+      "sources": [
+        {
+          "title": "Prompt caching — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        }
       ]
     },
     {
@@ -5743,6 +7145,12 @@
         "Loses verifiability.",
         "Fabricates a value.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
       ]
     },
     {
@@ -5766,6 +7174,12 @@
         "Encourages ungrounded answers.",
         "Increases variability.",
         "Ungrounded."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -5789,6 +7203,12 @@
         "Unnecessarily brittle.",
         "Correct.",
         "Evasion, not resilience."
+      ],
+      "sources": [
+        {
+          "title": "API errors — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/api/errors"
+        }
       ]
     },
     {
@@ -5812,6 +7232,16 @@
         "The problem is distance and dilution, not formatting.",
         "Makes it worse.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        },
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
       ]
     },
     {
@@ -5837,6 +7267,16 @@
         "Correct.",
         "Correct.",
         "Context bloat."
+      ],
+      "sources": [
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        },
+        {
+          "title": "Compaction — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/compaction"
+        }
       ]
     },
     {
@@ -5860,6 +7300,12 @@
         "Self-assessment is biased.",
         "Production becomes the test.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Prompt engineering overview — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"
+        }
       ]
     },
     {
@@ -5883,6 +7329,12 @@
         "Correct.",
         "The breakpoint goes at the end of the stable prefix; putting it first caches almost nothing.",
         "Reads are reported on the request that hits the cache."
+      ],
+      "sources": [
+        {
+          "title": "Prompt caching — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        }
       ]
     },
     {
@@ -5907,6 +7359,12 @@
         "Defeats the purpose.",
         "Correct.",
         "Not useful."
+      ],
+      "sources": [
+        {
+          "title": "Compaction — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/compaction"
+        }
       ]
     },
     {
@@ -5930,6 +7388,12 @@
         "Heavy, and not how knowledge is typically supplied.",
         "Correct.",
         "Poor experience."
+      ],
+      "sources": [
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
       ]
     },
     {
@@ -5953,6 +7417,12 @@
         "Adds randomness, not scrutiny.",
         "Self-reported confidence is unreliable.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -5976,6 +7446,12 @@
         "Correct.",
         "Invites ungrounded content.",
         "Brevity does not prevent fabrication."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -5999,6 +7475,12 @@
         "Hurts complex cases.",
         "Keeps the expensive model on trivial work.",
         "Increases cost and latency."
+      ],
+      "sources": [
+        {
+          "title": "Building effective agents — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/building-effective-agents"
+        }
       ]
     },
     {
@@ -6022,6 +7504,16 @@
         "Wastes context, and the gain is uncertain.",
         "Correct.",
         "Moving text between roles does not reduce noise or improve ordering."
+      ],
+      "sources": [
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        },
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -6045,6 +7537,12 @@
         "Each customer would produce a new prefix, so most requests write rather than read.",
         "Caches only a small part of the stable prefix.",
         "That prefix includes per-customer content, so a new customer never matches it; the stable shared prefix needs its own breakpoint."
+      ],
+      "sources": [
+        {
+          "title": "Prompt caching — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        }
       ]
     },
     {
@@ -6068,6 +7566,12 @@
         "Invalidates cached messages only.",
         "Correct: tools precede system in the prefix.",
         "Invalidates cached messages only."
+      ],
+      "sources": [
+        {
+          "title": "Prompt caching — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        }
       ]
     },
     {
@@ -6091,6 +7595,12 @@
         "Prompt caching does not need a beta header; the zero writes point to length.",
         "There is no warm-up period; a cacheable prefix is written on the first request.",
         "System prompts are cacheable; the order is tools, system, messages."
+      ],
+      "sources": [
+        {
+          "title": "Prompt caching — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        }
       ]
     },
     {
@@ -6114,6 +7624,12 @@
         "Doubles tokens and does nothing about expiry.",
         "Stable content must come first for prefix caching to work at all.",
         "Without cache_control (or automatic caching), nothing is cached."
+      ],
+      "sources": [
+        {
+          "title": "Prompt caching — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+        }
       ]
     },
     {
@@ -6137,6 +7653,12 @@
         "Correct.",
         "Evasion, not resilience; it may break usage policy.",
         "Output length is not the cause of a persistent spend-cap 429."
+      ],
+      "sources": [
+        {
+          "title": "API errors — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/api/errors"
+        }
       ]
     },
     {
@@ -6161,6 +7683,12 @@
         "Correct.",
         "No delay amplifies the overload; use backoff with jitter.",
         "Multiplies load during exactly the wrong moment."
+      ],
+      "sources": [
+        {
+          "title": "API errors — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/api/errors"
+        }
       ]
     },
     {
@@ -6184,6 +7712,12 @@
         "Leaks internals and gives no path forward.",
         "Correct.",
         "Batches are asynchronous and not suited to interactive latency."
+      ],
+      "sources": [
+        {
+          "title": "API errors — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/api/errors"
+        }
       ]
     },
     {
@@ -6207,6 +7741,12 @@
         "Likely to hit rate and acceleration limits, at full price.",
         "Exceeds context and loses per-ticket reliability.",
         "Streaming does not lower cost."
+      ],
+      "sources": [
+        {
+          "title": "Message Batches — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing"
+        }
       ]
     },
     {
@@ -6231,6 +7771,12 @@
         "Correct.",
         "Input order is not guaranteed in the results.",
         "Order is not guaranteed at any size, and tiny batches lose the efficiency."
+      ],
+      "sources": [
+        {
+          "title": "Message Batches — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing"
+        }
       ]
     },
     {
@@ -6254,6 +7800,12 @@
         "Cheaper on repeat calls, but still floods attention with irrelevant code.",
         "A static summary goes stale and loses the details the agent needs.",
         "More context means more noise; recall degrades as the window fills."
+      ],
+      "sources": [
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
       ]
     },
     {
@@ -6277,6 +7829,16 @@
         "Loses all progress unless state was saved elsewhere.",
         "Puts the agent's job on the user.",
         "Output length is not what is filling the window."
+      ],
+      "sources": [
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        },
+        {
+          "title": "Compaction — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/compaction"
+        }
       ]
     },
     {
@@ -6300,6 +7862,12 @@
         "The session would eventually overflow instead.",
         "Memory is limited by the context, not by effort.",
         "Restates the goal but not the progress, and adds tokens every turn."
+      ],
+      "sources": [
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
       ]
     },
     {
@@ -6323,6 +7891,16 @@
         "Too little information for synthesis.",
         "Still bloats the parent and defeats isolation.",
         "The parent cannot see the sub-agent's context."
+      ],
+      "sources": [
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        },
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        }
       ]
     },
     {
@@ -6347,6 +7925,16 @@
         "Correct.",
         "Same context, same blind spots.",
         "Self-reported confidence is not a reliable gate."
+      ],
+      "sources": [
+        {
+          "title": "Subagents — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/sub-agents"
+        },
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
       ]
     },
     {
@@ -6370,6 +7958,12 @@
         "Query-last tends to perform better for long inputs.",
         "Tags with metadata help Claude reference and cite each document.",
         "Ungrounded first answers invite hallucination."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -6393,6 +7987,12 @@
         "Self-reported confidence does not prove a value is in the source.",
         "Two runs can agree on the same fabrication.",
         "Helpful, but unverified."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -6416,6 +8016,16 @@
         "Manual and easy to forget; still not enforced.",
         "The session would hit the context limit instead.",
         "Formatting doesn't survive summarization or enforce anything."
+      ],
+      "sources": [
+        {
+          "title": "Memory and CLAUDE.md — Claude Code docs",
+          "url": "https://code.claude.com/docs/en/memory"
+        },
+        {
+          "title": "Effective context engineering — Anthropic Engineering",
+          "url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"
+        }
       ]
     }
   ],

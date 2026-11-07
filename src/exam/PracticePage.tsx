@@ -5,6 +5,7 @@ import { getState, recordAnswer, update, useProgress } from '../lib/store';
 import { buildPractice, sameSet, type PracticeItem, type PracticeMode } from '../lib/quiz';
 import QuestionView from '../components/QuestionView';
 import Md from '../components/Md';
+import Sources from '../components/Sources';
 import { Bar, pct } from '../components/ui';
 
 interface Session { items: PracticeItem[]; i: number; finished: boolean }
@@ -91,7 +92,7 @@ export default function PracticePage() {
             {missed.map(q => (
               <div key={q.id} className="missed">
                 <Md>{q.stem}</Md>
-                <div className="feedback good small"><strong>Answer:</strong> {q.answer.map(a => <div key={a}><Md inline>{q.options[a]}</Md></div>)}<Md>{q.explanation}</Md></div>
+                <div className="feedback good small"><strong>Answer:</strong> {q.answer.map(a => <div key={a}><Md inline>{q.options[a]}</Md></div>)}<Md>{q.explanation}</Md><Sources list={q.sources} /></div>
               </div>
             ))}
           </div>
@@ -150,7 +151,7 @@ function PracticeQuestion({ session: s, setSession: set }: { session: Session; s
       <Bar value={s.i / s.items.length} tone="accent" />
       <div className="card q-card">
         <QuestionView q={q} order={item.order} picked={item.picked} reveal={item.done} onPick={pick} />
-        {item.done && <div className={`feedback ${right ? 'good' : 'bad'}`} role="status"><strong>{right ? 'Correct.' : 'Not quite.'}</strong> <Md>{q.explanation}</Md></div>}
+        {item.done && <div className={`feedback ${right ? 'good' : 'bad'}`} role="status"><strong>{right ? 'Correct.' : 'Not quite.'}</strong> <Md>{q.explanation}</Md><Sources list={q.sources} /></div>}
         <div className="spread">
           <span className="muted small">Difficulty {'●'.repeat(q.difficulty ?? 2)}{'○'.repeat(3 - (q.difficulty ?? 2))}</span>
           {item.done ? <button className="btn primary" onClick={next}>{s.i + 1 < s.items.length ? 'Next →' : 'See results'}</button>

@@ -118,7 +118,21 @@
           "correct": "Routing swaps in a different model with different behaviour and pricing. Evaluate the successor and migrate on your own schedule."
         }
       ],
-      "lab": "Create a free API key in Google AI Studio. Write 10 test prompts for a task you care about (for example classifying support tickets). Run them on a Flash-Lite, a Flash and the Argon model, and record quality, latency and token usage in a small table. Decide which model you'd ship and why."
+      "lab": "Create a free API key in Google AI Studio. Write 10 test prompts for a task you care about (for example classifying support tickets). Run them on a Flash-Lite, a Flash and the Argon model, and record quality, latency and token usage in a small table. Decide which model you'd ship and why.",
+      "sources": [
+        {
+          "title": "Gemini models — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/models"
+        },
+        {
+          "title": "Deprecations — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/deprecations"
+        },
+        {
+          "title": "Model versions — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/models#model-versions"
+        }
+      ]
     },
     {
       "id": "l2",
@@ -170,7 +184,21 @@
           "correct": "Prefilled final model turns return 400 on Gemini 3+. Ask for the format in the instructions or use `response_format` instead."
         }
       ],
-      "lab": "Build a 3-turn CLI chat with `previous_interaction_id` and a system instruction (\"You are a terse travel assistant\"). Then remove the system instruction from turns 2 and 3 and watch the tone drift. Finally, re-implement it in stateless mode with `store=False` and send the full history yourself."
+      "lab": "Build a 3-turn CLI chat with `previous_interaction_id` and a system instruction (\"You are a terse travel assistant\"). Then remove the system instruction from turns 2 and 3 and watch the tone drift. Finally, re-implement it in stateless mode with `store=False` and send the full history yourself.",
+      "sources": [
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        },
+        {
+          "title": "Migrate to Interactions API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/migrate-to-interactions"
+        },
+        {
+          "title": "Interactions API breaking changes — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-breaking-changes-may-2026"
+        }
+      ]
     },
     {
       "id": "l3",
@@ -219,7 +247,21 @@
           "correct": "Sending both returns 400. Remove `thinking_budget` and use `thinking_level` only."
         }
       ],
-      "lab": "Take one hard prompt (a tricky bug or a logic puzzle). Run it on Argon at `low`, `medium` and `high`, recording answer quality, latency and `usage.total_thought_tokens`. Turn on `thinking_summaries: \"auto\"` and compare the thought tokens with and without it. Then set `max_output_tokens` to 2,000 at `high` and observe what happens. Finally try `minimal` on 3.8 Flash and on 3.5 Flash-Lite and note the difference."
+      "lab": "Take one hard prompt (a tricky bug or a logic puzzle). Run it on Argon at `low`, `medium` and `high`, recording answer quality, latency and `usage.total_thought_tokens`. Turn on `thinking_summaries: \"auto\"` and compare the thought tokens with and without it. Then set `max_output_tokens` to 2,000 at `high` and observe what happens. Finally try `minimal` on 3.8 Flash and on 3.5 Flash-Lite and note the difference.",
+      "sources": [
+        {
+          "title": "Prompting strategies — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/prompting-strategies"
+        },
+        {
+          "title": "Thinking — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking"
+        },
+        {
+          "title": "Thinking budget (legacy) — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking?generate-content=true"
+        }
+      ]
     },
     {
       "id": "l4",
@@ -271,7 +313,25 @@
           "correct": "External URLs are limited to 15 MB per file at the time of writing. Upload it with the Files API instead."
         }
       ],
-      "lab": "Upload a 20-40 minute talk with the Files API. Put the video block before your instruction and ask for a chaptered summary with timestamps, then ask three follow-up questions about specific chapters. Check two timestamps by hand. Repeat once with `processing: \"agentic\"` and compare `usage.total_input_tokens`. Finally, send a 20-page PDF at `medium` and at `high` resolution and compare tokens and answer quality."
+      "lab": "Upload a 20-40 minute talk with the Files API. Put the video block before your instruction and ask for a chaptered summary with timestamps, then ask three follow-up questions about specific chapters. Check two timestamps by hand. Repeat once with `processing: \"agentic\"` and compare `usage.total_input_tokens`. Finally, send a 20-page PDF at `medium` and at `high` resolution and compare tokens and answer quality.",
+      "sources": [
+        {
+          "title": "File input methods — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/file-input-methods"
+        },
+        {
+          "title": "Files API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/files"
+        },
+        {
+          "title": "Media resolution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/media-resolution"
+        },
+        {
+          "title": "Video optimization — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/optimization"
+        }
+      ]
     },
     {
       "id": "l5",
@@ -322,7 +382,17 @@
           "correct": "`tools`, `system_instruction` and `generation_config` are per interaction. Resend them every turn."
         }
       ],
-      "lab": "Build a two-tool assistant: `get_weather(city)` and `set_thermostat(celsius)`. Ask \"It's cold in Oslo, set my heating sensibly\". Log every step, confirm the model chains the calls, and add argument validation that rejects temperatures outside 10–28 °C with a helpful error result."
+      "lab": "Build a two-tool assistant: `get_weather(city)` and `set_thermostat(celsius)`. Ask \"It's cold in Oslo, set my heating sensibly\". Log every step, confirm the model chains the calls, and add argument validation that rejects temperatures outside 10–28 °C with a helpful error result.",
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        },
+        {
+          "title": "Function calling pre-tool text — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling#workarounds-for-pre-tool-text-requirements"
+        }
+      ]
     },
     {
       "id": "l6",
@@ -370,7 +440,17 @@
           "correct": "The schema guarantees shape, not truth. Add business checks (sums, ranges, cross-field rules) and retry or escalate on failure."
         }
       ],
-      "lab": "Write a Pydantic or Zod schema for a receipt (merchant, date, line items, total, currency enum). Extract 10 receipts, validate each, and write a check that the line items add up to the total. Count how often validation catches a problem the schema alone didn't."
+      "lab": "Write a Pydantic or Zod schema for a receipt (merchant, date, line items, total, currency enum). Extract 10 receipts, validate each, and write a check that the line items add up to the total. Count how often validation catches a problem the schema alone didn't.",
+      "sources": [
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        },
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        }
+      ]
     },
     {
       "id": "d3-l3",
@@ -417,7 +497,21 @@
           "correct": "That pattern can cause malformed function calls. Capture the notes in a dedicated `update()` function call instead."
         }
       ],
-      "lab": "Take a 30-tool agent and log which tools it picks on 20 test prompts. Group the tools into three task sets of under 10 each, send only the relevant set per step (or use `allowed_tools`), and compare selection accuracy and malformed-call errors before and after."
+      "lab": "Take a 30-tool agent and log which tools it picks on 20 test prompts. Group the tools into three task sets of under 10 each, send only the relevant set per step (or use `allowed_tools`), and compare selection accuracy and malformed-call errors before and after.",
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        },
+        {
+          "title": "API errors — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/api-errors"
+        },
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        }
+      ]
     },
     {
       "id": "l7",
@@ -469,7 +563,25 @@
           "correct": "Each executed search query is billed, and one prompt can trigger several. Log the queries in `google_search_call` steps to forecast cost."
         }
       ],
-      "lab": "Build a \"today in tech\" answerer with Search grounding. Print each answer with numbered citations built from the `url_citation` spans, render the search suggestions HTML in a simple web page, and log how many search queries each question triggered."
+      "lab": "Build a \"today in tech\" answerer with Search grounding. Print each answer with numbered citations built from the `url_citation` spans, render the search suggestions HTML in a simple web page, and log how many search queries each question triggered.",
+      "sources": [
+        {
+          "title": "Grounding with Google Search — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/google-search"
+        },
+        {
+          "title": "Search grounding terms — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/terms#grounding-with-google-search"
+        },
+        {
+          "title": "Grounding with Google Maps — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/maps-grounding"
+        },
+        {
+          "title": "URL context — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/url-context"
+        }
+      ]
     },
     {
       "id": "l8",
@@ -530,7 +642,21 @@
           "correct": "Put the documents first and the question at the very end."
         }
       ],
-      "lab": "Embed 50–100 chunks of a document set with a Gemini embedding model at 768 dimensions and store them in memory. Answer 10 questions with top-5 retrieval and citations. For each wrong answer, record whether the right chunk was retrieved. Then repeat with the whole corpus in context (documents first, question last), and finally with a File Search store, and compare accuracy, latency and cost."
+      "lab": "Embed 50–100 chunks of a document set with a Gemini embedding model at 768 dimensions and store them in memory. Answer 10 questions with top-5 retrieval and citations. For each wrong answer, record whether the right chunk was retrieved. Then repeat with the whole corpus in context (documents first, question last), and finally with a File Search store, and compare accuracy, latency and cost.",
+      "sources": [
+        {
+          "title": "Embeddings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/embeddings"
+        },
+        {
+          "title": "File Search — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/file-search"
+        },
+        {
+          "title": "Long context — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/long-context"
+        }
+      ]
     },
     {
       "id": "l9",
@@ -585,7 +711,21 @@
           "correct": "Remote, independently owned agents with a formal contract are an A2A use case."
         }
       ],
-      "lab": "Build an ADK agent with two function tools (search a local FAQ, create a ticket) and a `before_tool_callback` that blocks ticket creation without an email address. Store the user's preferred language under `user:language`, and use `output_key` plus `{key}` templating to pass a classification into the answering step of a deterministic workflow. Write five eval cases and run them."
+      "lab": "Build an ADK agent with two function tools (search a local FAQ, create a ticket) and a `before_tool_callback` that blocks ticket creation without an email address. Store the user's preferred language under `user:language`, and use `output_key` plus `{key}` templating to pass a classification into the answering step of a deterministic workflow. Write five eval cases and run them.",
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        },
+        {
+          "title": "ADK multi-agent collaboration — adk.dev",
+          "url": "https://adk.dev/workflows/collaboration/"
+        },
+        {
+          "title": "ADK A2A introduction — adk.dev",
+          "url": "https://adk.dev/a2a/intro/"
+        }
+      ]
     },
     {
       "id": "l10",
@@ -637,7 +777,25 @@
           "correct": "Neither is supported. Post-process the report with a model call that uses `response_format`, and call your function from your own code."
         }
       ],
-      "lab": "Run a Deep Research agent in background mode on a question from your field. Poll until it finishes, then convert the report to JSON with a separate structured-output call. Separately, run Antigravity with a `network` allowlist limited to one domain and confirm that requests to other hosts fail."
+      "lab": "Run a Deep Research agent in background mode on a question from your field. Poll until it finishes, then convert the report to JSON with a separate structured-output call. Separately, run Antigravity with a `network` allowlist limited to one domain and confirm that requests to other hosts fail.",
+      "sources": [
+        {
+          "title": "Managed agents — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/agents"
+        },
+        {
+          "title": "ADK managed agents — adk.dev",
+          "url": "https://adk.dev/agents/managed-agents/"
+        },
+        {
+          "title": "Agent Platform release notes — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes"
+        },
+        {
+          "title": "Background execution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/background-execution"
+        }
+      ]
     },
     {
       "id": "l11",
@@ -701,7 +859,25 @@
           "correct": "Flex is best-effort and sheddable with possible minutes of latency; keep live traffic on Standard or Priority."
         }
       ],
-      "lab": "Send the same 10,000-token document with 5 different questions, first with the question at the top, then with the document first. Compare `usage.total_cached_tokens`. Then run 100 classification requests through the Batch API and compare total cost with synchronous calls. Finally, call `count_tokens` on the document before sending it, and compare the estimate with `usage.total_input_tokens` afterwards."
+      "lab": "Send the same 10,000-token document with 5 different questions, first with the question at the top, then with the document first. Compare `usage.total_cached_tokens`. Then run 100 classification requests through the Batch API and compare total cost with synchronous calls. Finally, call `count_tokens` on the document before sending it, and compare the estimate with `usage.total_input_tokens` afterwards.",
+      "sources": [
+        {
+          "title": "Context caching — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/caching"
+        },
+        {
+          "title": "Explicit caching — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/caching?generate-content=true"
+        },
+        {
+          "title": "Batch API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/batch-api"
+        },
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        }
+      ]
     },
     {
       "id": "l12",
@@ -756,7 +932,25 @@
           "correct": "Resume the stream with last_event_id."
         }
       ],
-      "lab": "Write a small wrapper around `interactions.create` that maps error codes to actions: backoff with jitter (max 5 tries) for `rate_limit_exceeded`, `service_unavailable` and `api_error`; fail fast on other 4xx errors and on `payment_required`; surface `quota_exceeded` with the reset time. Log usage and latency, support streaming with resume via `last_event_id`, and add a background mode (`store=True`) that polls until a terminal status."
+      "lab": "Write a small wrapper around `interactions.create` that maps error codes to actions: backoff with jitter (max 5 tries) for `rate_limit_exceeded`, `service_unavailable` and `api_error`; fail fast on other 4xx errors and on `payment_required`; surface `quota_exceeded` with the reset time. Log usage and latency, support streaming with resume via `last_event_id`, and add a background mode (`store=True`) that polls until a terminal status.",
+      "sources": [
+        {
+          "title": "Rate limits — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/rate-limits"
+        },
+        {
+          "title": "API errors — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/api-errors"
+        },
+        {
+          "title": "Streaming — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/streaming"
+        },
+        {
+          "title": "Background execution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/background-execution"
+        }
+      ]
     },
     {
       "id": "l13",
@@ -795,7 +989,17 @@
           "correct": "Retrying the same input is not a fix. Show a helpful message, log the error code, and let the user rephrase."
         }
       ],
-      "lab": "Add `block_medium_and_above` for harassment and hate speech to a chat endpoint. Write five test inputs, including one prompt-injection attempt hidden in a \"document\". Confirm blocks surface as clean user messages, and that the injection can't trigger a tool call without confirmation."
+      "lab": "Add `block_medium_and_above` for harassment and hate speech to a chat endpoint. Write five test inputs, including one prompt-injection attempt hidden in a \"document\". Confirm blocks surface as clean user messages, and that the injection can't trigger a tool call without confirmation.",
+      "sources": [
+        {
+          "title": "Safety settings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-settings"
+        },
+        {
+          "title": "Safety guidance — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-guidance"
+        }
+      ]
     },
     {
       "id": "d7-l2",
@@ -837,7 +1041,17 @@
           "correct": "The onus is on the developer. Add your own checks and follow the Prohibited Use Policy."
         }
       ],
-      "lab": "Write a one-page risk list for a homework-help chatbot aimed at teenagers. For each top risk, name one mitigation (threshold, system instruction, post-processing check, or product limit). Build a 20-prompt adversarial test set, run it, and record which mitigations caught which prompts. Add a feedback button and decide what you will monitor weekly."
+      "lab": "Write a one-page risk list for a homework-help chatbot aimed at teenagers. For each top risk, name one mitigation (threshold, system instruction, post-processing check, or product limit). Build a 20-prompt adversarial test set, run it, and record which mitigations caught which prompts. Add a feedback button and decide what you will monitor weekly.",
+      "sources": [
+        {
+          "title": "Safety guidance — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-guidance"
+        },
+        {
+          "title": "Safety settings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-settings"
+        }
+      ]
     }
   ],
   "flashcards": [
@@ -1811,6 +2025,16 @@
         "`generateContent` is the legacy path. It is still supported, but not the recommendation for new work.",
         "That is not the Gemini API’s recommended interface.",
         "Batch is for offline jobs with up to 24-hour turnaround."
+      ],
+      "sources": [
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        },
+        {
+          "title": "Migrate to Interactions API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/migrate-to-interactions"
+        }
       ]
     },
     {
@@ -1834,6 +2058,12 @@
         "It is the other way round: it requires storage (`store=True`, the default).",
         "Paid-tier interactions are kept for 55 days.",
         "Correct: only the conversation history carries over."
+      ],
+      "sources": [
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        }
       ]
     },
     {
@@ -1856,6 +2086,12 @@
         "Stateless mode is an API option, not a model feature.",
         "Correct: stateless mode means you manage history.",
         "Stateless mode cannot use `previous_interaction_id`."
+      ],
+      "sources": [
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        }
       ]
     },
     {
@@ -1878,6 +2114,16 @@
         "Lyria generates music.",
         "Live models are for real-time voice.",
         "Correct: fastest and cheapest, built for high-throughput simple tasks."
+      ],
+      "sources": [
+        {
+          "title": "Gemini models — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/models"
+        },
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        }
       ]
     },
     {
@@ -1900,6 +2146,16 @@
         "There is no such surcharge.",
         "Aliases point at real models with their normal features.",
         "Aliases work in the API."
+      ],
+      "sources": [
+        {
+          "title": "Deprecations — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/deprecations"
+        },
+        {
+          "title": "Gemini models — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/models"
+        }
       ]
     },
     {
@@ -1922,6 +2178,12 @@
         "Correct.",
         "That describes Flash-Lite, not Gemma.",
         "Gemma weights are openly downloadable."
+      ],
+      "sources": [
+        {
+          "title": "Gemini models — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/models"
+        }
       ]
     },
     {
@@ -1944,6 +2206,12 @@
         "`output_text` is a convenience on top of the steps.",
         "Correct: steps record each action in order.",
         "Steps are in the response body."
+      ],
+      "sources": [
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        }
       ]
     },
     {
@@ -1967,6 +2235,16 @@
         "It remains supported.",
         "The docs say the Batch API is not yet available in the Interactions API; it is documented for `generateContent` only.",
         "Correct, per the Batch API docs."
+      ],
+      "sources": [
+        {
+          "title": "Batch API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/batch-api"
+        },
+        {
+          "title": "Migrate to Interactions API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/migrate-to-interactions"
+        }
       ]
     },
     {
@@ -1989,6 +2267,16 @@
         "A different model can behave differently.",
         "Previews are less stable, not more.",
         "That does not address model differences."
+      ],
+      "sources": [
+        {
+          "title": "Deprecations — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/deprecations"
+        },
+        {
+          "title": "Gemini models — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/models"
+        }
       ]
     },
     {
@@ -2011,6 +2299,12 @@
         "Correct.",
         "Those are older, superseded packages.",
         "No such official package."
+      ],
+      "sources": [
+        {
+          "title": "Gemini API docs",
+          "url": "https://aistudio.google.com/docs"
+        }
       ]
     },
     {
@@ -2034,6 +2328,16 @@
         "The request and response shapes differ; `contents` and `candidates` are generateContent concepts.",
         "That is a different vendor's chat format, not the Gemini Interactions API.",
         "The Batch API is generateContent-only and does not convert requests to interactions."
+      ],
+      "sources": [
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        },
+        {
+          "title": "Migrate to Interactions API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/migrate-to-interactions"
+        }
       ]
     },
     {
@@ -2057,6 +2361,16 @@
         "`candidate_count` is itself unsupported on Gemini 3+.",
         "Correct: drop the prefill and use structured output.",
         "An alias points at a current model with the same rule, and aliases are a poor choice for production anyway."
+      ],
+      "sources": [
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        },
+        {
+          "title": "Migrate to Interactions API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/migrate-to-interactions"
+        }
       ]
     },
     {
@@ -2081,6 +2395,16 @@
         "Correct: the docs say routed requests are billed at the successor's rates.",
         "A different model can behave differently; routing makes no such guarantee.",
         "That describes a shutdown, not routing."
+      ],
+      "sources": [
+        {
+          "title": "Deprecations — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/deprecations"
+        },
+        {
+          "title": "Gemini models — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/models"
+        }
       ]
     },
     {
@@ -2104,6 +2428,16 @@
         "Correct: the combination is invalid.",
         "The API does not override your storage choice.",
         "The request fails validation; it is not silently downgraded."
+      ],
+      "sources": [
+        {
+          "title": "Background execution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/background-execution"
+        },
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        }
       ]
     },
     {
@@ -2126,6 +2460,16 @@
         "Experimental models are not intended for production.",
         "Being billed does not make a preview stable; previews can be deprecated with about two weeks' notice.",
         "Correct: pin stable and migrate on your own schedule."
+      ],
+      "sources": [
+        {
+          "title": "Deprecations — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/deprecations"
+        },
+        {
+          "title": "Gemini models — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/models"
+        }
       ]
     },
     {
@@ -2149,6 +2493,12 @@
         "Argon is served through the Interactions API; the API surface is not the reason the call fails.",
         "There is no such required alias.",
         "Storage mode is unrelated to model availability."
+      ],
+      "sources": [
+        {
+          "title": "Gemini models — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/models"
+        }
       ]
     },
     {
@@ -2172,6 +2522,16 @@
         "Ignoring a known quality gap on hard cases fails the quality bar.",
         "Correct: eval-driven, cost-aware routing.",
         "Leaderboards don't measure your task; your own evals do."
+      ],
+      "sources": [
+        {
+          "title": "Gemini models — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/models"
+        },
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        }
       ]
     },
     {
@@ -2197,6 +2557,16 @@
         "Correct: explicit caching is not supported on Interactions (and not on Gemini 4 Argon or later).",
         "Correct: automatic function calling is Python SDK and generateContent only.",
         "Deep Research is called through the Interactions API with `agent=`; it is not available via generateContent."
+      ],
+      "sources": [
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        },
+        {
+          "title": "Migrate to Interactions API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/migrate-to-interactions"
+        }
       ]
     },
     {
@@ -2220,6 +2590,12 @@
         "Correct: stateless means resending the complete, unmodified history.",
         "A summary does not replace the signed steps the model expects.",
         "More thinking cannot recover steps that were never sent."
+      ],
+      "sources": [
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        }
       ]
     },
     {
@@ -2242,6 +2618,16 @@
         "Unrelated to truncation.",
         "Correct: thinking consumed the budget.",
         "Argon ignores sampling parameters, and temperature does not cause truncation."
+      ],
+      "sources": [
+        {
+          "title": "Thinking — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking"
+        },
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        }
       ]
     },
     {
@@ -2264,6 +2650,12 @@
         "All three levels are supported on Argon; medium is the default.",
         "Argon ignores temperature, and it has no relationship to thinking level.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Thinking — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking"
+        }
       ]
     },
     {
@@ -2286,6 +2678,12 @@
         "The docs say it is ignored today (errors are expected only in future generations).",
         "Argon does not use the sampling parameters.",
         "Temperature does not control thinking."
+      ],
+      "sources": [
+        {
+          "title": "Thinking — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking"
+        }
       ]
     },
     {
@@ -2309,6 +2707,12 @@
         "Loses audio and timing, and is unnecessary.",
         "Too large for an inline request.",
         "Correct: requests over 100 MB need the Files API."
+      ],
+      "sources": [
+        {
+          "title": "Files API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/files"
+        }
       ]
     },
     {
@@ -2331,6 +2735,12 @@
         "Files can be reused within the 48-hour window.",
         "Correct.",
         "Files expire automatically."
+      ],
+      "sources": [
+        {
+          "title": "Files API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/files"
+        }
       ]
     },
     {
@@ -2353,6 +2763,16 @@
         "Loses detail the model could use.",
         "The system instruction is for persona, rules and format; the per-request question still needs to be asked clearly.",
         "Correct: long content first, question last."
+      ],
+      "sources": [
+        {
+          "title": "Long context — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/long-context"
+        },
+        {
+          "title": "Prompting strategies — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/prompting-strategies"
+        }
       ]
     },
     {
@@ -2376,6 +2796,16 @@
         "Correct: smaller, checkable steps.",
         "Does not improve verifiability.",
         "Irrelevant to verifiability."
+      ],
+      "sources": [
+        {
+          "title": "Long context — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/long-context"
+        },
+        {
+          "title": "Prompting strategies — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/prompting-strategies"
+        }
       ]
     },
     {
@@ -2398,6 +2828,12 @@
         "Correct.",
         "Function declarations describe tools.",
         "The schema shapes JSON output, not behaviour rules."
+      ],
+      "sources": [
+        {
+          "title": "Prompting strategies — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/prompting-strategies"
+        }
       ]
     },
     {
@@ -2420,6 +2856,16 @@
         "Thinking at any level is billed.",
         "Correct.",
         "Thinking tokens are billed."
+      ],
+      "sources": [
+        {
+          "title": "Thinking — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking"
+        },
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        }
       ]
     },
     {
@@ -2442,6 +2888,12 @@
         "Files are project-scoped.",
         "Deleted files are gone.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Files API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/files"
+        }
       ]
     },
     {
@@ -2465,6 +2917,16 @@
         "Correct: respect the per-model supported levels.",
         "Combining a budget with a level is not allowed and does not make `minimal` valid on 3.8 Flash.",
         "Starving the cap truncates answers while thinking is still billed."
+      ],
+      "sources": [
+        {
+          "title": "Thinking — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking"
+        },
+        {
+          "title": "Thinking budget (legacy) — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking?generate-content=true"
+        }
       ]
     },
     {
@@ -2488,6 +2950,16 @@
         "32,768 is the recommended minimum for `max_output_tokens`, not a budget rule.",
         "Argon supports low, medium and high.",
         "Argon always thinks; it cannot be disabled."
+      ],
+      "sources": [
+        {
+          "title": "Thinking — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking"
+        },
+        {
+          "title": "Thinking budget (legacy) — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking?generate-content=true"
+        }
       ]
     },
     {
@@ -2511,6 +2983,16 @@
         "Thinking level does not change how media is tokenized, and more thinking costs more.",
         "Correct.",
         "Media is billed as input tokens whatever the input method, and URLs are limited to small files."
+      ],
+      "sources": [
+        {
+          "title": "Media resolution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/media-resolution"
+        },
+        {
+          "title": "Video optimization — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/optimization"
+        }
       ]
     },
     {
@@ -2534,6 +3016,16 @@
         "`high` quadruples tokens per frame.",
         "Sampling parameters are ignored and do not affect input tokens.",
         "A multi-hour video is far above the inline limit, and the input method does not change token count."
+      ],
+      "sources": [
+        {
+          "title": "Media resolution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/media-resolution"
+        },
+        {
+          "title": "Video optimization — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/optimization"
+        }
       ]
     },
     {
@@ -2557,6 +3049,16 @@
         "Correct.",
         "Correct.",
         "PDFs have a lower 50 MB inline limit."
+      ],
+      "sources": [
+        {
+          "title": "Files API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/files"
+        },
+        {
+          "title": "File input methods — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/file-input-methods"
+        }
       ]
     },
     {
@@ -2581,6 +3083,12 @@
         "Correct: define ambiguous terms.",
         "Sampling parameters are ignored on current models.",
         "Thinking models already reason internally; this mostly adds output tokens."
+      ],
+      "sources": [
+        {
+          "title": "Prompting strategies — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/prompting-strategies"
+        }
       ]
     },
     {
@@ -2604,6 +3112,12 @@
         "The input method does not change how the prompt is ordered or read.",
         "Duplicated, scattered instructions blur the prompt rather than focus it.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Prompting strategies — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/prompting-strategies"
+        }
       ]
     },
     {
@@ -2627,6 +3141,16 @@
         "Thought summaries are set through `generation_config.thinking_summaries`.",
         "Correct.",
         "Thinking cannot be disabled on Argon."
+      ],
+      "sources": [
+        {
+          "title": "Thinking — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking"
+        },
+        {
+          "title": "Thinking budget (legacy) — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking?generate-content=true"
+        }
       ]
     },
     {
@@ -2651,6 +3175,16 @@
         "Correct.",
         "Exceeds the 100 MB inline request limit.",
         "`high` is for text-heavy frames; it multiplies tokens and is not needed for timestamps."
+      ],
+      "sources": [
+        {
+          "title": "Files API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/files"
+        },
+        {
+          "title": "File input methods — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/file-input-methods"
+        }
       ]
     },
     {
@@ -2673,6 +3207,12 @@
         "Gemini never executes your functions.",
         "You send the result back in the next request.",
         "You must return the result so the model can answer."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        }
       ]
     },
     {
@@ -2695,6 +3235,12 @@
         "Prohibits calls.",
         "Lets the model decide, so it may answer directly.",
         "Correct: the model must predict a function call."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        }
       ]
     },
     {
@@ -2717,6 +3263,12 @@
         "Disables tools entirely.",
         "Correct.",
         "It expects all results."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        }
       ]
     },
     {
@@ -2740,6 +3292,12 @@
         "Descriptions guide choice; they do not enforce.",
         "That disables all tools.",
         "Correct: deterministic enforcement."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        }
       ]
     },
     {
@@ -2763,6 +3321,12 @@
         "Correct.",
         "Vague names hurt selection.",
         "Overlap confuses selection."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        }
       ]
     },
     {
@@ -2785,6 +3349,12 @@
         "Correct.",
         "Works sometimes; not schema-guaranteed.",
         "Unrelated."
+      ],
+      "sources": [
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        }
       ]
     },
     {
@@ -2807,6 +3377,12 @@
         "Unrelated.",
         "Correct.",
         "It is ignored, not reinterpreted."
+      ],
+      "sources": [
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        }
       ]
     },
     {
@@ -2830,6 +3406,12 @@
         "Loses a field the model can extract when present.",
         "Ignored, and it would push toward invented values anyway.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        }
       ]
     },
     {
@@ -2852,6 +3434,12 @@
         "400 means fix the request.",
         "Batch does not relax schema-complexity limits; a 400 needs a simpler schema.",
         "Thinking level does not change schema-complexity limits."
+      ],
+      "sources": [
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        }
       ]
     },
     {
@@ -2874,6 +3462,12 @@
         "Correct.",
         "Some constraints are ignored, and values can still be wrong.",
         "Unbounded retries waste money and may never pass."
+      ],
+      "sources": [
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        }
       ]
     },
     {
@@ -2898,6 +3492,12 @@
         "It is silently ignored.",
         "Correct.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        }
       ]
     },
     {
@@ -2920,6 +3520,12 @@
         "Use the absence of further calls, not text parsing.",
         "Would force calls even when the model should answer.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        }
       ]
     },
     {
@@ -2942,6 +3548,12 @@
         "The model may misread it as success or no data.",
         "The model is waiting for it.",
         "Invents data."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        }
       ]
     },
     {
@@ -2965,6 +3577,16 @@
         "Correct: the model is blocked on your tool results.",
         "Failures show as `failed`, not `requires_action`.",
         "Nothing is wrong with the reasoning; it needs a result."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        },
+        {
+          "title": "Background execution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/background-execution"
+        }
       ]
     },
     {
@@ -2988,6 +3610,16 @@
         "`validated` concerns schema adherence, not how deltas are chunked.",
         "Correct.",
         "Prompts cannot control stream chunking."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        },
+        {
+          "title": "Streaming — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/streaming"
+        }
       ]
     },
     {
@@ -3011,6 +3643,16 @@
         "Correct: forced call, limited to the two routing tools.",
         "Prohibits calls and relies on parsing free text.",
         "Forces a call, but any of the ten tools could be chosen."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        },
+        {
+          "title": "Background execution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/background-execution"
+        }
       ]
     },
     {
@@ -3034,6 +3676,12 @@
         "`ANY` is never the default.",
         "`NONE` is equivalent to sending no declarations; it is not a default.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        }
       ]
     },
     {
@@ -3057,6 +3705,12 @@
         "Correct.",
         "Descriptions are the main signal for choosing; shrinking them hurts.",
         "Forces a call but does not help pick the right one."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        }
       ]
     },
     {
@@ -3080,6 +3734,16 @@
         "400 errors are not transient.",
         "Correct.",
         "Batch does not relax schema-complexity limits; the schema itself must be simplified."
+      ],
+      "sources": [
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        },
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        }
       ]
     },
     {
@@ -3103,6 +3767,12 @@
         "Shape is guaranteed; correctness is not.",
         "Encourages invented values and does nothing for the sum.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        }
       ]
     },
     {
@@ -3126,6 +3796,16 @@
         "Response schemas also give typed fields.",
         "No schema guarantee and fragile parsing.",
         "Blocks calls and gives you no structured output."
+      ],
+      "sources": [
+        {
+          "title": "Structured output — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/structured-output"
+        },
+        {
+          "title": "Function calling — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/function-calling"
+        }
       ]
     },
     {
@@ -3149,6 +3829,12 @@
         "Static and quickly stale.",
         "Thinking does not add web access.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Grounding with Google Search — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/google-search"
+        }
       ]
     },
     {
@@ -3171,6 +3857,12 @@
         "`usage` reports tokens.",
         "Correct.",
         "The structured annotations are the reliable source."
+      ],
+      "sources": [
+        {
+          "title": "Grounding with Google Search — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/google-search"
+        }
       ]
     },
     {
@@ -3193,6 +3885,12 @@
         "Not required.",
         "Not required.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Search grounding terms — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/terms#grounding-with-google-search"
+        }
       ]
     },
     {
@@ -3215,6 +3913,16 @@
         "It is usage-based.",
         "Per grounded prompt was how Gemini 2.5 and older models were billed.",
         "It has a free allowance, then a per-query price, and rate limits."
+      ],
+      "sources": [
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        },
+        {
+          "title": "Grounding with Google Search — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/google-search"
+        }
       ]
     },
     {
@@ -3237,6 +3945,16 @@
         "Correct: private data needs your own retrieval.",
         "Search only sees the public web.",
         "The model has never seen them."
+      ],
+      "sources": [
+        {
+          "title": "Embeddings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/embeddings"
+        },
+        {
+          "title": "Long context — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/long-context"
+        }
       ]
     },
     {
@@ -3259,6 +3977,16 @@
         "The manual may not be public, and search adds cost.",
         "Correct.",
         "Overkill for a small, stable document."
+      ],
+      "sources": [
+        {
+          "title": "Long context — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/long-context"
+        },
+        {
+          "title": "Context caching — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/caching"
+        }
       ]
     },
     {
@@ -3281,6 +4009,12 @@
         "A generative model, not an embedding model.",
         "A generative Flash-Lite model, not an embedding model.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Embeddings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/embeddings"
+        }
       ]
     },
     {
@@ -3303,6 +4037,16 @@
         "Reasoning cannot fix missing evidence.",
         "Unlikely root cause.",
         "Measure before changing components."
+      ],
+      "sources": [
+        {
+          "title": "Embeddings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/embeddings"
+        },
+        {
+          "title": "Long context — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/long-context"
+        }
       ]
     },
     {
@@ -3326,6 +4070,16 @@
         "Correct.",
         "Correct.",
         "Documents first, question last."
+      ],
+      "sources": [
+        {
+          "title": "Embeddings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/embeddings"
+        },
+        {
+          "title": "Long context — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/long-context"
+        }
       ]
     },
     {
@@ -3348,6 +4102,12 @@
         "A cost mode, not a grounding tool.",
         "Correct: grounds on URLs you provide.",
         "For places and routes."
+      ],
+      "sources": [
+        {
+          "title": "URL context — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/url-context"
+        }
       ]
     },
     {
@@ -3371,6 +4131,12 @@
         "Correct: this meets both the placement and the attribution rules.",
         "A generic footer doesn't satisfy the source display rule.",
         "Search grounding has its own display rules (search suggestions), and it is a worse fit for places and local facts."
+      ],
+      "sources": [
+        {
+          "title": "Grounding with Google Maps — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/maps-grounding"
+        }
       ]
     },
     {
@@ -3395,6 +4161,12 @@
         "Correct: private network addresses aren't reachable.",
         "PDF is a supported type.",
         "Correct: YouTube and audio/video content aren't supported by URL context."
+      ],
+      "sources": [
+        {
+          "title": "URL context — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/url-context"
+        }
       ]
     },
     {
@@ -3418,6 +4190,12 @@
         "Correct.",
         "Matching dimension counts doesn't make the spaces compatible.",
         "`gemini-embedding-2` has no `task_type`, and task hints can't bridge two spaces anyway."
+      ],
+      "sources": [
+        {
+          "title": "Embeddings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/embeddings"
+        }
       ]
     },
     {
@@ -3440,6 +4218,12 @@
         "Task hints help retrieval; the new model takes them as a prefix.",
         "Correct.",
         "Queries and documents must use the same dimensions to be compared."
+      ],
+      "sources": [
+        {
+          "title": "Embeddings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/embeddings"
+        }
       ]
     },
     {
@@ -3463,6 +4247,12 @@
         "Vectors of different sizes can't be compared.",
         "Not an available or sensible embedding approach.",
         "One-sentence chunks give more vectors, not fewer, and lose context."
+      ],
+      "sources": [
+        {
+          "title": "Embeddings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/embeddings"
+        }
       ]
     },
     {
@@ -3486,6 +4276,12 @@
         "Correct.",
         "A growing corpus of thousands of PDFs won't fit, and every request would be slow and costly.",
         "Fine-tuning doesn't give citations and is costly to repeat weekly."
+      ],
+      "sources": [
+        {
+          "title": "File Search — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/file-search"
+        }
       ]
     },
     {
@@ -3509,6 +4305,12 @@
         "Correct.",
         "Sampling parameters are ignored on the newest models and don't fix recall.",
         "The guidance is the reverse: documents first, question last."
+      ],
+      "sources": [
+        {
+          "title": "Long context — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/long-context"
+        }
       ]
     },
     {
@@ -3533,6 +4335,12 @@
         "Correct: click and link tracking is not allowed.",
         "Correct: training on grounded results is not allowed.",
         "Storing displayed text for the user's chat history is a permitted, limited use."
+      ],
+      "sources": [
+        {
+          "title": "Search grounding terms — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/terms#grounding-with-google-search"
+        }
       ]
     },
     {
@@ -3556,6 +4364,16 @@
         "Per-prompt billing applied to Gemini 2.5 and older, not 3+.",
         "Correct.",
         "Thinking tokens are billed as output tokens, not as searches."
+      ],
+      "sources": [
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        },
+        {
+          "title": "Grounding with Google Search — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/google-search"
+        }
       ]
     },
     {
@@ -3578,6 +4396,12 @@
         "ADK is a framework, not a model.",
         "Unrelated.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        }
       ]
     },
     {
@@ -3600,6 +4424,12 @@
         "A loop repeats until a condition. These steps run once each.",
         "LLM routing for a fixed order adds cost and lets the model skip or reorder steps.",
         "The steps depend on each other, so they cannot run in parallel."
+      ],
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        }
       ]
     },
     {
@@ -3622,6 +4452,12 @@
         "Does not enforce rules.",
         "Not guaranteed.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        }
       ]
     },
     {
@@ -3644,6 +4480,12 @@
         "Not required.",
         "Correct.",
         "Managed agents are hosted by Google."
+      ],
+      "sources": [
+        {
+          "title": "Managed agents — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/agents"
+        }
       ]
     },
     {
@@ -3666,6 +4508,12 @@
         "Not a product name.",
         "Agent Builder became part of the Agent Platform.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform release notes — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes"
+        }
       ]
     },
     {
@@ -3689,6 +4537,16 @@
         "A personal key sits outside the bank's governance.",
         "Shipping a key in a client app is insecure.",
         "A local open model on a laptop does not meet the stated controls."
+      ],
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        },
+        {
+          "title": "Agent Platform release notes — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes"
+        }
       ]
     },
     {
@@ -3713,6 +4571,16 @@
         "Correct.",
         "Correct.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        },
+        {
+          "title": "Agent Platform release notes — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes"
+        }
       ]
     },
     {
@@ -3735,6 +4603,12 @@
         "Private content is not on the web.",
         "Correct.",
         "Adds cost and failure points without evidence."
+      ],
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        }
       ]
     },
     {
@@ -3757,6 +4631,12 @@
         "Not product names.",
         "Not product names.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Agent Platform release notes — Google Cloud",
+          "url": "https://docs.cloud.google.com/gemini-enterprise-agent-platform/release-notes"
+        }
       ]
     },
     {
@@ -3779,6 +4659,12 @@
         "A long synchronous request will time out, and Deep Research requires background mode anyway.",
         "Background mode requires `store=True`.",
         "You lose the managed agent's planning and citations."
+      ],
+      "sources": [
+        {
+          "title": "Background execution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/background-execution"
+        }
       ]
     },
     {
@@ -3802,6 +4688,12 @@
         "App-wide: one user's setting would apply to everyone.",
         "Correct.",
         "Discarded after the current invocation."
+      ],
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        }
       ]
     },
     {
@@ -3824,6 +4716,12 @@
         "Repeats work and doubles cost.",
         "Merges two roles and drops the workflow structure.",
         "A fragile side channel. Session state is built for this."
+      ],
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        }
       ]
     },
     {
@@ -3847,6 +4745,12 @@
         "Correct.",
         "Unreliable and unsafe: the contract should live in code, not in prose.",
         "Backwards: `AgentTool` wraps a local agent for your own agent to call."
+      ],
+      "sources": [
+        {
+          "title": "ADK A2A introduction — adk.dev",
+          "url": "https://adk.dev/a2a/intro/"
+        }
       ]
     },
     {
@@ -3870,6 +4774,12 @@
         "The max variant is more thorough but has the same limits.",
         "Correct.",
         "`tool_choice` cannot add a feature the agent does not support."
+      ],
+      "sources": [
+        {
+          "title": "Managed agents — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/agents"
+        }
       ]
     },
     {
@@ -3894,6 +4804,12 @@
         "Wrong: egress is unrestricted by default.",
         "Correct.",
         "AGENTS.md is loaded as system instructions, so the token would be exposed to the model."
+      ],
+      "sources": [
+        {
+          "title": "Managed agents — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/agents"
+        }
       ]
     },
     {
@@ -3916,6 +4832,16 @@
         "The model choice does not affect the storage requirement.",
         "Unrelated.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Background execution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/background-execution"
+        },
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        }
       ]
     },
     {
@@ -3939,6 +4865,12 @@
         "Correct.",
         "Heavy, and it does not configure the managed agent.",
         "ADK `ManagedAgent` does not support client-side or MCP tools."
+      ],
+      "sources": [
+        {
+          "title": "Managed agents — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/agents"
+        }
       ]
     },
     {
@@ -3961,6 +4893,12 @@
         "Too late and in the wrong place: the refund call is not intercepted.",
         "Influences the model but does not enforce the rule.",
         "Better reasoning is not a guarantee."
+      ],
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        }
       ]
     },
     {
@@ -3985,6 +4923,12 @@
         "`temp:` keys disappear after the current invocation.",
         "Correct.",
         "`output_key` stores one agent's final text. It is not a search mechanism."
+      ],
+      "sources": [
+        {
+          "title": "Agent Development Kit — adk.dev",
+          "url": "https://adk.dev/"
+        }
       ]
     },
     {
@@ -4007,6 +4951,12 @@
         "Correct.",
         "Not the reason.",
         "No tool choice can enable unsupported tools."
+      ],
+      "sources": [
+        {
+          "title": "ADK managed agents — adk.dev",
+          "url": "https://adk.dev/agents/managed-agents/"
+        }
       ]
     },
     {
@@ -4029,6 +4979,16 @@
         "Correct: implicit caching matches prefixes, so stable content must come first.",
         "Explicit caching is not supported on Gemini 4 Argon or the Interactions API.",
         "Dropping below the minimum prefix length would make caching impossible."
+      ],
+      "sources": [
+        {
+          "title": "Context caching — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/caching"
+        },
+        {
+          "title": "Explicit caching — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/caching?generate-content=true"
+        }
       ]
     },
     {
@@ -4052,6 +5012,12 @@
         "Streaming improves perceived latency, not cost.",
         "Correct.",
         "Full price and rate-limit pressure."
+      ],
+      "sources": [
+        {
+          "title": "Batch API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/batch-api"
+        }
       ]
     },
     {
@@ -4074,6 +5040,16 @@
         "No such rule is documented.",
         "Tier is a project property.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Rate limits — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/rate-limits"
+        },
+        {
+          "title": "API errors — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/api-errors"
+        }
       ]
     },
     {
@@ -4097,6 +5073,16 @@
         "Correct: transient, retry with backoff.",
         "Deterministic: fix the request.",
         "Credits are depleted; do not retry."
+      ],
+      "sources": [
+        {
+          "title": "Rate limits — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/rate-limits"
+        },
+        {
+          "title": "API errors — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/api-errors"
+        }
       ]
     },
     {
@@ -4119,6 +5105,16 @@
         "Sampling parameters are ignored on Argon.",
         "`store=False` changes nothing about output length and blocks background mode.",
         "Correct: long decode needs a raised `max_output_tokens`."
+      ],
+      "sources": [
+        {
+          "title": "Thinking — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/thinking"
+        },
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        }
       ]
     },
     {
@@ -4141,6 +5137,12 @@
         "Polling speed does not drop text.",
         "Correct.",
         "Irrelevant."
+      ],
+      "sources": [
+        {
+          "title": "Streaming — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/streaming"
+        }
       ]
     },
     {
@@ -4163,6 +5165,16 @@
         "Does not change price.",
         "Does not change price or limits.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Gemini models — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/models"
+        },
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        }
       ]
     },
     {
@@ -4185,6 +5197,12 @@
         "They can, through a safe architecture.",
         "API keys do not expire on a 48-hour clock (that is how long Files API uploads are kept).",
         "They can."
+      ],
+      "sources": [
+        {
+          "title": "Rate limits — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/rate-limits"
+        }
       ]
     },
     {
@@ -4207,6 +5225,12 @@
         "Correct: improves perceived latency.",
         "Increases latency.",
         "Usually slower."
+      ],
+      "sources": [
+        {
+          "title": "Streaming — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/streaming"
+        }
       ]
     },
     {
@@ -4230,6 +5254,12 @@
         "It works in both stateful and stateless modes.",
         "Correct.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Context caching — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/caching"
+        }
       ]
     },
     {
@@ -4253,6 +5283,12 @@
         "Correct: measure before, read usage after.",
         "Output limits do not cap input tokens, and a tight limit can truncate answers while thinking is still billed.",
         "Batch halves the price but does not make cost per job fixed or enforce a budget."
+      ],
+      "sources": [
+        {
+          "title": "Tokens — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/tokens"
+        }
       ]
     },
     {
@@ -4276,6 +5312,16 @@
         "Requires restructuring into jobs and has a 24-hour target, which risks the one-hour window.",
         "Correct: cheaper, synchronous, acceptable latency.",
         "Extra keys in one project add no capacity, and Standard is full price."
+      ],
+      "sources": [
+        {
+          "title": "Batch API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/batch-api"
+        },
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        }
       ]
     },
     {
@@ -4298,6 +5344,16 @@
         "Limits are per project, not per key.",
         "Streaming does not change request counts.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Rate limits — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/rate-limits"
+        },
+        {
+          "title": "API errors — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/api-errors"
+        }
       ]
     },
     {
@@ -4321,6 +5377,16 @@
         "The condition is not transient.",
         "Cheaper tiers still need credits.",
         "Key rotation does not restore credits."
+      ],
+      "sources": [
+        {
+          "title": "Rate limits — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/rate-limits"
+        },
+        {
+          "title": "API errors — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/api-errors"
+        }
       ]
     },
     {
@@ -4344,6 +5410,12 @@
         "Correct.",
         "Creates a new generation and bills it again.",
         "Truncates answers without fixing the reconnect."
+      ],
+      "sources": [
+        {
+          "title": "Streaming — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/streaming"
+        }
       ]
     },
     {
@@ -4366,6 +5438,16 @@
         "Not documented behaviour.",
         "Correct.",
         "Not documented behaviour."
+      ],
+      "sources": [
+        {
+          "title": "Background execution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/background-execution"
+        },
+        {
+          "title": "Interactions API overview — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/interactions-overview"
+        }
       ]
     },
     {
@@ -4389,6 +5471,16 @@
         "Explicit caching is not supported on Gemini 4 Argon or later.",
         "Batch has a 24-hour target and is wrong for live questions.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Context caching — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/caching"
+        },
+        {
+          "title": "Explicit caching — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/caching?generate-content=true"
+        }
       ]
     },
     {
@@ -4412,6 +5504,12 @@
         "The Files API retention is not what expires a job.",
         "No such rule exists.",
         "Extra keys add no capacity, and this is a job state, not a rate-limit error."
+      ],
+      "sources": [
+        {
+          "title": "Batch API — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/batch-api"
+        }
       ]
     },
     {
@@ -4436,6 +5534,16 @@
         "Correct.",
         "Sampling parameters are ignored on Argon.",
         "Limits are per project and unrelated to timeouts."
+      ],
+      "sources": [
+        {
+          "title": "Background execution — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/background-execution"
+        },
+        {
+          "title": "Streaming — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/streaming"
+        }
       ]
     },
     {
@@ -4459,6 +5567,12 @@
         "Correct.",
         "Batch is for offline work.",
         "402 means prepaid credits are depleted, not a capacity overflow."
+      ],
+      "sources": [
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        }
       ]
     },
     {
@@ -4483,6 +5597,12 @@
         "Correct: reorder so stable content comes first.",
         "Streaming does not add billed tokens.",
         "Tool-use tokens relate to tools, not to Batch."
+      ],
+      "sources": [
+        {
+          "title": "Pricing — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/pricing"
+        }
       ]
     },
     {
@@ -4505,6 +5625,12 @@
         "Not the default.",
         "They can, per category.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Safety settings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-settings"
+        }
       ]
     },
     {
@@ -4527,6 +5653,16 @@
         "The request fails instead.",
         "Different error class.",
         "It is an explicit error."
+      ],
+      "sources": [
+        {
+          "title": "Safety settings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-settings"
+        },
+        {
+          "title": "API errors — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/api-errors"
+        }
       ]
     },
     {
@@ -4550,6 +5686,12 @@
         "Correct.",
         "Correct: least privilege.",
         "Filters target harmful content, not injected instructions."
+      ],
+      "sources": [
+        {
+          "title": "Safety guidance — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-guidance"
+        }
       ]
     },
     {
@@ -4572,6 +5714,12 @@
         "Not a factor.",
         "Correct.",
         "They use probability, not severity."
+      ],
+      "sources": [
+        {
+          "title": "Safety settings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-settings"
+        }
       ]
     },
     {
@@ -4595,6 +5743,12 @@
         "Model size does not replace monitoring and is not a step in the cycle.",
         "Stricter thresholds alone would not have revealed new failure modes, and filters are probability-based, not a substitute for monitoring.",
         "Removing guidance makes behavior less controlled, not safer."
+      ],
+      "sources": [
+        {
+          "title": "Safety guidance — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-guidance"
+        }
       ]
     },
     {
@@ -4618,6 +5772,16 @@
         "Correct.",
         "429 is a rate-limit error, unrelated to safety.",
         "Token counts are not the signal for a safety block."
+      ],
+      "sources": [
+        {
+          "title": "Safety settings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-settings"
+        },
+        {
+          "title": "API errors — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/api-errors"
+        }
       ]
     },
     {
@@ -4642,6 +5806,12 @@
         "Wrong: filters are probability-based, not severity-based.",
         "Correct: the onus is on developers, with post-processing and use-case-specific testing.",
         "Wrong: built-in protections are narrow and do not cover app-specific risks."
+      ],
+      "sources": [
+        {
+          "title": "Safety settings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-settings"
+        }
       ]
     },
     {
@@ -4665,6 +5835,16 @@
         "Thresholds don't control codes like `recitation` or `spii`, and turning filters off ignores your app's risks.",
         "Correct: handle by error code.",
         "Streaming surfaces a block as an `error` event, not partial blocked content."
+      ],
+      "sources": [
+        {
+          "title": "Safety settings — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/safety-settings"
+        },
+        {
+          "title": "API errors — Gemini API docs",
+          "url": "https://aistudio.google.com/docs/api-errors"
+        }
       ]
     }
   ],

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useExam } from './ExamLayout';
 import { useProgress } from '../lib/store';
 import Md from '../components/Md';
+import Sources from '../components/Sources';
 
 export default function MistakesPage() {
   const { exam, key, base, domainName } = useExam();
@@ -20,7 +21,7 @@ export default function MistakesPage() {
             <Md>{q.stem}</Md>
             <details>
               <summary className="small">Show answer and explanation</summary>
-              <div className="feedback good small"><strong>Answer:</strong> {q.answer.map(a => <div key={a}><Md inline>{q.options[a]}</Md></div>)}<Md>{q.explanation}</Md></div>
+              <div className="feedback good small"><strong>Answer:</strong> {q.answer.map(a => <div key={a}><Md inline>{q.options[a]}</Md></div>)}<Md>{q.explanation}</Md><Sources list={q.sources} /></div>
             </details>
           </div>
         ))}

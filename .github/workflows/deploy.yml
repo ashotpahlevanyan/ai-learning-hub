@@ -36,6 +36,9 @@ jobs:
             echo "SITE_URL=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" >> "$GITHUB_ENV"
           fi
       - run: npm run build
+      # Browser smoke test of the built site; a failure blocks the deploy.
+      - run: npx playwright-core install --with-deps chromium
+      - run: npm run test:e2e
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

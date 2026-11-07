@@ -5,6 +5,7 @@ import { useProgress } from '../lib/store';
 import { fmtTime, sameSet } from '../lib/quiz';
 import QuestionView from '../components/QuestionView';
 import Md from '../components/Md';
+import Sources from '../components/Sources';
 import { Bar, Tag, pct } from '../components/ui';
 
 export default function ReviewPage() {
@@ -55,7 +56,7 @@ export default function ReviewPage() {
           <div className="card" key={id}>
             <div className="spread small muted"><span>Q{i + 1} · {domainName(q.domain)}</span><Tag tone={right ? 'good' : 'bad'}>{right ? 'correct' : picked.length ? 'wrong' : 'unanswered'}</Tag></div>
             <QuestionView q={q} order={m.orders?.[i] ?? q.options.map((_, k) => k)} picked={picked} reveal />
-            <div className={`feedback ${right ? 'good' : 'bad'}`}><Md>{q.explanation}</Md></div>
+            <div className={`feedback ${right ? 'good' : 'bad'}`}><Md>{q.explanation}</Md><Sources list={q.sources} /></div>
           </div>
         );
       })}

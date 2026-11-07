@@ -6,6 +6,12 @@ export interface Domain {
   subskills?: string[];
 }
 
+/** A public page in the provider's official documentation that backs the content. */
+export interface Source {
+  title: string;
+  url: string;
+}
+
 export interface Lesson {
   id: string;
   domain: string;
@@ -16,6 +22,8 @@ export interface Lesson {
   keyPoints?: string[];
   gotchas?: { trap: string; correct: string }[];
   lab?: string;
+  /** official docs to read more */
+  sources?: Source[];
 }
 
 export interface Flashcard {
@@ -36,6 +44,8 @@ export interface Question {
   answer: number[];
   explanation: string;
   rationales?: string[];
+  /** official docs that back the answer */
+  sources?: Source[];
 }
 
 /** "exam" prepares for a real certification; "course" is a skill path with a practice test but no official exam. */

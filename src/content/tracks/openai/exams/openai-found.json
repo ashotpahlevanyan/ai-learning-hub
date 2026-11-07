@@ -111,7 +111,17 @@
           "correct": "Use search or deep research, or paste the source, for anything after the model’s cutoff."
         }
       ],
-      "lab": "Ask ChatGPT the same question three times in three new chats: \"What are the three biggest risks for a mid-size retailer adopting AI?\" Compare the answers. Which points repeat? Which appear only once? Write one sentence on what that tells you about trusting a single answer."
+      "lab": "Ask ChatGPT the same question three times in three new chats: \"What are the three biggest risks for a mid-size retailer adopting AI?\" Compare the answers. Which points repeat? Which appear only once? Write one sentence on what that tells you about trusting a single answer.",
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        },
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        }
+      ]
     },
     {
       "id": "l2",
@@ -163,7 +173,13 @@
           "correct": "ChatGPT can't reliably detect AI-generated text. Use your organisation's process and evidence, not a model's verdict."
         }
       ],
-      "lab": "Paste a one-page document and ask: \"Answer only from this document. Quote the sentence that supports each answer. If the document doesn't say, reply 'not in the source'.\" Then ask two questions the document does answer and one it doesn't. Did it hold the line on the third?"
+      "lab": "Paste a one-page document and ask: \"Answer only from this document. Quote the sentence that supports each answer. If the document doesn't say, reply 'not in the source'.\" Then ask two questions the document does answer and one it doesn't. Did it hold the line on the third?",
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
+      ]
     },
     {
       "id": "l3",
@@ -224,7 +240,17 @@
           "correct": "OpenAI's guide names four parts (Goal, Context, Output, Boundaries); role and examples are useful optional extras."
         }
       ],
-      "lab": "Take a real task from this week. Write the prompt you'd normally use, run it, then rewrite it with a clear goal, the context it needs, the output you want and one or two boundaries, and run that. Compare the two outputs and note how many edits each would need."
+      "lab": "Take a real task from this week. Write the prompt you'd normally use, run it, then rewrite it with a clear goal, the context it needs, the output you want and one or two boundaries, and run that. Compare the two outputs and note how many edits each would need.",
+      "sources": [
+        {
+          "title": "OpenAI Academy courses",
+          "url": "https://academy.openai.com/pages/courses"
+        },
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        }
+      ]
     },
     {
       "id": "l4",
@@ -285,7 +311,17 @@
           "correct": "Use its check as a prompt for your review, then review the result yourself before sharing."
         }
       ],
-      "lab": "Ask ChatGPT to interview you (\"ask me 5 questions first\") before drafting a one-page project update. Then produce it in two stages: outline, then full draft. Note which of its questions surfaced context you would have left out."
+      "lab": "Ask ChatGPT to interview you (\"ask me 5 questions first\") before drafting a one-page project update. Then produce it in two stages: outline, then full draft. Note which of its questions surfaced context you would have left out.",
+      "sources": [
+        {
+          "title": "OpenAI Academy courses",
+          "url": "https://academy.openai.com/pages/courses"
+        },
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        }
+      ]
     },
     {
       "id": "l5",
@@ -337,7 +373,17 @@
           "correct": "Verify names, dates and commitments against your notes before circulating."
         }
       ],
-      "lab": "Build a personal prompt library: write one reusable prompt each for summarising, drafting an email, comparing options and meeting prep. Save them where you can reuse them (for example in a project's instructions or a notes doc)."
+      "lab": "Build a personal prompt library: write one reusable prompt each for summarising, drafting an email, comparing options and meeting prep. Save them where you can reuse them (for example in a project's instructions or a notes doc).",
+      "sources": [
+        {
+          "title": "OpenAI Academy courses",
+          "url": "https://academy.openai.com/pages/courses"
+        },
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        }
+      ]
     },
     {
       "id": "l6",
@@ -385,7 +431,17 @@
           "correct": "Self-confirmation is not evidence. Check the claim against a primary source."
         }
       ],
-      "lab": "Ask ChatGPT with search for \"5 statistics about remote work productivity with sources\". Check each one: does the source exist, is it credible, does it say exactly that, and how old is it? Score how many survive."
+      "lab": "Ask ChatGPT with search for \"5 statistics about remote work productivity with sources\". Check each one: does the source exist, is it credible, does it say exactly that, and how old is it? Score how many survive.",
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        },
+        {
+          "title": "Deep research — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10500283-deep-research"
+        }
+      ]
     },
     {
       "id": "l7",
@@ -427,7 +483,13 @@
           "correct": "It will always find something. Stop when the draft meets the bar you set for its purpose."
         }
       ],
-      "lab": "Write (or have ChatGPT write) a short job ad. In a new chat, ask for a review for clarity, inclusive language and unnecessary requirements. Apply the changes you agree with and note any you rejected and why."
+      "lab": "Write (or have ChatGPT write) a short job ad. In a new chat, ask for a review for clarity, inclusive language and unnecessary requirements. Apply the changes you agree with and note any you rejected and why.",
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
+      ]
     },
     {
       "id": "d3-l3",
@@ -478,7 +540,17 @@
           "correct": "Refine and check it in normal chat first, then schedule it, with a human checkpoint where it matters."
         }
       ],
-      "lab": "Upload a small spreadsheet and ask data analysis for three summary figures. Ask it to show the steps it ran. Recompute one figure yourself, then ask for a final check of the summary against the data. Note anything the model's check missed that your own check found."
+      "lab": "Upload a small spreadsheet and ask data analysis for three summary figures. Ask it to show the steps it ran. Recompute one figure yourself, then ask for a final check of the summary against the data. Note anything the model's check missed that your own check found.",
+      "sources": [
+        {
+          "title": "Deep research — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10500283-deep-research"
+        },
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
+      ]
     },
     {
       "id": "l8",
@@ -530,7 +602,21 @@
           "correct": "Those were retired. Use ChatGPT Work for multi-step deliverables and chat writing blocks for long drafts."
         }
       ],
-      "lab": "Do one small task each with search, data analysis (upload a CSV) and image generation. Then run one multi-step analysis twice, once with the fast option and once with a higher reasoning level, and write one line on whether the extra time was worth it."
+      "lab": "Do one small task each with search, data analysis (upload a CSV) and image generation. Then run one multi-step analysis twice, once with the fast option and once with a higher reasoning level, and write one line on whether the extra time was worth it.",
+      "sources": [
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        },
+        {
+          "title": "Model and reasoning choice — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001598"
+        },
+        {
+          "title": "ChatGPT release notes — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/6825453-chatgpt-release-notes"
+        }
+      ]
     },
     {
       "id": "l9",
@@ -586,7 +672,25 @@
           "correct": "Pick the most restrictive permission that does the job, such as always asking before actions."
         }
       ],
-      "lab": "Create a project for one recurring piece of work. Add two reference files and project instructions (audience, tone, format) that differ from your global custom instructions. Turn on project-only memory if you can. Run two requests in it and check that both follow the project instructions without you repeating them."
+      "lab": "Create a project for one recurring piece of work. Add two reference files and project instructions (audience, tone, format) that differ from your global custom instructions. Turn on project-only memory if you can. Run two requests in it and check that both follow the project instructions without you repeating them.",
+      "sources": [
+        {
+          "title": "Memory FAQ — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8590148-memory-faq"
+        },
+        {
+          "title": "Projects in ChatGPT — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10169521-projects-in-chatgpt"
+        },
+        {
+          "title": "Apps in ChatGPT — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/11487775"
+        },
+        {
+          "title": "Custom GPT retirement — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001519"
+        }
+      ]
     },
     {
       "id": "l10",
@@ -633,7 +737,21 @@
           "correct": "Safeguards reduce but don't eliminate risk; keep checkpoints and review output."
         }
       ],
-      "lab": "Write an agent brief for a research task: goal, sources to use or avoid, output format, and the boundary where it must stop and ask you. Run it with deep research or ChatGPT Work (whichever your plan offers) and list which parts of the brief it followed and which it missed."
+      "lab": "Write an agent brief for a research task: goal, sources to use or avoid, output format, and the boundary where it must stop and ask you. Run it with deep research or ChatGPT Work (whichever your plan offers) and list which parts of the brief it followed and which it missed.",
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "title": "ChatGPT agent — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/11752874-chatgpt-agent"
+        },
+        {
+          "title": "ChatGPT Work — OpenAI",
+          "url": "https://openai.com/index/chatgpt-for-your-most-ambitious-work/"
+        }
+      ]
     },
     {
       "id": "d5-l2",
@@ -681,7 +799,17 @@
           "correct": "Custom GPTs are retiring; use projects or plugins instead."
         }
       ],
-      "lab": "Pick a task you do every week. Write a one-page workflow plan with inputs, model/reasoning level, tools, checkpoints and the human review step. Run it manually three times in a normal chat, note what you had to fix, and only then decide whether it is ready to schedule."
+      "lab": "Pick a task you do every week. Write a one-page workflow plan with inputs, model/reasoning level, tools, checkpoints and the human review step. Run it manually three times in a normal chat, note what you had to fix, and only then decide whether it is ready to schedule.",
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "title": "ChatGPT Work — OpenAI",
+          "url": "https://openai.com/index/chatgpt-for-your-most-ambitious-work/"
+        }
+      ]
     },
     {
       "id": "l11",
@@ -737,7 +865,17 @@
           "correct": "You own what you send. Verify it, have the accountable owner approve it, and disclose AI use where policy requires."
         }
       ],
-      "lab": "Find your organisation's AI use policy (or draft a one-page version for your team): which tools are approved, what data is allowed, what needs review, and how to disclose AI use. Check one of your recent chats against it."
+      "lab": "Find your organisation's AI use policy (or draft a one-page version for your team): which tools are approved, what data is allowed, what needs review, and how to disclose AI use. Check one of your recent chats against it.",
+      "sources": [
+        {
+          "title": "Enterprise privacy — OpenAI",
+          "url": "https://openai.com/enterprise-privacy/"
+        },
+        {
+          "title": "Data controls FAQ — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/7730893-data-controls-faq"
+        }
+      ]
     },
     {
       "id": "l12",
@@ -785,7 +923,17 @@
           "correct": "Rewording through AI doesn't remove IP concerns. Create original work and follow licence and company rules."
         }
       ],
-      "lab": "Ask ChatGPT to write three short customer personas. Review them for stereotypes or assumptions. Rewrite the prompt to reduce them and compare."
+      "lab": "Ask ChatGPT to write three short customer personas. Review them for stereotypes or assumptions. Rewrite the prompt to reduce them and compare.",
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        },
+        {
+          "title": "Data controls FAQ — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/7730893-data-controls-faq"
+        }
+      ]
     }
   ],
   "flashcards": [
@@ -1441,6 +1589,12 @@
         "There is no built-in verified fact database.",
         "It generates new text rather than copying pages.",
         "Search is a tool used when enabled or needed, not for every message."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -1464,6 +1618,16 @@
         "Correct: recency is the risk; search fixes it.",
         "Finance topics are allowed.",
         "Correctness is exactly what is at risk."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        },
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        }
       ]
     },
     {
@@ -1486,6 +1650,12 @@
         "Grounding in pasted text with quotes reduces risk.",
         "General advice is lower risk.",
         "Correct: specific, checkable details are the high-risk zone."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -1509,6 +1679,16 @@
         "Voice doesn’t change the context problem.",
         "Its answer won’t restore attention to early content.",
         "Correct: reset context or make instructions persistent."
+      ],
+      "sources": [
+        {
+          "title": "Projects in ChatGPT — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10169521-projects-in-chatgpt"
+        },
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -1531,6 +1711,12 @@
         "Variation is not a bug.",
         "Order says nothing about correctness.",
         "Variation alone doesn’t prove either answer false."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -1554,6 +1740,12 @@
         "One message doesn’t overflow context.",
         "Cutoff concerns dates, not agreement.",
         "Correct: agreement with a confident user is sycophancy."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -1578,6 +1770,16 @@
         "Adjectives don’t improve numerical accuracy.",
         "Correct: code-based calculation is more reliable than generated arithmetic.",
         "Correct: verification against the system of record catches errors."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        },
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        }
       ]
     },
     {
@@ -1601,6 +1803,12 @@
         "Internal data isn’t known automatically.",
         "Without search, it doesn’t see live news.",
         "Correct: training has a cutoff."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -1624,6 +1832,12 @@
         "Correct: variability is expected; evaluate the reasoning and verify the underlying facts.",
         "Variation is expected behaviour, not a malfunction.",
         "Agreement between runs can still be wrong; it is not a substitute for checking the facts."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -1647,6 +1861,16 @@
         "A fresh chat doesn't remove sampling variation.",
         "Correct: explicit format plus an example reduces run-to-run variation.",
         "Output can be steered substantially with format, examples and context."
+      ],
+      "sources": [
+        {
+          "title": "Projects in ChatGPT — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10169521-projects-in-chatgpt"
+        },
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -1670,6 +1894,12 @@
         "Correct: it isn't a reliable AI-text detector.",
         "Context size isn't the problem; the task itself is unreliable.",
         "Web search doesn't make AI-text detection reliable."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -1694,6 +1924,16 @@
         "The model can confirm its own error fluently; that is not verification.",
         "Correct: verify quotes and numbers at the source before sharing.",
         "Links do not guarantee the source exists or says what is claimed."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        },
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        }
       ]
     },
     {
@@ -1717,6 +1957,12 @@
         "Plausible formatting is exactly how fabricated citations look.",
         "Models can be wrong while sounding certain; they don't reliably flag their own errors.",
         "Over-correction: it can help draft and brainstorm as long as you verify."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -1740,6 +1986,12 @@
         "No facts, audience or format.",
         "Vague and invites invention.",
         "Correct: goal, facts, audience, length, tone and ending are all specified."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -1762,6 +2014,12 @@
         "Correct: examples shape style and format.",
         "Examples don’t verify facts.",
         "Speed isn’t the benefit."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -1785,6 +2043,12 @@
         "Gives no direction.",
         "Correct: specific edits on length and tone, keeping what works.",
         "Doesn’t say what better means."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -1807,6 +2071,12 @@
         "More text means more to verify, not better quality.",
         "You lose control of scope and relevance.",
         "Correct: staged work with checkpoints."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -1829,6 +2099,12 @@
         "Prohibition lists are less effective.",
         "Not an instruction.",
         "Too vague."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -1852,6 +2128,12 @@
         "Correct: it gathers the context it needs.",
         "Missing details lead to invented content.",
         "Invented details need heavy correction."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -1875,6 +2157,12 @@
         "Irrelevant to the decision.",
         "Correct: criteria, sources, format and assumptions.",
         "No criteria or context."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -1897,6 +2185,12 @@
         "Prompts work without headings; they’re just clearer with them.",
         "The model still reads the source.",
         "Correct: structure clarifies roles of each part."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -1919,6 +2213,12 @@
         "Limits the option space.",
         "No real selection happens.",
         "Selection without criteria is arbitrary."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -1943,6 +2243,12 @@
         "Correct: audience and call to action steer content.",
         "Correct: format details reduce rework.",
         "Adds no information."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -1966,6 +2272,16 @@
         "One-off details belong in the individual chat.",
         "Correct: stable context about you.",
         "Correct: recurring format preferences."
+      ],
+      "sources": [
+        {
+          "title": "Memory FAQ — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8590148-memory-faq"
+        },
+        {
+          "title": "Projects in ChatGPT — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10169521-projects-in-chatgpt"
+        }
       ]
     },
     {
@@ -1989,6 +2305,12 @@
         "A role may shift style but doesn't say what must not change.",
         "Vague exhortation; it doesn't name what to protect.",
         "Restates the goal and may invite even more rewriting."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -2012,6 +2334,12 @@
         "Correct: scale the brief to the task, then iterate.",
         "Relying on inference gives generic results and is not guaranteed.",
         "An extra round trip adds nothing for such a simple request."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -2035,6 +2363,12 @@
         "Maximum detail defeats the five-minute constraint.",
         "Forty bullets is a list, not a synthesis for a decision.",
         "Correct: reader, time, decision, required items and length."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -2058,6 +2392,12 @@
         "Correct: style from examples, facts and goal from the brief.",
         "Reusing old facts risks sending wrong details to the new client.",
         "Generic formality isn't your voice."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -2082,6 +2422,12 @@
         "It has no access to their thoughts; the answer would be invented.",
         "Correct: anticipates objections from supplied material and prepares questions.",
         "Pre-written minutes would fabricate what happened."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -2105,6 +2451,16 @@
         "Length isn't the same as tested quality.",
         "Correct: iterate by hand, then automate.",
         "A scheduled task does what its prompt says; it won't infer missing instructions."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        }
       ]
     },
     {
@@ -2129,6 +2485,12 @@
         "The check isn't sign-off; you remain responsible.",
         "Correct: your own review comes before sharing.",
         "Starting over throws away the reviewed work and adds new unchecked text."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2152,6 +2514,12 @@
         "Correct: specific correction of direction, keeping what works.",
         "Gives no information about what to change.",
         "Wastes the chance to get a usable draft cheaply."
+      ],
+      "sources": [
+        {
+          "title": "OpenAI Academy courses — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001270-openai-academy-courses"
+        }
       ]
     },
     {
@@ -2174,6 +2542,12 @@
         "Self-confirmation isn’t verification.",
         "That hides provenance and keeps the risk.",
         "Correct: check the source directly."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2197,6 +2571,12 @@
         "Skimming is for low-stakes drafts.",
         "Good prompts reduce but don’t remove errors.",
         "Errors can be anywhere."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2219,6 +2599,12 @@
         "Correct: evidence and inference are separated.",
         "Doesn’t change how checkable the output is.",
         "Confidence isn’t accuracy."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2242,6 +2628,12 @@
         "First drafts are rarely optimal.",
         "Correct: fresh eyes with criteria.",
         "The same chat tends to defend its work."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2265,6 +2657,12 @@
         "Jargon can exclude good candidates.",
         "Unrelated to bias and may reduce transparency.",
         "Correct: inclusive-language and requirements review."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2287,6 +2685,12 @@
         "Ranking doesn’t make it primary.",
         "Generated text is not a source.",
         "A summary is secondary."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2309,6 +2713,12 @@
         "Correct: proportionate effort.",
         "Disproportionate for ideation.",
         "Disproportionate for ideation."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2334,6 +2744,12 @@
         "Links must be opened and checked.",
         "Correct: find what needs checking.",
         "Correct: numbers must be verified."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2356,6 +2772,12 @@
         "An arbitrary number.",
         "Its opinion isn’t the criterion.",
         "Correct: stop at your defined bar."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2379,6 +2801,12 @@
         "Correct: you can’t spot errors you can’t judge.",
         "Tone is unrelated to accuracy.",
         "Formatting is unrelated to accuracy."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2402,6 +2830,12 @@
         "Correct: fresh context, a demanding persona and explicit criteria.",
         "Making it more persuasive can hide weak evidence rather than expose it.",
         "Length is not quality, and this skips critique entirely."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2425,6 +2859,12 @@
         "Ordering the feedback doesn't make it more rigorous.",
         "Correct: criteria plus scored reasons plus prioritised fixes.",
         "Shorter feedback is usually less useful, not more."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2449,6 +2889,12 @@
         "The model's check is not the review; you remain accountable.",
         "Correct: fresh, qualified eyes with criteria.",
         "ChatGPT cannot reliably detect AI-written text, and you already know how it was drafted."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2472,6 +2918,12 @@
         "Correct: shape the research, then verify the key citations.",
         "Quantity of citations says nothing about whether they support the claims.",
         "Removing citations makes the report harder to verify."
+      ],
+      "sources": [
+        {
+          "title": "Deep research — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10500283-deep-research"
+        }
       ]
     },
     {
@@ -2495,6 +2947,16 @@
         "Averaging hides the error instead of finding it.",
         "Self-confirmation is not evidence.",
         "Correct: inspect the working and reconcile with the source."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        },
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2518,6 +2980,12 @@
         "The model can always suggest more edits, so this never ends.",
         "Restarting throws away work that already meets the standard.",
         "Correct: it meets the agreed bar; verify the facts and send."
+      ],
+      "sources": [
+        {
+          "title": "Does ChatGPT tell the truth? — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8313428-does-chatgpt-tell-the-truth"
+        }
       ]
     },
     {
@@ -2540,6 +3008,12 @@
         "Correct: code execution on the data.",
         "Images don’t analyse data.",
         "Voice doesn’t analyse files."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        }
       ]
     },
     {
@@ -2563,6 +3037,12 @@
         "Temporary chat only changes history and memory.",
         "Correct: multi-source, cited research.",
         "No current sources."
+      ],
+      "sources": [
+        {
+          "title": "Deep research — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10500283-deep-research"
+        }
       ]
     },
     {
@@ -2586,6 +3066,12 @@
         "Custom GPTs are being retired; new workflows shouldn't be built on them.",
         "Unrelated to consistency.",
         "Correct: shared instructions and files apply to every chat in the project."
+      ],
+      "sources": [
+        {
+          "title": "Projects in ChatGPT — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10169521-projects-in-chatgpt"
+        }
       ]
     },
     {
@@ -2609,6 +3095,12 @@
         "Loses context each time.",
         "One very long chat mixes everything together and is hard to manage.",
         "Listing file names doesn’t give ChatGPT the files or keep the chats together."
+      ],
+      "sources": [
+        {
+          "title": "Projects in ChatGPT — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10169521-projects-in-chatgpt"
+        }
       ]
     },
     {
@@ -2631,6 +3123,12 @@
         "Correct.",
         "It doesn’t affect your account.",
         "Accuracy is unchanged."
+      ],
+      "sources": [
+        {
+          "title": "Memory FAQ — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8590148-memory-faq"
+        }
       ]
     },
     {
@@ -2654,6 +3152,12 @@
         "Unrelated.",
         "Correct: connected apps provide company data.",
         "Guessing invents policy."
+      ],
+      "sources": [
+        {
+          "title": "Apps in ChatGPT — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/11487775"
+        }
       ]
     },
     {
@@ -2676,6 +3180,12 @@
         "Slower for no benefit on simple tasks.",
         "Unrelated.",
         "Correct: complex, multi-step problems."
+      ],
+      "sources": [
+        {
+          "title": "Model and reasoning choice — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001598"
+        }
       ]
     },
     {
@@ -2699,7 +3209,17 @@
         "Images don't gather data or build reports.",
         "A temporary chat only changes history and memory."
       ],
-      "scenario": "Finance analyst"
+      "scenario": "Finance analyst",
+      "sources": [
+        {
+          "title": "ChatGPT Work — OpenAI",
+          "url": "https://openai.com/index/chatgpt-for-your-most-ambitious-work/"
+        },
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        }
+      ]
     },
     {
       "id": "q38",
@@ -2722,6 +3242,16 @@
         "Correct: recent information.",
         "Correct: current public data.",
         "No new facts needed."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        },
+        {
+          "title": "Deep research — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10500283-deep-research"
+        }
       ]
     },
     {
@@ -2746,6 +3276,12 @@
         "Memory doesn’t prevent errors.",
         "Correct: users control memory.",
         "Correct: it can be turned off."
+      ],
+      "sources": [
+        {
+          "title": "Memory FAQ — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8590148-memory-faq"
+        }
       ]
     },
     {
@@ -2769,6 +3305,12 @@
         "Correct: fast and good enough for simple drafting.",
         "Deep research is a longer, multi-step process for sourced reports.",
         "Work is for longer multi-step deliverables."
+      ],
+      "sources": [
+        {
+          "title": "Model and reasoning choice — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001598"
+        }
       ]
     },
     {
@@ -2792,6 +3334,12 @@
         "Correct: more reasoning for a complex task, plus human review.",
         "Model names change often; choose by the task's needs, not the name.",
         "Voice changes the interface, not the depth of analysis."
+      ],
+      "sources": [
+        {
+          "title": "Model and reasoning choice — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001598"
+        }
       ]
     },
     {
@@ -2815,6 +3363,12 @@
         "Search finds current information, not new images.",
         "Correct: create and edit the visual.",
         "Deep research produces cited reports."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT capabilities overview — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/9260256-chatgpt-capabilities-overview"
+        }
       ]
     },
     {
@@ -2838,6 +3392,12 @@
         "Correct: edit the plan and restrict the sites.",
         "Without search it relies on training data, which may predate the rule.",
         "Temporary chat affects history and memory, not source selection."
+      ],
+      "sources": [
+        {
+          "title": "Deep research — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10500283-deep-research"
+        }
       ]
     },
     {
@@ -2861,6 +3421,12 @@
         "The behaviour is defined: project instructions take precedence.",
         "Correct: project instructions override inside the project.",
         "Not needed; both can coexist."
+      ],
+      "sources": [
+        {
+          "title": "Projects in ChatGPT — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10169521-projects-in-chatgpt"
+        }
       ]
     },
     {
@@ -2884,6 +3450,12 @@
         "Correct: separate projects with scoped memory.",
         "An instruction is not a memory control.",
         "That adds both clients to every chat's context."
+      ],
+      "sources": [
+        {
+          "title": "Projects in ChatGPT — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/10169521-projects-in-chatgpt"
+        }
       ]
     },
     {
@@ -2908,6 +3480,12 @@
         "Custom actions don't migrate.",
         "Correct: knowledge files become reference files.",
         "Sharing settings don't migrate."
+      ],
+      "sources": [
+        {
+          "title": "Custom GPT retirement — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001519"
+        }
       ]
     },
     {
@@ -2931,6 +3509,12 @@
         "Correct: least access needed for the task.",
         "Pasting a whole inbox is clumsy and overshares.",
         "Apps can take actions, which is why permissions exist."
+      ],
+      "sources": [
+        {
+          "title": "Apps in ChatGPT — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/11487775"
+        }
       ]
     },
     {
@@ -2954,6 +3538,12 @@
         "Correct: no memory created, not in history.",
         "That would apply it to every chat.",
         "Projects keep and organise context rather than avoiding it."
+      ],
+      "sources": [
+        {
+          "title": "Memory FAQ — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/8590148-memory-faq"
+        }
       ]
     },
     {
@@ -2976,6 +3566,12 @@
         "Static content doesn’t act.",
         "Narrow tool, not an agent.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        }
       ]
     },
     {
@@ -2999,6 +3595,16 @@
         "Decisions about people need human judgment.",
         "Consequential external action without review.",
         "Too vague to execute well."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "title": "ChatGPT Work — OpenAI",
+          "url": "https://openai.com/index/chatgpt-for-your-most-ambitious-work/"
+        }
       ]
     },
     {
@@ -3021,6 +3627,16 @@
         "Correct: approve before money moves.",
         "Too late to prevent mistakes.",
         "Removes accountability for risky actions."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "title": "ChatGPT Work — OpenAI",
+          "url": "https://openai.com/index/chatgpt-for-your-most-ambitious-work/"
+        }
       ]
     },
     {
@@ -3043,6 +3659,12 @@
         "The recipient isn’t responsible.",
         "Correct.",
         "Models aren’t accountable parties."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        }
       ]
     },
     {
@@ -3066,6 +3688,12 @@
         "Vague briefs produce poor results.",
         "Never share credentials this way.",
         "Correct: goal and finish line."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        }
       ]
     },
     {
@@ -3089,6 +3717,12 @@
         "Past success doesn't justify removing review of output sent to leadership.",
         "Retyping invites drift and skipped steps; it isn't a workflow.",
         "Custom GPTs are retiring and being replaced by plugins."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        }
       ]
     },
     {
@@ -3113,6 +3747,12 @@
         "Review stays in place; a good month doesn't guarantee the next.",
         "Correct: inputs and tools define what the workflow works with.",
         "Never paste credentials into prompts; access should be granted through controlled permissions."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        }
       ]
     },
     {
@@ -3135,6 +3775,12 @@
         "Correct.",
         "Recipients get their own copy, not a view of someone else's.",
         "Sharing a task doesn't create a GPT; custom GPTs are retiring."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        }
       ]
     },
     {
@@ -3158,6 +3804,16 @@
         "A threshold still automates the decision without review.",
         "Correct: human judgment and approval stay on the consequential step.",
         "CC'ing HR after sending is notification, not review."
+      ],
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        },
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        }
       ]
     },
     {
@@ -3180,6 +3836,16 @@
         "Correct: multi-step, cross-source, finished deliverables.",
         "Quick brainstorming fits Chat.",
         "A simple explanation fits Chat."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        },
+        {
+          "title": "ChatGPT Work — OpenAI",
+          "url": "https://openai.com/index/chatgpt-for-your-most-ambitious-work/"
+        }
       ]
     },
     {
@@ -3203,6 +3869,12 @@
         "Removing approval makes injection far more damaging.",
         "Correct: a checkpoint on the consequential action.",
         "Vague guidance isn't a control."
+      ],
+      "sources": [
+        {
+          "title": "ChatGPT Work and Codex — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/20001275-chatgpt-work-and-codex"
+        }
       ]
     },
     {
@@ -3225,6 +3897,12 @@
         "Personal accounts aren’t approved for company data.",
         "Never use others’ accounts.",
         "Deleting afterwards doesn’t make sharing compliant."
+      ],
+      "sources": [
+        {
+          "title": "Enterprise privacy — OpenAI",
+          "url": "https://openai.com/enterprise-privacy/"
+        }
       ]
     },
     {
@@ -3247,6 +3925,16 @@
         "Correct: secrets stay secret.",
         "Public content is fine within policy.",
         "Your own draft is generally fine within policy."
+      ],
+      "sources": [
+        {
+          "title": "Enterprise privacy — OpenAI",
+          "url": "https://openai.com/enterprise-privacy/"
+        },
+        {
+          "title": "Data controls FAQ — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/7730893-data-controls-faq"
+        }
       ]
     },
     {
@@ -3270,6 +3958,12 @@
         "That makes exposure worse.",
         "The data is still shared.",
         "Correct: minimise and anonymise."
+      ],
+      "sources": [
+        {
+          "title": "Enterprise privacy — OpenAI",
+          "url": "https://openai.com/enterprise-privacy/"
+        }
       ]
     },
     {
@@ -3292,6 +3986,12 @@
         "Not true.",
         "Not true.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Enterprise privacy — OpenAI",
+          "url": "https://openai.com/enterprise-privacy/"
+        }
       ]
     },
     {
@@ -3315,6 +4015,12 @@
         "Models can carry their own biases.",
         "An instruction doesn’t guarantee fairness.",
         "Hiding AI use compounds the problem."
+      ],
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        }
       ]
     },
     {
@@ -3337,6 +4043,12 @@
         "Correct.",
         "Circumventing safeguards is prohibited by the usage policies.",
         "Repetition is not a legitimate fix."
+      ],
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        }
       ]
     },
     {
@@ -3360,6 +4072,12 @@
         "Not a feature; chats are not published.",
         "Correct: identity and user controls.",
         "Correct: governance over integrations."
+      ],
+      "sources": [
+        {
+          "title": "Enterprise privacy — OpenAI",
+          "url": "https://openai.com/enterprise-privacy/"
+        }
       ]
     },
     {
@@ -3384,6 +4102,12 @@
         "AI content can be wrong.",
         "Rewriting others’ work through AI doesn’t remove IP concerns.",
         "Correct: verification and ownership."
+      ],
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        }
       ]
     },
     {
@@ -3407,6 +4131,12 @@
         "Correct: ownership, correction and a process fix.",
         "Abandoning the tool doesn't fix the client impact or the missing check.",
         "Blaming a fictitious glitch is deceptive."
+      ],
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        }
       ]
     },
     {
@@ -3430,6 +4160,12 @@
         "The rule applies whether or not anyone asks.",
         "Switching tools is evasion, not compliance.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        }
       ]
     },
     {
@@ -3454,6 +4190,12 @@
         "Removes the review step that catches errors.",
         "Correct: transparency per policy.",
         "Diffuses accountability instead of keeping it clear."
+      ],
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        }
       ]
     },
     {
@@ -3477,6 +4219,12 @@
         "Adding sentences doesn't fix the underlying copying.",
         "Correct.",
         "Temporary Chat affects history and training, not IP rights."
+      ],
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        }
       ]
     },
     {
@@ -3500,6 +4248,12 @@
         "Confidence isn't reliability.",
         "Self-assessment by the model isn't verification.",
         "Matching outputs can still both be wrong."
+      ],
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        }
       ]
     },
     {
@@ -3523,6 +4277,12 @@
         "Size doesn't change the high-stakes category.",
         "Correct.",
         "Notification afterwards isn't human review."
+      ],
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        }
       ]
     },
     {
@@ -3546,6 +4306,12 @@
         "Accuracy doesn't satisfy the licensed-professional requirement.",
         "Renaming fixes only part of the problem.",
         "Workspace plans change data handling, not usage policy."
+      ],
+      "sources": [
+        {
+          "title": "Usage policies — OpenAI",
+          "url": "https://openai.com/policies/usage-policies/"
+        }
       ]
     },
     {
@@ -3569,6 +4335,12 @@
         "A prompt instruction doesn't change account settings.",
         "Memory is separate from model training.",
         "Correct."
+      ],
+      "sources": [
+        {
+          "title": "Data controls FAQ — OpenAI Help",
+          "url": "https://help.openai.com/en/articles/7730893-data-controls-faq"
+        }
       ]
     }
   ],

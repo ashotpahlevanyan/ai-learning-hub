@@ -21,9 +21,9 @@ const perDomain = d => ({
   questions: Math.round((spec.targets.questions * d.weight) / 100),
 })
 
-const SHAPE = `Exam JSON shape (see ${root}/src/lib/types.ts): lessons {id, domain, title, minutes, summary, sections:[{heading, body}], keyPoints[], gotchas:[{trap, correct}], lab}; flashcards {id, domain, front, back}; questions {id, domain, difficulty 1-3, scenario?, stem, options[4], answer:[indices], explanation (2-4 sentences), rationales[one per option]}. Bodies are Markdown. Multi-answer stems MUST contain "(Select two.)" or "(Select three.)".`
+const SHAPE = `Exam JSON shape (see ${root}/src/lib/types.ts): lessons {id, domain, title, minutes, summary, sections:[{heading, body}], keyPoints[], gotchas:[{trap, correct}], lab, sources:[{title, url}] (1-4)}; flashcards {id, domain, front, back}; questions {id, domain, difficulty 1-3, scenario?, stem, options[4], answer:[indices], explanation (2-4 sentences), rationales[one per option], sources:[{title, url}] (1-2)}. Bodies are Markdown. Multi-answer stems MUST contain "(Select two.)" or "(Select three.)".`
 
-const RULES = `Content rules: original practice items only, never presented as real exam questions. Exactly the keyed answer(s) must be defensible from the sources. Scenario-based judgment items with plausible distractors (common anti-patterns), mostly difficulty 2-3, ~15% multiple-response. Do not state a product fact you cannot support from research.md or an official source; phrase fast-changing specifics (prices, limits, versions) conceptually.`
+const RULES = `Content rules: original practice items only, never presented as real exam questions. Exactly the keyed answer(s) must be defensible from the sources. Scenario-based judgment items with plausible distractors (common anti-patterns), mostly difficulty 2-3, ~15% multiple-response. Do not state a product fact you cannot support from research.md or an official source; phrase fast-changing specifics (prices, limits, versions) conceptually. Every lesson and question cites public official docs in "sources" (https, on an official domain of the provider listed in ${root}/src/content/official-domains.json; the specific feature page that backs the content, short "Topic — Doc set" titles). Prefer URLs already cited in research.md; never invent deep paths.`
 
 phase('Research')
 const research = await agent(
@@ -109,6 +109,7 @@ Answer every question yourself from first principles and the sources BEFORE look
 Step 2, compare with the keys. For each disagreement decide: key wrong (fix the key and explanation), question ambiguous (rewrite so exactly one reading is defensible), or your answer wrong (keep). If a question cannot be made unambiguous and source-backed, DROP it.
 Step 3, fact-check every lesson section, flashcard and explanation against research.md; fix unsupported or outdated claims, or soften them to conceptual wording.
 Step 4, check rationales match options one-to-one and multi-answer stems say "(Select two.)"/"(Select three.)".
+Step 5, check sources: every lesson and question has them, each URL is official and actually backs the claim (WebFetch any you are unsure of); replace dead, generic or off-topic ones.
 Write the corrected file back to the same path (valid JSON) and return the structured report.`,
     { label: `verify:${d.id}`, phase: 'Verify', schema: VERIFY_SCHEMA },
   ),
@@ -123,7 +124,7 @@ const assembled = await agent(
 1. Build the final bundle at ${out} from the exam facts (spec plus any corrections in ${work}/research.md: ${JSON.stringify(research.corrections)}) and the domain files ${spec.domains.map(d => `${work}/domain-${d.id}.json`).join(', ')}. Spec header fields: ${JSON.stringify({ id: spec.id, kind: spec.kind, code: spec.code, name: spec.name, level: spec.level, price: spec.price, items: spec.items, minutes: spec.minutes, passing: spec.passing, audience: spec.audience, format: spec.format })}. Domains: id, name, weight, plus a 1-2 sentence summary. Scenarios: ${JSON.stringify(spec.scenarios || [])} with short descriptions. If a domain file is missing, keep that domain's items from the previous bundle.
 2. Order lessons by domain. Ensure ids are unique across the bundle.
 3. Balance correct-answer positions: for questions whose key sits in an over-used position, permute options AND rationales together (keep answer indices pointing at the same text). Target each position 0-3 within ±20% of the mean.
-4. Run: cd ${root} && npx vitest run -t "${spec.track}/${spec.id}" and fix until it passes.
+4. Run: cd ${root} && npx vitest run -t "${spec.track}/${spec.id}" and fix until it passes. Then run: cd ${root} && npm run check:links -- ${spec.track} and replace any dead source URL in the bundle (rerun until no dead links).
 5. Set the bundle's top-level "review" to {"date": "${args.date || 'YYYY-MM-DD'}", "questionsChecked": <questions that went through blind verification>, "fixed": <fixed count>, "dropped": <dropped count>}. Omit "review" entirely if any domain failed to verify.
 6. You MUST write ${work}/report.md (return its absolute path as reportPath; an empty path is a failure): counts before/after (before: ${JSON.stringify(coverage.existing)}), per-domain counts vs targets, every fix/drop from verification ${JSON.stringify(verified)}, unverified facts ${JSON.stringify(research.unverified)}, and anything a human should review.
 Return the structured result.`,

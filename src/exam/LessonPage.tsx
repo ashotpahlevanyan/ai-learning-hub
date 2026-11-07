@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useExam } from './ExamLayout';
 import { progressIn, touchDay, update, useProgress } from '../lib/store';
 import Md from '../components/Md';
+import Sources from '../components/Sources';
 import { useMeta } from '../lib/useMeta';
 
 export default function LessonPage() {
@@ -46,6 +47,8 @@ export default function LessonPage() {
       ) : null}
 
       {l.lab && <div className="card"><h3 className="flush">Hands-on lab</h3><div className="callout lab"><Md>{l.lab}</Md></div></div>}
+
+      {l.sources?.length ? <div className="card"><Sources list={l.sources} heading="Read more in the official docs" /></div> : null}
 
       <div className="spread">
         <button className={`btn ${done ? '' : 'primary'}`} onClick={toggle}>{done ? '✓ Completed (undo)' : 'Mark complete'}</button>

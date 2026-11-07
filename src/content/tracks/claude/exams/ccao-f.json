@@ -131,7 +131,17 @@
           "correct": "Say what you want: the decision you're making, the angle to review from, and the output format."
         }
       ],
-      "lab": "Take a real task from your week (an email, summary, or plan). Write a one-line prompt in claude.ai and save the result. Then rewrite the prompt with task, context, audience, constraints, success criteria, and one example, and compare the two outputs side by side. Note which additions made the biggest difference."
+      "lab": "Take a real task from your week (an email, summary, or plan). Write a one-line prompt in claude.ai and save the result. Then rewrite the prompt with task, context, audience, constraints, success criteria, and one example, and compare the two outputs side by side. Note which additions made the biggest difference.",
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        },
+        {
+          "title": "Prompt engineering overview — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview"
+        }
+      ]
     },
     {
       "id": "l2",
@@ -174,7 +184,17 @@
           "correct": "Diagnose what's missing (context, example, constraint) and give that feedback directly."
         }
       ],
-      "lab": "Pick a multi-part deliverable, such as a project plan. Run it as a three-step chain in one chat: findings, then outline, then draft. After each step, give one piece of specific feedback before moving on."
+      "lab": "Pick a multi-part deliverable, such as a project plan. Run it as a three-step chain in one chat: findings, then outline, then draft. After each step, give one piece of specific feedback before moving on.",
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        },
+        {
+          "title": "Model, effort and thinking settings — Claude Help",
+          "url": "https://support.claude.com/en/articles/8664678-change-the-model-effort-and-thinking-settings"
+        }
+      ]
     },
     {
       "id": "l3",
@@ -221,7 +241,21 @@
           "correct": "Confidence isn't correctness. High-stakes judgment stays with an accountable human."
         }
       ],
-      "lab": "Pick one recurring task. Write a short note covering each D: what you'd delegate, how you'd describe it, how you'd evaluate the output, and what diligence steps (verification, disclosure) you'd take before sharing it."
+      "lab": "Pick one recurring task. Write a short note covering each D: what you'd delegate, how you'd describe it, how you'd evaluate the output, and what diligence steps (verification, disclosure) you'd take before sharing it.",
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        },
+        {
+          "title": "AI Fluency Framework course — Anthropic Academy",
+          "url": "https://academy.claude.com/courses/ai-fluency-framework-foundations"
+        },
+        {
+          "title": "AI Fluency 4D cheat sheet — Anthropic",
+          "url": "https://www-cdn.anthropic.com/4396730ed190e691a3712cf2fd6bfe35509deca2.pdf"
+        }
+      ]
     },
     {
       "id": "d1-l4",
@@ -268,7 +302,17 @@
           "correct": "Know the concepts (supported types, large files work, limits exist) and check the help center for current numbers."
         }
       ],
-      "lab": "Upload a long internal document you're allowed to share. Ask one question with the question placed first. Then ask the same question with the document first, the question last, and a quote-first instruction. Compare accuracy and how easily you can verify each answer."
+      "lab": "Upload a long internal document you're allowed to share. Ask one question with the question placed first. Then ask the same question with the document first, the question last, and a quote-first instruction. Compare accuracy and how easily you can verify each answer.",
+      "sources": [
+        {
+          "title": "Upload files to Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/8241126-upload-files-to-claude"
+        },
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
+      ]
     },
     {
       "id": "l4",
@@ -320,7 +364,17 @@
           "correct": "Check which claims are actually linked to sources, and read the sources."
         }
       ],
-      "lab": "Upload a 5–10 page report. Ask for a summary with a supporting quote for every claim and 'not stated' where the report is silent. Then verify three claims and every number yourself. Did any summary statement go beyond the text?"
+      "lab": "Upload a 5–10 page report. Ask for a summary with a supporting quote for every claim and 'not stated' where the report is silent. Then verify three claims and every number yourself. Did any summary statement go beyond the text?",
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        },
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
+      ]
     },
     {
       "id": "l5",
@@ -363,7 +417,17 @@
           "correct": "Use code execution or recompute it in a spreadsheet, and reconcile against the source."
         }
       ],
-      "lab": "Upload a CSV with at least 100 rows. Ask for a summary table with totals, first with code execution turned off (if you can toggle it) and then with it on. Recompute two totals in a spreadsheet. Then open a new chat and ask it to critique the analysis as a skeptical finance director."
+      "lab": "Upload a CSV with at least 100 rows. Ask for a summary table with totals, first with code execution turned off (if you can toggle it) and then with it on. Recompute two totals in a spreadsheet. Then open a new chat and ask it to critique the analysis as a skeptical finance director.",
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        },
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        }
+      ]
     },
     {
       "id": "d2-l3",
@@ -410,7 +474,17 @@
           "correct": "Define the fields and a 'not stated' value, then spot-check rows against the source documents."
         }
       ],
-      "lab": "Take a technical document you know well. Ask Claude for two versions: one for a frontline team and one for an executive. List every number and hedge in the original, then check that each one survives in both versions. Finally, ask for the key facts as a table with fixed columns and 'not stated' for gaps, and spot-check five cells."
+      "lab": "Take a technical document you know well. Ask Claude for two versions: one for a frontline team and one for an executive. List every number and hedge in the original, then check that each one survives in both versions. Finally, ask for the key facts as a table with fixed columns and 'not stated' for gaps, and spot-check five cells.",
+      "sources": [
+        {
+          "title": "Artifacts — Claude Help",
+          "url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"
+        },
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
+      ]
     },
     {
       "id": "d2-l4",
@@ -461,7 +535,21 @@
           "correct": "It's a teaching lens from Anthropic's AI Fluency course; the exam objectives describe the same skills without naming it."
         }
       ],
-      "lab": "Pick a recent piece of AI-assisted work. Write one line for each sub-competency of Discernment and Diligence describing what you did (or should have done). Note which interaction mode you were in and where your review points were."
+      "lab": "Pick a recent piece of AI-assisted work. Write one line for each sub-competency of Discernment and Diligence describing what you did (or should have done). Note which interaction mode you were in and where your review points were.",
+      "sources": [
+        {
+          "title": "AI Fluency 4D cheat sheet — Anthropic",
+          "url": "https://www-cdn.anthropic.com/4396730ed190e691a3712cf2fd6bfe35509deca2.pdf"
+        },
+        {
+          "title": "AI Fluency Framework course — Anthropic Academy",
+          "url": "https://academy.claude.com/courses/ai-fluency-framework-foundations"
+        },
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
+      ]
     },
     {
       "id": "l6",
@@ -512,7 +600,25 @@
           "correct": "Recognise this as API or developer work and escalate it to the right technical team."
         }
       ],
-      "lab": "List five tasks from your role. For each one, pick the best surface (Claude app, a Project, Claude for Excel, Claude in Chrome, Claude Tag in Slack, or 'escalate to developers') and write one sentence explaining why."
+      "lab": "List five tasks from your role. For each one, pick the best surface (Claude app, a Project, Claude for Excel, Claude in Chrome, Claude Tag in Slack, or 'escalate to developers') and write one sentence explaining why.",
+      "sources": [
+        {
+          "title": "Cowork and Chat are one Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/16761823-claude-cowork-and-chat-are-one-claude"
+        },
+        {
+          "title": "Claude for Excel — Claude docs",
+          "url": "https://claude.com/docs/office-agents/excel"
+        },
+        {
+          "title": "Use Claude in Chrome safely — Claude Help",
+          "url": "https://support.claude.com/en/articles/12902428-use-claude-in-chrome-safely"
+        },
+        {
+          "title": "Claude Tag overview — Claude docs",
+          "url": "https://claude.com/docs/claude-tag/overview"
+        }
+      ]
     },
     {
       "id": "l7",
@@ -563,7 +669,25 @@
           "correct": "Thinking adds reasoning, not new facts. Current information needs web search or Research."
         }
       ],
-      "lab": "Run the same complex question (for example, 'compare three pricing strategies for our product given these constraints') with a lighter model at low effort, then with a more capable model at higher effort. Compare quality, time, and usage. Then ask a current-events question with and without web search."
+      "lab": "Run the same complex question (for example, 'compare three pricing strategies for our product given these constraints') with a lighter model at low effort, then with a more capable model at higher effort. Compare quality, time, and usage. Then ask a current-events question with and without web search.",
+      "sources": [
+        {
+          "title": "Models overview — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/about-claude/models/overview"
+        },
+        {
+          "title": "Web search vs. extended thinking vs. Research — Claude Help",
+          "url": "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"
+        },
+        {
+          "title": "Model, effort and thinking settings — Claude Help",
+          "url": "https://support.claude.com/en/articles/8664678-change-the-model-effort-and-thinking-settings"
+        },
+        {
+          "title": "Artifacts — Claude Help",
+          "url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"
+        }
+      ]
     },
     {
       "id": "d3-l3",
@@ -606,7 +730,17 @@
           "correct": "Incognito keeps a chat out of your history and memory; organizational retention and export rules still apply."
         }
       ],
-      "lab": "Pick a long chat you've had with Claude. Ask it for a five-bullet summary of decisions and open questions, check the summary for errors, and start a new chat with it. Then decide which parts belong permanently in a Project instead."
+      "lab": "Pick a long chat you've had with Claude. Ask it for a five-bullet summary of decisions and open questions, check the summary for errors, and start a new chat with it. Then decide which parts belong permanently in a Project instead.",
+      "sources": [
+        {
+          "title": "Usage and length limits — Claude Help",
+          "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"
+        },
+        {
+          "title": "Chat search and memory — Claude Help",
+          "url": "https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context"
+        }
+      ]
     },
     {
       "id": "l8",
@@ -649,7 +783,21 @@
           "correct": "Start with human-in-the-loop review, measure quality, and only reduce oversight where it's proven safe and allowed by policy."
         }
       ],
-      "lab": "Create a Project for one recurring workflow. Add two or three reference documents and write project instructions covering purpose, audience, tone, the format of outputs, and when to flag uncertainty. Run three real tasks in it and refine the instructions after each."
+      "lab": "Create a Project for one recurring workflow. Add two or three reference documents and write project instructions covering purpose, audience, tone, the format of outputs, and when to flag uncertainty. Run three real tasks in it and refine the instructions after each.",
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        },
+        {
+          "title": "Artifacts — Claude Help",
+          "url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"
+        },
+        {
+          "title": "Upload files to Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/8241126-upload-files-to-claude"
+        }
+      ]
     },
     {
       "id": "l9",
@@ -692,7 +840,17 @@
           "correct": "Use the approved connector for live, permissioned data. Manual exports go stale and spread copies of the data."
         }
       ],
-      "lab": "If your organization allows it, enable one connector (for example Drive or Calendar). Ask Claude to prepare a meeting brief that pulls the meeting details and related documents. Check which sources it used, and review any proposed action before confirming."
+      "lab": "If your organization allows it, enable one connector (for example Drive or Calendar). Ask Claude to prepare a meeting brief that pulls the meeting details and related documents. Check which sources it used, and review any proposed action before confirming.",
+      "sources": [
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        },
+        {
+          "title": "Google Workspace connectors — Claude Help",
+          "url": "https://support.claude.com/en/articles/10166901-use-google-workspace-connectors"
+        }
+      ]
     },
     {
       "id": "d4-l1",
@@ -743,7 +901,21 @@
           "correct": "Schedule the draft, and keep a human review before it goes out."
         }
       ],
-      "lab": "Pick one recurring task on your team. Write a one-page design: goal, inputs and their sensitivity, the Claude surface for each step, the human checkpoint, and how errors are escalated. Then write a five-sentence stakeholder summary covering expected value, two limitations, and the controls."
+      "lab": "Pick one recurring task on your team. Write a one-page design: goal, inputs and their sensitivity, the Claude surface for each step, the human checkpoint, and how errors are escalated. Then write a five-sentence stakeholder summary covering expected value, two limitations, and the controls.",
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        },
+        {
+          "title": "Use Research on Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11088861-use-research-on-claude"
+        },
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        }
+      ]
     },
     {
       "id": "l10",
@@ -799,7 +971,25 @@
           "correct": "Most users only need Can view. Edit rights let people change instructions and knowledge for everyone."
         }
       ],
-      "lab": "Write account-wide instructions that describe your role and preferred answer format, including a two-sentence sample of your writing voice. Then create a Project for one workflow using the instruction template above, attach one current policy document, and test it with a request the policy doesn't cover. Check that Claude flags the gap instead of guessing."
+      "lab": "Write account-wide instructions that describe your role and preferred answer format, including a two-sentence sample of your writing voice. Then create a Project for one workflow using the instruction template above, attach one current policy document, and test it with a request the policy doesn't cover. Check that Claude flags the gap instead of guessing.",
+      "sources": [
+        {
+          "title": "Personalization and instruction layers — Claude Help",
+          "url": "https://support.claude.com/en/articles/10185728-understanding-claude-s-personalization-features"
+        },
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        },
+        {
+          "title": "Use Skills in Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/12512180-use-skills-in-claude"
+        },
+        {
+          "title": "Chat search and memory — Claude Help",
+          "url": "https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context"
+        }
+      ]
     },
     {
       "id": "d5-l2",
@@ -846,7 +1036,21 @@
           "correct": "Replace the superseded file, or state explicitly which version wins."
         }
       ],
-      "lab": "Pick one Project you use. List every knowledge file with its date and owner, remove anything superseded, and add a line to the instructions naming the authoritative source. Write three test prompts with known correct answers and run them before and after the cleanup."
+      "lab": "Pick one Project you use. List every knowledge file with its date and owner, remove anything superseded, and add a line to the instructions naming the authoritative source. Write three test prompts with known correct answers and run them before and after the cleanup.",
+      "sources": [
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        },
+        {
+          "title": "Chat search and memory — Claude Help",
+          "url": "https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context"
+        },
+        {
+          "title": "Usage and length limits — Claude Help",
+          "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"
+        }
+      ]
     },
     {
       "id": "l11",
@@ -893,7 +1097,21 @@
           "correct": "Capability isn't permission. Company policy and the Usage Policy determine what's allowed."
         }
       ],
-      "lab": "Take a realistic (but fake) dataset containing names, emails, and comments. Write down the minimization steps you'd apply before using Claude to find comment themes. Then run the analysis on the de-identified version."
+      "lab": "Take a realistic (but fake) dataset containing names, emails, and comments. Write down the minimization steps you'd apply before using Claude to find comment themes. Then run the analysis on the de-identified version.",
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        },
+        {
+          "title": "Is my data used for model training — Claude Privacy",
+          "url": "https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training"
+        },
+        {
+          "title": "Use Claude in Chrome safely — Claude Help",
+          "url": "https://support.claude.com/en/articles/12902428-use-claude-in-chrome-safely"
+        }
+      ]
     },
     {
       "id": "l12",
@@ -936,7 +1154,21 @@
           "correct": "Request it through the proper channel. Shadow integrations create security and compliance risk."
         }
       ],
-      "lab": "For one of your workflows, write a one-paragraph 'AI use note' covering what Claude does, who reviews it, what gets disclosed and to whom, and which data is never shared."
+      "lab": "For one of your workflows, write a one-paragraph 'AI use note' covering what Claude does, who reviews it, what gets disclosed and to whom, and which data is never shared.",
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        },
+        {
+          "title": "Roles and permissions — Claude Help",
+          "url": "https://support.claude.com/en/articles/9267276-roles-and-permissions"
+        },
+        {
+          "title": "Enterprise plan — Claude Help",
+          "url": "https://support.claude.com/en/articles/9797531-what-is-the-enterprise-plan"
+        }
+      ]
     },
     {
       "id": "d6-l3",
@@ -983,7 +1215,25 @@
           "correct": "Governance doesn't replace your own judgment. Don't put secrets or unapproved personal data into chats, memory, or project knowledge at all."
         }
       ],
-      "lab": "Draw a three-row table for your team: Usage Policy, plan data terms, and org admin controls. For each row, list one rule that affects your daily work and who you'd ask about it. Then check the current Usage Policy at anthropic.com/legal/aup and note whether any of your workflows fall into a high-risk area."
+      "lab": "Draw a three-row table for your team: Usage Policy, plan data terms, and org admin controls. For each row, list one rule that affects your daily work and who you'd ask about it. Then check the current Usage Policy at anthropic.com/legal/aup and note whether any of your workflows fall into a high-risk area.",
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        },
+        {
+          "title": "Is my data used for model training — Claude Privacy",
+          "url": "https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training"
+        },
+        {
+          "title": "Roles and permissions — Claude Help",
+          "url": "https://support.claude.com/en/articles/9267276-roles-and-permissions"
+        },
+        {
+          "title": "Enterprise plan — Claude Help",
+          "url": "https://support.claude.com/en/articles/9797531-what-is-the-enterprise-plan"
+        }
+      ]
     },
     {
       "id": "l13",
@@ -1030,7 +1280,21 @@
           "correct": "Styles are no longer offered in Claude chat. State the length and format in the prompt, or put the preference in account or project instructions."
         }
       ],
-      "lab": "Recreate three bad outputs on purpose (vague, too long, ignoring a rule). For each, write the diagnosis and apply exactly one fix. Record which fix resolved it."
+      "lab": "Recreate three bad outputs on purpose (vague, too long, ignoring a rule). For each, write the diagnosis and apply exactly one fix. Record which fix resolved it.",
+      "sources": [
+        {
+          "title": "Usage and length limits — Claude Help",
+          "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"
+        },
+        {
+          "title": "Usage limit best practices — Claude Help",
+          "url": "https://support.claude.com/en/articles/9797557-usage-limit-best-practices"
+        },
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
+      ]
     },
     {
       "id": "d7-l2",
@@ -1077,7 +1341,21 @@
           "correct": "Auto-summarising keeps a long chat going, but it still uses more of your limit. Restart with a checked summary when the thread has drifted."
         }
       ],
-      "lab": "Take a large task you'd normally do in one prompt (for example, summarising ten meeting transcripts). Ask Claude for a step plan, run it in three or more chunks inside a Project, check each chunk, then assemble. Note where checking caught an issue, and compare how quickly you reached your limit with a one-shot attempt."
+      "lab": "Take a large task you'd normally do in one prompt (for example, summarising ten meeting transcripts). Ask Claude for a step plan, run it in three or more chunks inside a Project, check each chunk, then assemble. Note where checking caught an issue, and compare how quickly you reached your limit with a one-shot attempt.",
+      "sources": [
+        {
+          "title": "Usage and length limits — Claude Help",
+          "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"
+        },
+        {
+          "title": "Usage limit best practices — Claude Help",
+          "url": "https://support.claude.com/en/articles/9797557-usage-limit-best-practices"
+        },
+        {
+          "title": "Model, effort and thinking settings — Claude Help",
+          "url": "https://support.claude.com/en/articles/8664678-change-the-model-effort-and-thinking-settings"
+        }
+      ]
     }
   ],
   "flashcards": [
@@ -1962,6 +2240,12 @@
         "A more capable model still can't know your audience or product benefit if you don't provide them.",
         "Correct. Context, constraints, and an example are the biggest levers for quality.",
         "Emphatic adjectives don't tell Claude what 'excellent' means for this audience."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -1984,6 +2268,12 @@
         "Without a label, the boundaries are unclear, and capitals don't fix that.",
         "Fragmenting the document makes it harder for Claude to see it as a whole.",
         "Reformatting takes time, can lose meaning, and doesn't separate instructions from content."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2007,6 +2297,16 @@
         "Self-checking in the same message isn't a reliable checkpoint, and you still can't review findings first.",
         "Imitating a persona's style doesn't address accuracy or structure.",
         "Correct. Staged work with human review at each step reduces rework and errors."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        },
+        {
+          "title": "Upload files to Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/8241126-upload-files-to-claude"
+        }
       ]
     },
     {
@@ -2029,6 +2329,12 @@
         "Correct. Varied examples plus guidance on what to copy work best.",
         "A single example often gets copied too literally, including details that shouldn't carry over.",
         "A negative instruction gives no target format."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2052,6 +2358,12 @@
         "Over-engineering the prompt upfront is slow. Claude can help identify what matters.",
         "Correct. Clarifying questions surface missing assumptions efficiently.",
         "Copying another company's FAQ doesn't reflect your policy, and may raise copyright and accuracy issues."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2074,6 +2386,12 @@
         "Normal formatting likely includes lists and symbols that read badly aloud.",
         "Shouting doesn't add clarity or the reason for the rule.",
         "Correct. It's a positive instruction with the reason behind it."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2096,6 +2414,12 @@
         "That is Description: communicating what you want.",
         "That is part of Diligence: transparency and responsibility.",
         "Correct. Dividing work between human and AI is Delegation."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -2119,6 +2443,12 @@
         "Correct. A clean summary captures what's still valid.",
         "Model size isn't the cause. The polluted context is.",
         "Correct. A fresh chat with corrected context stops the old assumption from influencing output."
+      ],
+      "sources": [
+        {
+          "title": "Usage and length limits — Claude Help",
+          "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"
+        }
       ]
     },
     {
@@ -2142,6 +2472,12 @@
         "A one-word answer hides the reasoning and invites shallow judgment.",
         "Popularity isn't a decision criterion for your context, and Claude may not know it reliably.",
         "That's arbitrary and ignores the analysis entirely."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2168,6 +2504,12 @@
         "Correct. Confirmed facts ground the email.",
         "Unapproved commitments create financial and legal exposure.",
         "Correct. Limits and approved commitments prevent overpromising."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2191,6 +2533,16 @@
         "Correct. Document first, question last, and quote-first grounding produce a checkable answer.",
         "Your summary may omit the exact clause wording that matters, and the answer can't be traced to the contract.",
         "Typical terms say nothing about what this specific contract says."
+      ],
+      "sources": [
+        {
+          "title": "Upload files to Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/8241126-upload-files-to-claude"
+        },
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2214,6 +2566,12 @@
         "Regenerating samples the same under-specified request and gives no criteria to judge by.",
         "One answer, with 'creative' undefined, repeats the same problem.",
         "Copying competitors' naming patterns works against differentiation and adds no criteria."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2238,6 +2596,12 @@
         "Correct. Varied examples teach the structure without cloning one sample's content.",
         "Capitals and vague adjectives don't say what 'thorough' means here.",
         "Inferring protected or personal characteristics is inappropriate for hiring decisions and introduces bias."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2261,6 +2625,12 @@
         "Tone encouragement doesn't define what to look for.",
         "Length doesn't create depth. It often adds padding.",
         "Correct. A role plus a specific lens and output shape gives a focused critique."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2284,6 +2654,12 @@
         "Correct. Labeled sources plus a reviewed extraction step fix the mix-up at its cause.",
         "An appeal to care adds no structure or checkpoint.",
         "Rewording doesn't fix the confusion between sources."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2307,6 +2683,12 @@
         "Model choice may matter for cost or speed, but it doesn't define what good output is.",
         "Correct. Criteria plus test material make iteration measurable.",
         "Length is not a quality goal. Clarity and the right context are."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2329,6 +2711,12 @@
         "Sounding plausible is exactly why hallucinated statistics are dangerous.",
         "Rounding an unverified number still presents it as fact.",
         "Correct. Verify against a primary source, or remove the claim."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        }
       ]
     },
     {
@@ -2351,6 +2739,16 @@
         "Web search doesn't guarantee every statement is sourced or correctly interpreted.",
         "The number of citations doesn't measure accuracy.",
         "Consistency between runs isn't the same as correctness."
+      ],
+      "sources": [
+        {
+          "title": "Web search vs. extended thinking vs. Research — Claude Help",
+          "url": "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"
+        },
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        }
       ]
     },
     {
@@ -2374,6 +2772,12 @@
         "Looking similar to last quarter doesn't validate this quarter's figures.",
         "Correct. Real computation plus independent reconciliation.",
         "Percentages can add up to 100% even when the underlying totals are wrong."
+      ],
+      "sources": [
+        {
+          "title": "Upload files to Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/8241126-upload-files-to-claude"
+        }
       ]
     },
     {
@@ -2396,6 +2800,12 @@
         "Correct. Quotes, section references, and permission to be uncertain make claims checkable.",
         "General knowledge isn't this contract, which invites hallucination.",
         "Format alone doesn't make claims traceable to the source."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        }
       ]
     },
     {
@@ -2418,6 +2828,16 @@
         "Self-rating in the same context is anchored and uninformative.",
         "More detail doesn't mean more accuracy.",
         "Correct. Independent context plus a critical framing."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        },
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2440,6 +2860,12 @@
         "Rewriting your own content is grounded in text you provided.",
         "Correct. Citations in client legal work are high-risk and high-stakes.",
         "Generic tips are low-stakes and easy to sanity-check."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        }
       ]
     },
     {
@@ -2463,6 +2889,12 @@
         "Tone doesn't address bias.",
         "Claude's self-assessment isn't sufficient for a fairness review.",
         "Brevity doesn't address fairness."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -2485,6 +2917,12 @@
         "Correct. The conclusion goes beyond the evidence.",
         "Tone isn't the core issue. The claim misrepresents the data.",
         "No rounding was involved. It's a mischaracterization."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        }
       ]
     },
     {
@@ -2511,6 +2949,16 @@
         "Fluent writing can hide factual errors.",
         "Correct. Expert review catches subtle technical errors.",
         "Correct. Quotes and references are a common fabrication risk."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        },
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -2533,6 +2981,12 @@
         "It's useful as a first pass. Dismissing it entirely wastes a cheap check.",
         "It can't verify facts that need external sources.",
         "Correct. Use it as a first pass, then review it yourself."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2555,6 +3009,16 @@
         "Length is a minor issue compared with accuracy.",
         "Tone is secondary to whether the facts are real.",
         "Formatting isn't the core risk."
+      ],
+      "sources": [
+        {
+          "title": "Web search vs. extended thinking vs. Research — Claude Help",
+          "url": "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"
+        },
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        }
       ]
     },
     {
@@ -2578,6 +3042,16 @@
         "Correct. Grounding, citations, and a human check.",
         "An overreaction. The problem can be controlled without giving up the benefit.",
         "Formality doesn't fix factual accuracy."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        },
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        }
       ]
     },
     {
@@ -2601,6 +3075,12 @@
         "Correct. Inspecting the reasoning and checking facts is core Discernment.",
         "Length doesn't improve validity.",
         "Correct. Counterarguments expose weak assumptions."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -2623,6 +3103,12 @@
         "Demanding completeness pushes Claude toward inventing missing details.",
         "This explicitly invites speculation.",
         "Correct. A specified fallback for missing information."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        }
       ]
     },
     {
@@ -2645,6 +3131,12 @@
         "Correct. Match effort to the stakes.",
         "Length isn't the risk factor. Use and audience are.",
         "Claude can be wrong without signaling uncertainty."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -2668,6 +3160,12 @@
         "Correct. Clear audience brief plus a check that facts and commitments survived the rewrite.",
         "Without the source, Claude has nothing to ground the notice in and may invent details.",
         "Shorter isn't the same as audience-appropriate, and sending it unchecked skips validation."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -2690,6 +3188,12 @@
         "Formatting doesn't fix a changed claim.",
         "Correct. Restore the meaning and check the rest of the adapted text.",
         "Dropping a key, supported finding loses information the executive needs."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        }
       ]
     },
     {
@@ -2713,6 +3217,12 @@
         "Workable but fragile; edits and versions get lost in chat history.",
         "Structured data suits machines and spreadsheets, not a human-readable checklist.",
         "Too compressed for a two-page checklist."
+      ],
+      "sources": [
+        {
+          "title": "Artifacts — Claude Help",
+          "url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"
+        }
       ]
     },
     {
@@ -2736,6 +3246,16 @@
         "Wrong format for data that will be loaded into a spreadsheet.",
         "Useful later, but it doesn't produce the data finance needs.",
         "Correct. Defined fields, an explicit gap value, and a sample check against the source."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        },
+        {
+          "title": "Upload files to Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/8241126-upload-files-to-claude"
+        }
       ]
     },
     {
@@ -2759,6 +3279,12 @@
         "Claude's comparison can be a first pass, but the choice and the check are yours.",
         "Confident tone isn't an accuracy or fit signal.",
         "Correct. Criteria-based comparison plus verification of the winner."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -2781,6 +3307,12 @@
         "Correct. Inconsistency flags risk; an authoritative source resolves it.",
         "Averaging guesses produces a number no source supports.",
         "A majority of model outputs is still not verification."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        }
       ]
     },
     {
@@ -2804,6 +3336,12 @@
         "General knowledge isn't your handbook and invites plausible but wrong rules.",
         "Brevity doesn't improve grounding.",
         "Self-reported confidence isn't a reliable accuracy signal."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        }
       ]
     },
     {
@@ -2826,6 +3364,12 @@
         "Process description is about the method or steps Claude should follow.",
         "Correct. It sets how Claude should interact with you.",
         "Platform awareness is part of Delegation, not Description."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -2850,6 +3394,12 @@
         "Being open about AI's role is good, but disclaiming responsibility is the opposite of diligence.",
         "Correct. You remain accountable and should vouch only for what you've checked.",
         "Self-reported confidence isn't a reliable accuracy signal."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -2872,6 +3422,12 @@
         "Task Delegation is deciding who does which work.",
         "Process Description is telling Claude how to approach a task.",
         "Correct. Disclosure to those who need to know is Transparency Diligence."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -2894,6 +3450,12 @@
         "Product Description is specifying the output you want.",
         "Correct. You caught a flawed reasoning step, not just a wrong answer.",
         "Creation Diligence concerns which AI tools you use and how."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -2918,6 +3480,12 @@
         "Neutral tone doesn't add voices that are missing.",
         "Correct. Naming the gaps prevents a one-sided conclusion.",
         "A majority of the quotes isn't the majority of the workforce."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -2940,6 +3508,16 @@
         "Grounded in your own text and low risk.",
         "Correct. A consequential decision about a person needs human review.",
         "Low stakes and creative by nature."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        },
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        }
       ]
     },
     {
@@ -2962,6 +3540,12 @@
         "The previous choice may not fit this task.",
         "Newest isn't automatically right for the task.",
         "Correct. The smallest model that reliably does the job."
+      ],
+      "sources": [
+        {
+          "title": "Models overview — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/about-claude/models/overview"
+        }
       ]
     },
     {
@@ -2985,6 +3569,16 @@
         "Training data may be outdated and lacks sources.",
         "More reasoning doesn't provide current information.",
         "An artifact is an output format, not a research method."
+      ],
+      "sources": [
+        {
+          "title": "Use Research on Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11088861-use-research-on-claude"
+        },
+        {
+          "title": "Web search vs. extended thinking vs. Research — Claude Help",
+          "url": "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"
+        }
       ]
     },
     {
@@ -3007,6 +3601,12 @@
         "Correct. Match the surface to the task.",
         "Claude Code isn't 'more capable' for drafting announcements. It's built for codebases.",
         "Mobile is fine on the go, but it isn't required or inherently better for this."
+      ],
+      "sources": [
+        {
+          "title": "Cowork and Chat are one Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/16761823-claude-cowork-and-chat-are-one-claude"
+        }
       ]
     },
     {
@@ -3029,6 +3629,16 @@
         "Single-sentence translation is simple.",
         "Correct. Complex, multi-step reasoning benefits most.",
         "Tone adjustments don't need extended reasoning."
+      ],
+      "sources": [
+        {
+          "title": "Model, effort and thinking settings — Claude Help",
+          "url": "https://support.claude.com/en/articles/8664678-change-the-model-effort-and-thinking-settings"
+        },
+        {
+          "title": "Web search vs. extended thinking vs. Research — Claude Help",
+          "url": "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"
+        }
       ]
     },
     {
@@ -3052,6 +3662,12 @@
         "Free plans lack organizational controls and have low limits.",
         "Personal accounts lack central admin and governance.",
         "Correct. Organizational plans are built for team governance."
+      ],
+      "sources": [
+        {
+          "title": "Enterprise plan — Claude Help",
+          "url": "https://support.claude.com/en/articles/9797531-what-is-the-enterprise-plan"
+        }
       ]
     },
     {
@@ -3074,6 +3690,12 @@
         "Memory stores context across chats. It doesn't build tools.",
         "Account-wide instructions shape how Claude responds in every chat. They don't build tools.",
         "Incognito controls whether a chat is saved. It doesn't create tools."
+      ],
+      "sources": [
+        {
+          "title": "Artifacts — Claude Help",
+          "url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"
+        }
       ]
     },
     {
@@ -3097,6 +3719,16 @@
         "Correct. High stakes justify top capability.",
         "Overkill. It slows things down and uses limits for no benefit.",
         "Correct. Simple, high-volume work suits a fast model."
+      ],
+      "sources": [
+        {
+          "title": "Models overview — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/about-claude/models/overview"
+        },
+        {
+          "title": "Pricing and plans — Claude",
+          "url": "https://claude.com/pricing"
+        }
       ]
     },
     {
@@ -3119,6 +3751,12 @@
         "Correct. Web search provides current, cited information.",
         "More reasoning doesn't add current facts.",
         "Memory holds your past context, not live market data."
+      ],
+      "sources": [
+        {
+          "title": "Web search vs. extended thinking vs. Research — Claude Help",
+          "url": "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"
+        }
       ]
     },
     {
@@ -3142,6 +3780,12 @@
         "Memory isn't involved in processing files.",
         "Correct. Real computation and file output.",
         "Incognito only affects chat saving and memory."
+      ],
+      "sources": [
+        {
+          "title": "Upload files to Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/8241126-upload-files-to-claude"
+        }
       ]
     },
     {
@@ -3165,6 +3809,12 @@
         "Pasting values loses the formula relationships, and mental recomputation is error-prone.",
         "Claude Code is a developer tool; rebuilding the model as software is the wrong job.",
         "Preserving formulas doesn't remove the need for human review of client deliverables."
+      ],
+      "sources": [
+        {
+          "title": "Claude for Excel — Claude docs",
+          "url": "https://claude.com/docs/office-agents/excel"
+        }
       ]
     },
     {
@@ -3188,6 +3838,12 @@
         "There's no such behaviour to worry about here.",
         "Reading page content, including tables, is what the extension does.",
         "Correct. Untrusted pages can carry instructions aimed at the AI."
+      ],
+      "sources": [
+        {
+          "title": "Use Claude in Chrome safely — Claude Help",
+          "url": "https://support.claude.com/en/articles/12902428-use-claude-in-chrome-safely"
+        }
       ]
     },
     {
@@ -3211,6 +3867,12 @@
         "API development is outside an Associate's role; a built-in integration already fits.",
         "Correct. Shared channel work is exactly what Claude Tag is for.",
         "Claude Code is a coding tool, not a Slack collaboration surface."
+      ],
+      "sources": [
+        {
+          "title": "Claude Tag overview — Claude docs",
+          "url": "https://claude.com/docs/claude-tag/overview"
+        }
       ]
     },
     {
@@ -3234,6 +3896,16 @@
         "A bigger model doesn't remove the outdated context it is reading.",
         "Throwing away everything loses useful decisions; a checked summary keeps them.",
         "Correct. Restart, summarize, and persist, each for the right reason."
+      ],
+      "sources": [
+        {
+          "title": "Usage and length limits — Claude Help",
+          "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"
+        },
+        {
+          "title": "Chat search and memory — Claude Help",
+          "url": "https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context"
+        }
       ]
     },
     {
@@ -3257,6 +3929,12 @@
         "A browser extension per employee isn't a portal integration and adds risk.",
         "It can be done; it just isn't your role to build it.",
         "Building against the API is outside the Associate's scope and bypasses proper design and review."
+      ],
+      "sources": [
+        {
+          "title": "Cowork and Chat are one Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/16761823-claude-cowork-and-chat-are-one-claude"
+        }
       ]
     },
     {
@@ -3280,6 +3958,16 @@
         "Task 2 needs reasoning on existing figures, not gathering from many sources.",
         "Correct. Broad, multi-source, cited investigation.",
         "Thinking can't supply current information about 15 organizations."
+      ],
+      "sources": [
+        {
+          "title": "Web search vs. extended thinking vs. Research — Claude Help",
+          "url": "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"
+        },
+        {
+          "title": "Use Research on Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11088861-use-research-on-claude"
+        }
       ]
     },
     {
@@ -3302,6 +3990,12 @@
         "Correct. Effort and model choice control speed and cost.",
         "More input adds work rather than speeding things up.",
         "Incognito affects saving and memory, not speed."
+      ],
+      "sources": [
+        {
+          "title": "Model, effort and thinking settings — Claude Help",
+          "url": "https://support.claude.com/en/articles/8664678-change-the-model-effort-and-thinking-settings"
+        }
       ]
     },
     {
@@ -3325,6 +4019,12 @@
         "A single chat's context doesn't reliably carry over to teammates' chats.",
         "Over-shortening loses the substance.",
         "Correct. Shared knowledge and instructions."
+      ],
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        }
       ]
     },
     {
@@ -3348,6 +4048,12 @@
         "Full automation on day one, without proven quality, risks customer harm.",
         "That defeats human review.",
         "Consequential financial decisions should stay with accountable humans and policy."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -3371,6 +4077,12 @@
         "Correct. Live, governed access.",
         "Claude can read CSVs. The issue is staleness and data sprawl.",
         "Output still needs appropriate review."
+      ],
+      "sources": [
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        }
       ]
     },
     {
@@ -3393,6 +4105,12 @@
         "It isn't a certification.",
         "Correct. It's an open integration standard.",
         "It isn't a prompt format."
+      ],
+      "sources": [
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        }
       ]
     },
     {
@@ -3415,6 +4133,12 @@
         "Summarizing is a strong fit for Claude.",
         "Pattern-finding is a strong fit for Claude, with human validation.",
         "Correct. Accountability and approvals stay human."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -3438,6 +4162,16 @@
         "External content is exactly where injection attempts come from.",
         "Correct. Human confirmation blocks unintended actions.",
         "Correct. Least privilege limits what an injected instruction could do."
+      ],
+      "sources": [
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        },
+        {
+          "title": "Use Claude in Chrome safely — Claude Help",
+          "url": "https://support.claude.com/en/articles/12902428-use-claude-in-chrome-safely"
+        }
       ]
     },
     {
@@ -3460,6 +4194,12 @@
         "Guessing isn't a reliable control.",
         "That adds more confusion.",
         "The cause is conflicting context, not the model."
+      ],
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        }
       ]
     },
     {
@@ -3483,6 +4223,12 @@
         "Correct. Standardized inputs, reliable computation, verification, and approval.",
         "Memory isn't a reliable data source for figures.",
         "There's no verification or human checkpoint."
+      ],
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        }
       ]
     },
     {
@@ -3505,6 +4251,16 @@
         "Connectors can search and read beyond pasted content, within your permissions.",
         "Correct. They act with your permissions.",
         "No automatic elevation happens."
+      ],
+      "sources": [
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        },
+        {
+          "title": "Google Workspace connectors — Claude Help",
+          "url": "https://support.claude.com/en/articles/10166901-use-google-workspace-connectors"
+        }
       ]
     },
     {
@@ -3531,6 +4287,12 @@
         "Correct. Human review for consequential outputs.",
         "That over-exposes personal data.",
         "Correct. A defined escalation path for uncertainty."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -3553,6 +4315,12 @@
         "Reactive fixes after customer harm are poor practice.",
         "Self-confirmation isn't verification.",
         "Correct. Test, verify, and approve."
+      ],
+      "sources": [
+        {
+          "title": "Artifacts — Claude Help",
+          "url": "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"
+        }
       ]
     },
     {
@@ -3575,6 +4343,12 @@
         "Automating everything immediately skips design and validation.",
         "No shared setup leads to inconsistent quality and governance gaps.",
         "Removing oversight first is the riskiest move."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -3598,6 +4372,12 @@
         "Underselling ignores real, measurable value.",
         "Correct. Measured value, a stated limitation, and the control.",
         "Waiting for failures is not a plan. Define review and escalation up front."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -3621,6 +4401,12 @@
         "Correct. Broad cited investigation, then verification.",
         "One search is too narrow for a multi-source overview.",
         "Brand guidelines don't contain competitor information."
+      ],
+      "sources": [
+        {
+          "title": "Use Research on Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11088861-use-research-on-claude"
+        }
       ]
     },
     {
@@ -3643,6 +4429,12 @@
         "Without search, Claude may be out of date or wrong.",
         "A Project adds setup without adding current information.",
         "Correct. A simple, current fact calls for web search."
+      ],
+      "sources": [
+        {
+          "title": "Web search vs. extended thinking vs. Research — Claude Help",
+          "url": "https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research"
+        }
       ]
     },
     {
@@ -3666,6 +4458,16 @@
         "Sending externally with no review removes the checkpoint where errors are caught.",
         "Manual and inconsistent, with no review.",
         "Broad access violates least privilege and widens exposure to sensitive content."
+      ],
+      "sources": [
+        {
+          "title": "Google Workspace connectors — Claude Help",
+          "url": "https://support.claude.com/en/articles/10166901-use-google-workspace-connectors"
+        },
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        }
       ]
     },
     {
@@ -3689,6 +4491,12 @@
         "Correct. Use the citations to verify, then review.",
         "Overcorrection. The tool adds value when its output is verified.",
         "Self-reported confidence is not a reliable accuracy signal."
+      ],
+      "sources": [
+        {
+          "title": "Claude for Excel — Claude docs",
+          "url": "https://claude.com/docs/office-agents/excel"
+        }
       ]
     },
     {
@@ -3713,6 +4521,12 @@
         "Accountability for policy answers stays with HR.",
         "Correct. Value is measured, not assumed.",
         "Claude answers from what you give it. Stale documents produce stale answers."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -3736,6 +4550,12 @@
         "Dismissing the analysis wastes real value.",
         "Correct. Validate with owners, then pilot.",
         "Changing policy to fit a suggestion skips governance."
+      ],
+      "sources": [
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -3758,6 +4578,12 @@
         "This is repetitive, and it doesn't persist.",
         "A team Project would impose your personal preferences on everyone and wouldn't apply outside it.",
         "Project knowledge applies only inside that Project."
+      ],
+      "sources": [
+        {
+          "title": "Personalization and instruction layers — Claude Help",
+          "url": "https://support.claude.com/en/articles/10185728-understanding-claude-s-personalization-features"
+        }
       ]
     },
     {
@@ -3780,6 +4606,16 @@
         "Correct. Explicit and shared, with the rationale included.",
         "Personal memory isn't shared or reliably authoritative for a team.",
         "Relying on people (or Claude) to remember an unwritten rule is inconsistent and unenforceable."
+      ],
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        },
+        {
+          "title": "Personalization and instruction layers — Claude Help",
+          "url": "https://support.claude.com/en/articles/10185728-understanding-claude-s-personalization-features"
+        }
       ]
     },
     {
@@ -3802,6 +4638,16 @@
         "Research is for multi-source investigation, not voice.",
         "Incognito affects saving and memory, not voice.",
         "Correct. Account-wide instructions apply to all chats."
+      ],
+      "sources": [
+        {
+          "title": "Personalization and instruction layers — Claude Help",
+          "url": "https://support.claude.com/en/articles/10185728-understanding-claude-s-personalization-features"
+        },
+        {
+          "title": "Your first conversation with Claude — Anthropic Academy",
+          "url": "https://academy.claude.com/courses/claude-101/your-first-conversation-with-claude"
+        }
       ]
     },
     {
@@ -3824,6 +4670,16 @@
         "Correct. They're reusable procedures that load when relevant.",
         "They aren't models.",
         "They don't store history. Memory and chats do."
+      ],
+      "sources": [
+        {
+          "title": "What are Skills — Claude Help",
+          "url": "https://support.claude.com/en/articles/12512176-what-are-skills"
+        },
+        {
+          "title": "Use Skills in Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/12512180-use-skills-in-claude"
+        }
       ]
     },
     {
@@ -3846,6 +4702,12 @@
         "Skills package reusable procedures; they don't control whether a chat is saved.",
         "Correct. Incognito is designed for this.",
         "Research is about investigation, not privacy."
+      ],
+      "sources": [
+        {
+          "title": "Chat search and memory — Claude Help",
+          "url": "https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context"
+        }
       ]
     },
     {
@@ -3872,6 +4734,12 @@
         "Everyone in a shared Project can access its knowledge, so confidential contracts shouldn't go there.",
         "Correct. Versioning reduces ambiguity.",
         "Correct. Ownership and review keep it current."
+      ],
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        }
       ]
     },
     {
@@ -3894,6 +4762,16 @@
         "Account-wide instructions are personal; they don't reach teammates and aren't a packaged procedure.",
         "Incognito doesn't configure anything.",
         "Correct. A reusable, on-demand procedure."
+      ],
+      "sources": [
+        {
+          "title": "What are Skills — Claude Help",
+          "url": "https://support.claude.com/en/articles/12512176-what-are-skills"
+        },
+        {
+          "title": "Use Skills in Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/12512180-use-skills-in-claude"
+        }
       ]
     },
     {
@@ -3916,6 +4794,12 @@
         "Projects provide scoped knowledge and instructions that memory doesn't replace.",
         "Team policies belong in explicit shared instructions or Skills.",
         "Correct. Memory is user-controllable, and incognito bypasses it."
+      ],
+      "sources": [
+        {
+          "title": "Chat search and memory — Claude Help",
+          "url": "https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context"
+        }
       ]
     },
     {
@@ -3938,6 +4822,12 @@
         "That's personal preferences.",
         "Instructions don't change billing.",
         "Instructions aren't a security mechanism."
+      ],
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        }
       ]
     },
     {
@@ -3961,6 +4851,16 @@
         "Correct. Live access, scoped by existing permissions.",
         "Instructions are for rules and context, not changing data, and would also go stale.",
         "Memory is personal, not authoritative, and not updated when finance changes the sheet."
+      ],
+      "sources": [
+        {
+          "title": "Google Workspace connectors — Claude Help",
+          "url": "https://support.claude.com/en/articles/10166901-use-google-workspace-connectors"
+        },
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        }
       ]
     },
     {
@@ -3984,6 +4884,16 @@
         "Incognito chats are only available outside Projects.",
         "Correct. This fully isolates the Project's memory.",
         "An instruction doesn't stop context being available; isolation is the reliable control."
+      ],
+      "sources": [
+        {
+          "title": "Chat search and memory — Claude Help",
+          "url": "https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context"
+        },
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        }
       ]
     },
     {
@@ -4007,6 +4917,12 @@
         "Correct. Fix the knowledge, then verify.",
         "Duplicates add noise and don't remove the conflict.",
         "A bigger model can't tell which policy your company considers current."
+      ],
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        }
       ]
     },
     {
@@ -4030,6 +4946,12 @@
         "Correct. Least privilege with clear owners.",
         "Defeats the purpose of a shared Project.",
         "Copies drift apart and can't be updated centrally."
+      ],
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        }
       ]
     },
     {
@@ -4053,6 +4975,12 @@
         "Correct. Reset deletes saved memories; editing topics removes specific ones.",
         "Correct. This stops new memories from being formed.",
         "Memory isn't tied to the model choice."
+      ],
+      "sources": [
+        {
+          "title": "Chat search and memory — Claude Help",
+          "url": "https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context"
+        }
       ]
     },
     {
@@ -4076,6 +5004,16 @@
         "Correct. Short, consistent instructions plus verification.",
         "Memory is personal and not an authoritative place for team rules.",
         "Throws away useful configuration instead of fixing it."
+      ],
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        },
+        {
+          "title": "Personalization and instruction layers — Claude Help",
+          "url": "https://support.claude.com/en/articles/10185728-understanding-claude-s-personalization-features"
+        }
       ]
     },
     {
@@ -4098,6 +5036,16 @@
         "Correct. Trusted sources and review first.",
         "Skills load when relevant; renaming doesn't address trust.",
         "Putting it in knowledge doesn't make it safer or make it work as a Skill."
+      ],
+      "sources": [
+        {
+          "title": "Use Skills in Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/12512180-use-skills-in-claude"
+        },
+        {
+          "title": "What are Skills — Claude Help",
+          "url": "https://support.claude.com/en/articles/12512176-what-are-skills"
+        }
       ]
     },
     {
@@ -4121,6 +5069,16 @@
         "That's a severe data exposure.",
         "Correct. Minimize, and use the approved workspace.",
         "The data is still shared even if it isn't used, so minimization matters."
+      ],
+      "sources": [
+        {
+          "title": "Is my data used for model training — Claude Privacy",
+          "url": "https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training"
+        },
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        }
       ]
     },
     {
@@ -4143,6 +5101,12 @@
         "The tool provider isn't accountable for how its output is used in your deliverable.",
         "Someone is always accountable.",
         "The sender owns the quality of what they deliver."
+      ],
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        }
       ]
     },
     {
@@ -4165,6 +5129,16 @@
         "That's low stakes, and grounded in your own content.",
         "Correct. A consequential decision about people.",
         "That's low stakes."
+      ],
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        },
+        {
+          "title": "AI Fluency — Anthropic",
+          "url": "https://www.anthropic.com/ai-fluency"
+        }
       ]
     },
     {
@@ -4187,6 +5161,16 @@
         "Correct. Use the governance process.",
         "Concealing it adds risk and violates policy.",
         "A personal account also bypasses organizational controls."
+      ],
+      "sources": [
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        },
+        {
+          "title": "Roles and permissions — Claude Help",
+          "url": "https://support.claude.com/en/articles/9267276-roles-and-permissions"
+        }
       ]
     },
     {
@@ -4209,6 +5193,12 @@
         "It isn't about file types.",
         "Usage limits are a separate plan concept.",
         "Correct. Prohibited and high-risk use rules."
+      ],
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        }
       ]
     },
     {
@@ -4236,6 +5226,12 @@
         "Correct. A human fallback for complex or sensitive cases.",
         "Deceiving customers about AI involvement violates trust and likely policy.",
         "Correct. Ongoing quality and compliance monitoring."
+      ],
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        }
       ]
     },
     {
@@ -4258,6 +5254,12 @@
         "Automatic approval is a rubber stamp.",
         "Post-publication review can't prevent harm.",
         "That isn't human review."
+      ],
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        }
       ]
     },
     {
@@ -4280,6 +5282,12 @@
         "Correct. Minimize and use an approved workspace.",
         "An instruction isn't a data protection control.",
         "That spreads the data and bypasses controls."
+      ],
+      "sources": [
+        {
+          "title": "Is my data used for model training — Claude Privacy",
+          "url": "https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training"
+        }
       ]
     },
     {
@@ -4302,6 +5310,12 @@
         "It's an attack, not a hallucination.",
         "Limits are unrelated.",
         "Correct. Recognize injection, confirm actions, and limit access."
+      ],
+      "sources": [
+        {
+          "title": "Use Claude in Chrome safely — Claude Help",
+          "url": "https://support.claude.com/en/articles/12902428-use-claude-in-chrome-safely"
+        }
       ]
     },
     {
@@ -4324,6 +5338,12 @@
         "An overreaction. Responsible use is possible.",
         "Correct. Ownership, verification, and policy-based disclosure.",
         "Fabricated testimony is deceptive."
+      ],
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        }
       ]
     },
     {
@@ -4346,6 +5366,12 @@
         "Model choice is secondary to data governance.",
         "Style is secondary.",
         "Correct. Classify the data and confirm approval."
+      ],
+      "sources": [
+        {
+          "title": "Is my data used for model training — Claude Privacy",
+          "url": "https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training"
+        }
       ]
     },
     {
@@ -4369,6 +5395,16 @@
         "Prompt wording is the user's choice.",
         "Starting new chats is a user practice, not an admin setting.",
         "Users choose what they attach, within company data policy."
+      ],
+      "sources": [
+        {
+          "title": "Roles and permissions — Claude Help",
+          "url": "https://support.claude.com/en/articles/9267276-roles-and-permissions"
+        },
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        }
       ]
     },
     {
@@ -4392,6 +5428,16 @@
         "Correct. These oversight features are Enterprise-level. Escalate to the people who own the plan.",
         "Manual screenshots aren't a reliable or complete audit record.",
         "Personal accounts take company data outside organizational controls."
+      ],
+      "sources": [
+        {
+          "title": "Enterprise plan — Claude Help",
+          "url": "https://support.claude.com/en/articles/9797531-what-is-the-enterprise-plan"
+        },
+        {
+          "title": "Roles and permissions — Claude Help",
+          "url": "https://support.claude.com/en/articles/9267276-roles-and-permissions"
+        }
       ]
     },
     {
@@ -4416,6 +5462,16 @@
         "Correct. Disclosure to the affected person.",
         "Auto-finalizing removes meaningful human review.",
         "Disclosure is required, but naming the specific model isn't."
+      ],
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        },
+        {
+          "title": "Usage Policy update — Anthropic",
+          "url": "https://www.anthropic.com/news/2026-usage-policy-update"
+        }
       ]
     },
     {
@@ -4439,6 +5495,12 @@
         "Disguising the deception makes it worse.",
         "Correct. It's a prohibited deceptive use. Offer a legitimate alternative.",
         "Internal approval can't authorize a prohibited use."
+      ],
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        }
       ]
     },
     {
@@ -4462,6 +5524,12 @@
         "An instruction to Claude doesn't satisfy a data policy.",
         "Correct. Policy plus minimization decide what's shared.",
         "A personal account is worse: it bypasses all organizational controls."
+      ],
+      "sources": [
+        {
+          "title": "Is my data used for model training — Claude Privacy",
+          "url": "https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training"
+        }
       ]
     },
     {
@@ -4485,6 +5553,12 @@
         "Base64 is trivially reversible. It isn't protection.",
         "Asking Claude to forget doesn't undo the exposure.",
         "Correct. Redact secrets with a placeholder."
+      ],
+      "sources": [
+        {
+          "title": "Is my data used for model training — Claude Privacy",
+          "url": "https://privacy.claude.com/en/articles/10023580-is-my-data-used-for-model-training"
+        }
       ]
     },
     {
@@ -4508,6 +5582,12 @@
         "Presenting as human is deceptive.",
         "Disclosure is proactive, not only on request.",
         "Naming the model in every message isn't the requirement."
+      ],
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        }
       ]
     },
     {
@@ -4532,6 +5612,16 @@
         "Correct. Approved alternatives keep work moving within policy.",
         "This is shadow AI. It bypasses the control.",
         "This sends company data outside the organization."
+      ],
+      "sources": [
+        {
+          "title": "Roles and permissions — Claude Help",
+          "url": "https://support.claude.com/en/articles/9267276-roles-and-permissions"
+        },
+        {
+          "title": "Connectors to extend Claude — Claude Help",
+          "url": "https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities"
+        }
       ]
     },
     {
@@ -4555,6 +5645,12 @@
         "Correct. Low-risk, with a human check.",
         "This is surveillance and a privacy violation.",
         "This is disinformation and a deceptive campaign."
+      ],
+      "sources": [
+        {
+          "title": "Usage Policy — Anthropic",
+          "url": "https://www.anthropic.com/legal/aup"
+        }
       ]
     },
     {
@@ -4577,6 +5673,12 @@
         "Effort controls how much reasoning Claude does. It doesn't set the length you want, and higher effort uses more of your limit.",
         "More input doesn't shorten the output.",
         "Repeating the prompt doesn't change the spec."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4599,6 +5701,12 @@
         "Correct. Remove the conflicting signal.",
         "Limits don't cause this.",
         "Incognito doesn't affect spelling."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4621,6 +5729,12 @@
         "A lighter model doesn't solve context overload.",
         "Correct. Summarize, restart, and use Projects for stable context.",
         "Deleting messages arbitrarily loses context unpredictably."
+      ],
+      "sources": [
+        {
+          "title": "Usage and length limits — Claude Help",
+          "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"
+        }
       ]
     },
     {
@@ -4644,6 +5758,16 @@
         "Correct. Right-size the model.",
         "Repeated large attachments increase usage.",
         "Correct. Less redundant context."
+      ],
+      "sources": [
+        {
+          "title": "Usage limit best practices — Claude Help",
+          "url": "https://support.claude.com/en/articles/9797557-usage-limit-best-practices"
+        },
+        {
+          "title": "Usage and length limits — Claude Help",
+          "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"
+        }
       ]
     },
     {
@@ -4666,6 +5790,12 @@
         "Untested rule accumulation leads to conflicts and bloat.",
         "Opinions without output evidence are unreliable.",
         "Correct. Change one variable and test consistently."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4688,6 +5818,16 @@
         "A bigger model still can't know unshared internal facts.",
         "Reasoning can't recover information that was never provided.",
         "Self-rated confidence isn't a reliable accuracy signal and doesn't add the missing facts."
+      ],
+      "sources": [
+        {
+          "title": "Reduce hallucinations — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations"
+        },
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        }
       ]
     },
     {
@@ -4710,6 +5850,12 @@
         "Correct. An explicit format or example.",
         "The surface doesn't fix the format spec.",
         "Incognito doesn't affect format."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4733,6 +5879,12 @@
         "Correct. Summarise, check the summary, and restart cleanly.",
         "The problem is the thread, not the model's capability.",
         "A blank restart without a summary loses decisions and constraints."
+      ],
+      "sources": [
+        {
+          "title": "Usage and length limits — Claude Help",
+          "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"
+        }
       ]
     },
     {
@@ -4756,6 +5908,16 @@
         "Pasting the same text still sends the full content each time.",
         "Research uses limits faster and isn't needed for questions about a supplied document.",
         "Duplicating questions doubles usage."
+      ],
+      "sources": [
+        {
+          "title": "What are Projects — Claude Help",
+          "url": "https://support.claude.com/en/articles/9517075-what-are-projects"
+        },
+        {
+          "title": "Usage limit best practices — Claude Help",
+          "url": "https://support.claude.com/en/articles/9797557-usage-limit-best-practices"
+        }
       ]
     },
     {
@@ -4779,6 +5941,12 @@
         "Self-rated confidence isn't a reliable accuracy signal.",
         "Correct. Plan, chunk, check, then assemble.",
         "This hides the problem and drops required deliverables, and the recommendation would rest on unchecked scores."
+      ],
+      "sources": [
+        {
+          "title": "Prompting best practices — Claude API docs",
+          "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices"
+        }
       ]
     },
     {
@@ -4801,6 +5969,12 @@
         "Deleting chats doesn't restore usage already consumed.",
         "The distinction applies on every plan.",
         "Correct. Distinguish usage limits from the context window."
+      ],
+      "sources": [
+        {
+          "title": "Usage and length limits — Claude Help",
+          "url": "https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work"
+        }
       ]
     },
     {
@@ -4825,6 +5999,16 @@
         "Research uses limits faster and isn't needed for internal announcements.",
         "Correct. Short, current instructions cut context and conflicts.",
         "Repeated large attachments increase usage. A few examples in Project knowledge would do."
+      ],
+      "sources": [
+        {
+          "title": "Usage limit best practices — Claude Help",
+          "url": "https://support.claude.com/en/articles/9797557-usage-limit-best-practices"
+        },
+        {
+          "title": "Model, effort and thinking settings — Claude Help",
+          "url": "https://support.claude.com/en/articles/8664678-change-the-model-effort-and-thinking-settings"
+        }
       ]
     }
   ],
