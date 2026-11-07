@@ -1,6 +1,6 @@
 # AI Learning Hub
 
-Free, structured study paths for AI and LLM certifications. Tracks: Anthropic Claude (CCAO-F, CCDV-F, CCAR-F, CCAR-P), Google Gemini (Generative AI Leader exam, Gemini API Developer course) and OpenAI (AI Foundations and API & Agents Developer courses). Each has lessons, spaced-repetition flashcards, scenario practice questions, timed mock exams and a written runbook.
+Free, structured study paths for AI and LLM certifications. Tracks: Anthropic Claude (CCAO-F, CCDV-F, CCAR-F, CCAR-P), Google Gemini (Generative AI Leader exam, Gemini API Developer course) OpenAI (AI Foundations and API & Agents Developer courses) and AWS (AI Practitioner, Generative AI Developer – Professional, Solutions Architect – Professional). Each has lessons, spaced-repetition flashcards, scenario practice questions, timed mock exams and a written runbook.
 
 React + TypeScript + Vite. No backend: progress is stored in the browser and can be exported and imported.
 
@@ -11,7 +11,20 @@ npm install
 npm run dev        # http://localhost:5173
 npm test           # content validation + logic tests
 npm run build      # production build in dist/
+npm run test:e2e   # browser smoke test of dist/ (after build)
+npm run check:links  # every source/resource URL still resolves (network)
 ```
+
+### Testing and validation
+
+- **Content validator** (`npm test`, `src/content/content.test.ts`): ids, domains, weights, answer keys, "Select two/three" stems, rationales, and sources. Every lesson and practice question must cite at least one `https` page on an official domain of its provider (`src/content/official-domains.json`).
+- **Browser tester** (`npm run test:e2e`, `e2e/smoke.mjs`): serves `dist/`. For every exam in the sitemap it checks:
+  - every view renders at phone width with no horizontal overflow;
+  - lessons and answers show their "Read more" links to the docs;
+  - practice, flashcards and a 20-question mock work end to end.
+
+  A second pass loads pages under the real Content-Security-Policy. Deploys run it and are blocked on failure. Locally, set `CHROME_PATH` to reuse an installed Chrome, or run `npx playwright-core install chromium`.
+- **Link checker** (`npm run check:links [track]`, `scripts/check-links.mjs`): checks every source URL, track resource and runbook link. It runs weekly in GitHub Actions (`.github/workflows/links.yml`). Dead links fail the run. Sites that block bots are listed as unverified but don't fail it.
 
 ## Add a learning track
 
@@ -20,7 +33,7 @@ npm run build      # production build in dist/
    - one JSON file per exam or course (`Exam` shape: domains, lessons, flashcards, questions)
    - optionally a long-form `runbook.md` guide
 2. Add the track to `src/content/index.ts`.
-3. Run `npm test`. It validates every exam bundle (ids, domains, answer keys, weights).
+3. Run `npm test`. It validates every exam bundle (ids, domains, answer keys, weights, official sources). Add the provider's documentation domains to `src/content/official-domains.json`.
 
 Routes are generated from the registry: `/<track>`, `/<track>/guide`, `/<track>/<exam>/…`.
 

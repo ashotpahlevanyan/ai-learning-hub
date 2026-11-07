@@ -1,0 +1,96 @@
+{
+  "track": "aws",
+  "kind": "exam",
+  "id": "sap-c03",
+  "code": "SAP-C03",
+  "name": "AWS Certified Solutions Architect – Professional",
+  "level": "AWS · Professional",
+  "price": "$300",
+  "items": 75,
+  "minutes": 180,
+  "passing": 720,
+  "audience": "Solutions architects with 2+ years designing and deploying cloud architecture on AWS",
+  "format": "75 items (65 scored, 10 unscored) in 180 minutes; multiple choice (1 of 4) and multiple response (2+ of 5+); scaled score 100–1000, pass 720. SAP-C03 replaces SAP-C02 from 17 November 2026.",
+  "verifyNotes": "SAP-C03 is new (GA delivery from 2026-11-17, no beta; guide published 2026-10-27). Confirm facts against the official SAP-C03 exam guide and its domain pages (docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-03/). A sibling SAP-C02 run on 2026-11-07 wrote /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/aws-sap-c02/research.md (includes the full C03 task-statement list, in-scope additions and removals, and 2025-26 service renames such as AWS Transform MGN, Security Hub CSPM, Amazon Application Recovery Controller, Route 53 VPC Resolver, Migration Hub/ADS/Snow closed to new customers). Read it as a lead list and re-confirm. Writers MAY adapt verified items from the SAP-C02 bundle at src/content/tracks/aws/exams/sap-c02.json (different domain numbering: map each item to the C03 domain it belongs to, give new ids prefixed with the C03 domain, and drop anything out of C03 scope). Questions are long scenario-based architecture trade-offs: the keyed answer must best meet every stated requirement (cost, operational overhead, availability, RTO/RPO, security). Multiple-response items should have 5 options. Never copy official sample questions.",
+  "sources": [
+    "https://aws.amazon.com/certification/certified-solutions-architect-professional/",
+    "https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-03/solutions-architect-professional-03.html",
+    "https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-03/sap-03-comparison.html",
+    "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+    "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-workloads-on-aws.html",
+    "https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html",
+    "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html"
+  ],
+  "scenarios": [
+    "Multi-account enterprise landing zone",
+    "Global e-commerce platform",
+    "Hybrid network for a bank",
+    "Data-centre migration",
+    "Cost-optimisation review",
+    "Multi-tenant SaaS with gen AI features"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Architecture Design and Implementation Built for the Cloud",
+      "weight": 25,
+      "skills": [
+        "Design cloud-built architectures: event-driven (idempotency, ordering, delivery guarantees), serverless data pipelines, durable workflows (Step Functions, durable Lambda functions), containers (EKS/ECS/Fargate, VPC Lattice, ECS Service Connect), ingress and edge (ALB/NLB, API Gateway, CloudFront Functions, Lambda@Edge), multi-tenant isolation",
+        "Integrate AI/ML: Amazon Bedrock, AgentCore, Knowledge Bases, SageMaker AI endpoints, RAG, multi-account gen AI",
+        "Design hybrid connectivity and integration: Direct Connect/VPN/Transit Gateway redundancy, DataSync, Storage Gateway, Transfer Family, Route 53 Resolver endpoints, Outposts, Local Zones, EKS/ECS Anywhere",
+        "Design networks: VPC peering, PrivateLink, VPC IPAM, Network Firewall, WAF, Gateway Load Balancer, IPv6/dual-stack, Route 53 routing policies, Global Accelerator, Cloud WAN",
+        "Design data platforms: lakehouse (S3, Lake Formation, Iceberg, Redshift Spectrum), EMR, MSK, database selection, Aurora Global Database, DynamoDB global tables, caching, Clean Rooms"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Security, Compliance, and Governance",
+      "weight": 25,
+      "skills": [
+        "Design identity: IAM Identity Center, SAML/OIDC/SCIM, Cognito, EKS Pod Identity, ABAC, permissions boundaries, session policies, IAM Access Analyzer, Verified Access, IAM Roles Anywhere",
+        "Design encryption: KMS keys and rotation, ACM, Private CA, CloudHSM, TLS 1.3, post-quantum options",
+        "Govern multi-account environments: Organizations, Control Tower, SCPs and RCPs, org CloudTrail, Config aggregation, GuardDuty, Security Lake, Security Hub CSPM, RAM, Inspector, Patch Manager",
+        "Meet compliance: data protection, sovereignty and residency, audit trails including AI invocation logging, AWS Artifact, threat modeling",
+        "Apply responsible AI controls: Bedrock Guardrails, AgentCore Identity, human approval with Step Functions"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Cost-Optimized Architecture Design",
+      "weight": 15,
+      "skills": [
+        "Choose pricing models: Reserved Instances, Savings Plans (incl. Database Savings Plans), Spot, Graviton, Fargate Spot, Step Functions Standard vs Express, Bedrock/SageMaker AI cost tiers, batching and caching",
+        "Reduce data transfer cost: CloudFront and Origin Shield, VPC endpoints vs NAT, AZ-aware design, Transit Gateway and PrivateLink charges",
+        "Allocate and control cost: tags and tag policies, Cost Categories, split cost allocation, CUR, Budgets, Cost Anomaly Detection, Bedrock token usage",
+        "Optimise storage and database cost: S3 tiers and lifecycle, gp3, DynamoDB capacity modes, Aurora Serverless and I/O-Optimized, AWS Backup and Data Lifecycle Manager"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Resilience, Migration, and Business Continuity",
+      "weight": 15,
+      "skills": [
+        "Plan and run migrations: discovery and wave planning, 7 Rs, AWS Transform and AWS Transform MGN, DMS and Schema Conversion, DataSync, strangler fig, mainframe modernization",
+        "Design disaster recovery: RTO/RPO trade-offs, Elastic Disaster Recovery, Resilience Hub, Route 53 health checks, Global Accelerator, Application Recovery Controller, multi-cluster EKS/ECS",
+        "Ensure continuity: cross-account AWS Backup, Backup Vault Lock, S3 Object Lock, EBS snapshot lock, Fault Injection Service and chaos engineering"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Operational Excellence and Automation",
+      "weight": 20,
+      "skills": [
+        "Govern infrastructure as code: CloudFormation, CDK, StackSets, CloudFormation Hooks, CDK aspects, Secrets Manager and Parameter Store",
+        "Build CI/CD and DevSecOps: CodePipeline/CodeBuild/CodeDeploy/CodeCommit, cross-account pipelines, image scanning and signing, Bedrock Evaluations, blue/green, canary and rolling deployments",
+        "Design observability: CloudWatch, X-Ray, ADOT, Container Insights, cross-account logging, Synthetics, RUM, Application Signals SLOs, AI/agent metrics",
+        "Automate resilience operations: Service Quotas, circuit breakers, rate limits, bulkheads, backoff, target tracking and predictive scaling, automated runbooks"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 19,
+    "flashcards": 115,
+    "questions": 115
+  },
+  "out": "src/content/tracks/aws/exams/sap-c03.json"
+}

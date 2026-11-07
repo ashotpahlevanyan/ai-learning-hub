@@ -1,7 +1,7 @@
 {
   "name": "AI Learning Hub",
   "short_name": "AI Hub",
-  "description": "AI certification prep for Claude, Gemini and OpenAI: lessons, flashcards, scenario practice and timed mock exams.",
+  "description": "AI certification prep for Claude, Gemini, OpenAI and AWS: lessons, flashcards, scenario practice and timed mock exams.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
