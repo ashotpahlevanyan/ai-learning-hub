@@ -1,6 +1,6 @@
 # AI Learning Hub
 
-Free, structured study paths for AI and LLM certifications. Tracks: Anthropic Claude (CCAO-F, CCDV-F, CCAR-F, CCAR-P), Google Gemini (Generative AI Leader exam, Gemini API Developer course), OpenAI (AI Foundations and API & Agents Developer courses) and AWS (AI Practitioner, Generative AI Developer – Professional, Solutions Architect – Professional SAP-C02 and SAP-C03), plus AI Foundations (Mathematics for AI and LLMs, Python for AI Engineering). Each has lessons, spaced-repetition flashcards, scenario practice questions, timed mock exams and a written runbook.
+Free, structured study paths for AI and LLM certifications. Tracks: Anthropic Claude (CCAO-F, CCDV-F, CCAR-F, CCAR-P), Google (Generative AI Leader and Professional Machine Learning Engineer exams, Gemini API Developer course), OpenAI (AI Foundations and API & Agents Developer courses), AWS (AI Practitioner, Machine Learning Engineer – Associate MLA-C02, Generative AI Developer – Professional, Solutions Architect – Professional SAP-C02 and SAP-C03), Microsoft Azure (AI-901 Azure AI Fundamentals, AI-103 Developing AI Apps and Agents), plus AI Foundations (Mathematics for AI and LLMs, Python for AI Engineering). Each has lessons, spaced-repetition flashcards, scenario practice questions, timed mock exams and a written runbook. A Library page lists the best books, free online books, courses and papers for going deeper, and each track page shows its own reading list.
 
 React + TypeScript + Vite. No backend: progress is stored in the browser and can be exported and imported.
 
@@ -24,7 +24,7 @@ npm run check:links  # every source/resource URL still resolves (network)
   - practice, flashcards and a 20-question mock work end to end.
 
   A second pass loads pages under the real Content-Security-Policy. Deploys run it and are blocked on failure. Locally, set `CHROME_PATH` to reuse an installed Chrome, or run `npx playwright-core install chromium`.
-- **Link checker** (`npm run check:links [track]`, `scripts/check-links.mjs`): checks every source URL, track resource and runbook link. It runs weekly in GitHub Actions (`.github/workflows/links.yml`). Dead links fail the run. Sites that block bots are listed as unverified but don't fail it.
+- **Link checker** (`npm run check:links [track|library]`, `scripts/check-links.mjs`): checks every source URL, track resource, library entry and runbook link. It runs weekly in GitHub Actions (`.github/workflows/links.yml`). Dead links fail the run. Sites that block bots are listed as unverified but don't fail it.
 
 ## Add a learning track
 
@@ -33,7 +33,8 @@ npm run check:links  # every source/resource URL still resolves (network)
    - one JSON file per exam or course (`Exam` shape: domains, lessons, flashcards, questions)
    - optionally a long-form `runbook.md` guide
 2. Add the track to `src/content/index.ts`.
-3. Run `npm test`. It validates every exam bundle (ids, domains, answer keys, weights, official sources). Add the provider's documentation domains to `src/content/official-domains.json`.
+3. Add a few entries for the track to `src/content/library.ts` (the validator requires every track to have some).
+4. Run `npm test`. It validates every exam bundle (ids, domains, answer keys, weights, official sources). Add the provider's documentation domains to `src/content/official-domains.json`.
 
 Markdown bodies can include math between double dollars (`$$\frac{a}{b}$$`). KaTeX loads only on pages that contain it, and a single `$` stays literal so prices are safe.
 

@@ -80,6 +80,8 @@ try {
   }
   await page.goto(`${B}/search?q=prompt`); await page.waitForSelector('.results li', { timeout: 20000 }).catch(() => fail('search returned nothing'));
   await page.goto(`${B}/`); await page.waitForSelector('.today-list li').catch(() => fail('Today panel missing after studying'));
+  await page.goto(`${B}/library`); await page.waitForSelector('.library li a[href^="https://"]').catch(() => fail('library has no entries'));
+  await page.goto(`${B}/library?track=azure&free=1`); if (!(await page.$$('.library li')).length) fail('library filter shows nothing for azure + free');
   await page.goto(`${B}/progress`); await page.waitForSelector('table').catch(() => fail('progress page has no table'));
   await page.goto(`${B}/no/such/page`); await page.waitForSelector('h1');
   if (!(await page.textContent('body')).includes('Page not found')) fail('unknown URL does not show the 404 page');

@@ -1,0 +1,62 @@
+{
+  "track": "azure",
+  "kind": "exam",
+  "verifyNotes": "Confirm exam facts (item count is not published by Microsoft; typical range), time, fee, passing score 700, skills measured and weights against the official Microsoft Learn exam page and study guide. Use current product names: Microsoft Foundry (formerly Azure AI Foundry / AI Studio), Foundry Tools (formerly Azure AI services), Foundry Agent Service, Azure Content Understanding, Azure AI Search, Azure OpenAI in Foundry Models, Azure Speech, Azure Translator, Azure AI Content Safety. Where the study guide names a feature, teach it under that name. Never copy official practice assessment questions. AI-901 replaced AI-900 (retired 30 June 2026); skills measured as of 15 April 2026.",
+  "id": "ai-901",
+  "code": "AI-901",
+  "name": "Microsoft Azure AI Fundamentals",
+  "level": "Microsoft · Fundamentals",
+  "price": "$99",
+  "items": 50,
+  "minutes": 45,
+  "passing": 700,
+  "audience": "People early in AI solution development who know basic Python and Azure resources",
+  "format": "About 40–60 items in 45 minutes (Microsoft does not publish the exact count); item types may include multiple choice, multiple response and drag-and-drop; scaled score 1–1000, pass 700. This site practises multiple choice and multiple response only.",
+  "sources": [
+    "https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/",
+    "https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/ai-901",
+    "https://learn.microsoft.com/en-us/azure/ai-foundry/",
+    "https://learn.microsoft.com/en-us/azure/ai-services/",
+    "https://learn.microsoft.com/en-us/azure/ai-services/content-understanding/",
+    "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/",
+    "https://www.microsoft.com/en-us/ai/responsible-ai"
+  ],
+  "scenarios": [
+    "Customer-support chat assistant",
+    "Invoice and receipt extraction",
+    "Voice-driven help desk",
+    "Product image tagging and generation",
+    "Meeting recording summaries"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Identify AI concepts and capabilities",
+      "weight": 43,
+      "skills": [
+        "Describe the six Microsoft responsible AI principles: fairness, reliability and safety, privacy and security, inclusiveness, transparency, accountability",
+        "Describe how generative AI models work; choose a model by capability; deployment options and configuration parameters (temperature, top-p, max tokens)",
+        "Identify AI workloads: generative and agentic AI, text analysis, speech, computer vision, information extraction",
+        "Text analysis techniques: keyword extraction, entity detection, sentiment, summarization; speech recognition and synthesis; computer vision and image generation; extracting information from text, images, audio, video"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Implement AI solutions by using Microsoft Foundry",
+      "weight": 57,
+      "skills": [
+        "Write effective system and user prompts; deploy a model and use it in the Foundry portal; build a lightweight chat client with the Foundry SDK",
+        "Create and test a single-agent solution in the Foundry portal and a lightweight client for it",
+        "Text analysis apps; respond to spoken prompts with a multimodal model; apps with Azure Speech in Foundry Tools",
+        "Interpret visual input with multimodal models; generate images; build vision apps",
+        "Extract information from documents, forms, images, audio and video with Azure Content Understanding; build an extraction app"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 16,
+    "flashcards": 90,
+    "questions": 90
+  },
+  "out": "src/content/tracks/azure/exams/ai-901.json"
+}

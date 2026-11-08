@@ -1,0 +1,78 @@
+{
+  "track": "aws",
+  "kind": "exam",
+  "verifyNotes": "MLA-C02 replaced MLA-C01 for English candidates (last MLA-C01 English exam 28 Sep 2026; MLA-C02 beta from 29 Sep 2026; GA date TBD). Beta: 85 items, 170 minutes, $75. GA exam guide: 50 scored + 15 unscored, scaled 100–1000, pass 720. Confirm status, format, domains, task statements and in-scope services against the official exam page and the MLA-C02 exam guide on docs.aws.amazon.com (including its domain subpages and the MLA-C01 vs MLA-C02 comparison page). Use current names: Amazon SageMaker AI (Studio, Pipelines, Feature Store, Model Monitor, Clarify, JumpStart, Model Registry, HyperPod), Amazon Bedrock (Knowledge Bases, Guardrails, AgentCore, model customisation, evaluation). Never copy official sample questions.",
+  "id": "mla-c02",
+  "code": "MLA-C02",
+  "name": "AWS Certified Machine Learning Engineer – Associate",
+  "level": "AWS · Associate",
+  "price": "$150",
+  "items": 65,
+  "minutes": 130,
+  "passing": 720,
+  "audience": "ML engineers, data scientists and developers with a year of SageMaker AI and Bedrock experience",
+  "format": "65 items (50 scored, 15 unscored); multiple choice and multiple response; scaled score 100–1000, pass 720. The beta (from 29 Sep 2026) has 85 items in 170 minutes for $75.",
+  "sources": [
+    "https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/",
+    "https://docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-02/machine-learning-engineer-associate-02.html",
+    "https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html",
+    "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+    "https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/machine-learning-lens.html",
+    "https://skillbuilder.aws"
+  ],
+  "scenarios": [
+    "Churn model on tabular data",
+    "Fraud detection with real-time inference",
+    "Document Q&A with a fine-tuned foundation model",
+    "Agentic support workflow on Bedrock",
+    "Regulated healthcare ML platform"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Data Preparation for ML and AI",
+      "weight": 28,
+      "skills": [
+        "Ingest and store data (S3, formats like Parquet/CSV/JSON/RecordIO, streaming with Kinesis, Glue, EMR)",
+        "Transform and engineer features (Data Wrangler, Glue DataBrew, Feature Store, encoding, scaling, imputation)",
+        "Ensure data integrity and prepare for modeling: bias detection with Clarify, labeling with Ground Truth, data quality, splitting, PII handling; prepare data for FM customisation and RAG"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "ML Model and Foundation Model (FM) Development",
+      "weight": 24,
+      "skills": [
+        "Choose a modeling approach: built-in algorithms, JumpStart, Bedrock FMs, custom containers",
+        "Train and refine models: hyperparameter tuning (AMT), distributed training, regularisation, fine-tuning and continued pre-training of FMs, model versioning in Model Registry",
+        "Analyse performance: metrics, confusion matrix, RMSE, AUC, Clarify explainability, Debugger, FM evaluation"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Deployment and Orchestration of ML and AI Workflows",
+      "weight": 24,
+      "skills": [
+        "Choose deployment infrastructure: real-time, serverless, asynchronous, batch transform endpoints; multi-model and inference components; edge",
+        "Provision compute and auto scaling; containers; IaC with CloudFormation/CDK",
+        "CI/CD and orchestration with SageMaker Pipelines, CodePipeline, Step Functions, MWAA; build agentic workflows with Bedrock and AgentCore"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Operating, Monitoring, and Securing ML and AI Solutions",
+      "weight": 24,
+      "skills": [
+        "Monitor inference: Model Monitor (data and model quality, bias drift, feature attribution drift), A/B and shadow testing",
+        "Monitor and optimise infrastructure and cost: CloudWatch, X-Ray, observability for agents, instance right-sizing, Spot, Savings Plans",
+        "Secure AI/ML: IAM roles and policies, VPC and PrivateLink, KMS encryption, Guardrails, compliance and governance (Model Cards, lineage)"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 20,
+    "flashcards": 110,
+    "questions": 110
+  },
+  "out": "src/content/tracks/aws/exams/mla-c02.json"
+}

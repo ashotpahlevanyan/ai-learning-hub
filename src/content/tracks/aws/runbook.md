@@ -1,8 +1,8 @@
 # AWS Runbook
 
-A step-by-step path to pass three AWS certifications: **AWS Certified AI Practitioner** (AIF-C01), **AWS Certified Generative AI Developer – Professional** (AIP-C01) and **AWS Certified Solutions Architect – Professional** (SAP-C03, which replaces SAP-C02). Use it alongside the items on this site. Each has lessons, flashcards, practice questions and a timed practice test.
+A step-by-step path to pass four AWS certifications: **AWS Certified AI Practitioner** (AIF-C01), **AWS Certified Machine Learning Engineer – Associate** (MLA-C02, which replaces MLA-C01 in English), **AWS Certified Generative AI Developer – Professional** (AIP-C01) and **AWS Certified Solutions Architect – Professional** (SAP-C03, which replaces SAP-C02). Use it alongside the items on this site. Each has lessons, flashcards, practice questions and a timed practice test.
 
-> **Read this first.** All three are real AWS certifications. Facts below were checked against AWS exam pages, exam guides, documentation and announcements on 7 November 2026. Three things changed recently and matter for your plan: the AI Practitioner exam guide moved to **version 1.2 on 29 October 2026**; **Amazon Bedrock Agents became "Agents Classic"** and closed to new customers on 30 July 2026; and **SAP-C02 retires on 16 November 2026**, with SAP-C03 from 17 November 2026. AWS renames and retires services often, so check the official exam page and guide before you book.
+> **Read this first.** All four are real AWS certifications. Facts below were checked against AWS exam pages, exam guides, documentation and announcements on 7 November 2026 (MLA-C02 on 8 November 2026). Four things changed recently and matter for your plan: the AI Practitioner exam guide moved to **version 1.2 on 29 October 2026**; **MLA-C02 has been in beta since 29 September 2026**, with GA dates not yet published, and MLA-C01 is no longer offered in English; **Amazon Bedrock Agents became "Agents Classic"** and closed to new customers on 30 July 2026; and **SAP-C02 retires on 16 November 2026**, with SAP-C03 from 17 November 2026. AWS renames and retires services often, so check the official exam page and guide before you book.
 
 ---
 
@@ -14,42 +14,43 @@ A step-by-step path to pass three AWS certifications: **AWS Certified AI Practit
 4. [Free official resources](#4-free-official-resources)
 5. [Core knowledge](#5-core-knowledge)
 6. [Exam: AI Practitioner (AIF-C01)](#6-exam-ai-practitioner-aif-c01)
-7. [Exam: Generative AI Developer – Professional (AIP-C01)](#7-exam-generative-ai-developer--professional-aip-c01)
-8. [Exam: Solutions Architect – Professional (SAP-C03)](#8-exam-solutions-architect--professional-sap-c03)
-9. [Capstone projects](#9-capstone-projects)
-10. [Study schedules](#10-study-schedules)
-11. [Cheat sheets](#11-cheat-sheets)
-12. [Sources](#12-sources)
+7. [Exam: Machine Learning Engineer – Associate (MLA-C02)](#7-exam-machine-learning-engineer--associate-mla-c02)
+8. [Exam: Generative AI Developer – Professional (AIP-C01)](#8-exam-generative-ai-developer--professional-aip-c01)
+9. [Exam: Solutions Architect – Professional (SAP-C03)](#9-exam-solutions-architect--professional-sap-c03)
+10. [Capstone projects](#10-capstone-projects)
+11. [Study schedules](#11-study-schedules)
+12. [Cheat sheets](#12-cheat-sheets)
+13. [Sources](#13-sources)
 
 ---
 
 ## 1. Certification status
 
-| Item | AI Practitioner (AIF-C01) | Generative AI Developer – Professional (AIP-C01) | Solutions Architect – Professional (SAP-C03) |
-|---|---|---|---|
-| Level | Foundational | Professional | Professional |
-| Status (November 2026) | Live. Exam guide **v1.2** published 29 October 2026 | **Generally available** since March 2026. The beta ended on 31 March 2026 | **Replaces SAP-C02 on 17 November 2026.** Registration opened 27 October 2026. No beta |
-| Items | 65: 50 scored, 15 unscored | 75: 65 scored, 10 unscored | 75: 65 scored, 10 unscored |
-| Time | 90 minutes | 180 minutes | 180 minutes |
-| Fee | $100 | $300 | $300 |
-| Passing score | **700** (scaled 100–1,000) | **750** | **720** (SAP-C02 was 750) |
-| Item types | Multiple choice, multiple response, **ordering**, **matching** | Multiple choice, multiple response | Multiple choice, multiple response |
-| Languages | Many, including Japanese, Korean, Chinese, French, Spanish and Portuguese. **German and Italian were retired after 15 October 2026** | English, Japanese, Korean, Simplified Chinese | Check the exam page. SAP-C02 was offered in English, Japanese, Korean, Portuguese (Brazil), Simplified Chinese and Spanish (Latin America) |
-| Validity | 3 years. Renew by passing the current AIF exam or by earning Machine Learning Engineer – Associate | Check the exam page | 3 years |
+| Item | AI Practitioner (AIF-C01) | Machine Learning Engineer – Associate (MLA-C02) | Generative AI Developer – Professional (AIP-C01) | Solutions Architect – Professional (SAP-C03) |
+|---|---|---|---|---|
+| Level | Foundational | Associate | Professional | Professional |
+| Status (November 2026) | Live. Exam guide **v1.2** published 29 October 2026 | **Beta** since 29 September 2026 (English only). GA dates not yet published. MLA-C01 ended in English on 28 September 2026 | **Generally available** since March 2026. The beta ended on 31 March 2026 | **Replaces SAP-C02 on 17 November 2026.** Registration opened 27 October 2026. No beta |
+| Items | 65: 50 scored, 15 unscored | Beta: 85. GA: 65 (50 scored, 15 unscored) | 75: 65 scored, 10 unscored | 75: 65 scored, 10 unscored |
+| Time | 90 minutes | Beta: 170 minutes. GA: not published (MLA-C01 was 130) | 180 minutes | 180 minutes |
+| Fee | $100 | Beta: $75. GA: not published (MLA-C01 was $150) | $300 | $300 |
+| Passing score | **700** (scaled 100–1,000) | **720** (the guide says pass/fail doesn't apply to the beta) | **750** | **720** (SAP-C02 was 750) |
+| Item types | Multiple choice, multiple response, **ordering**, **matching** | Multiple choice, multiple response | Multiple choice, multiple response | Multiple choice, multiple response |
+| Languages | Many, including Japanese, Korean, Chinese, French, Spanish and Portuguese. **German and Italian were retired after 15 October 2026** | Beta: English. GA: English, Japanese, Korean, Simplified Chinese | English, Japanese, Korean, Simplified Chinese | Check the exam page. SAP-C02 was offered in English, Japanese, Korean, Portuguese (Brazil), Simplified Chinese and Spanish (Latin America) |
+| Validity | 3 years. Renew by passing the current AIF exam or by earning Machine Learning Engineer – Associate | 3 years | Check the exam page | 3 years |
 
-**What applies to all three**
+**What applies to all four**
 
 - **Delivery:** Pearson VUE, at a test centre or online proctored.
 - **Scoring is compensatory.** You need the overall scaled score, not a pass in every domain. Unscored items are mixed in and not marked.
 - **No penalty for guessing.** An unanswered item is wrong, so answer everything.
 - **Multiple response** means two or more correct answers out of five or more options. You must pick all of them to get credit.
-- **Prerequisites:** none. AWS states recommended experience for each exam (see sections 6–8).
+- **Prerequisites:** none. AWS states recommended experience for each exam (see sections 6–9).
 - **Discount:** passing an AWS certification gives you 50% off your next exam. Check your AWS Certification account for the voucher.
 - **Short service names:** exams now use short service names. The Help button in the exam lists them.
 - **Guide updates:** AWS says exam guide changes reach the exam about one month after they are published. AIF-C01 guide v1.2 content therefore applies from about late November 2026.
 - **Official sample questions:** each exam guide and Skill Builder have official practice material. This site does not copy any of it.
 
-**What this site gives you:** for each exam, lessons, flashcards, practice questions and a timed practice test at the real length (65 items in 90 minutes for AIF-C01; 75 in 180 for the two Professional exams). The AIF-C01 practice uses multiple choice and multiple response only; the real exam also has ordering and matching items. The Solutions Architect practice content was built for SAP-C02 and is still useful for most SAP-C03 topics; see section 8.
+**What this site gives you:** for each exam, lessons, flashcards, practice questions and a timed practice test at the real length (65 items in 90 minutes for AIF-C01; 75 in 180 for the two Professional exams). The MLA-C02 test uses 65 items in 130 minutes: the GA item count with the MLA-C01 time, as an estimate until AWS publishes the GA time. The AIF-C01 practice uses multiple choice and multiple response only; the real exam also has ordering and matching items. The Solutions Architect practice content was built for SAP-C02 and is still useful for most SAP-C03 topics; see section 9.
 
 ---
 
@@ -58,6 +59,7 @@ A step-by-step path to pass three AWS certifications: **AWS Certified AI Practit
 | You are… | Take | Why |
 |---|---|---|
 | Business, product, sales or new to AWS AI | **AIF-C01** | AI/ML and gen AI concepts, AWS AI services, responsible AI and governance. No code |
+| An ML engineer, data scientist or MLOps engineer who trains, deploys and runs models on SageMaker AI and Bedrock | **MLA-C02** | Data prep, training and tuning, endpoints, pipelines, monitoring and security, with gen AI, RAG and agents now included. Associate level, so it's a good step before AIP-C01 |
 | A developer building gen AI on AWS | **AIF-C01 → AIP-C01** | AIF-C01 is a fast foundation. AIP-C01 tests Bedrock, Knowledge Bases, AgentCore, Guardrails, cost and operations in depth |
 | A developer with a year or more of hands-on gen AI | **AIP-C01** | Skim section 5 and the AIF-C01 cards for vocabulary, then go straight to AIP-C01 |
 | A cloud or solutions architect | **SAP-C03 → AIP-C01** | SAP-C03 tests multi-account design, networking, security, migration, resilience, cost and automation. It now includes a gen AI integration task; add AIP-C01 if you design gen AI platforms |
@@ -74,7 +76,7 @@ The same loop as every track on this site:
 1. **Read** this runbook section for your exam.
 2. **Learn** the lessons, heaviest domain first.
 3. **Recall** with flashcards every day. Spaced repetition picks what to review.
-4. **Apply** with the capstone projects in section 9. Build them in your own AWS account; don't just read about them.
+4. **Apply** with the capstone projects in section 10. Build them in your own AWS account; don't just read about them.
 5. **Test** with Smart practice until every domain is above 80%, then take the timed practice test.
 6. **Fix** misses in the Mistakes notebook and read the Traps list before each test.
 
@@ -90,6 +92,7 @@ The same loop as every track on this site:
 |---|---|
 | **AWS Certification** (`aws.amazon.com/certification`) | Exam pages: format, fee, languages, delivery, registration and policies |
 | **AIF-C01 exam guide** (`docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/`) | The five domains, task statements, in-scope and out-of-scope services, and the revision history (v1.2, 29 October 2026). Use this HTML guide, not the old 2024 PDF |
+| **MLA-C02 exam guide** (`docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-02/`) | Four domains, task statements, in-scope and out-of-scope services and the **C01 vs C02 comparison page** |
 | **AIP-C01 exam guide** (`docs.aws.amazon.com/aws-certification/latest/ai-professional-01/`) | Five domains, task statements and in-scope services |
 | **SAP-C03 exam guide** (`docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-03/`) | Five domains, task statements, in-scope services and the **C02 vs C03 comparison page** |
 | **AWS Skill Builder** (`skillbuilder.aws`) | Free courses, exam-prep plans and an official practice question set for each exam |
@@ -103,7 +106,7 @@ The same loop as every track on this site:
 | **Well-Architected Framework** and the **Generative AI Lens** | Six pillars; gen AI-specific guidance. The Well-Architected Tool is free |
 | **Disaster recovery whitepaper** ("Disaster Recovery of Workloads on AWS") | Backup and restore, pilot light, warm standby, multi-site; data-plane vs control-plane failover |
 | **Prescriptive Guidance: large migration guide** | The 7 Rs and how AWS recommends sequencing a large migration |
-| **AWS Budgets** and **Cost Explorer** | Keep your lab account safe (section 9) |
+| **AWS Budgets** and **Cost Explorer** | Keep your lab account safe (section 10) |
 | **Pricing pages** (for example `aws.amazon.com/bedrock/pricing`) | Current prices. Don't memorise numbers from courses; they change |
 
 ---
@@ -118,6 +121,7 @@ Older courses, practice tests and blog posts get these wrong. Learn the current 
 |---|---|---|
 | AIF-C01 exam guide | 2024 guide (PDF) | **v1.2** (29 October 2026). Adds agentic AI, **MCP**, **context engineering**, chunking, token-based pricing, **prompt caching**, Prompt Management, **LLM-as-a-judge**, evaluating RAG and agents, hallucination detection and grounding, Amazon Quick, Kiro, Strands Agents, AgentCore, Nova and AWS Transform |
 | AIF-C01 item types | Some prep sites mention case studies | Multiple choice, multiple response, ordering, matching. **No case studies** |
+| ML Engineer – Associate | MLA-C01 (English until 28 September 2026) | **MLA-C02** beta from 29 September 2026; GA dates not published. Edge (Neo), BYOC and model compression removed; gen AI, RAG, agents and observability added (section 7.3) |
 | AIP-C01 status | Beta (late 2025 to 31 March 2026) | **Generally available** (standard registration opened March 2026) |
 | Bedrock agents | Amazon Bedrock Agents | **Amazon Bedrock Agents Classic**, in maintenance mode, **closed to new customers from 30 July 2026**. Existing agents keep working, with no end-of-life date; the model catalogue is frozen. New builds: **AgentCore** with Strands or another framework |
 | Bedrock workflow builder | Bedrock Prompt Flows | **Amazon Bedrock Flows**. The AIP-C01 guide still says "Prompt Flows" |
@@ -126,7 +130,7 @@ Older courses, practice tests and blog posts get these wrong. Learn the current 
 | Bedrock inference options | On-demand, batch, Provisioned Throughput | Plus **service tiers**: Reserved, Priority, Standard (default), Flex; and **Global** cross-Region inference alongside Geographic profiles |
 | Bedrock customisation | Fine-tuning, continued pre-training | Main docs list **supervised fine-tuning**, **reinforcement fine-tuning** and **distillation**. Continued pre-training is no longer on the main page; treat it as a concept |
 | SageMaker | Amazon SageMaker | **Amazon SageMaker AI** (renamed 3 December 2024). "Amazon SageMaker" now means the unified data, analytics and AI platform |
-| SageMaker AI features | Clarify, Model Monitor, Augmented AI (A2I), Ground Truth | **Maintenance mode, closed to new customers from 30 July 2026**. AIF-C01 v1.2 doesn't name them; AIP-C01's in-scope list still does |
+| SageMaker AI features | Clarify, Model Monitor, Augmented AI (A2I), Ground Truth, Debugger | **Maintenance mode, closed to new customers from 30 July 2026** (also Geospatial, Mechanical Turk, Role Manager, Studio Lab). Ground Truth Plus ended 30 June 2026; Profiler is entering sunset. AIF-C01 v1.2 and MLA-C02 don't name them; AIP-C01's in-scope list still does |
 | Enterprise assistant | Amazon Q Business | **Closed to new customers** (maintenance from 30 July 2026). Its docs point new customers to **Amazon Quick**. AIP-C01's in-scope list still names Q Business |
 | BI service | Amazon QuickSight, "Amazon Q in QuickSight" | **Amazon Quick**; Quick Sight is now a feature inside it |
 | Developer assistant | Amazon Q Developer IDE plugins and CLI | New sign-ups blocked from 15 May 2026; IDE plugins reach end of support 30 April 2027. **Kiro** replaces them. Q Developer in the console, docs and chat apps is not affected |
@@ -469,11 +473,271 @@ The higher the scope, the more of the security and governance work is yours.
 - Scope 3 vs Scope 4 in the Scoping Matrix → using a model via API vs fine-tuning it with your data.
 - Pre-training from scratch to add company knowledge → the most expensive option; use RAG.
 
-**Fast plan:** 2 weeks at about an hour a day (section 10).
+**Fast plan:** 2 weeks at about an hour a day (section 11).
 
 ---
 
-## 7. Exam: Generative AI Developer – Professional (AIP-C01)
+## 7. Exam: Machine Learning Engineer – Associate (MLA-C02)
+
+> **MLA-C01 → MLA-C02.** The last day to take MLA-C01 in English was **28 September 2026**. It is still offered in Japanese, Korean and Simplified Chinese (65 items, 130 minutes, $150). **MLA-C02 is in beta**, in English only: registration opened 1 September 2026 and delivery started **29 September 2026**. AWS has **not yet published the GA registration and delivery dates**. The exam page says the domain structure stays the same and no new domains were added, but the content inside the domains changed a lot: less edge and model-compression work, much more generative AI, RAG, agents and observability.
+
+**Who:** at least 1 year using SageMaker AI, Amazon Bedrock and other AWS ML services, plus at least 1 year in a related role (backend developer, DevOps engineer, data engineer or data scientist). AWS expects both traditional ML and gen AI experience. Out of scope: designing full end-to-end AI/ML architectures, setting ML strategy, integrating many new tools, and working deeply in two or more ML domains.
+
+### 7.1 Exam facts
+
+| Item | Beta (now) | GA (exam guide) |
+|---|---|---|
+| Items | **85** | **65: 50 scored, 15 unscored** (unscored items are not marked) |
+| Time | **170 minutes** | Not published yet. MLA-C01 was 130 minutes |
+| Fee | **$75** (beta pricing) | Not published yet. MLA-C01 was $150 |
+| Passing score | The guide says the pass/fail description does not apply to the beta | **720** (scaled 100–1,000), compensatory |
+| Item types | Multiple choice, multiple response | Multiple choice (1 correct of 4), multiple response (2 or more correct of 5 or more; pick all of them for credit) |
+| Languages | English only | English, Japanese, Korean, Simplified Chinese |
+| Delivery and validity | Pearson VUE, test centre or online proctored; valid 3 years | Same |
+
+- The exam page's beta table shows the code "ME1-C02". Everything else, including the exam guide, says **MLA-C02**. Book against what the registration page shows.
+- No penalty for guessing; answer every item.
+- Exams use short service names (for example, Amazon SNS). The in-exam Help lists the full names.
+- **On this site:** 22 lessons, flashcards, practice questions and a timed practice test of **65 items in 130 minutes**. That is the GA item count with the MLA-C01 time, used as an estimate until AWS publishes the GA time. If you sit the beta, practise once at 85 items in 170 minutes too.
+
+### 7.2 Domains and lessons
+
+| Domain | Weight | Lessons | Must-know |
+|---|---|---|---|
+| Data Preparation for ML and AI | 28% | Collecting and storing ML data on AWS · Preparing data for RAG: vector stores, embeddings and chunking · Transformation and feature engineering · SageMaker Feature Store · Data quality, bias, labeling and splitting · PII handling and data for FM customisation | Parquet/ORC vs CSV/JSON; Firehose format conversion; Kinesis vs Flink; Glue vs EMR; KB vector stores and chunking; Data Wrangler in Canvas; DataBrew; online vs offline store; Glue Data Quality; CI and DPL; split before you fit or resample; Macie, Comprehend PII, Guardrails masking; JSONL for Bedrock fine-tuning |
+| ML Model and Foundation Model (FM) Development | 24% | Choosing a modeling approach · Training at scale on SageMaker AI · Hyperparameter tuning with AMT · Customising foundation models and versioning · Evaluating ML models and FMs | AI services vs built-in algorithms vs script mode vs Bedrock vs JumpStart; RAG vs fine-tuning; data vs model parallel; HyperPod; Spot with checkpoints; grid, random, Bayesian, Hyperband; SFT, RFT, distillation; catastrophic forgetting; Model Registry and MLflow; precision, recall, PR AUC, RMSE; ROUGE, BLEU, BERTScore, LLM-as-a-judge; SHAP |
+| Deployment and Orchestration of ML and AI Workflows | 24% | Choosing a SageMaker AI inference option · Hosting many models and rolling out safely · Provisioning compute, auto scaling and containers · Infrastructure as code and CI/CD for ML · Orchestrating ML and AI workflows · Agentic workflows with Bedrock and AgentCore | Real-time, serverless, async, batch limits; MME and inference components; shadow tests vs production variants; deployment guardrails; Inference Recommender; auto scaling; ECR with immutable tags; CDK and CloudFormation; CodeConnections; EventBridge on Model Registry events; Pipelines vs Step Functions vs MWAA; KB ingestion jobs; AgentCore Runtime, Gateway, Memory; MCP vs A2A |
+| Operating, Monitoring, and Securing ML and AI Solutions | 24% | Monitoring inference quality and drift · Observability for endpoints, generative AI and agents · Right-sizing and cost optimisation for ML and AI · Securing ML workloads: identity, network and encryption · Guardrails, governance and audit | Drift = capture + baseline + schedule + alarm; model quality needs ground truth; ModelLatency vs OverheadLatency; CloudWatch generative AI observability; invocation logging vs CloudTrail; Spot, Savings Plans, prompt caching; execution roles; PrivateLink; network isolation; KMS; Bedrock API keys; Inspector and CodeGuru; Guardrails; Model Cards, Registry, lineage |
+
+**Task statements** (from the exam guide)
+
+- **D1:** 1.1 Collect and store data · 1.2 Perform data transformation, feature engineering, and pre-processing · 1.3 Validate data quality and manage bias
+- **D2:** 2.1 Choose appropriate modeling approaches for ML and AI solutions · 2.2 Train, fine-tune, and customize models for ML and AI solutions · 2.3 Analyze and evaluate the performance of ML and AI systems
+- **D3:** 3.1 Manage deployment infrastructure for ML and AI model types · 3.2 Provision and configure resources for ML and AI workloads based on existing architecture and requirements · 3.3 Implement automated orchestration and CI/CD pipelines for MLOps and AI workloads
+- **D4:** 4.1 Monitor ML and AI model inference and performance · 4.2 Optimize and manage ML and AI infrastructure costs and performance · 4.3 Secure ML and AI workloads and model endpoints
+
+### 7.3 What changed from MLA-C01
+
+Weights: Domain 2 went from 26% to 24% and Domain 3 from 22% to 24%. Domains 1 and 4 are unchanged. Domain names now say "ML and AI". The guide's comparison page lists every change; the main ones:
+
+| Removed in C02 | Added in C02 |
+|---|---|
+| Optimising models on edge devices (SageMaker Neo). AWS IoT services, including Greengrass, are out of scope | Vector databases (OpenSearch Service, RDS with pgvector, Amazon S3), embedding models, RAG chunking and metadata, retrieval and embedding optimisation, reranking, RAG architecture patterns |
+| Bring your own container (BYOC) with SageMaker. "Build and maintain containers" stays, so know ECR and image hygiene, not BYOC mechanics | Masking and redaction of PII; prompt-response pair validation and content safety screening; multimodal bias metrics |
+| Fine-tuning pre-trained models with custom datasets in Bedrock or JumpStart (as worded in C01). Fine-tuning itself is still in scope | Script mode, catastrophic forgetting, ensembles; AWS AI services (Textract, Rekognition, Comprehend, Transcribe) as modelling choices |
+| Reducing model size (pruning, compression, data types) | MLflow and Bedrock Prompt Management; BLEU, ROUGE, BERTScore and semantic similarity; LLM-as-a-judge; RAG monitoring |
+| Loading data into training resources (EFS, FSx) | Bedrock Custom Model Import; agent communication protocols; agent state management; GPU scaling; agent version pipelines; prompt testing; knowledge base refresh pipelines |
+| Monitoring infrastructure with EventBridge events; troubleshooting capacity (provisioned concurrency, service quotas, auto scaling) | CodeConnections; agent failure monitoring (truncated streaming, tool failures); token, embedding and vector-store cost; CodeGuru and Inspector in CI/CD; Bedrock API keys vs IAM credentials; Guardrails |
+
+New in-scope services worth checking against older courses: **Amazon Bedrock AgentCore**, **Glue Data Quality**, **CodeConnections** and **Amazon Quick**.
+
+### 7.4 Services in maintenance mode, and what the guide names instead
+
+AWS's June 2026 availability update put these SageMaker AI features into **maintenance, closed to new customers from 30 July 2026**: **Augmented AI (A2I), Clarify, Debugger, Geospatial, Ground Truth, Mechanical Turk, Model Monitor, Role Manager and Studio Lab**. **Ground Truth Plus** reached end of support on 30 June 2026, and **SageMaker Profiler** is entering sunset. Existing customers can keep using them. (Some Clarify docs give 30 June 2026; the availability update lists Clarify under 30 July.)
+
+The MLA-C02 guide doesn't name any of them. It describes the job in generic words and names newer tools instead. Older courses and practice tests use these services as the default answer; for a new build in late 2026, don't.
+
+| Job | Older answer (maintenance) | What the guide and docs point to now |
+|---|---|---|
+| Label and annotate data | Ground Truth, Ground Truth Plus, Mechanical Turk | The guide says only "label and annotate data" and names no service. Treat Ground Truth concepts (private or vendor workforce, automated labelling) as background |
+| Pre-training bias metrics (CI, DPL and others) | Clarify | Compute the metrics with pandas and scikit-learn (AWS's own advice on the Clarify availability page) |
+| Explain model outputs | Clarify (SHAP inside) | The open-source **SHAP** library. For FM evaluation: `fmeval` or **Bedrock Evaluations** |
+| Debug convergence, vanishing gradients, overfitting | Debugger, Profiler | Training metrics in **MLflow on SageMaker AI** or **CloudWatch**; the guide says "debug model convergence issues" without naming a tool |
+| Drift detection and model quality | Model Monitor | AWS's open-source SageMaker AI monitoring solutions (**MLflow Apps plus Evidently AI**), QuickSight dashboards and **CloudWatch anomaly detection** |
+| Monitor gen AI apps and agents | — | **CloudWatch generative AI observability** and **AgentCore Observability** (both named in the guide) |
+| Evaluate FMs and RAG | — | **Bedrock Model Evaluation** (programmatic, human, LLM-as-a-judge, RAG) |
+| Human review of predictions | A2I | Build the review step yourself, for example a Step Functions task token or a Pipelines Callback step |
+| Agents | Bedrock Agents (now **Agents Classic**, closed to new customers since 30 July 2026) | **AgentCore** (Harness or Runtime). Knowledge Bases and Guardrails are not affected |
+
+Also changed: **Data Wrangler now lives inside SageMaker Canvas** (with a natural-language interface), and **MLflow Apps** (serverless, MLflow 3.x) sit alongside MLflow Tracking Servers.
+
+### 7.5 Decision tables
+
+**SageMaker AI endpoint types**
+
+| Option | Limits | Choose when | Watch out |
+|---|---|---|---|
+| **Real-time** | Payload up to 25 MB; 60 s processing (8 min when streaming) | Steady, low-latency, interactive traffic; GPUs; VPC access | A persistent endpoint; delete it after each lab |
+| **Serverless** | Payload up to 4 MB; 60 s; 1,024–6,144 MB memory; image up to 10 GB; max concurrency 200 per endpoint | Intermittent traffic with idle gaps; cold starts are acceptable | **No** GPUs, VPC configuration, network isolation, data capture, multi-model, multiple production variants, Model Monitor or inference pipelines. Provisioned Concurrency reduces cold starts; `OverheadLatency` shows them. Converts to real-time, not back |
+| **Asynchronous** | Payload up to 1 GB; up to 1 hour processing | Large inputs or long jobs; requests are queued; near real time | Can scale to zero on an empty queue |
+| **Batch transform** | GB-scale datasets; can run for days | Offline scoring of a whole dataset on a schedule | Leaves no endpoint running |
+| **Multi-model endpoint** | Many models, one container, loaded from S3 on demand | Many similar models (per-tenant) invoked unevenly | Not on serverless; not with Model Monitor or shadow tests |
+| **Inference components** | Per-model compute and independent scaling on a shared endpoint | Several different models sharing instances | Don't memorise numbers from courses; check the docs |
+
+Rollouts on real-time endpoints: **shadow tests** copy live traffic to a shadow variant and return only production responses (not for serverless, async, multi-model or multi-container); **production variants** split real traffic by weight for A/B tests; **deployment guardrails** shift traffic all at once, canary or linear, with rollback on a CloudWatch alarm.
+
+**Bedrock vs JumpStart vs custom training vs AI services**
+
+| Need | Pick | Why |
+|---|---|---|
+| A standard task: text from documents, sentiment or PII in text, speech to text, image analysis | **Textract, Comprehend, Transcribe, Rekognition** | No training at all |
+| Gen AI through an API with no infrastructure | **Amazon Bedrock** | Serverless, pay per token |
+| Answers from documents that change often | **Bedrock Knowledge Bases (RAG)** | Re-ingest instead of retraining |
+| Change an FM's style, format or behaviour | **Bedrock customisation**: supervised fine-tuning (labelled pairs), reinforcement fine-tuning (reward function), distillation (prompts plus a teacher model) | Served through Provisioned Throughput, or an on-demand custom model deployment where the base model supports it |
+| Use open weights you already have in Bedrock | **Custom Model Import** (Hugging Face format in S3; supported architectures only) | On-demand InvokeModel. No batch inference, no CloudFormation, no embedding models |
+| An open model on infrastructure you control | **SageMaker JumpStart** | Deploys to a SageMaker AI endpoint you choose and pay for |
+| Your own framework code (PyTorch, TensorFlow, scikit-learn) | **SageMaker AI training with script mode** in a prebuilt container | Minimal code changes; lower effort than a custom container |
+| Tabular problem with a known algorithm | **SageMaker AI built-in algorithms** | No container to write |
+| Long FM training on large clusters | **SageMaker HyperPod** (Slurm or EKS) | Detects and replaces faulty nodes |
+
+Continued pre-training appears in the exam guide's data-prep wording, but Bedrock's current customisation page lists only SFT, reinforcement fine-tuning and distillation. Treat it as a concept.
+
+**Data formats and stores**
+
+| Need | Pick |
+|---|---|
+| Analytics queries that read a few columns | **Parquet** or **ORC** (columnar), partitioned in S3 |
+| Simple interchange, small files, row-at-a-time tools | CSV or JSON |
+| Land streaming events in S3, optionally converting JSON to Parquet/ORC | **Data Firehose** |
+| Custom, multi-consumer stream processing | **Kinesis Data Streams** |
+| Stateful real-time analytics | **Managed Service for Apache Flink** |
+| Serverless Spark ETL and a data catalog | **AWS Glue**; managed clusters you control → **EMR** |
+| Visual, no-code profiling and cleaning | **Glue DataBrew** or **Data Wrangler in Canvas** |
+| Data quality rules | **Glue Data Quality**, DataBrew |
+| Features for real-time inference | **Feature Store online store** (latest record per ID, low-ms reads, written with `PutRecord`) |
+| Historical features for training | **Feature Store offline store** (append-only Parquet in S3, query with Athena; use event time for point-in-time sets) |
+| Bedrock fine-tuning data | **JSONL**: `prompt`/`completion`, or Converse format with `schemaVersion: "bedrock-conversation-2024"` |
+
+**Vector stores for Bedrock Knowledge Bases**
+
+| Store | Use when | Limits to know |
+|---|---|---|
+| **OpenSearch Serverless** | General default; private access through a VPC endpoint | Supports binary vectors |
+| **OpenSearch Service managed clusters** | You already run OpenSearch | Binary vectors supported. **VPC-only domains are not supported** for Knowledge Bases |
+| **Amazon S3 Vectors** | Large corpora queried infrequently, where cost matters most | Float embeddings only; up to 1 KB of custom metadata and 35 metadata keys per vector; 1–4,096 dimensions; cosine or Euclidean. Hierarchical chunking is not recommended |
+| **Aurora PostgreSQL (pgvector)** | You already run Aurora and want SQL alongside vectors | Same account; credentials in Secrets Manager |
+| **Neptune Analytics** | GraphRAG over connected data | — |
+| Pinecone, Redis Enterprise Cloud, MongoDB Atlas | You already use them | Credentials in Secrets Manager |
+
+The index dimension must equal the embedding model's output (Titan Text Embeddings V2: 1,024, 512 or 256; Cohere Embed: 1,024). A new embedding model means re-embedding everything. New documents in S3 aren't retrievable until an **ingestion job** syncs the data source. See section 5.6 for chunking.
+
+**SageMaker Pipelines vs Step Functions vs MWAA**
+
+| Pick | When | Key features |
+|---|---|---|
+| **SageMaker Pipelines** | ML-centric workflow: process, train, tune, evaluate, register, deploy | Step types including Processing, Training, Tuning, Condition, Callback, Lambda, Register model, Transform, Fail and the `@step` decorator; lineage; Model Registry integration; step caching skips unchanged steps |
+| **Step Functions** | Workflows across many AWS services, with retries, error handling and human approval | Task tokens to wait for external work or a person |
+| **Amazon MWAA** | You already have Airflow DAGs | Move them with minimal change instead of rewriting |
+| **EventBridge** | React to events, such as a Model Registry approval status change | Starts the deploy pipeline; no polling |
+| **CodePipeline + CodeBuild** | CI/CD for code, containers and IaC | **CodeConnections** for GitHub, GitLab and Bitbucket sources |
+
+A common pattern: a model build pipeline (Pipelines) registers a version with "pending" status; a Condition step gates on metrics; a person approves in Model Registry; EventBridge starts a deploy pipeline with a manual approval before production.
+
+**Monitoring and drift**
+
+| Question | Tool or approach |
+|---|---|
+| Has the input data changed from training? (data quality drift) | Data capture + baseline from training data + scheduled comparison + alarm. No labels needed |
+| Is accuracy dropping? (model quality) | Merge **ground truth labels** with captured predictions, then compare |
+| Bias drift or feature attribution drift | Same pattern with bias metrics or SHAP values |
+| Tool for a new build | MLflow Apps plus Evidently AI, dashboards, CloudWatch anomaly detection. Model Monitor only for existing customers (tabular only; no multi-model endpoints) |
+| Is latency in my model or in SageMaker? | `ModelLatency` (inside the container) vs `OverheadLatency` (SageMaker overhead, including serverless cold starts) |
+| Gen AI tokens, latency, errors, throttles, cost | **CloudWatch generative AI observability** (Model Invocations dashboard, AgentCore agents dashboard; P90 and P99 latency) |
+| Full prompts and responses | **Bedrock model invocation logging** (off by default). CloudTrail records API calls, not payloads |
+| Which hop failed in a RAG or agent request | Traces: X-Ray, ADOT, AgentCore Observability. Watch for truncated streaming and tool invocation failures |
+| RAG quality over time | Bedrock RAG evaluation with ground truth; retrieval and answer scores |
+
+### 7.6 Security in one list
+
+- **Execution roles** scoped to specific buckets, ECR repositories and KMS keys.
+- **PrivateLink** interface endpoints for the SageMaker API and runtime and for Bedrock, plus an S3 gateway endpoint. No NAT gateway needed.
+- **Network isolation** blocks all outbound calls from the container. Real-time endpoints can join your VPC; serverless endpoints can't.
+- **KMS customer managed keys** for data, model artifacts and volumes when you need control and audit of decryption.
+- **Bedrock API keys:** **short-term** keys last up to 12 hours or the session (whichever is shorter), inherit the IAM principal's permissions, work in one Region and are recommended for production. **Long-term** keys create an IAM user and are for exploration only. Control them with `bedrock:CallWithBearerToken`, the `bedrock:bearerTokenType` condition key and `iam:ServiceSpecificCredentialAgeDays`. CloudTrail logs the calls, not the keys.
+- **CI/CD scanning:** Inspector for container images, CodeGuru for code, ECR image scanning and immutable tags.
+- **Audit:** CloudTrail ("who did what"), AWS Config ("how is it configured, is it compliant"), Model Cards (documentation), Model Registry (versions and approval gates), lineage tracking (data to endpoint).
+- **Guardrails** on inputs and outputs (section 5.9). `ApplyGuardrail` screens text for models outside Bedrock.
+
+### 7.7 Exam day
+
+- Find the deciding constraint: payload size, processing time, idle gaps, "least operational overhead", "without retraining", "new AWS customer".
+- If an option is a maintenance-mode service (Clarify, Model Monitor, Debugger, Ground Truth, A2I, Agents Classic) and the stem describes a new build, look for the alternative in section 7.4.
+- Out of scope in the guide: all AWS IoT services (including Greengrass), DeepRacer, Cognito, GuardDuty, Security Hub, WAF, Shield, ACM, CloudHSM, Audit Manager, AWS Artifact, Managed Grafana, Route 53, Global Accelerator, AppFlow, DataZone, Clean Rooms, Elastic Beanstalk, App Runner, CodeCatalyst and Fault Injection Service. If one appears, it's probably a distractor.
+- Don't rely on specific Bedrock model names or context sizes; the catalogue changes constantly.
+
+### 7.8 Top traps
+
+- Large CSV lake, slow Athena queries on three columns → convert to partitioned Parquet or ORC.
+- A Kinesis consumer on EC2 just to land events in S3 → Data Firehose.
+- Scaling or one-hot encoders fitted on the full dataset → split first, fit on training data only.
+- Oversampling before the split → resample only the training split.
+- Label-encoding nominal categories for a linear model → one-hot.
+- Building historical training sets from the online store → offline store with Athena.
+- Fine-tuning so an FM "knows" documents that change daily → RAG with Knowledge Bases.
+- A custom model to read invoices → Textract.
+- BYOC as the default way to run custom code → script mode in a prebuilt container.
+- Model parallelism for a small model on a huge dataset → data parallelism.
+- Spot training without checkpoints → write checkpoints to S3.
+- More epochs for a model that already overfits → regularisation or early stopping.
+- Grid search over a continuous learning rate → grid is categorical only.
+- Bayesian tuning at maximum parallelism → random search suits maximum concurrency.
+- Hyperband with `TrainingJobEarlyStoppingType` on → it must be OFF; Hyperband stops jobs itself.
+- Invoking a fine-tuned Bedrock model like a base model → Provisioned Throughput, or an on-demand custom model deployment where supported.
+- Distillation with no teacher model → labelled data means SFT; a grader means RFT.
+- 99.5% accuracy on 99.5% negatives → use recall, precision or PR AUC.
+- Only ROUGE when valid answers may be paraphrases → add BERTScore, semantic similarity or LLM-as-a-judge.
+- Serverless for a GPU model → serverless has no GPUs.
+- Real-time endpoint for 600 MB inputs that take 15 minutes → asynchronous inference.
+- A 24/7 endpoint to score a dataset once a night → batch transform.
+- A 10% production variant to "safely" test an unproven model → shadow test.
+- A shadow test to measure real user conversion → A/B test with production variants.
+- 2,000 per-tenant models on 2,000 endpoints → multi-model endpoint.
+- Custom Model Import in CloudFormation → not supported; script it with the API or SDK.
+- Adding instances when the instance family is wrong → Inference Recommender first.
+- Scaling an LLM endpoint on invocations while GPUs sit at 100% → scale on a metric that reflects GPU load.
+- Deploying the `latest` image tag → pin an immutable tag or digest.
+- Polling Model Registry from a cron Lambda → EventBridge rule on model package state change.
+- GitHub tokens stored in a pipeline → CodeConnections.
+- Rewriting working Airflow DAGs in Step Functions → MWAA.
+- A Lambda that polls in a loop for an external vendor → Callback step or task token.
+- New S3 documents expected in KB answers at once → run an ingestion job.
+- A new agent on Bedrock Agents Classic → AgentCore Runtime or Harness.
+- A custom MCP wrapper for every internal API → AgentCore Gateway.
+- A2A to connect an agent to a database tool → tools use MCP; A2A is agent to agent.
+- A data quality monitor to catch falling accuracy → model quality monitoring with ground truth.
+- CloudTrail to read prompt text → model invocation logging.
+- Blaming the model for `OverheadLatency` spikes after idle time → serverless cold starts; Provisioned Concurrency.
+- A Savings Plan sized to peak → commit to the steady baseline.
+- Prompt caching to cut a batch inference bill → not supported with batch.
+- A NAT gateway so a private endpoint can reach the SageMaker runtime → interface VPC endpoint.
+- A long-term Bedrock API key in production → IAM roles or short-term keys.
+- KMS encryption to keep PII out of a fine-tuned model → redact or mask the content before training.
+- CSV question-answer files for a Bedrock fine-tuning job → JSONL.
+- A denied topic to stop ungrounded RAG answers → contextual grounding checks.
+- Model Cards to block unapproved deployments → Model Registry approval status in the pipeline.
+- Clarify, Model Monitor or Ground Truth for a brand-new customer → see section 7.4.
+
+**Fast plan:** 4 weeks at 1–1.5 hours a day, or 8 weeks at about 45 minutes a day (section 11).
+
+### 7.9 Pre-exam checklist
+
+- [ ] Re-read the exam page: beta or GA, time, fee, language and the exam code shown at registration.
+- [ ] Read the C01 vs C02 comparison page once, line by line.
+- [ ] Explain each task statement in 7.2 in one sentence without notes.
+- [ ] Recite the endpoint limits: 25 MB / 60 s real-time, 4 MB / 60 s serverless, 1 GB / 1 hour async.
+- [ ] Name what serverless endpoints can't do (GPU, VPC, data capture, multi-model, variants).
+- [ ] Pick the right vector store for: binary vectors, cheap infrequent queries, GraphRAG, an existing Aurora cluster.
+- [ ] State the new-build alternative to Clarify, Debugger, Model Monitor, Ground Truth and Agents Classic.
+- [ ] Match the four AMT strategies to their use, and say why Hyperband needs early stopping OFF.
+- [ ] Say what each Bedrock customisation method needs as input, and how a custom model is served.
+- [ ] Explain shadow test vs production variant vs deployment guardrails.
+- [ ] Explain online vs offline Feature Store and when to use event time.
+- [ ] Short-term vs long-term Bedrock API keys, and invocation logging vs CloudTrail.
+- [ ] Two timed practice tests at 85% or more; Mistakes notebook empty; Traps list read the night before.
+- [ ] Lab account: no endpoints, Provisioned Throughput or vector stores left running.
+
+### 7.10 Further reading
+
+- This site's library for the AWS track: [/library?track=aws](/library?track=aws)
+- MLA-C02 exam guide: [docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-02](https://docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-02/machine-learning-engineer-associate-02.html)
+- C01 vs C02 comparison: [mla-02-comparison.html](https://docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-02/mla-02-comparison.html)
+- SageMaker AI inference options: [deploy-model-options.html](https://docs.aws.amazon.com/sagemaker/latest/dg/deploy-model-options.html)
+- Model Monitor availability change (and the replacement approach): [model-monitor-availability-change.html](https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-availability-change.html)
+- CloudWatch generative AI observability: [GenAI-observability.html](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/GenAI-observability.html)
+
+---
+
+## 8. Exam: Generative AI Developer – Professional (AIP-C01)
 
 **Who:** developers with 2+ years building production apps on AWS or open-source tech, general AI/ML or data-engineering experience, and **1+ year hands-on implementing gen AI**. Out of scope: model development and training, advanced ML techniques, data and feature engineering.
 
@@ -513,11 +777,11 @@ The higher the scope, the more of the security and governance work is yours.
 - Binary embeddings → OpenSearch options only.
 - Retraining a model to stop prompt injection → use input validation, guardrails (Prompt Attack), least-privilege tools and human approval.
 
-**Fast plan:** 4 weeks at 1–1.5 hours a day (section 10).
+**Fast plan:** 4 weeks at 1–1.5 hours a day (section 11).
 
 ---
 
-## 8. Exam: Solutions Architect – Professional (SAP-C03)
+## 9. Exam: Solutions Architect – Professional (SAP-C03)
 
 > **SAP-C02 → SAP-C03.** The last day to take SAP-C02 is **16 November 2026**. SAP-C03 is delivered from **17 November 2026**, with no beta. It keeps 75 items, 180 minutes and the $300 fee, but **lowers the pass mark to 720** (from 750) and reorganises four domains into **five**. It adds gen AI integration and responsible AI tasks, more security and governance weight, and an explicit operational excellence domain. It drops IoT, end-user computing and the standalone AI services. A SAP-C02 pass before the cut-off stays valid until its normal expiry.
 >
@@ -576,13 +840,13 @@ This is our mapping of C02 tasks to C03 domains, for reuse of practice content. 
 - Security Hub vs Security Hub CSPM → posture checks and standards are CSPM.
 - CodeCommit "closed to new customers" → it's open again.
 
-**Fast plan:** 6 weeks at 1–1.5 hours a day (section 10).
+**Fast plan:** 6 weeks at 1–1.5 hours a day (section 11).
 
 ---
 
-## 9. Capstone projects
+## 10. Capstone projects
 
-Build these in your own AWS account. Each one maps to lessons above. Projects L1–L2 suit AIF-C01, A–D suit AIP-C01, and E–H suit SAP-C03.
+Build these in your own AWS account. Each one maps to lessons above. Projects L1–L2 suit AIF-C01, A–D suit AIP-C01, and E–H suit SAP-C03. For MLA-C02, do the lab in each lesson, plus Projects A and D.
 
 ### Cost safety first
 
@@ -687,7 +951,7 @@ Labs can cost money. Many services bill by the hour while they exist, even when 
 
 ---
 
-## 10. Study schedules
+## 11. Study schedules
 
 ### AIF-C01 in 14 days (about 1 hour/day)
 
@@ -708,6 +972,32 @@ Labs can cost money. Many services bill by the hour while they exist, even when 
 | 13 | **Practice test #2**; review every miss |
 | 14 | Traps list; flashcards; book the exam once you score 85% or more |
 
+### MLA-C02 in 4 weeks (1–1.5 hours/day)
+
+For people who already deploy models on SageMaker AI or Bedrock at work.
+
+| Week | Focus |
+|---|---|
+| 1 | Domain 1: section 7.5 data and vector store tables; sections 5.6–5.7; all six Domain 1 lessons and their labs; Project A up to chunking; drill Domain 1 |
+| 2 | Domain 2: section 7.4 (maintenance-mode replacements); all five Domain 2 lessons; one Spot training job with checkpoints and one AMT job; a Bedrock evaluation job; drill Domain 2 |
+| 3 | Domain 3: endpoint and orchestration tables in 7.5; section 5.8; all six Domain 3 lessons; deploy one model as real-time, serverless and async and compare; a small Pipelines run with a Condition step; **practice test #1** at the end of the week |
+| 4 | Domain 4: monitoring table and section 7.6; all five Domain 4 lessons; Project D; Mistakes notebook to zero; weakest-domain drills; **practice test #2**; section 7.8 traps; checklist 7.9; book at 85% or more |
+
+### MLA-C02 in 8 weeks (about 45 minutes/day)
+
+For people newer to ML on AWS, or with little gen AI experience.
+
+| Week | Focus |
+|---|---|
+| 1 | Sections 5.2–5.3 for vocabulary; section 7.1–7.3; Collecting and storing ML data; Transformation and feature engineering |
+| 2 | SageMaker Feature Store; Data quality, bias, labeling and splitting; PII handling and data for FM customisation; section 7.4 |
+| 3 | Preparing data for RAG; sections 5.6–5.7; Project A (Knowledge Base, chunking, citations); drill Domain 1 |
+| 4 | Choosing a modeling approach; Training at scale; Hyperparameter tuning with AMT; one training job with Spot and checkpoints |
+| 5 | Customising foundation models and versioning; Evaluating ML models and FMs; a Bedrock evaluation job; drill Domain 2; **practice test #1** |
+| 6 | Choosing a SageMaker AI inference option; Hosting many models and rolling out safely; Provisioning compute, auto scaling and containers; deploy and delete endpoints of each type |
+| 7 | Infrastructure as code and CI/CD; Orchestrating ML and AI workflows; Agentic workflows with AgentCore (section 5.8); all five Domain 4 lessons; Project D |
+| 8 | Mistakes notebook to zero; weakest-domain drills; section 7.8 traps; **practice test #2**; checklist 7.9; book at 85% or more |
+
 ### AIP-C01 in 4 weeks (1–1.5 hours/day)
 
 | Week | Focus |
@@ -725,14 +1015,14 @@ Labs can cost money. Many services bill by the hour while they exist, even when 
 | 2 | Sections 5.15–5.16. Lessons: Resilient multi-AZ and multi-Region designs; Business continuity: RTO, RPO and DR strategy for new workloads; all four migration lessons. Project F; start Project G |
 | 3 | Section 5.17 and the cloud-built architecture topics. Lessons: Designing reliable architectures; Performance and cost; Modernisation Architectures; Cost visibility and chargeback; Cost Optimization of Running Workloads. Finish Project G |
 | 4 | Section 5.18. Lessons: Deployment strategies; Observability for Running Workloads; Automation and Incident Response; Improving Security Posture; Security controls for new workloads; Improving Performance and Reliability. Project H. **Practice test #1** (the SAP-C02 test; score it against 720 as well as 750) |
-| 5 | SAP-C03 gaps: section 8 new topics; AIP-C01 lessons on AgentCore, Knowledge Bases and Guardrails; read the C03 guide's task statements and comparison page line by line, marking anything you can't explain |
+| 5 | SAP-C03 gaps: section 9 new topics; AIP-C01 lessons on AgentCore, Knowledge Bases and Guardrails; read the C03 guide's task statements and comparison page line by line, marking anything you can't explain |
 | 6 | Mistakes notebook; weakest-domain drills; any SAP-C03 practice the site has added; **practice test #2**; Traps list; book at 85% or more |
 
 If you are sitting **SAP-C02 before 16 November 2026**, compress weeks 1–4 and 6 into the time you have and skip week 5.
 
 ---
 
-## 11. Cheat sheets
+## 12. Cheat sheets
 
 ### AIF-C01 essentials
 
@@ -751,6 +1041,26 @@ governance:  Config · Inspector · Artifact · CloudTrail · Trusted Advisor ·
 scoping:     1 consumer · 2 enterprise app · 3 pre-trained via API · 4 fine-tuned · 5 self-trained
 services:    Comprehend (text meaning, PII) · Textract (doc text) · Rekognition · Transcribe · Polly · Translate · Lex · Personalize
 not in v1.2: Amazon Q · PartyRock · Audit Manager · Clarify · Model Monitor · A2I · AUC
+```
+
+### MLA-C02 essentials
+
+```
+domains:     D1 data prep 28 · D2 model and FM development 24 · D3 deployment/orchestration 24 · D4 operate/monitor/secure 24 · pass 720
+exam:        beta 85 items / 170 min / $75 (from 29 Sep 2026) · GA 65 (50 scored) · GA time and fee not published
+removed:     edge (Neo) · BYOC · pruning/compression · EFS/FSx training input · EventBridge infra monitoring · capacity troubleshooting
+added:       vector DBs · embeddings · chunking · RAG · agents (AgentCore, MCP, A2A) · MLflow · Prompt Management · LLM-as-a-judge
+             Custom Model Import · CodeConnections · gen AI observability · Bedrock API keys · Guardrails · token cost
+maintenance: Clarify · Debugger · Model Monitor · Ground Truth · A2I · Agents Classic → SHAP, pandas/sklearn, MLflow, Evidently, CloudWatch, AgentCore
+endpoints:   real-time 25 MB/60 s · serverless 4 MB/60 s (no GPU, VPC, capture, MME) · async 1 GB/1 h (scale to 0) · batch transform
+rollout:     shadow test (copy, prod answers only) · production variants (A/B) · deployment guardrails (canary, linear, rollback)
+data:        Parquet/ORC columnar · Firehose converts · Feature Store online (latest) / offline (Parquet history) · JSONL for Bedrock FT
+vectors:     OpenSearch (binary ok; no VPC-only managed) · S3 Vectors (cheap, infrequent) · Aurora pgvector · Neptune Analytics
+amt:         grid (categorical) · random (max parallel) · Bayesian (fewest jobs) · Hyperband (early stopping type OFF)
+customise:   SFT (labelled pairs) · RFT (reward function) · distillation (prompts + teacher) · serve via PT or on-demand deployment
+orchestrate: Pipelines (ML DAG, lineage, registry) · Step Functions (cross-service, approvals) · MWAA (existing Airflow)
+monitor:     capture + baseline + schedule + alarm · model quality needs ground truth · ModelLatency vs OverheadLatency
+security:    execution roles · PrivateLink · network isolation · KMS CMKs · short-term API keys (prod) · Inspector + CodeGuru
 ```
 
 ### Bedrock and gen AI on AWS
@@ -804,11 +1114,16 @@ renames:     Security Hub CSPM · Route 53 VPC Resolver · Application Recovery 
 
 ---
 
-## 12. Sources
+## 13. Sources
 
 - AWS Certification: [aws.amazon.com/certification](https://aws.amazon.com/certification/)
 - AI Practitioner exam page: [aws.amazon.com/certification/certified-ai-practitioner](https://aws.amazon.com/certification/certified-ai-practitioner/)
 - AIF-C01 exam guide: [docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/ai-practitioner-01.html](https://docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/ai-practitioner-01.html); revisions: [aif-01-revisions.html](https://docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/aif-01-revisions.html); in-scope services: [aif-01-in-scope-services.html](https://docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/aif-01-in-scope-services.html); out-of-scope services: [aif-01-out-of-scope-services.html](https://docs.aws.amazon.com/aws-certification/latest/ai-practitioner-01/aif-01-out-of-scope-services.html)
+- Machine Learning Engineer – Associate exam page: [aws.amazon.com/certification/certified-machine-learning-engineer-associate](https://aws.amazon.com/certification/certified-machine-learning-engineer-associate/)
+- MLA-C02 exam guide: [docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-02/machine-learning-engineer-associate-02.html](https://docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-02/machine-learning-engineer-associate-02.html); C01 vs C02 comparison: [mla-02-comparison.html](https://docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-02/mla-02-comparison.html); in-scope services: [mla-02-in-scope-services.html](https://docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-02/mla-02-in-scope-services.html); out-of-scope services: [mla-02-out-of-scope-services.html](https://docs.aws.amazon.com/aws-certification/latest/machine-learning-engineer-associate-02/mla-02-out-of-scope-services.html)
+- SageMaker AI pages used for MLA-C02: [inference options](https://docs.aws.amazon.com/sagemaker/latest/dg/deploy-model-options.html) · [Serverless Inference](https://docs.aws.amazon.com/sagemaker/latest/dg/serverless-endpoints.html) · [shadow tests](https://docs.aws.amazon.com/sagemaker/latest/dg/shadow-tests.html) · [Pipelines step types](https://docs.aws.amazon.com/sagemaker/latest/dg/build-and-manage-steps-types.html) · [Model Registry](https://docs.aws.amazon.com/sagemaker/latest/dg/model-registry.html) · [Feature Store](https://docs.aws.amazon.com/sagemaker/latest/dg/feature-store.html) · [AMT](https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html) · [MLflow](https://docs.aws.amazon.com/sagemaker/latest/dg/mlflow.html) · [Clarify availability change](https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-availability-change.html) · [Model Monitor availability change](https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-availability-change.html)
+- Bedrock pages used for MLA-C02: [Custom Model Import](https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html) · [preparing customisation data](https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-prepare.html) · [on-demand custom model deployment](https://docs.aws.amazon.com/bedrock/latest/userguide/deploy-custom-model-on-demand.html) · [API keys](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html)
+- CloudWatch generative AI observability: [docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/GenAI-observability.html](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/GenAI-observability.html)
 - Generative AI Developer – Professional exam page: [aws.amazon.com/certification/certified-generative-ai-developer-professional](https://aws.amazon.com/certification/certified-generative-ai-developer-professional/)
 - AIP-C01 exam guide: [docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html](https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html); in-scope services: [aip-01-in-scope-services.html](https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/aip-01-in-scope-services.html)
 - AI certification portfolio and AIP-C01 GA: [AWS Training and Certification blog](https://aws.amazon.com/blogs/training-and-certification/big-news-aws-expands-ai-certification-portfolio-and-updates-security-certification/)

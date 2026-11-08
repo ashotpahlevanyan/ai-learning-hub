@@ -1,8 +1,8 @@
 # Google Gemini Runbook
 
-A step-by-step path to pass Google Cloud's **Generative AI Leader** exam (GAIL) and to build apps and agents on the **Gemini API**. Use it alongside the two items on this site: the **Generative AI Leader** exam prep (GAIL) and the **Gemini API Developer** course (GEM-DEV). Each has lessons, flashcards, practice questions and a timed practice test.
+A step-by-step path to pass Google Cloud's **Generative AI Leader** exam (GAIL) and **Professional Machine Learning Engineer** exam (PMLE), and to build apps and agents on the **Gemini API**. Use it alongside the three items on this site: the **Generative AI Leader** exam prep (GAIL), the **Professional Machine Learning Engineer** exam prep (PMLE) and the **Gemini API Developer** course (GEM-DEV). Each has lessons, flashcards, practice questions and a timed practice test.
 
-> **Read this first.** Generative AI Leader is a real Google Cloud certification. Gemini API Developer is this site's own course; Google has no matching exam. Facts below were checked against Google's exam page, exam guide, Cloud release notes and the Gemini API docs on 7 November 2026. Google renamed many products in 2026, and Gemini model IDs change almost monthly, so check the official page before relying on any name, date, price or limit.
+> **Read this first.** Generative AI Leader and Professional Machine Learning Engineer are real Google Cloud certifications. Gemini API Developer is this site's own course; Google has no matching exam. Facts below were checked against Google's exam pages, exam guides, Cloud release notes and the Gemini API docs on 7 November 2026 (8 November 2026 for the PMLE part in section 11). Google renamed many products in 2026, and Gemini model IDs change almost monthly, so check the official page before relying on any name, date, price or limit.
 
 ---
 
@@ -18,7 +18,8 @@ A step-by-step path to pass Google Cloud's **Generative AI Leader** exam (GAIL) 
 8. [Capstone projects](#8-capstone-projects)
 9. [Study schedules](#9-study-schedules)
 10. [Cheat sheets](#10-cheat-sheets)
-11. [Sources](#11-sources)
+11. [Exam: Professional Machine Learning Engineer (PMLE)](#11-exam-professional-machine-learning-engineer-pmle)
+12. [Sources](#12-sources)
 
 ---
 
@@ -36,7 +37,7 @@ A step-by-step path to pass Google Cloud's **Generative AI Leader** exam (GAIL) 
 | Scoring | Pass or fail. Google **does not publish the cut score**. This site's practice tests use 720/1000 as a target; aim for 85% or more before you book |
 | Sample questions | The exam page links to an official, untimed sample-question form (English only). This site does not copy those questions |
 | **Gemini API Developer** (GEM-DEV) | **This site's own course** with a practice test (40 questions, 60 minutes, target 720). **Google has no Gemini API developer exam** |
-| Nearest official developer credential | Google Cloud's **Professional Machine Learning Engineer**. This site's track notes say it added generative AI in a June 2026 refresh, but that was not re-checked for this runbook, so read its current exam guide before choosing it |
+| **Professional Machine Learning Engineer** (PMLE) | An **official Google Cloud certification** at the Professional level and the nearest official credential for developers. 50–60 questions in 2 hours, $200. The current guide (v3.1) includes gen AI tasks such as Model Garden and gen AI evaluation. See section 11 |
 
 **What this means for you:** if you need a credential you can show, book GAIL. If you need to build on Gemini, take GEM-DEV; it gives you skills, not a Google certificate.
 
@@ -49,6 +50,7 @@ A step-by-step path to pass Google Cloud's **Generative AI Leader** exam (GAIL) 
 | A business or product leader, consultant, PM or sales engineer | **GAIL** | Tests gen AI concepts, Google Cloud's offerings, how to improve model output and business strategy. No code. |
 | A technical leader or architect who wants the badge | **GAIL**, then skim **GEM-DEV** | GAIL is the credential; GEM-DEV fills in how the products actually behave. |
 | A developer | **GEM-DEV → GAIL** | Build with the API first. After that, GAIL is mostly product names and business framing. |
+| An ML engineer who trains, deploys and runs models on Google Cloud | **PMLE** (section 11) | The Professional-level credential for ML engineering: BigQuery ML, training, serving, pipelines and monitoring. Google recommends 3+ years of experience. |
 | Already studying the Claude or OpenAI track | **GEM-DEV** | Tool loops, structured output, agents and evals transfer. Focus on the Gemini-specific shapes in sections 5.7–5.15: steps, `thinking_level`, `tool_choice` modes, grounding rules and caching. |
 
 ---
@@ -637,7 +639,296 @@ safety:     harassment · hate · sexual · dangerous · jailbreak · default of
 
 ---
 
-## 11. Sources
+## 11. Exam: Professional Machine Learning Engineer (PMLE)
+
+**Who:** ML engineers who build, ship and run models on Google Cloud. Google recommends 3+ years of industry experience, including 1 or more years designing and managing solutions on Google Cloud. This is a real Google Cloud certification at the Professional level. This site's PMLE prep has 22 lessons, flashcards, practice questions and a timed practice test (55 questions in 120 minutes).
+
+> **Read this first.** The current exam guide is **version 3.1**, written in 2024. It uses **Vertex AI** names throughout. On 22 April 2026 Google folded Vertex AI into **Gemini Enterprise Agent Platform** and renamed most of its parts, and several products named in the guide are now deprecated or shut down. This part teaches the current name and gives the guide's name next to it. Some third-party sites claim a new PMLE version arrived in 2026; on 8 November 2026 the official exam page still linked guide v3.1. Check the exam page before you book.
+
+**In this part**
+
+- [11.1 Exam facts](#111-exam-facts)
+- [11.2 The six sections and what they really test](#112-the-six-sections-and-what-they-really-test)
+- [11.3 Renamed and retired products](#113-renamed-and-retired-products)
+- [11.4 Decision tables](#114-decision-tables)
+- [11.5 Top traps](#115-top-traps)
+- [11.6 Study plans](#116-study-plans)
+- [11.7 Pre-exam checklist](#117-pre-exam-checklist)
+- [11.8 Further reading](#118-further-reading)
+
+### 11.1 Exam facts
+
+| Item | Status (November 2026) |
+|---|---|
+| Level | Professional |
+| Format | 50–60 multiple-choice and multiple-select questions |
+| Length | 2 hours |
+| Fee | $200 plus tax where applicable |
+| Languages | English, Japanese |
+| Delivery | Online-proctored (remote) or onsite-proctored at a test centre. Delivered by Pearson VUE; register through Google's CM Connect portal (`cp.certmetrics.com`) |
+| Prerequisites | **None** |
+| Recommended experience | 3+ years of industry experience, including 1+ year designing and managing solutions on Google Cloud |
+| Coding | "The exam does not directly assess coding skill." You need enough Python and SQL to read code snippets. (The guide says "Python and Cloud SQL"; the exam page says "Python and SQL". Go with the page) |
+| Gen AI scope | This version covers building AI solutions with Model Garden and Vertex AI Agent Builder (now part of Agent Platform) and evaluating gen AI solutions |
+| Exam guide | v3.1 (PDF, linked from the exam page) |
+| Scoring | Pass or fail. Google **does not publish the cut score**. This site's practice tests use 720/1000 as a target; aim for 85% or more before you book |
+| Validity and renewal | Renew during the renewal eligibility period. The exam page does not state the validity period, so read the renewal FAQ |
+| Sample questions | The exam page links official sample questions. Google does not say whether they match the current guide. This site does not copy them |
+
+### 11.2 The six sections and what they really test
+
+| # | Section | Weight | Lessons on this site | What it really tests |
+|---|---|---|---|---|
+| 1 | Architecting low-code AI solutions | 13% | BigQuery ML: models where the data lives · Model Garden, industry APIs and RAG · AutoML today: tabular, forecasting and images | Picking the least-effort tool that solves the problem: BigQuery ML when the data is in BigQuery and the team writes SQL, a pre-trained or industry API before any training, RAG before tuning for fresh facts, AutoML only for tabular and image |
+| 2 | Collaborating within and across teams to manage data and models | ~14% | Shared data, features and privacy · Notebooks and prototyping securely · Experiment tracking and gen AI evaluation | Where shared data and features live (BigQuery, Feature Store V2), how to de-identify data with Sensitive Data Protection, which notebook product fits a security setup, and how runs and gen AI quality are tracked |
+| 3 | Scaling prototypes into ML models | ~18% | Frameworks, architectures and interpretability · Custom and distributed training at scale · Hyperparameter tuning and training troubleshooting · Choosing hardware: CPU, GPU, TPU and edge · Fine-tuning foundation models | Custom training mechanics: containers, worker pools, Reduction Server, TPU limits, tuning algorithms and scale types, and which tuning method (SFT, preference, RLFT, LoRA) fits the data you have |
+| 4 | Serving and scaling models | ~20% | Choosing batch or online inference · Model Registry, serving containers and safe rollouts · Public and private endpoints · Scaling online serving: autoscaling, hardware and features | Batch vs online, endpoint types and their limits, traffic split for canary and A/B, artifact names for prebuilt containers, autoscaling targets and quota |
+| 5 | Automating and orchestrating ML pipelines | ~22% | MLOps maturity and continuous training · Building pipelines: Agent Platform Pipelines, Kubeflow and TFX · Retraining policies and CI/CD for ML · Metadata, experiments, versioning and lineage | The MLOps levels, TFX components and what each one gates, which orchestrator to choose, retraining triggers, CI vs CD checks, and where lineage comes from |
+| 6 | Monitoring AI solutions | ~13% | Model Monitoring: skew, drift and continuous evaluation · Explainability with Explainable AI · Responsible, fair and secure AI systems | Skew vs drift and their baselines, Monitoring v1 vs v2, which explanation method fits which model, sliced evaluation for fairness, and network security for endpoints |
+
+Only section 1 has an exact weight; the guide marks sections 2–6 as approximate. **Sections 4 and 5 together are about 42%** of the exam, so serving, pipelines and MLOps deserve the most hours. Most questions are scenarios: read for the deciding constraint (data already in BigQuery, no ML team, latency, private network, cost, no training data, regulated data) and pick the managed option that meets it with the least custom work.
+
+**Section notes**
+
+- **Section 1.** Know the BigQuery ML `MODEL_TYPE` families: `LINEAR_REG` and `LOGISTIC_REG`, `BOOSTED_TREE_*`, `RANDOM_FOREST_*`, `DNN_*`, `AUTOML_*`, `KMEANS` (clustering), `MATRIX_FACTORIZATION` (recommendations), `PCA` and `AUTOENCODER`, `ARIMA_PLUS` and `ARIMA_PLUS_XREG` (time series; plain `ARIMA` is being deprecated), and imported `TENSORFLOW`, `TENSORFLOW_LITE`, `ONNX` and `XGBOOST`. The `TRANSFORM` clause stores preprocessing with the model and reapplies it at prediction. `MODEL_REGISTRY = 'VERTEX_AI'` registers a model in Model Registry without export. Remote models call an Agent Platform endpoint from SQL. The preference order is pre-trained or industry API (Document AI for invoices and forms), then prompting, then RAG, then tuning, then custom training.
+- **Section 2.** Feature Store V2 uses **BigQuery as the offline store** (no copy) and adds a feature registry, Bigtable online serving and embedding search. Sensitive Data Protection discovers, inspects, de-identifies (masking, redaction, bucketing, date shifting, tokenisation) and measures re-identification risk. Workbench instances read data as the **instance service account**; Colab Enterprise uses the **user's credentials** by default. The Workbench executor is **not supported with VPC Service Controls**. Gen AI evals: ROUGE and BLEU need reference answers; LLM-judge metrics with adaptive rubrics do not.
+- **Section 3.** Worker pool 0 is the chief, 1 the workers, 2 parameter servers **or Reduction Server**, 3 evaluators. `CLUSTER_SPEC` is on every replica; `TF_CONFIG` only on distributed jobs. Reduction Server needs GPU workers with NCCL; reducers are CPU-only. Prebuilt training containers cover TensorFlow, scikit-learn, PyTorch and XGBoost; JAX needs a custom container. Hyperparameter tuning defaults to Bayesian optimisation; grid search needs `INTEGER`, `CATEGORICAL` or `DISCRETE` parameters; log scales need a strictly positive range; report the metric with `cloudml-hypertune`.
+- **Section 4.** Prebuilt serving artifacts must be named exactly: XGBoost `model.bst` or `model.joblib`, scikit-learn `model.joblib`, PyTorch `model.mar`. A custom container listens on `0.0.0.0` at `AIP_HTTP_PORT` (default 8080) and implements health and predict routes. Default autoscaling targets are 60% CPU and 60% GPU duty cycle. Quota is reserved for `maxReplicaCount`. Machine type and most deployment settings are fixed after deploy; changing them means redeploying.
+- **Section 5.** Level 0 is manual and notebook-driven. Level 1 deploys the **training pipeline**, so it retrains automatically (continuous training). Level 2 adds CI/CD of the pipeline itself. In the pipeline, schema skew stops the run and value skew triggers retraining. TFX: ExampleValidator finds data anomalies, Evaluator gates quality against a baseline, InfraValidator checks that the model loads and serves, Pusher deploys. Lineage comes from ML Metadata, not from registry labels.
+- **Section 6.** Skew compares production with the training data; drift compares production with earlier production. Model Monitoring v1 (GA) is per endpoint; v2 (Preview, recommended for new setups) is per model version and covers batch, online and models served outside Agent Platform. Explanation methods: Sampled Shapley for trees, integrated gradients for neural networks, XRAI for natural-image regions. Fairness means sliced metrics and gating, not one aggregate score.
+
+### 11.3 Renamed and retired products
+
+The exam guide uses the left-hand names. Current Google docs use the right-hand names. Expect either in questions, and learn both.
+
+| Exam guide name | Current name (since 22 April 2026 unless noted) |
+|---|---|
+| Vertex AI | **Gemini Enterprise Agent Platform** ("Agent Platform") |
+| Vertex AI Agent Builder | Folded into Agent Platform |
+| Vertex AI Search | **Agent Search** |
+| Vertex AI RAG Engine | RAG Engine |
+| Vertex AI Vector Search | Vector Search |
+| Vertex AI Agent Engine | Agent Runtime |
+| Vertex AI Studio | Agent Studio |
+| Vertex AI Model Garden | Model Garden |
+| Vertex AI Pipelines | Agent Platform Pipelines |
+| Vertex AI Model Registry | Agent Platform Model Registry |
+| Vertex AI Endpoints | Agent Platform Endpoints |
+| Vertex AI Prediction | Agent Platform Inference |
+| Vertex AI Training | Agent Platform Managed Training |
+| Vertex AI Workbench | Agent Platform Workbench |
+| Vertex AI Feature Store | Agent Platform Feature Store |
+| Vertex AI AutoML | Agent Platform AutoML |
+| Colab Enterprise | Agent Platform Colab Enterprise |
+| Vertex AI Experiments | Experiments on Agent Platform |
+| Vertex AI Model Monitoring | Model Monitoring on Agent Platform |
+| Gen AI evaluation service | Gen AI evals |
+| Dataproc | **Managed Service for Apache Spark** ("Managed Spark") |
+| Dataplex | Knowledge Catalog |
+
+Google's docs have not confirmed new names for TensorBoard, ML Metadata, Explainable AI or Vizier. The docs still say "Vertex AI TensorBoard" and "Agent Platform ML Metadata". Agentspace became **Gemini Enterprise**, a separate product from Agent Platform. The Agent Platform SDK for Python 2.0.1 (18 September 2026) moved the gen AI modules to the Google Gen AI SDK, so do not copy old `vertexai.*` import paths from memory.
+
+**Deprecated or shut down, but still in the guide**
+
+| Product | Status | Use instead | How to answer on the exam |
+|---|---|---|---|
+| **Vertex Explainable AI** | Deprecated 16 March 2026; shuts down 16 March 2027 | Open-source SHAP or LIME | Still exam content. Learn the methods (Sampled Shapley, integrated gradients, XRAI, example-based) |
+| **Feature Store (Legacy)** and **Optimized online serving** | Deprecated 17 February 2026; shut down 17 February 2027 | Feature Store V2 with Bigtable online serving; Vector Search for embeddings | If a question names "Feature Store", reason with V2 behaviour: BigQuery offline store, Bigtable online serving |
+| **AutoML Text** | Shut down 15 June 2025 | Gemini prompting or tuning | The guide still lists text; today AutoML covers only tabular and image |
+| **AutoML Video** | Shut down 31 July 2025 | Gemini video tuning | Same as above |
+| **Workbench managed notebooks** | Deprecated 16 January 2024; support ended 14 April 2025; instances deleted 30 March 2026 | Workbench instances or Colab Enterprise | Pick Workbench instances for new notebooks |
+| **Workbench user-managed notebooks** | Same deprecation and end of support; converted to plain Compute Engine VMs on 30 March 2026 | Workbench instances | Same as above |
+| Legacy AI Platform Training and Prediction | Shut down 7 April 2025 | Managed Training and Agent Platform Inference | Ignore old "AI Platform" answers |
+| Legacy AI Platform Pipelines | Shut down 31 January 2025 | Agent Platform Pipelines | Same |
+| Data Labeling Service | Shut down 3 October 2024 | Labelling in the console or Marketplace partners | Same |
+
+### 11.4 Decision tables
+
+**BigQuery ML vs AutoML vs custom training**
+
+| Situation | Choose | Why |
+|---|---|---|
+| Data already in BigQuery, team works in SQL, standard regression, classification, clustering, recommendation or forecasting | **BigQuery ML** | Trains where the data lives; no export, no containers |
+| Need online low-latency predictions from a BigQuery ML model | BigQuery ML + `MODEL_REGISTRY = 'VERTEX_AI'`, deploy to an endpoint | No manual export |
+| Tabular (classification, regression, forecasting) or image (classification, object detection), little ML expertise, want the best model with little code | **Agent Platform AutoML** | Managed model search; models land in Model Registry |
+| Text classification, extraction or summarisation | **Gemini** prompting, then supervised tuning | AutoML Text is shut down |
+| Standard documents (invoices, forms, receipts) | **Document AI** processor | Pre-built; no custom OCR model |
+| Custom architecture, a framework or loss you control, distributed training, or GPUs and TPUs | **Custom training** (prebuilt or custom container) | Full control; you own the code |
+| Framework with no prebuilt image (for example JAX) | Custom training with a **custom container** | Prebuilt images cover TF, scikit-learn, PyTorch and XGBoost only |
+| Weak AutoML results | Fix the data first (labels, leakage, weak classes) | Switching to custom code rarely fixes bad data |
+
+**Batch vs online serving**
+
+| Need | Choose |
+|---|---|
+| Score a BigQuery table with a BigQuery ML or imported model | `ML.PREDICT` in BigQuery |
+| Score files or a table with a custom model from the registry; nobody waits for each answer | **Agent Platform batch inference** (no endpoint; output to Cloud Storage or BigQuery in the model's region) |
+| Inference inside a streaming event pipeline, or swap models without stopping the pipeline | **Dataflow `RunInference`** |
+| A user or service waits on each prediction | **Online inference** on an endpoint |
+| Batch job too slow | Raise the starting replica count; batch jobs **do not autoscale** and ignore `max_replica_count` |
+
+**Endpoint type**
+
+| Endpoint | Timeout / payload | VPC-SC | Traffic split, logging, streaming | Use when |
+|---|---|---|---|---|
+| Dedicated public | 1 h / 10 MB | **No** | Yes | Recommended default for public access |
+| Shared public | 60 s / 1.5 MB, 30,000 QPM, HTTP only | No | Check the endpoint docs | **Only option for tuned Gemini models** |
+| PSC dedicated private | 1 h / 10 MB | **Yes** | Yes | Private production access, including from on-premises |
+| Private (VPC peering) | 60 s | — | **None**, and no encryption in transit | Avoid for new designs that need canary or logging |
+
+**CPU vs GPU vs TPU (and edge)**
+
+| Workload | Choose | Watch for |
+|---|---|---|
+| Classical ML (linear models, many tree libraries), preprocessing, Reduction Server reducers | **CPU** | AutoML tabular endpoints: scale CPU replicas; GPUs are not recommended |
+| Deep learning in most frameworks; Reduction Server workers (NCCL) | **GPU** | A CPU-only autoscaling metric stops a GPU-bound model from scaling |
+| Large matrix workloads, such as training large neural networks for long periods | **TPU** (v2, v3, v5e, v6e in custom training) | **TensorFlow is not supported from v6e**. JAX needs a custom container. PyTorch/XLA sets `PJRT_DEVICE=TPU`. TPUs are only in some regions |
+| Must work offline, needs very low latency, or raw data must stay on the device | **Edge** inference | Plan the compression and export step early |
+
+**Agent Platform Pipelines vs Cloud Composer (and others)**
+
+| Situation | Choose |
+|---|---|
+| ML workflow on Google Cloud: train, evaluate, deploy, with lineage | **Agent Platform Pipelines** (serverless; KFP or TFX SDK compiled to YAML; artifacts in ML Metadata) |
+| Same pipeline definitions must run on premises or in another cloud | Kubeflow Pipelines on your own Kubernetes (you run the cluster) |
+| The organisation already runs broad data workflows as Airflow DAGs and ML training is one step among many | **Cloud Composer** (managed Apache Airflow) |
+| Build, test and deploy pipeline code and serving containers | **Cloud Build** and Cloud Run (CI/CD; not ML orchestrators) |
+| Heavy SQL or data processing inside a pipeline | Delegate the step to BigQuery, Dataflow or Managed Spark instead of pulling data into a container |
+| Recurring runs | The Pipelines scheduler API (pause, resume, delete) |
+
+**Monitoring: skew vs drift**
+
+| Question | Skew | Drift |
+|---|---|---|
+| Compares production inputs with | The training data | Earlier production data |
+| Needs the training data? | **Yes** | No |
+| Typical cause | A feature computed differently at serving time | Real-world behaviour changing over time |
+| Prevent at the source | BigQuery ML `TRANSFORM`, TFX Transform | Cannot prevent; detect and retrain |
+| In a level 1 pipeline | Schema skew stops the run; value skew triggers retraining | Distribution shift is a retraining trigger |
+
+| | Model Monitoring v1 | Model Monitoring v2 |
+|---|---|---|
+| Status | GA | Preview, recommended for new setups |
+| Scope | One endpoint; settings shared by all models on it | One model version |
+| Covers | Models on Agent Platform endpoints | Batch, online and models served outside Agent Platform |
+| Objectives | Skew, drift | Input feature drift, output inference drift, feature attribution (SHAP) |
+| Defaults | Threshold 0.3 per feature, email alerts; sampling lowers cost | Runs on demand or on a schedule |
+| Metrics | L-infinity (categorical), Jensen-Shannon (numerical) | Adds Jensen-Shannon for categorical |
+
+**Explanation method**
+
+| Model | Method |
+|---|---|
+| Tree ensembles and other non-differentiable models | Sampled Shapley |
+| Neural networks, large feature spaces, low-contrast images such as X-rays | Integrated gradients |
+| Region-level saliency on natural images | XRAI |
+| "Show me similar training examples" | Example-based (TensorFlow models only) |
+
+**Which tuning method**
+
+| You have | Choose |
+|---|---|
+| Prompting already works well enough | Do not tune |
+| Hundreds to thousands of labelled input-output pairs (about 100 or more suggested) | Supervised fine-tuning (SFT) |
+| Pairs of chosen and rejected responses | Preference tuning |
+| Dozens to a few hundred prompts and an automatic way to score answers (code, SQL) | Reinforcement learning fine-tuning (RLFT, Preview) |
+| Limited budget or data | LoRA / PEFT rather than full fine-tuning |
+
+### 11.5 Top traps
+
+- Exporting BigQuery data to write custom training for a standard tabular task → train in place with BigQuery ML.
+- Exporting a BigQuery ML model to serve it online → `MODEL_REGISTRY = 'VERTEX_AI'`, then deploy from Model Registry.
+- `KMEANS` for product recommendations → `MATRIX_FACTORIZATION`; k-means only clusters rows.
+- Re-implementing preprocessing in the serving app → BigQuery ML `TRANSFORM` or TFX Transform, one definition for both.
+- Fine-tuning so a model knows this week's documents → RAG (RAG Engine or Agent Search); tuning changes behaviour, not facts.
+- Assuming RAG Engine guarantees data residency → it supports VPC-SC and CMEK, but not data residency.
+- A new AutoML Text project → AutoML Text is shut down; use Gemini prompting or tuning.
+- A column filled in after the outcome boosts accuracy → target leakage; drop it.
+- Copying BigQuery features into a separate offline store → Feature Store V2 reads them in BigQuery.
+- Optimized online serving or Feature Store (Legacy) for a new design → V2 with Bigtable online serving, or Vector Search.
+- Deleting every sensitive column → de-identify with Sensitive Data Protection and keep the analytic value.
+- New managed notebooks instance → deleted on 30 March 2026; use Workbench instances or Colab Enterprise.
+- Workbench executor inside a VPC-SC perimeter → not supported.
+- ROUGE with no reference answers → LLM-judge metrics with adaptive rubrics.
+- Reduction Server in worker pool 1, or with GPUs → pool 2, CPU-only reducers.
+- `GRID_SEARCH` over a continuous learning rate → Bayesian optimisation, or make the values discrete.
+- TPU v6e for an existing TensorFlow job → an earlier TPU, or port to JAX or PyTorch/XLA.
+- Integrated gradients on a boosted-tree model → Sampled Shapley.
+- Example-based explanations for XGBoost or PyTorch → TensorFlow only.
+- Looping online requests for a nightly scoring job → batch inference or `ML.PREDICT`.
+- Raising `max_replica_count` on a batch job → batch jobs do not autoscale.
+- A second endpoint for the challenger model → deploy both to one endpoint and use traffic split.
+- XGBoost artifact named `xgb_final.pkl` → must be `model.bst` or `model.joblib`.
+- Custom server bound to `127.0.0.1` → bind to `0.0.0.0` on `AIP_HTTP_PORT`.
+- VPC peering endpoint for a private canary with logging → PSC dedicated private endpoint.
+- Dedicated public endpoint inside VPC-SC → not supported; use PSC.
+- 5 MB images to a shared public endpoint → 1.5 MB limit; use a dedicated endpoint (10 MB).
+- Very high `maxReplicaCount` "just in case" → quota is reserved for the max.
+- Self-managing Kubeflow on GKE → serverless Agent Platform Pipelines, unless hybrid or multicloud is required.
+- "Level 1 means redeploying a model on a schedule" → level 1 deploys the training pipeline.
+- Evaluator checks that the model can serve → that is InfraValidator; Evaluator checks quality.
+- Retraining when CPU spikes → CPU is an autoscaling signal; retrain on data or quality signals.
+- Promoting a model because overall AUC improved → check sliced metrics first.
+- Skew detection without training data → use drift detection.
+
+### 11.6 Study plans
+
+Both plans assume you follow the study method in section 3 every day: flashcards, a lesson and its lab, then practice questions. Study the heaviest sections (5 and 4) early so they get the most review.
+
+**4 weeks (about 1.5 hours/day, for engineers who already use Google Cloud ML)**
+
+| Week | Focus |
+|---|---|
+| 1 | Sections 11.1–11.3 (learn the renames table cold). Section 5 lessons: MLOps maturity, building pipelines, retraining and CI/CD, metadata and lineage. Drill section 5 |
+| 2 | Section 4 lessons: batch vs online, Model Registry and containers, endpoints, autoscaling. Build one model, deploy it, split traffic between two versions. Drill section 4 |
+| 3 | Section 3 lessons (all five), then section 1 lessons (BigQuery ML, Model Garden and RAG, AutoML). Drill sections 3 and 1 |
+| 4 | Section 2 and section 6 lessons. **Practice test #1** mid-week; review every miss. Mistakes notebook to zero, decision tables in 11.4 again, **practice test #2**. Book once you score 85% or more |
+
+**8 weeks (about 1 hour/day, for engineers new to Google Cloud ML)**
+
+| Week | Focus |
+|---|---|
+| 1 | Sections 11.1–11.3. Section 1: BigQuery ML lesson; train and evaluate one `BOOSTED_TREE_CLASSIFIER` and one `ARIMA_PLUS` model with `TRANSFORM` |
+| 2 | Section 1: Model Garden, industry APIs and RAG; AutoML today. Section 2: shared data, features and privacy. Drill section 1 |
+| 3 | Section 2: notebooks and prototyping securely; experiment tracking and gen AI evaluation. Log a run to Experiments. Drill section 2 |
+| 4 | Section 3: frameworks and interpretability; custom and distributed training; hyperparameter tuning |
+| 5 | Section 3: hardware; fine-tuning foundation models. Section 4: batch vs online. Drill section 3 |
+| 6 | Section 4: Model Registry and containers; endpoints; autoscaling. Deploy a model and split traffic. Drill section 4 |
+| 7 | Section 5: all four lessons. Build a small pipeline and inspect its lineage. Drill section 5 |
+| 8 | Section 6: all three lessons. **Practice test #1**; review every miss. Mistakes notebook to zero; traps in 11.5; **practice test #2**. Book once you score 85% or more |
+
+### 11.7 Pre-exam checklist
+
+- [ ] The exam page still links guide v3.1. If it links a newer version, read its section list before you book.
+- [ ] I can map every guide name in 11.3 to its current name, both ways.
+- [ ] I know what is deprecated or shut down: Explainable AI (shutdown 16 March 2027), Feature Store (Legacy) and Optimized online serving (17 February 2027), AutoML Text and Video, Workbench managed and user-managed notebooks.
+- [ ] I can pick BigQuery ML, AutoML, a pre-trained API, RAG, tuning or custom training from a one-line scenario.
+- [ ] I know the BigQuery ML model types for recommendations, clustering and time series, plus `TRANSFORM` and `MODEL_REGISTRY`.
+- [ ] I can list the four endpoint types with their VPC-SC, traffic-split and payload limits.
+- [ ] I know batch jobs do not autoscale, and that quota is reserved for `maxReplicaCount`.
+- [ ] I know worker pool roles 0–3, where Reduction Server goes and why reducers have no GPUs.
+- [ ] I know the TPU caveats: no TensorFlow from v6e, JAX needs a custom container, regional availability.
+- [ ] I can name MLOps levels 0, 1 and 2 and the retraining triggers.
+- [ ] I know what each TFX component checks, especially Evaluator vs InfraValidator.
+- [ ] I can say when to use Pipelines, Kubeflow on your own cluster, Cloud Composer or Cloud Build.
+- [ ] I can explain skew vs drift, their baselines, and Model Monitoring v1 vs v2.
+- [ ] I can match Sampled Shapley, integrated gradients, XRAI and example-based explanations to model types.
+- [ ] Two timed practice tests at 85% or more; Mistakes notebook at zero.
+- [ ] Exam day: ID ready; for OnVUE, a quiet room and a system check done in advance. You have 2 hours for 50–60 questions, so flag long scenarios and come back.
+
+### 11.8 Further reading
+
+- This site's library, filtered to this track: [Library: Google Gemini](/library?track=gemini)
+- PMLE exam page: [cloud.google.com/learn/certification/machine-learning-engineer](https://cloud.google.com/learn/certification/machine-learning-engineer)
+- PMLE exam guide v3.1: [services.google.com/…/professional_machine_learning_engineer_exam_guide_english_3.1_final.pdf](https://services.google.com/fh/files/misc/professional_machine_learning_engineer_exam_guide_english_3.1_final.pdf)
+- Agent Platform deprecations: [docs.cloud.google.com/vertex-ai/docs/deprecations](https://docs.cloud.google.com/vertex-ai/docs/deprecations)
+- MLOps: continuous delivery and automation pipelines: [docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning](https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning)
+- Model Monitoring overview: [docs.cloud.google.com/vertex-ai/docs/model-monitoring/overview](https://docs.cloud.google.com/vertex-ai/docs/model-monitoring/overview)
+- Choose an endpoint type: [docs.cloud.google.com/vertex-ai/docs/predictions/choose-endpoint-type](https://docs.cloud.google.com/vertex-ai/docs/predictions/choose-endpoint-type)
+
+---
+
+## 12. Sources
 
 - GAIL exam page: [cloud.google.com/learn/certification/generative-ai-leader](https://cloud.google.com/learn/certification/generative-ai-leader)
 - GAIL exam guide: [services.google.com/fh/files/misc/generative_ai_leader_exam_guide_english.pdf](https://services.google.com/fh/files/misc/generative_ai_leader_exam_guide_english.pdf)
@@ -666,4 +957,17 @@ safety:     harassment · hate · sexual · dangerous · jailbreak · default of
 - Safety settings: [aistudio.google.com/docs/safety-settings](https://aistudio.google.com/docs/safety-settings)
 - Agent Development Kit: [adk.dev](https://adk.dev/)
 
-All facts were checked on 7 November 2026. Gemini model IDs, preview features and prices change often, and several introductory prices end within weeks of that date, so confirm them with Google before relying on them.
+PMLE (section 11):
+
+- PMLE exam page: [cloud.google.com/learn/certification/machine-learning-engineer](https://cloud.google.com/learn/certification/machine-learning-engineer)
+- PMLE exam guide v3.1: [services.google.com/fh/files/misc/professional_machine_learning_engineer_exam_guide_english_3.1_final.pdf](https://services.google.com/fh/files/misc/professional_machine_learning_engineer_exam_guide_english_3.1_final.pdf)
+- Agent Platform deprecations: [docs.cloud.google.com/vertex-ai/docs/deprecations](https://docs.cloud.google.com/vertex-ai/docs/deprecations)
+- AutoML model types: [docs.cloud.google.com/vertex-ai/docs/start/automl-model-types](https://docs.cloud.google.com/vertex-ai/docs/start/automl-model-types)
+- BigQuery ML CREATE MODEL: [docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/bigqueryml-syntax-create)
+- Feature Store: [docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/featurestore](https://docs.cloud.google.com/gemini-enterprise-agent-platform/machine-learning/featurestore)
+- Distributed training: [docs.cloud.google.com/vertex-ai/docs/training/distributed-training](https://docs.cloud.google.com/vertex-ai/docs/training/distributed-training)
+- Autoscaling: [docs.cloud.google.com/vertex-ai/docs/predictions/autoscaling](https://docs.cloud.google.com/vertex-ai/docs/predictions/autoscaling)
+- Pipelines: [docs.cloud.google.com/vertex-ai/docs/pipelines/introduction](https://docs.cloud.google.com/vertex-ai/docs/pipelines/introduction)
+- Explainable AI: [docs.cloud.google.com/vertex-ai/docs/explainable-ai/overview](https://docs.cloud.google.com/vertex-ai/docs/explainable-ai/overview)
+
+All GAIL and Gemini API facts were checked on 7 November 2026, and PMLE facts on 8 November 2026. Gemini model IDs, preview features and prices change often, and several introductory prices end within weeks of that date, so confirm them with Google before relying on them.

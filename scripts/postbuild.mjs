@@ -23,7 +23,7 @@ if (site) {
   // Published tracks are the ones listed in the registry array in src/content/index.ts.
   const registry = readFileSync('src/content/index.ts', 'utf8').match(/export const tracks: Track\[\] = \[([^\]]*)\]/);
   const published = registry ? registry[1].split(',').map(s => s.trim()).filter(Boolean) : [];
-  const paths = ['/', '/about'];
+  const paths = ['/', '/about', '/library'];
   for (const t of published) {
     paths.push(`/${t}`, `/${t}/guide`);
     const examsDir = join(tracksDir, t, 'exams');

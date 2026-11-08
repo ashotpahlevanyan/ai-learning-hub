@@ -57,3 +57,21 @@ describe.each(tracks.flatMap(t => t.exams.map(e => [`${t.id}/${e.id}`, t.id, e] 
     expect(problems).toEqual([]);
   });
 });
+
+describe('library', () => {
+  it('has well-formed entries', async () => {
+    const { library, topics } = await import('./library');
+    const trackIds = new Set(tracks.map(t => t.id)), topicIds = new Set(topics.map(t => t.id)), seen = new Set<string>();
+    const problems: string[] = [];
+    library.forEach(i => {
+      if (seen.has(i.url)) problems.push(`duplicate ${i.url}`);
+      seen.add(i.url);
+      if (!/^https:\/\//.test(i.url)) problems.push(`${i.title}: not https`);
+      if (!i.title || !i.by || !i.why) problems.push(`${i.url}: missing title, author or why`);
+      if (!topicIds.has(i.topic)) problems.push(`${i.title}: unknown topic ${i.topic}`);
+      i.tracks.forEach(t => { if (!trackIds.has(t)) problems.push(`${i.title}: unknown track ${t}`); });
+    });
+    tracks.forEach(t => { if (!library.some(i => i.tracks.includes(t.id))) problems.push(`track ${t.id} has no library items`); });
+    expect(problems).toEqual([]);
+  });
+});

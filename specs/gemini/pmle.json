@@ -1,0 +1,96 @@
+{
+  "track": "gemini",
+  "kind": "exam",
+  "verifyNotes": "Confirm length (2 hours), 50–60 multiple choice/select items, fee $200, languages, and sections/weights against the official exam page cloud.google.com/learn/certification/machine-learning-engineer and the current exam guide (v3.1 PDF). Google does not publish a passing score. Use current names (Vertex AI, Vertex AI Agent Builder / Vertex AI Search, Model Garden, Vertex AI Pipelines, Feature Store, Model Monitoring, BigQuery ML, Gemini on Vertex AI, Gen AI evaluation service). If Google has renamed a product (e.g. Agent Builder to Gemini Enterprise / Agent Platform), teach the current name and mention the exam guide name. Never copy official sample questions.",
+  "id": "pmle",
+  "code": "PMLE",
+  "name": "Google Cloud Professional Machine Learning Engineer",
+  "level": "Google Cloud · Professional",
+  "price": "$200",
+  "items": 55,
+  "minutes": 120,
+  "passing": 720,
+  "audience": "ML engineers with 3+ years of industry experience, 1+ on Google Cloud",
+  "format": "50–60 multiple choice and multiple select items in 2 hours; online or test-centre proctored; English and Japanese. Google does not publish a passing score; this site uses 720 on a 100–1000 scale for its mocks, as for GAIL.",
+  "sources": [
+    "https://cloud.google.com/learn/certification/machine-learning-engineer",
+    "https://services.google.com/fh/files/misc/professional_machine_learning_engineer_exam_guide_english_3.1_final.pdf",
+    "https://cloud.google.com/vertex-ai/docs",
+    "https://cloud.google.com/bigquery/docs/bqml-introduction",
+    "https://cloud.google.com/vertex-ai/generative-ai/docs",
+    "https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning"
+  ],
+  "scenarios": [
+    "Retail demand forecasting",
+    "Call-centre RAG assistant",
+    "Medical imaging classifier under privacy rules",
+    "Real-time recommendation serving at scale",
+    "Credit-risk model with fairness requirements"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Architecting low-code AI solutions",
+      "weight": 13,
+      "skills": [
+        "BigQuery ML models (linear/logistic, time series, matrix factorization, boosted trees, autoencoders), feature engineering and predictions",
+        "ML APIs and foundation models from Model Garden, industry APIs (Document AI, Retail), RAG with Vertex AI Agent Builder",
+        "AutoML: data prep, tabular, forecasting, custom models on text/images/video, debugging"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Collaborating within and across teams to manage data and models",
+      "weight": 14,
+      "skills": [
+        "Explore and preprocess data across Cloud Storage, BigQuery, Spanner, Cloud SQL, Spark; Vertex AI datasets; Dataflow/TFX preprocessing; Feature Store; PII/PHI privacy",
+        "Prototype in notebooks: Vertex AI Workbench, Colab Enterprise, Dataproc; security; frameworks; Model Garden models",
+        "Track experiments with Vertex AI Experiments, Kubeflow Pipelines, TensorBoard; evaluate generative AI solutions"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Scaling prototypes into ML models",
+      "weight": 18,
+      "skills": [
+        "Choose framework and architecture; interpretability needs",
+        "Train: data organisation and ingestion, custom training, Kubeflow on GKE, distributed training, hyperparameter tuning, troubleshooting, fine-tuning foundation models",
+        "Hardware: CPU, GPU, TPU, edge; distributed training with Reduction Server, Horovod"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Serving and scaling models",
+      "weight": 20,
+      "skills": [
+        "Batch and online inference (Vertex AI, Dataflow, BigQuery ML, Dataproc); serving PyTorch/XGBoost; Model Registry; A/B testing",
+        "Scale online serving: Feature Store, public/private endpoints, hardware, autoscaling, optimising latency, memory and throughput"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Automating and orchestrating ML pipelines",
+      "weight": 22,
+      "skills": [
+        "End-to-end pipelines: data and model validation, training-serving consistency, MLflow, Cloud Build/Run, Vertex AI Pipelines, Kubeflow, Cloud Composer, TFX, hybrid/multicloud",
+        "Retraining policies; CI/CD deployment",
+        "Metadata: Vertex ML Metadata, experiments, model/dataset versioning, lineage"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Monitoring AI solutions",
+      "weight": 13,
+      "skills": [
+        "Risks: securing AI systems, Responsible AI and bias, readiness (fairness), explainability (Vertex Explainable AI)",
+        "Monitoring: continuous evaluation, Vertex AI Model Monitoring, training-serving skew, feature attribution drift, baselines, common errors"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 20,
+    "flashcards": 110,
+    "questions": 110
+  },
+  "out": "src/content/tracks/gemini/exams/pmle.json"
+}

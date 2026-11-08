@@ -19,7 +19,10 @@
     "skills.google",
     "github.com/google",
     "github.com/googleapis",
-    "github.com/google-gemini"
+    "github.com/google-gemini",
+    "services.google.com",
+    "kubeflow.org",
+    "tensorflow.org"
   ],
   "openai": [
     "openai.com",
@@ -57,5 +60,17 @@
     "openai.com",
     "ai.google.dev",
     "cloud.google.com"
+  ],
+  "azure": [
+    "learn.microsoft.com",
+    "microsoft.com",
+    "azure.microsoft.com",
+    "techcommunity.microsoft.com",
+    "aka.ms",
+    "github.com/microsoft",
+    "github.com/Azure",
+    "github.com/Azure-Samples",
+    "github.com/MicrosoftLearning",
+    "github.com/MicrosoftDocs"
   ]
 }

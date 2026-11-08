@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Link checker: every source URL in the exam bundles, every resource link in track.ts and every
-// link in the runbooks must still resolve. Run with `npm run check:links` (needs network).
+// Link checker: every source URL in the exam bundles, every resource link in track.ts, every
+// library entry and every link in the runbooks must still resolve. Run with `npm run check:links` (needs network).
 // Exit code 1 when any link is dead (404/410, 5xx, DNS or TLS failure, or a "soft 404":
 // status 200 but the site served its not-found or index page). Sites that refuse
 // automated clients (401/403/429) are reported as "unverified" but don't fail the run.
@@ -32,6 +32,9 @@ for (const track of readdirSync(root)) {
     for (const x of [...exam.lessons, ...exam.questions]) (x.sources ?? []).forEach(s => add(s.url, `${track}/${f}#${x.id}`));
   }
 }
+
+// The library page's books, courses and papers.
+if (!only || only === 'library') urlsIn(readFileSync(new URL('../src/content/library.ts', import.meta.url), 'utf8')).forEach(u => add(u, 'library.ts'));
 
 const opts = () => ({ redirect: 'follow', signal: AbortSignal.timeout(20000), headers: { 'user-agent': 'Mozilla/5.0 (link-check; ai-learning-hub)', accept: 'text/html,*/*' } });
 const titleOf = html => (html.match(/<title[^>]*>([^<]*)/i)?.[1] ?? '').trim();

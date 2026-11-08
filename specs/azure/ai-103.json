@@ -1,0 +1,88 @@
+{
+  "track": "azure",
+  "kind": "exam",
+  "verifyNotes": "Confirm exam facts (item count is not published by Microsoft; typical range), time, fee, passing score 700, skills measured and weights against the official Microsoft Learn exam page and study guide. Use current product names: Microsoft Foundry (formerly Azure AI Foundry / AI Studio), Foundry Tools (formerly Azure AI services), Foundry Agent Service, Azure Content Understanding, Azure AI Search, Azure OpenAI in Foundry Models, Azure Speech, Azure Translator, Azure AI Content Safety. Where the study guide names a feature, teach it under that name. Never copy official practice assessment questions. AI-103 (Microsoft Certified: Azure AI Apps and Agents Developer Associate) is the current Azure AI engineering exam after AI-102 retired on 30 June 2026; skills measured as of 16 April 2026. Confirm the credential name and whether the exam is beta or GA.",
+  "id": "ai-103",
+  "code": "AI-103",
+  "name": "Developing AI Apps and Agents on Azure",
+  "level": "Microsoft · Associate",
+  "price": "$165",
+  "items": 50,
+  "minutes": 100,
+  "passing": 700,
+  "audience": "Azure AI engineers who build, deploy and manage AI apps and agents with Microsoft Foundry and Python",
+  "format": "About 40–60 items in 100 minutes, which may include case studies and interactive items; scaled score 1–1000, pass 700. Renew yearly with a free online assessment. This site practises multiple choice and multiple response only.",
+  "sources": [
+    "https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/ai-103",
+    "https://learn.microsoft.com/en-us/azure/ai-foundry/",
+    "https://learn.microsoft.com/en-us/azure/ai-foundry/agents/overview",
+    "https://learn.microsoft.com/en-us/azure/search/",
+    "https://learn.microsoft.com/en-us/azure/ai-services/content-understanding/",
+    "https://learn.microsoft.com/en-us/azure/ai-services/content-safety/",
+    "https://learn.microsoft.com/en-us/azure/ai-services/speech-service/"
+  ],
+  "scenarios": [
+    "Insurance claims agent with document intake",
+    "Retail RAG shopping assistant",
+    "Multi-agent IT operations workflow",
+    "Accessible media library with alt text and video analysis",
+    "Multilingual voice concierge"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Plan and manage an Azure AI solution",
+      "weight": 28,
+      "skills": [
+        "Choose models (LLM, SLM, multimodal, Foundry Tools), Foundry services for generation, grounding, vector search, agent workflows; retrieval and indexing; memory, tool and knowledge services",
+        "Design infrastructure; deployment options; configure model and agent deployments; CI/CD for Foundry projects",
+        "Quotas, scaling, rate limits and cost; monitor performance, drift, safety events, grounding quality, index health; security with managed identity, private networking, keyless auth, RBAC",
+        "Responsible AI: content filters, guardrails, risk detection; evaluators and safety evaluations; tracing, provenance and approval workflows; agent oversight and tool-access controls"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Implement generative AI and agentic solutions",
+      "weight": 33,
+      "skills": [
+        "Deploy and consume LLMs, small, code and multimodal models; implement RAG; tool-augmented and multistep flows; evaluate for fabrication, relevance, quality, safety; Foundry SDKs and connectors",
+        "Agents: roles, goals, conversation state, tool schemas; retrieval, function calling, memory; tools (APIs, knowledge, search, Content Understanding, custom functions); multi-agent orchestration; approval flows; agent monitoring and error analysis",
+        "Prompt engineering and parameters; reflection and self-critique loops; observability (tracing, token analytics, latency); orchestrating multiple models and hybrid LLM/rules engines"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Implement computer vision solutions",
+      "weight": 13,
+      "skills": [
+        "Image and video generation from prompts and reference media; inpainting and mask-based edits; generation controls",
+        "Multimodal visual understanding, captions, visual Q&A, alt text; Content Understanding visual and video analysis; single-task and pro-mode pipelines; object/region detection",
+        "Responsible AI for visuals: unsafe-content filters, indirect prompt injection via text in images, watermarking and brand policy"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Implement text analysis solutions",
+      "weight": 13,
+      "skills": [
+        "Extract entities, topics, summaries and structured JSON with prompting and Foundry Tools; sentiment, tone, sensitive content; translation with Azure Translator or LLMs; domain customisation",
+        "Speech to text and text to speech for agents; speech as an agent modality and custom speech; reasoning over audio; speech translation"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Implement information extraction solutions",
+      "weight": 13,
+      "skills": [
+        "Ingest and index documents, images, audio and video; semantic, hybrid and vector search in Azure AI Search; enrichment skills; RAG ingestion with OCR; connect retrieval to agent tools",
+        "Multimodal extraction (OCR, layout, fields); clean grounded representations and markdown/structured outputs with Content Understanding analyzers"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 20,
+    "flashcards": 110,
+    "questions": 110
+  },
+  "out": "src/content/tracks/azure/exams/ai-103.json"
+}

@@ -2,6 +2,8 @@ import { Link, useParams } from 'react-router-dom';
 import { getTrack } from '../content';
 import { useAppState } from '../lib/store';
 import NotFound from './NotFound';
+import LibraryList from '../components/LibraryList';
+import { library } from '../content/library';
 import { useMeta } from '../lib/useMeta';
 
 export default function TrackPage() {
@@ -68,6 +70,10 @@ export default function TrackPage() {
           <li key={r.url}><a href={r.url} target="_blank" rel="noreferrer">{r.title}</a><span className="muted small">{r.note}</span></li>
         ))}
       </ul>
+
+      <h2>Go deeper</h2>
+      <p className="muted">The best books, courses and papers for this track. <Link to={`/library?track=${track.id}`}>See the full library</Link>.</p>
+      <LibraryList items={library.filter(i => i.tracks.includes(track.id)).sort((a, b) => Number(!!b.start) - Number(!!a.start)).slice(0, 8)} />
     </main>
   );
 }

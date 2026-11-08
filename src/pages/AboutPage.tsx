@@ -15,7 +15,7 @@ export default function AboutPage() {
       <p>Practice questions are original. They are not real exam questions, and the site has no access to any exam bank. Exam facts such as fees, item counts and domain weights can change: always confirm them with the official provider before booking.</p>
 
       <h2>Not affiliated</h2>
-      <p>This is an independent resource. It is not affiliated with, sponsored or endorsed by Anthropic, Google, OpenAI, Amazon Web Services or any other provider. Product names belong to their owners.</p>
+      <p>This is an independent resource. It is not affiliated with, sponsored or endorsed by Anthropic, Google, OpenAI, Amazon Web Services, Microsoft or any other provider. Product names belong to their owners.</p>
 
       <h2>Privacy</h2>
       <ul>
