@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 const SITE = 'AI Learning Hub';
-const DEFAULT_DESCRIPTION = "Free, structured study paths for AI certifications and courses: Anthropic Claude, Google, OpenAI, AWS and Microsoft Azure, plus the math and Python behind AI.";
+const DEFAULT_DESCRIPTION = "Free, structured study paths for AI certifications and courses: Anthropic Claude, Google, OpenAI, AWS, Microsoft Azure, NVIDIA and Databricks, plus the math and Python behind AI.";
 
 /** Sets the tab title and meta description for the current page. Pass enabled=false to let a nested page set them. */
 export function useMeta(title?: string, description?: string, enabled = true) {

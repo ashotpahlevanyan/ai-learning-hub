@@ -1,0 +1,59 @@
+{
+  "track": "nvidia",
+  "kind": "exam",
+  "verifyNotes": "Confirm against the official NVIDIA exam page (nvidia.com/en-us/learn/certification/generative-ai-llm-associate/): 1 hour, 50–60 multiple-choice questions, $125, English, online remotely proctored via Certiverse, valid two years (recertify by retaking), pass/fail with no published score. Weights: Core ML and AI Knowledge 30%, Software Development 24%, Experimentation 22%, Data Analysis 14%, Trustworthy AI 10%. Look for an official NCA-GENL study guide PDF linked from the exam page and use its subtopics. Use current NVIDIA product names (NeMo framework and NeMo microservices, NIM, Triton Inference Server / Dynamo-Triton, TensorRT-LLM, RAPIDS cuDF/cuML, NeMo Guardrails, NeMo Curator, NGC); if a product has been renamed, teach the current name and mention the older one. Never copy official sample questions.",
+  "id": "nca-genl",
+  "code": "NCA-GENL",
+  "name": "NVIDIA-Certified Associate: Generative AI LLMs",
+  "level": "NVIDIA · Associate",
+  "price": "$125",
+  "items": 55,
+  "minutes": 60,
+  "passing": 700,
+  "audience": "Developers, data scientists and engineers starting to build generative AI and LLM applications",
+  "format": "50–60 multiple-choice questions in 1 hour; online remotely proctored (Certiverse); English. NVIDIA reports pass/fail only and publishes no passing score; this site uses 700 on a 100–1000 scale for its mocks.",
+  "sources": [
+    "https://www.nvidia.com/en-us/learn/certification/generative-ai-llm-associate/",
+    "https://www.nvidia.com/en-us/learn/certification/",
+    "https://docs.nvidia.com/nemo-framework/user-guide/latest/overview.html",
+    "https://docs.nvidia.com/nim/index.html",
+    "https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/index.html",
+    "https://docs.rapids.ai/",
+    "https://docs.nvidia.com/nemo/guardrails/latest/index.html",
+    "https://github.com/NVDLI/fundamentals-of-deep-learning"
+  ],
+  "scenarios": [
+    "Customer-support chatbot on an open model",
+    "Fine-tuning a small LLM for legal summarisation",
+    "GPU-accelerated data prep for a text corpus",
+    "Benchmarking two models before launch",
+    "Guardrailed internal knowledge assistant"
+  ],
+  "domains": [
+    { "id": "d1", "name": "Core Machine Learning and AI Knowledge", "weight": 30, "skills": [
+      "ML and deep learning basics: supervised/unsupervised learning, neural networks, activation and loss functions, gradient descent, overfitting and regularisation",
+      "Transformer architecture: tokenisation, embeddings, self-attention, positional encoding, encoder/decoder/decoder-only models, context windows",
+      "LLM lifecycle: pre-training, instruction tuning, RLHF/alignment, PEFT (LoRA, p-tuning), prompt engineering (zero/few-shot, chain-of-thought), RAG, decoding (temperature, top-k, top-p)"
+    ]},
+    { "id": "d2", "name": "Software Development", "weight": 24, "skills": [
+      "Python for ML: NumPy, pandas, PyTorch, Hugging Face Transformers; building LLM apps with LangChain/LlamaIndex style frameworks",
+      "NVIDIA stack: NeMo framework, NIM microservices, Triton Inference Server, TensorRT-LLM, NGC containers; GPU acceleration and CUDA basics; quantisation and inference optimisation",
+      "Deploying and serving LLM apps: APIs, containers, batching, latency vs throughput"
+    ]},
+    { "id": "d3", "name": "Experimentation", "weight": 22, "skills": [
+      "Design experiments: baselines, train/validation/test splits, hyperparameters, tracking runs",
+      "Evaluate LLMs: perplexity, BLEU/ROUGE, accuracy/F1, benchmarks, human and LLM-as-judge evaluation; RAG retrieval metrics",
+      "Compare fine-tuning vs prompting vs RAG; diagnose failures (hallucination, overfitting, catastrophic forgetting)"
+    ]},
+    { "id": "d4", "name": "Data Analysis", "weight": 14, "skills": [
+      "Data preparation for LLMs: cleaning, deduplication, filtering, tokenisation, synthetic data (NeMo Curator)",
+      "Exploratory analysis and visualisation; GPU-accelerated data science with RAPIDS cuDF/cuML; embeddings and vector databases"
+    ]},
+    { "id": "d5", "name": "Trustworthy AI", "weight": 10, "skills": [
+      "Bias, fairness, privacy, transparency, model cards, NVIDIA Trustworthy AI principles",
+      "Guardrails and safety: NeMo Guardrails, content moderation, prompt injection, jailbreaks, hallucination mitigation"
+    ]}
+  ],
+  "targets": { "lessons": 20, "flashcards": 110, "questions": 110 },
+  "out": "src/content/tracks/nvidia/exams/nca-genl.json"
+}

@@ -64,6 +64,8 @@ async function check(url) {
       if (got.host === want.host && got.pathname !== want.pathname && want.pathname.startsWith(got.pathname.replace(/\/?$/, '/'))) return 'soft 404 (redirected to index)';
       return r.status;
     } catch (e) {
+      // A cookie challenge (e.g. milvus.io) redirects a cookieless client to the same URL forever: the site refused the checker.
+      if (/redirect count exceeded/.test(e.cause?.message ?? '')) return 'bot challenge';
       if (attempt < 2) continue; // transient DNS/network hiccups
       return `error: ${e.cause?.code ?? e.name}`;
     }
@@ -79,8 +81,8 @@ for (let i = 0; i < urls.length; i += 8) {
 }
 process.stderr.write('\n');
 
-const dead = results.filter(r => typeof r.status === 'string' || r.status === 404 || r.status === 410 || r.status >= 500);
-const blocked = results.filter(r => [401, 403, 429].includes(r.status));
+const dead = results.filter(r => (typeof r.status === 'string' && r.status !== 'bot challenge') || r.status === 404 || r.status === 410 || r.status >= 500);
+const blocked = results.filter(r => [401, 403, 429, 'bot challenge'].includes(r.status));
 const show = r => `  ${r.status}  ${r.u}\n      in ${[...links.get(r.u)].slice(0, 3).join(', ')}${links.get(r.u).size > 3 ? ` +${links.get(r.u).size - 3} more` : ''}`;
 if (blocked.length) console.log(`Unverified (site refused the checker):\n${blocked.map(show).join('\n')}`);
 if (dead.length) console.log(`Dead links:\n${dead.map(show).join('\n')}`);

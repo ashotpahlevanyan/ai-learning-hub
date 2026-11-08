@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { tracks } from './index';
 import type { Exam, Source } from '../lib/types';
 import officialDomains from './official-domains.json';
+import studyTimes from 'virtual:study-time';
+import { studyTime } from '../lib/studyTime';
 
 /** True when url is https on one of the track's official documentation hosts (or a path prefix such as github.com/anthropics). */
 export function isOfficial(track: string, url: string) {
@@ -26,9 +28,13 @@ describe.each(tracks.flatMap(t => t.exams.map(e => [`${t.id}/${e.id}`, t.id, e] 
     };
 
     expect(exam.id).toBe(summary.id);
+    // Study time is summed from lesson reading times, so every lesson needs a plausible one.
+    exam.lessons.forEach(l => { if (!l.minutes || l.minutes < 3 || l.minutes > 90) problems.push(`lesson ${l.id} has no plausible reading time (${l.minutes})`); });
+    expect(studyTimes[`${track}/${exam.id}`]).toEqual(studyTime(exam));
     expect(exam.code).toBe(summary.code);
     const weights = exam.domains.reduce((s, d) => s + d.weight, 0);
-    if (Math.abs(weights - 100) > 1) problems.push(`domain weights sum to ${weights}`);
+    // Official weights can miss 100 by rounding (NCP-AAI's exam page lists 98%), so allow a little slack.
+    if (Math.abs(weights - 100) > 2) problems.push(`domain weights sum to ${weights}`);
     if (exam.review) {
       const r = exam.review;
       if (!/^\d{4}-\d{2}-\d{2}$/.test(r.date) || ![r.questionsChecked, r.fixed, r.dropped].every(Number.isInteger)) problems.push('review record is malformed');

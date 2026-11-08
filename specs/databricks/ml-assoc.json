@@ -1,0 +1,54 @@
+{
+  "track": "databricks",
+  "kind": "exam",
+  "verifyNotes": "Confirm against the official exam page (databricks.com/learn/certification/machine-learning-associate) and the current exam guide PDF (https://www.databricks.com/sites/default/files/2026-10/Databricks-Certified-Machine-Learning-Associate-Exam-Guide-August-2026.pdf): 48 scored items plus up to 10 unscored, 90 minutes, USD 200, online proctored or test centre, English/Japanese/pt-BR/Korean, valid 2 years, no published passing score. Weights: Databricks Machine Learning 38, Data Processing 19 (the web page calls it 'ML Workflows'), Model Development 31, Model Deployment 12. Use current names from docs.databricks.com: Databricks Runtime for ML, AutoML, Feature Engineering in Unity Catalog (online tables/online feature stores), MLflow 3, Models in Unity Catalog with aliases (champion/challenger), Mosaic AI Model Serving, Lakeflow Declarative Pipelines (formerly Delta Live Tables; the guide still says DLT), Spark ML. Hyperopt is in the guide but Databricks has deprecated/removed it from newer ML runtimes in favour of Optuna: check and teach both the exam wording and the current recommendation. Never copy the guide's sample questions.",
+  "id": "ml-assoc",
+  "code": "ML-ASSOC",
+  "name": "Databricks Certified Machine Learning Associate",
+  "level": "Databricks · Associate",
+  "price": "$200",
+  "items": 48,
+  "minutes": 90,
+  "passing": 700,
+  "audience": "Data scientists and ML engineers doing basic ML on Databricks, with about six months of hands-on experience",
+  "format": "48 scored multiple-choice and multiple-selection items (up to 10 more unscored) in 90 minutes; online proctored or test centre; English, Japanese, Brazilian Portuguese, Korean. Databricks publishes no passing score; this site uses 700 on a 100–1000 scale for its mocks.",
+  "sources": [
+    "https://www.databricks.com/learn/certification/machine-learning-associate",
+    "https://www.databricks.com/sites/default/files/2026-10/Databricks-Certified-Machine-Learning-Associate-Exam-Guide-August-2026.pdf",
+    "https://docs.databricks.com/aws/en/machine-learning/",
+    "https://docs.databricks.com/aws/en/machine-learning/automl/",
+    "https://docs.databricks.com/aws/en/machine-learning/feature-store/",
+    "https://docs.databricks.com/aws/en/mlflow/",
+    "https://docs.databricks.com/aws/en/machine-learning/manage-model-lifecycle/",
+    "https://spark.apache.org/docs/latest/ml-guide.html"
+  ],
+  "scenarios": [
+    "Churn prediction for a telecom",
+    "House-price regression with skewed targets",
+    "Fraud classifier on imbalanced data",
+    "Real-time recommendation endpoint with A/B traffic split",
+    "Demand forecast scored nightly in batch"
+  ],
+  "domains": [
+    { "id": "d1", "name": "Databricks Machine Learning", "weight": 38, "skills": [
+      "MLOps best practices; ML runtimes; AutoML for model and feature selection; promoting code vs promoting models",
+      "Feature Engineering in Unity Catalog: creating and writing feature tables, training and scoring with features, account-level vs workspace tables, online vs offline tables",
+      "MLflow: manual logging of metrics, artifacts and models; finding the best run with the Client API; the MLflow UI; registering in Unity Catalog; tags; champion/challenger aliases"
+    ]},
+    { "id": "d2", "name": "Data Processing", "weight": 19, "skills": [
+      "Summary statistics with .summary() and dbutils data summaries; outlier removal by standard deviation or IQR; visualising and comparing categorical and continuous features",
+      "Imputation with mean, median or mode; one-hot encoding and when not to use it; log transforms"
+    ]},
+    { "id": "d3", "name": "Model Development", "weight": 31, "skills": [
+      "Choosing algorithms; data imbalance; estimators vs transformers; Spark ML training pipelines",
+      "Hyperparameter tuning: Hyperopt fmin (and Optuna), grid/random/Bayesian search, parallelising single-node models; cross-validation vs train-validation split and counting models trained",
+      "Classification and regression metrics (F1, log loss, ROC/AUC, RMSE, MAE, R²); choosing a metric; exponentiating log-transformed predictions; bias-variance trade-off"
+    ]},
+    { "id": "d4", "name": "Model Deployment", "weight": 12, "skills": [
+      "Batch, real-time and streaming serving; pandas batch inference; streaming inference with Lakeflow Declarative Pipelines (DLT)",
+      "Deploying custom models to Model Serving endpoints, querying them, and splitting traffic between models"
+    ]}
+  ],
+  "targets": { "lessons": 20, "flashcards": 110, "questions": 110 },
+  "out": "src/content/tracks/databricks/exams/ml-assoc.json"
+}

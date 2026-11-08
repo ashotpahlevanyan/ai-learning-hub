@@ -1,0 +1,72 @@
+{
+  "track": "nvidia",
+  "kind": "exam",
+  "verifyNotes": "Confirm against the official exam page (nvidia.com/en-us/learn/certification/agentic-ai-professional/) and the official study guide PDF (https://dam-cdn.nvd.orangelogic.com/AssetLink/64tei188l3tt132l265u1ipjoexdl1p5.pdf): 120 minutes, 60–70 questions, $200, English, online remotely proctored via Certiverse, valid two years, pass/fail with no published score. The page marks the exam 'Coming soon' while showing a registration link: report the true status. The exam page and study guide disagree on weights (page: Deployment and Scaling 13%, Run/Monitor/Maintain 5%; guide: 5% and 7%); report both and use the exam page values. Use the study guide's numbered subtopics (1.1 etc.) and its recommended courses and readings. Use current names: NVIDIA NeMo Agent Toolkit (formerly Agent Intelligence Toolkit / AgentIQ), NIM, NIM Agent Blueprints / AI Blueprints, NeMo Guardrails, NeMo Retriever, Triton, TensorRT-LLM, Dynamo. Also cover framework-neutral concepts (ReAct, tool calling, MCP, A2A, LangGraph-style orchestration). Never copy official sample questions.",
+  "id": "ncp-aai",
+  "code": "NCP-AAI",
+  "name": "NVIDIA-Certified Professional: Agentic AI",
+  "level": "NVIDIA · Professional",
+  "price": "$200",
+  "items": 65,
+  "minutes": 120,
+  "passing": 700,
+  "audience": "AI engineers with 1–3 years in AI/ML and hands-on production agent projects",
+  "format": "60–70 questions in 120 minutes; online remotely proctored (Certiverse); English. Pass/fail; NVIDIA publishes no passing score, so this site uses 700 on a 100–1000 scale for its mocks.",
+  "sources": [
+    "https://www.nvidia.com/en-us/learn/certification/agentic-ai-professional/",
+    "https://dam-cdn.nvd.orangelogic.com/AssetLink/64tei188l3tt132l265u1ipjoexdl1p5.pdf",
+    "https://docs.nvidia.com/nemo/agent-toolkit/latest/index.html",
+    "https://github.com/NVIDIA/NeMo-Agent-Toolkit",
+    "https://docs.nvidia.com/nim/index.html",
+    "https://docs.nvidia.com/nemo/guardrails/latest/index.html",
+    "https://build.nvidia.com/blueprints",
+    "https://developer.nvidia.com/blog/tag/ai-agents/"
+  ],
+  "scenarios": [
+    "Employee IT-help agent with tool calling",
+    "Multi-agent financial fraud investigation",
+    "Meeting companion with long-term memory",
+    "Customer-service voice agent built from a blueprint",
+    "Research agent over a knowledge graph"
+  ],
+  "domains": [
+    { "id": "d1", "name": "Agent Architecture and Design", "weight": 15, "skills": [
+      "Reactive, deliberative and hybrid architectures; ReAct and reasoning-action loops; logic trees, prompt chains and stateful orchestration",
+      "Multi-agent orchestration and agent-to-agent communication protocols; knowledge graphs; human-agent UI design; adaptable, scalable architecture"
+    ]},
+    { "id": "d2", "name": "Agent Development", "weight": 15, "skills": [
+      "Prompt engineering and dynamic prompt chains; integrating multimodal models; building custom tools, APIs and functions",
+      "Error handling: retries, circuit breakers, graceful recovery; streaming conversation flows with feedback; refining decision strategies"
+    ]},
+    { "id": "d3", "name": "Evaluation and Tuning", "weight": 13, "skills": [
+      "Evaluation pipelines and task benchmarks; comparing agents across tasks and datasets; NeMo Agent Toolkit evaluation and profiling",
+      "Structured user feedback; tuning accuracy vs latency and cost; analysing results for targeted optimisation"
+    ]},
+    { "id": "d4", "name": "Deployment and Scaling", "weight": 13, "skills": [
+      "Deploy multi-agent systems at scale with containers, Kubernetes and load balancing; NIM microservices",
+      "MLOps CI/CD and governance for agents; profiling under distributed load; cost and availability optimisation"
+    ]},
+    { "id": "d5", "name": "Cognition, Planning, and Memory", "weight": 10, "skills": [
+      "Planning and decomposition strategies, chain-of-thought, reflection and self-correction",
+      "Short- and long-term memory, context management, state persistence across multi-turn tasks"
+    ]},
+    { "id": "d6", "name": "Knowledge Integration and Data Handling", "weight": 10, "skills": [
+      "RAG pipelines for agents: retrieval, embeddings, reranking, vector databases, NeMo Retriever; knowledge graphs",
+      "Handling structured, unstructured and multimodal data; data quality and freshness"
+    ]},
+    { "id": "d7", "name": "NVIDIA Platform Implementation", "weight": 7, "skills": [
+      "NIM, NeMo Agent Toolkit, NeMo Guardrails, AI Blueprints, Triton, TensorRT-LLM: when to use each and how they fit together on NVIDIA GPUs"
+    ]},
+    { "id": "d8", "name": "Run, Monitor, and Maintain", "weight": 5, "skills": [
+      "Observability, logging and tracing of agent runs; troubleshooting hallucinations and tool failures; maintenance and updates"
+    ]},
+    { "id": "d9", "name": "Safety, Ethics, and Compliance", "weight": 5, "skills": [
+      "Guardrails, prompt-injection defence, bias detection, privacy preservation, regulatory compliance and audit"
+    ]},
+    { "id": "d10", "name": "Human-AI Interaction and Oversight", "weight": 5, "skills": [
+      "Human-in-the-loop approval, escalation, transparency and explainability to users, oversight controls"
+    ]}
+  ],
+  "targets": { "lessons": 20, "flashcards": 110, "questions": 120 },
+  "out": "src/content/tracks/nvidia/exams/ncp-aai.json"
+}

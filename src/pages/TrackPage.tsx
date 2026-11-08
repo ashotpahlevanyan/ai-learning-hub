@@ -5,6 +5,8 @@ import NotFound from './NotFound';
 import LibraryList from '../components/LibraryList';
 import { library } from '../content/library';
 import { useMeta } from '../lib/useMeta';
+import studyTimes from 'virtual:study-time';
+import { fmtHours, QUESTION_MIN } from '../lib/studyTime';
 
 export default function TrackPage() {
   const { trackId } = useParams();
@@ -13,6 +15,7 @@ export default function TrackPage() {
   useMeta(track ? `${track.name} certification prep` : undefined, track?.description);
   if (!track) return <NotFound />;
   const code = (id: string) => track.exams.find(e => e.id === id)?.code ?? id;
+  const study = (id: string) => studyTimes[`${track.id}/${id}`]?.total ?? 0;
 
   return (
     <main className="page">
@@ -39,6 +42,7 @@ export default function TrackPage() {
                 <div><dt>Time</dt><dd>{e.minutes} min</dd></div>
                 <div><dt>{e.kind === 'course' ? 'Cost' : 'Fee'}</dt><dd>{e.price}</dd></div>
               </dl>
+              {study(e.id) > 0 && <p className="muted small" title="Lesson reading time plus one pass through the practice questions and flashcards">About {fmtHours(study(e.id))} of study</p>}
               <span className="link-cta">{started ? 'Continue studying' : 'Start studying'} →</span>
             </Link>
           );
@@ -51,14 +55,15 @@ export default function TrackPage() {
           <div className="card">
             <div className="table-wrap">
               <table>
-                <thead><tr><th>You are</th><th>Order</th><th>Why</th></tr></thead>
+                <thead><tr><th>You are</th><th>Order</th><th>Study</th><th>Why</th></tr></thead>
                 <tbody>
                   {track.paths.map(p => (
-                    <tr key={p.who}><td>{p.who}</td><td className="nowrap">{p.order.map(code).join(' → ')}</td><td>{p.why}</td></tr>
+                    <tr key={p.who}><td>{p.who}</td><td className="nowrap">{p.order.map(code).join(' → ')}</td><td className="nowrap">~{fmtHours(p.order.reduce((s, id) => s + study(id), 0))}</td><td>{p.why}</td></tr>
                   ))}
                 </tbody>
               </table>
             </div>
+            <p className="muted small">Study time is the lessons' reading time plus one pass through the practice questions (about {QUESTION_MIN} min each) and flashcards. Hands-on labs and repeat practice add more.</p>
             {track.note && <p className="muted small">{track.note}</p>}
           </div>
         </>

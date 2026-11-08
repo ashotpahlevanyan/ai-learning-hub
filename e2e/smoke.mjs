@@ -80,6 +80,11 @@ try {
   }
   await page.goto(`${B}/search?q=prompt`); await page.waitForSelector('.results li', { timeout: 20000 }).catch(() => fail('search returned nothing'));
   await page.goto(`${B}/`); await page.waitForSelector('.today-list li').catch(() => fail('Today panel missing after studying'));
+  for (const p of paths.filter(p => /^\/[\w-]+$/.test(p) && !['/about', '/library'].includes(p))) { // track pages show study time per exam
+    await page.goto(B + p); await page.waitForSelector('.exam-card');
+    const n = await page.$$eval('.exam-card', cs => cs.filter(c => !/About [\d.]+ (h|min) of study/.test(c.textContent)).length);
+    if (n) fail(`${p}: ${n} exam cards show no study time`);
+  }
   await page.goto(`${B}/library`); await page.waitForSelector('.library li a[href^="https://"]').catch(() => fail('library has no entries'));
   await page.goto(`${B}/library?track=azure&free=1`); if (!(await page.$$('.library li')).length) fail('library filter shows nothing for azure + free');
   await page.goto(`${B}/progress`); await page.waitForSelector('table').catch(() => fail('progress page has no table'));

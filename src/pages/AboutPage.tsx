@@ -12,10 +12,11 @@ export default function AboutPage() {
       <p>Content is drafted with AI assistance from each exam's published blueprint and official documentation.</p>
       <p>Exams are then put through a verification pass: a separate reviewer re-answers every practice question without seeing the answer key. Wherever its answer disagrees with the key, the question is corrected, or removed if it can't be made unambiguous. Each exam's dashboard shows whether it has been through this pass, when, and how many questions were fixed or dropped. Exams that haven't been verified yet say so; treat their answer keys with a little more caution.</p>
       <p>Verification catches ambiguous and mis-keyed questions. It is not a guarantee that every fact is current.</p>
+      <p>Study time estimates add each lesson's stated reading time to about 2 minutes per practice question and 30 seconds per flashcard: one pass through everything. Hands-on labs, rereading and repeat practice add more, so plan extra time if you're new to the subject.</p>
       <p>Practice questions are original. They are not real exam questions, and the site has no access to any exam bank. Exam facts such as fees, item counts and domain weights can change: always confirm them with the official provider before booking.</p>
 
       <h2>Not affiliated</h2>
-      <p>This is an independent resource. It is not affiliated with, sponsored or endorsed by Anthropic, Google, OpenAI, Amazon Web Services, Microsoft or any other provider. Product names belong to their owners.</p>
+      <p>This is an independent resource. It is not affiliated with, sponsored or endorsed by Anthropic, Google, OpenAI, Amazon Web Services, Microsoft, NVIDIA, Databricks or any other provider. Product names belong to their owners.</p>
 
       <h2>Privacy</h2>
       <ul>

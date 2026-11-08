@@ -26,8 +26,8 @@ export const topics = [
 ] as const;
 export type Topic = typeof topics[number]['id'];
 
-const ALL = ['claude', 'gemini', 'openai', 'aws', 'azure', 'foundations'];
-const CLOUD = ['gemini', 'aws', 'azure'];
+const ALL = ['claude', 'gemini', 'openai', 'aws', 'azure', 'nvidia', 'databricks', 'foundations'];
+const CLOUD = ['gemini', 'aws', 'azure', 'databricks'];
 
 export const library: LibraryItem[] = [
   // Mathematics
@@ -87,11 +87,11 @@ export const library: LibraryItem[] = [
   // LLMs and transformers
   { title: 'Attention Is All You Need', by: 'Vaswani et al. (2017)', url: 'https://arxiv.org/abs/1706.03762', kind: 'Paper', topic: 'llm', tracks: ['foundations', 'claude', 'openai', 'gemini'], start: true,
     why: 'The paper that introduced the transformer. Short and readable once you know matrix multiplication and softmax.' },
-  { title: 'The Illustrated Transformer', by: 'Jay Alammar', url: 'https://jalammar.github.io/illustrated-transformer/', kind: 'Guide', topic: 'llm', tracks: ['foundations', 'claude', 'openai', 'gemini'],
+  { title: 'The Illustrated Transformer', by: 'Jay Alammar', url: 'https://jalammar.github.io/illustrated-transformer/', kind: 'Guide', topic: 'llm', tracks: ['foundations', 'claude', 'openai', 'gemini', 'nvidia'],
     why: 'A visual walk through self-attention, multi-head attention and the encoder-decoder stack. Read it alongside the paper.' },
-  { title: 'Build a Large Language Model (From Scratch)', by: 'Sebastian Raschka', url: 'https://www.manning.com/books/build-a-large-language-model-from-scratch', kind: 'Book', topic: 'llm', tracks: ['foundations'], start: true,
+  { title: 'Build a Large Language Model (From Scratch)', by: 'Sebastian Raschka', url: 'https://www.manning.com/books/build-a-large-language-model-from-scratch', kind: 'Book', topic: 'llm', tracks: ['foundations', 'nvidia'], start: true,
     why: 'Builds a GPT-style model step by step: tokenisation, attention, pretraining, then fine-tuning for classification and instructions. Code is free on GitHub.' },
-  { title: 'Hands-On Large Language Models', by: 'Jay Alammar and Maarten Grootendorst', url: 'https://www.llm-book.com/', kind: 'Book', topic: 'llm', tracks: ['foundations', 'claude', 'openai', 'gemini'],
+  { title: 'Hands-On Large Language Models', by: 'Jay Alammar and Maarten Grootendorst', url: 'https://www.llm-book.com/', kind: 'Book', topic: 'llm', tracks: ['foundations', 'claude', 'openai', 'gemini', 'nvidia'],
     why: 'A highly visual tour of tokens, embeddings, semantic search, RAG, fine-tuning and multimodal models with working code.' },
   { title: 'Speech and Language Processing (3rd edition draft)', by: 'Dan Jurafsky and James H. Martin', url: 'https://web.stanford.edu/~jurafsky/slp3/', kind: 'Free book', topic: 'llm', tracks: ['foundations'],
     why: 'The NLP textbook, kept current with chapters on transformers, LLMs, fine-tuning and RAG. Free draft online.', read: 'Chapters on embeddings, transformers and large language models.' },
@@ -107,9 +107,9 @@ export const library: LibraryItem[] = [
     why: 'The InstructGPT paper: supervised fine-tuning plus RLHF. Explains why chat models behave so differently from base models.' },
 
   // Building LLM apps and agents
-  { title: 'AI Engineering', by: 'Chip Huyen', url: 'https://www.oreilly.com/library/view/ai-engineering/9781098166298/', kind: 'Book', topic: 'apps', tracks: ['claude', 'openai', 'gemini', 'aws', 'azure'], start: true,
+  { title: 'AI Engineering', by: 'Chip Huyen', url: 'https://www.oreilly.com/library/view/ai-engineering/9781098166298/', kind: 'Book', topic: 'apps', tracks: ['claude', 'openai', 'gemini', 'aws', 'azure', 'nvidia', 'databricks'], start: true,
     why: 'The best single book on building applications with foundation models: evaluation, prompt engineering, RAG, agents, fine-tuning, inference optimisation and user feedback.', read: 'Chapters 3–4 (evaluation) and 6 (RAG and agents) first.' },
-  { title: 'Building effective agents', by: 'Anthropic', url: 'https://www.anthropic.com/engineering/building-effective-agents', kind: 'Guide', topic: 'apps', tracks: ['claude', 'openai', 'gemini', 'aws', 'azure'], start: true,
+  { title: 'Building effective agents', by: 'Anthropic', url: 'https://www.anthropic.com/engineering/building-effective-agents', kind: 'Guide', topic: 'apps', tracks: ['claude', 'openai', 'gemini', 'aws', 'azure', 'nvidia', 'databricks'], start: true,
     why: 'Workflows versus agents, and the core patterns (prompt chaining, routing, parallelisation, orchestrator-workers, evaluator-optimiser) with advice on when to use each.' },
   { title: 'Prompt engineering overview', by: 'Anthropic', url: 'https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview', kind: 'Guide', topic: 'apps', tracks: ['claude'],
     why: 'Official, practical prompting techniques: clarity, examples, XML structure, chain of thought, prefilling and long-context tips.' },
@@ -157,6 +157,35 @@ export const library: LibraryItem[] = [
     why: 'The official MLA page: exam guide, beta and GA dates, and links to AWS Skill Builder’s free exam prep plan and official practice questions.' },
   { title: 'Machine Learning Engineer learning path', by: 'Google Skills', url: 'https://www.skills.google/paths/17', kind: 'Course', topic: 'official', tracks: ['gemini'], start: true,
     why: 'Google Cloud’s official course sequence for the Professional ML Engineer exam, with Vertex AI labs.' },
+
+  { title: 'NVIDIA certification exams and study guides', by: 'NVIDIA', url: 'https://www.nvidia.com/en-us/learn/certification/', kind: 'Guide', topic: 'official', tracks: ['nvidia'], start: true,
+    why: 'Every NVIDIA certification with its exam page, topic weights, study guide and recommended Deep Learning Institute courses.' },
+  { title: 'Building RAG Agents With LLMs', by: 'NVIDIA Deep Learning Institute', url: 'https://learn.nvidia.com/courses/course-detail?course_id=course-v1:DLI+S-FX-15+V1', kind: 'Course', topic: 'official', tracks: ['nvidia'],
+    why: 'Self-paced DLI course with a GPU lab: LLM inference endpoints, LangChain-style pipelines, embeddings, vector stores and guardrails. Recommended for both NCA-GENL and NCP-AAI.' },
+  { title: 'Building Agentic AI Applications With LLMs', by: 'NVIDIA Deep Learning Institute', url: 'https://learn.nvidia.com/courses/course-detail?course_id=course-v1:DLI+S-FX-41+V1', kind: 'Course', topic: 'official', tracks: ['nvidia'],
+    why: 'The DLI course the NCP-AAI study guide points to most: agent loops, tool use, structured output, multi-agent orchestration and state.' },
+  { title: 'Fundamentals of Deep Learning (open materials)', by: 'NVIDIA Deep Learning Institute', url: 'https://github.com/NVDLI/fundamentals-of-deep-learning', kind: 'Course', topic: 'ml', tracks: ['nvidia', 'foundations'],
+    why: 'Free notebooks from NVIDIA’s intro course: neural networks, CNNs, data augmentation, transfer learning and a first look at transformers. Covers the core ML domain of NCA-GENL.' },
+  { title: 'NeMo Agent Toolkit', by: 'NVIDIA', url: 'https://github.com/NVIDIA/NeMo-Agent-Toolkit', kind: 'Guide', topic: 'apps', tracks: ['nvidia'],
+    why: 'NVIDIA’s open-source library for wiring agents from any framework together, with profiling, evaluation and observability. Its docs and examples are core NCP-AAI reading. Deprecated in October 2026 (end of life at the end of 2026), but still what the exam tests.' },
+  { title: 'NVIDIA Generative AI Examples', by: 'NVIDIA', url: 'https://github.com/NVIDIA/GenerativeAIExamples', kind: 'Guide', topic: 'apps', tracks: ['nvidia'],
+    why: 'Reference RAG and agent workflows built on NIM microservices, NeMo Retriever and Guardrails: see how the NVIDIA stack fits together end to end.' },
+  { title: 'Programming Massively Parallel Processors (4th ed.)', by: 'Hwu, Kirk and El Hajj', url: 'https://shop.elsevier.com/books/programming-massively-parallel-processors/hwu/978-0-323-91231-0', kind: 'Book', topic: 'ml', tracks: ['nvidia'],
+    why: 'The standard textbook on GPU programming with CUDA: threads, memory hierarchy, tiling and parallel patterns. The background behind every GPU-acceleration question.', read: 'Chapters 1–6, then the deep learning and attention chapters.' },
+  { title: 'CUDA Programming Guide', by: 'NVIDIA', url: 'https://docs.nvidia.com/cuda/cuda-programming-guide/', kind: 'Guide', topic: 'ml', tracks: ['nvidia'],
+    why: 'The official guide to the CUDA programming model, memory and performance. Read the introduction and programming model to understand what GPU acceleration means.' },
+  { title: 'Databricks training and certification', by: 'Databricks Academy', url: 'https://www.databricks.com/learn/training/home', kind: 'Course', topic: 'official', tracks: ['databricks'], start: true,
+    why: 'Databricks Academy’s self-paced courses for the Generative AI Engineering and Machine Learning learning paths named in each exam guide, plus exam registration.' },
+  { title: 'Databricks Free Edition', by: 'Databricks', url: 'https://www.databricks.com/learn/free-edition', kind: 'Guide', topic: 'official', tracks: ['databricks'],
+    why: 'A free Databricks workspace for the hands-on practice the exam guides insist on: notebooks, MLflow, Unity Catalog, AI Search and model serving.' },
+  { title: 'The Big Book of MLOps', by: 'Databricks', url: 'https://www.databricks.com/resources/ebook/the-big-book-of-mlops', kind: 'Free book', topic: 'mlops', tracks: ['databricks'],
+    why: 'Databricks’ reference architecture for MLOps and LLMOps: dev/staging/prod, deploy-code vs deploy-models, Unity Catalog, MLflow and monitoring. Directly tested on ML Associate.' },
+  { title: 'The Big Book of Generative AI', by: 'Databricks', url: 'https://www.databricks.com/resources/ebook/big-book-generative-ai', kind: 'Free book', topic: 'apps', tracks: ['databricks'],
+    why: 'From prompt engineering to RAG, fine-tuning, pre-training and evaluation, with Databricks reference architectures for each stage.' },
+  { title: 'Learning Spark (2nd ed.)', by: 'Damji, Wenig, Das and Lee', url: 'https://www.oreilly.com/library/view/learning-spark-2nd/9781492050032/', kind: 'Book', topic: 'python', tracks: ['databricks'],
+    why: 'The O’Reilly book on Spark from the Databricks team: DataFrames, Spark SQL, Delta Lake and MLlib pipelines.', read: 'Chapters 3–4 (DataFrames and SQL) and 10 (MLlib).' },
+  { title: 'MLflow documentation', by: 'MLflow (Linux Foundation)', url: 'https://mlflow.org/docs/latest/', kind: 'Guide', topic: 'mlops', tracks: ['databricks'],
+    why: 'Tracking, models, the registry, tracing and GenAI evaluation. Both Databricks exams test MLflow APIs directly.' },
 
   // Responsible AI and security
   { title: 'OWASP Top 10 for LLM Applications', by: 'OWASP GenAI Security Project', url: 'https://genai.owasp.org/llm-top-10/', kind: 'Guide', topic: 'safety', tracks: ALL, start: true,

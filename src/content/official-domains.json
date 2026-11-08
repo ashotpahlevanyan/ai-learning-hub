@@ -72,5 +72,42 @@
     "github.com/Azure-Samples",
     "github.com/MicrosoftLearning",
     "github.com/MicrosoftDocs"
+  ],
+  "nvidia": [
+    "nvidia.com",
+    "rapids.ai",
+    "github.com/NVIDIA",
+    "github.com/NVDLI",
+    "github.com/NVIDIA-NeMo",
+    "nvd.orangelogic.com",
+    "certiverse.com",
+    "arxiv.org",
+    "learn.microsoft.com/en-us/azure/architecture",
+    "a2a-protocol.org",
+    "modelcontextprotocol.io",
+    "milvus.io",
+    "ibm.com/think",
+    "docs.langchain.com/oss/python/langgraph",
+    "eur-lex.europa.eu",
+    "nvidia.github.io",
+    "scikit-learn.org",
+    "huggingface.co",
+    "docs.wandb.ai",
+    "github.com/EleutherAI",
+    "matplotlib.org",
+    "nist.gov",
+    "pytorch.org",
+    "spacy.io"
+  ],
+  "databricks": [
+    "databricks.com",
+    "mlflow.org",
+    "spark.apache.org",
+    "delta.io",
+    "github.com/databricks",
+    "github.com/mlflow",
+    "hyperopt.github.io",
+    "optuna.org",
+    "optuna.readthedocs.io"
   ]
 }

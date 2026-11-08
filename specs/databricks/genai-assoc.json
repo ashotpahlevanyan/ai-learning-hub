@@ -1,0 +1,61 @@
+{
+  "track": "databricks",
+  "kind": "exam",
+  "verifyNotes": "Confirm against the official exam page (databricks.com/learn/certification/genai-engineer-associate) and the current exam guide PDF (https://www.databricks.com/sites/default/files/2026-10/databricks-certified-gen-ai-associate-exam-guide-august-2026.pdf; exam published 18 Mar 2026): 45 scored multiple-choice/multiple-selection items plus up to 10 unscored, 90 minutes, USD 200, online proctored (the web page also mentions test centres; report which), English/Japanese/pt-BR/Korean, valid 2 years, no published passing score. Weights: Design Applications 14, Data Preparation 14, Application Development 30, Assembling and Deploying 22, Governance 8, Evaluation and Monitoring 12. Use current names from docs.databricks.com: Agent Bricks (Knowledge Assistant, Multi-Agent Supervisor, Information Extraction), Mosaic AI Agent Framework, MLflow 3 (tracing, GenAI evaluation, scorers, LLM judges, Prompt Registry), Mosaic AI Vector Search, Model Serving, Foundation Model APIs, AI Gateway, inference tables, ai_query(), Unity Catalog, Databricks Apps, Genie, managed MCP servers. If something was renamed, teach the current name and mention the exam guide's name. Never copy the guide's sample questions.",
+  "id": "genai-assoc",
+  "code": "GENAI-ASSOC",
+  "name": "Databricks Certified Generative AI Engineer Associate",
+  "level": "Databricks · Associate",
+  "price": "$200",
+  "items": 45,
+  "minutes": 90,
+  "passing": 700,
+  "audience": "Engineers building RAG apps and agents on Databricks, with about six months of hands-on experience",
+  "format": "45 scored multiple-choice and multiple-selection items (up to 10 more unscored) in 90 minutes; online proctored; English, Japanese, Brazilian Portuguese, Korean. Databricks publishes no passing score; this site uses 700 on a 100–1000 scale for its mocks.",
+  "sources": [
+    "https://www.databricks.com/learn/certification/genai-engineer-associate",
+    "https://www.databricks.com/sites/default/files/2026-10/databricks-certified-gen-ai-associate-exam-guide-august-2026.pdf",
+    "https://docs.databricks.com/aws/en/generative-ai/agent-framework/build-genai-apps",
+    "https://docs.databricks.com/aws/en/generative-ai/agent-bricks/",
+    "https://docs.databricks.com/aws/en/generative-ai/vector-search",
+    "https://docs.databricks.com/aws/en/mlflow3/genai/",
+    "https://docs.databricks.com/aws/en/ai-gateway/",
+    "https://docs.databricks.com/aws/en/machine-learning/model-serving/"
+  ],
+  "scenarios": [
+    "HR policy RAG assistant",
+    "Multi-agent supervisor for sales analytics with Genie",
+    "Contract field extraction at scale with ai_query()",
+    "Customer-support agent in Slack",
+    "Regulated healthcare chatbot with PII masking"
+  ],
+  "domains": [
+    { "id": "d1", "name": "Design Applications", "weight": 14, "skills": [
+      "Prompts for formatted output; selecting model tasks and chain components; translating business goals into pipeline inputs and outputs",
+      "Defining and ordering tools for multi-stage reasoning; when to use Agent Bricks (Knowledge Assistant, Multi-Agent Supervisor, Information Extraction)"
+    ]},
+    { "id": "d2", "name": "Data Preparation", "weight": 14, "skills": [
+      "Chunking strategies (incl. advanced) for document structure and model limits; filtering extraneous content; Python packages for document extraction",
+      "Writing chunks to Delta tables in Unity Catalog; choosing source documents; retrieval metrics and evaluation; re-ranking"
+    ]},
+    { "id": "d3", "name": "Application Development", "weight": 30, "skills": [
+      "LangChain and similar tools; prompt augmentation and prompt adjustment; guardrails; qualitative assessment of quality and safety",
+      "Selecting LLMs, embedding models and context length; model hubs and model cards; choosing models from experiment metrics",
+      "MLflow and Agent Framework for agentic systems; evaluation vs monitoring in the lifecycle; multi-agent systems with Genie spaces or the conversational API"
+    ]},
+    { "id": "d4", "name": "Assembling and Deploying Applications", "weight": 22, "skills": [
+      "pyfunc chains with pre/post-processing; RAG building blocks (flavor, embedding model, retriever, dependencies, input example, signature); registering to Unity Catalog with MLflow",
+      "Mosaic AI Vector Search: concepts, creating and querying indexes, configuring for scale, freshness, latency and cost; Foundation Model APIs; access control for serving endpoints; ai_query() batch inference",
+      "Persistent memory stores; CI/CD (index updates, prompt promotion, component tests); managed, external and custom MCP servers; Prompt Registry versioning; user interfaces (Databricks Apps, Slack, Teams)"
+    ]},
+    { "id": "d5", "name": "Governance", "weight": 8, "skills": [
+      "Masking as a guardrail; guardrails against malicious inputs; legal and licensing requirements of data sources; mitigating problematic text in source data"
+    ]},
+    { "id": "d6", "name": "Evaluation and Monitoring", "weight": 12, "skills": [
+      "Choosing LLM size/architecture from metrics; key monitoring metrics; MLflow evaluation, scorers, LLM judges (which need ground truth), tracing; SME feedback",
+      "Inference tables, Agent Monitoring, AI Gateway (usage tables, rate limits); controlling LLM costs"
+    ]}
+  ],
+  "targets": { "lessons": 20, "flashcards": 110, "questions": 110 },
+  "out": "src/content/tracks/databricks/exams/genai-assoc.json"
+}

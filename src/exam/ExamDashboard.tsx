@@ -4,6 +4,7 @@ import { streak, useAppState, useProgress } from '../lib/store';
 import { cardQueue, DAY } from '../lib/srs';
 import { barTone, domainStats, fmtTime, readiness } from '../lib/quiz';
 import { Bar, StatCard, Tag, pct } from '../components/ui';
+import { fmtHours, studyTime } from '../lib/studyTime';
 
 export default function ExamDashboard() {
   const { exam, key, base, domainName } = useExam();
@@ -18,6 +19,8 @@ export default function ExamDashboard() {
   const cards = cardQueue(exam.flashcards, p, 'all');
   const best = p.mocks.reduce((m, x) => Math.max(m, x.score), 0);
   const last = p.mocks[p.mocks.length - 1];
+  const st = studyTime(exam);
+  const left = exam.lessons.filter(l => !p.lessons[l.id]).reduce((s, l) => s + (l.minutes ?? 15), 0);
 
   // Recommend one next step, from most to least urgent.
   const weakest = [...exam.domains].sort((a, b) => ds[a.id].mastery - ds[b.id].mastery || b.weight - a.weight)[0];
@@ -43,6 +46,7 @@ export default function ExamDashboard() {
             <div className="muted small">{exam.kind === 'course'
               ? `Course · ${exam.items}-question practice test in ${exam.minutes} min · ${exam.price}`
               : `${exam.items} items · ${exam.minutes} min · pass ${exam.passing}/1000 · ${exam.price}`}</div>
+            <div className="muted small">About {fmtHours(st.total)} of study: {fmtHours(st.lessons)} of lessons, {fmtHours(st.questions)} of practice questions, {fmtHours(st.flashcards)} of flashcards.</div>
             <div className="muted small">{exam.review
               ? <>Questions verified {exam.review.date}: {exam.review.questionsChecked} re-answered blind, {exam.review.fixed} corrections, {exam.review.dropped} dropped. <Link to="/about">How</Link></>
               : <>Questions not yet independently verified. <Link to="/about">What this means</Link></>}</div>
@@ -60,7 +64,7 @@ export default function ExamDashboard() {
       </section>
 
       <div className="grid stats">
-        <StatCard label="Lessons" value={`${done}/${exam.lessons.length}`}><Bar value={exam.lessons.length ? done / exam.lessons.length : 0} tone="accent" /></StatCard>
+        <StatCard label="Lessons" value={`${done}/${exam.lessons.length}`} note={left ? `${fmtHours(left)} of reading left` : 'All read'}><Bar value={exam.lessons.length ? done / exam.lessons.length : 0} tone="accent" /></StatCard>
         <StatCard label="Questions seen" value={`${seen}/${exam.questions.length}`} note={att ? `${pct(cor / att)}% accuracy over ${att} answers` : 'No answers yet'} />
         <StatCard label="Flashcards today" value={cards.due.length + cards.fresh.length} note={`${cards.learned}/${cards.total} learned`} />
         <StatCard label={exam.kind === 'course' ? 'Best practice test' : 'Best mock'} value={best || '—'} note={last ? `${p.mocks.length} taken · last ${last.score}` : 'None taken yet'} />
