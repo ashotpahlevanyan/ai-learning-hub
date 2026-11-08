@@ -4,12 +4,17 @@ import { tracks } from '../content';
 import { replaceState, streak, today, update, useAppState, type AppState } from '../lib/store';
 import { useMeta } from '../lib/useMeta';
 import TodayPanel from '../components/TodayPanel';
+import SyncPanel from '../components/SyncPanel';
+import { isSignedIn, replaceCloud, syncConfigured, useSyncStatus } from '../lib/sync';
 
 export default function ProgressPage() {
   const state = useAppState();
   useMeta('My progress');
   const fileRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState('');
+  const sync = useSyncStatus();
+  // Import and reset replace progress, so the server copy must be replaced too or the next sync would merge the old data back.
+  const pushReplacement = () => { if (isSignedIn()) replaceCloud().catch(() => setMessage('Saved here, but the synced copy could not be updated. Try Sync now.')); };
 
   const exportProgress = () => {
     const blob = new Blob([JSON.stringify(state, null, 1)], { type: 'application/json' });
@@ -26,6 +31,7 @@ export default function ProgressPage() {
       if (!data || typeof data.ex !== 'object') throw new Error('shape');
       if (!confirm('Replace your current progress with this backup?')) return;
       replaceState({ ...data, v: 1, days: data.days || [] });
+      pushReplacement();
       setMessage('Backup imported.');
     } catch {
       setMessage('That file is not a progress backup from this site.');
@@ -33,8 +39,9 @@ export default function ProgressPage() {
   };
 
   const reset = () => {
-    if (confirm('Erase all progress for every exam? This cannot be undone.')) {
+    if (confirm(`Erase all progress for every exam${isSignedIn() ? ', here and in your synced copy' : ''}? This cannot be undone.`)) {
       update(s => { s.ex = {}; s.days = []; });
+      pushReplacement();
       setMessage('All progress erased.');
     }
   };
@@ -44,7 +51,7 @@ export default function ProgressPage() {
   return (
     <main className="page">
       <h1>My progress</h1>
-      <p className="muted">{streak(state.days)} day study streak. Progress is saved in this browser only.</p>
+      <p className="muted">{streak(state.days)} day study streak. {sync.phase === 'off' || sync.phase === 'signed-out' ? 'Progress is saved in this browser only.' : 'Progress is saved in this browser and synced to your account.'}</p>
 
       <TodayPanel />
 
@@ -65,6 +72,8 @@ export default function ProgressPage() {
           </table>
         </div>
       </div>
+
+      {syncConfigured && <SyncPanel />}
 
       <div className="card">
         <h3 className="flush">Back up or move to another device</h3>

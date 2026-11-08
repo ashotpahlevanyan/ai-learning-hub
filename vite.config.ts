@@ -1,4 +1,5 @@
 import { defineConfig, type Plugin } from 'vitest/config';
+import { loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -6,22 +7,23 @@ import { studyTime, type StudyTime } from './src/lib/studyTime';
 
 // Content-Security-Policy for production only (the dev server needs inline scripts for hot reload).
 // GitHub Pages can't set headers, so it ships as a <meta> tag.
-const CSP = [
+// connect-src also allows the Supabase project when cloud sync is configured.
+const cspFor = (supabase?: string) => [
   "default-src 'self'",
   "script-src 'self'",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data:",
-  "connect-src 'self'",
+  `connect-src 'self'${supabase ? ` ${new URL(supabase).origin}` : ''}`,
   "base-uri 'self'",
   "form-action 'none'",
   "object-src 'none'",
 ].join('; ');
 
-const csp = (): Plugin => ({
+const csp = (supabase?: string): Plugin => ({
   name: 'csp-meta',
   apply: 'build',
-  transformIndexHtml: html => html.replace('<head>', `<head>\n    <meta http-equiv="Content-Security-Policy" content="${CSP}" />`),
+  transformIndexHtml: html => html.replace('<head>', `<head>\n    <meta http-equiv="Content-Security-Policy" content="${cspFor(supabase)}" />`),
 });
 
 // Track pages show study time without loading every exam bundle, so it is summed here at build time.
@@ -57,8 +59,8 @@ const studyTimes = (): Plugin => {
 };
 
 // BASE_PATH is "/" on a custom domain and "/<repo>/" on <user>.github.io/<repo>/ (set by the deploy workflow).
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: process.env.BASE_PATH || '/',
-  plugins: [react(), csp(), studyTimes()],
+  plugins: [react(), csp(loadEnv(mode, process.cwd(), 'VITE_').VITE_SUPABASE_URL), studyTimes()],
   test: { environment: 'node' },
-});
+}));

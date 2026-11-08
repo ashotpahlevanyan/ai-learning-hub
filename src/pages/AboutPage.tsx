@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { syncConfigured } from '../lib/sync';
 import { useMeta } from '../lib/useMeta';
 
 export default function AboutPage() {
@@ -20,9 +21,10 @@ export default function AboutPage() {
 
       <h2>Privacy</h2>
       <ul>
-        <li>There are no accounts, cookies, analytics or ads.</li>
-        <li>Your progress (answers, flashcard schedule, mock results, study plan) is stored only in your browser's local storage. It never leaves your device unless you export it.</li>
-        <li>Clearing your browser data erases your progress, so export a backup from <Link to="/progress">My progress</Link> now and then.</li>
+        <li>There are no cookies, analytics or ads, and you never need an account.</li>
+        <li>Your progress (answers, flashcard schedule, mock results, study plan) is stored in your browser's local storage. It never leaves your device unless you export it or sign in to sync.</li>
+        {syncConfigured && <li>Signing in to sync is optional. If you do, your sign-in identity (email or GitHub/Google account) and a copy of your progress are stored in the site's Supabase database, readable only by your account. Delete that copy at any time from <Link to="/progress">My progress</Link>.</li>}
+        <li>Clearing your browser data erases the progress stored there, so sign in to sync or export a backup from <Link to="/progress">My progress</Link> now and then.</li>
         <li>The site loads fonts from Google Fonts, which receives your IP address when fonts are fetched.</li>
       </ul>
 

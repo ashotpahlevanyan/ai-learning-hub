@@ -2,7 +2,7 @@
 
 Free, structured study paths for AI and LLM certifications. Tracks: Anthropic Claude (CCAO-F, CCDV-F, CCAR-F, CCAR-P), Google (Generative AI Leader and Professional Machine Learning Engineer exams, Gemini API Developer course), OpenAI (AI Foundations and API & Agents Developer courses), AWS (AI Practitioner, Machine Learning Engineer – Associate MLA-C02, Generative AI Developer – Professional, Solutions Architect – Professional SAP-C02 and SAP-C03), Microsoft Azure (AI-901 Azure AI Fundamentals, AI-103 Developing AI Apps and Agents), NVIDIA (NCA-GENL Generative AI LLMs, NCP-AAI Agentic AI), Databricks (Generative AI Engineer Associate, Machine Learning Associate), plus AI Foundations (Mathematics for AI and LLMs, Python for AI Engineering). Each has lessons, spaced-repetition flashcards, scenario practice questions, timed mock exams and a written runbook. Track and exam pages show estimated study time: the lessons' reading time plus one pass through the practice questions and flashcards, summed at build time. A Library page lists the best books, free online books, courses and papers for going deeper, and each track page shows its own reading list.
 
-React + TypeScript + Vite. No backend: progress is stored in the browser and can be exported and imported.
+React + TypeScript + Vite. No backend of its own: progress is stored in the browser and can be exported and imported. Optional cloud sync (see [Cloud sync](#cloud-sync)) uses a free Supabase project for sign-in and one row of progress per user.
 
 ## Develop
 
@@ -83,3 +83,16 @@ Run it from Claude Code with args `{ "root": "<path to web>", "spec": "<path to 
 ## Disclaimer
 
 Independent study resource, not affiliated with or endorsed by Anthropic. Practice items are original, not real exam questions. Exam facts come from third-party summaries of the official guides; confirm them with the provider.
+
+## Cloud sync
+
+Signing in is optional; the site works fully without it. When `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set at build time, My progress shows a "Sync across devices" panel. Signed-in progress is merged per item (latest answer or review wins; lessons, study days and mocks are combined) and saved to the user's row a few seconds after each change. The Supabase client loads only for signed-in visitors.
+
+Setup (Supabase free plan):
+
+1. In the Supabase SQL editor, run `supabase/progress.sql`. It creates `public.progress` with row-level security so each user can reach only their own row.
+2. Authentication → URL configuration: set the Site URL to the live site and add `https://<your-site>/progress`, `http://localhost:5173/progress` and `http://localhost:4173/progress` to the redirect URLs.
+3. Authentication → Sign In / Providers: enable the methods you want (Email is on by default; GitHub needs a GitHub OAuth app whose callback is `https://<project-ref>.supabase.co/auth/v1/callback`).
+4. Locally, put the project URL and anon (publishable) key in `.env.local` (ignored by git). For deploys, add them as repository variables `SUPABASE_URL`, `SUPABASE_ANON_KEY` and optionally `AUTH_PROVIDERS` (default `github,email`). The anon key is public by design; row-level security protects the data.
+
+Free-plan limits: Supabase pauses a project after a week with no activity (restore it from the dashboard), and its built-in email service sends only a few sign-in emails per hour; add custom SMTP in Authentication settings if that becomes a limit.

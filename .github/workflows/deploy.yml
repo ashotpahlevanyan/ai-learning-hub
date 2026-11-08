@@ -36,6 +36,11 @@ jobs:
             echo "SITE_URL=https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" >> "$GITHUB_ENV"
           fi
       - run: npm run build
+        env:
+          # Optional cloud sync; leave the repository variables unset to build without it.
+          VITE_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+          VITE_AUTH_PROVIDERS: ${{ vars.AUTH_PROVIDERS }}
       # Browser smoke test of the built site; a failure blocks the deploy.
       - run: npx playwright-core install --with-deps chromium
       - run: npm run test:e2e

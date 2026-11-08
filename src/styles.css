@@ -166,7 +166,7 @@ h3 { font-size: 17px; margin: 18px 0 8px; }
 .bar.good > span { background: var(--good); }
 .bar.bad > span { background: var(--bad); }
 .bar.warn > span { background: var(--warn); }
-input[type=number], input[type=date], select {
+input[type=number], input[type=date], input[type=email], select {
   font: inherit; padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text);
 }
 table { width: 100%; border-collapse: collapse; font-size: 15px; }
@@ -270,3 +270,5 @@ select { max-width: 100%; }
 
 /* KaTeX: wide display equations scroll inside their own box instead of widening the page */
 .katex-display { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

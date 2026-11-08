@@ -75,8 +75,14 @@ export function progressIn(draft: AppState, key: string): ExamProgress {
   return draft.ex[key];
 }
 
+/** Call `cb` after every change; returns an unsubscribe function. */
+export function subscribe(cb: () => void) {
+  listeners.add(cb);
+  return () => { listeners.delete(cb); };
+}
+
 export function useAppState(): AppState {
-  return useSyncExternalStore(cb => { listeners.add(cb); return () => listeners.delete(cb); }, getState, getState);
+  return useSyncExternalStore(subscribe, getState, getState);
 }
 
 export function useProgress(key: string): ExamProgress {
