@@ -4,6 +4,10 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './styles.css';
 import { startSync } from './lib/sync';
+import { enableDatabaseContent } from './content/live';
+
+// Read exams from the content database when the build enables it (falls back to the bundled copy).
+enableDatabaseContent();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

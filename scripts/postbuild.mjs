@@ -4,7 +4,7 @@ import { copyFileSync, readFileSync, readdirSync, writeFileSync, existsSync } fr
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 
-const dist = 'dist';
+const dist = process.env.OUT_DIR || 'dist';
 const tracksDir = 'src/content/tracks';
 const site = (process.env.SITE_URL || '').replace(/\/$/, '');
 

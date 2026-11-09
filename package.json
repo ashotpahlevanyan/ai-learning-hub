@@ -12,7 +12,9 @@
     "check:links": "node scripts/check-links.mjs",
     "content:normalize": "node scripts/normalize-content.mjs",
     "content:export": "vite-node scripts/export-content.ts",
-    "test:e2e": "node e2e/smoke.mjs"
+    "test:e2e": "node e2e/smoke.mjs",
+    "content:verify-db": "vite-node scripts/verify-db.ts",
+    "test:e2e:db": "node e2e/db.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.118.0",
@@ -27,6 +29,7 @@
     "remark-math": "6.0.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.12",
     "@types/node": "22.10.1",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",

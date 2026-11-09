@@ -12,6 +12,7 @@ npm run dev        # http://localhost:5173
 npm test           # content validation + logic tests
 npm run build      # production build in dist/
 npm run test:e2e   # browser smoke test of dist/ (after build)
+npm run test:e2e:db  # database-backed content, with fallbacks (builds dist-db/)
 npm run check:links  # every source/resource URL still resolves (network)
 ```
 
@@ -92,13 +93,29 @@ To load into Supabase:
 
 1. Run `supabase/content.sql` in the SQL editor (once).
 2. `npm run content:export`
-3. Load the files in order with `psql` and the connection string from Project Settings → Database (the larger files are 1–2 MB, more than the SQL editor handles comfortably):
+3. Load it with `psql` and the connection string from Project Settings → Database (the file is several MB, more than the SQL editor handles comfortably):
    ```bash
-   for f in export/sql/*.sql; do psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q -f "$f"; done
+   psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q -f export/load.sql
    ```
-   `00-clear.sql` empties the content tables first, so the same command reloads after any content change. It never touches `public.progress`.
+   `load.sql` clears the content tables and inserts everything in one transaction, so readers never see a half-loaded database and the same command reloads after any content change. It never touches `public.progress`. (`export/sql/NN-<table>.sql` has the same rows split per table, for tools that prefer that.)
+4. `npm run content:verify-db` (with `SUPABASE_URL` and `SUPABASE_ANON_KEY` set) reads every exam and guide back through the REST API and compares it with the bundle.
 
-The site still reads the bundled files; switching it to read from the database is a later step (each exam loads through one `load()` function in its `track.ts`, which is the place to swap in a query).
+### Reading content from the database
+
+Build with `VITE_CONTENT_SOURCE=db` (plus the Supabase URL and anon key) and the site reads exams and track guides from the database instead of the bundled files. The track and exam listings stay bundled, so pages and the sitemap still render without the database.
+
+For each exam the site uses, in order: the database; the last copy it read from the database (kept in the browser's Cache API, so it works offline); the bundled JSON. An unreachable database, an HTTP error or an exam with missing rows (for example, one caught mid-load) never breaks a page. The code is in `src/lib/dbContent.ts` (REST reads, paging past Supabase's 1000-row cap, row → exam assembly) and `src/content/live.ts` (fallbacks).
+
+In the deploy workflow:
+
+| Setting | Kind | Effect |
+| --- | --- | --- |
+| `CONTENT_SOURCE` = `db` | variable | The site reads content from the database. Unset keeps bundled content. |
+| `DATABASE_URL` | secret | After the tests pass, every deploy reloads the content tables from the repo (`load.sql`) and runs `content:verify-db`. Unset skips this. |
+
+The repo stays the source of truth: a deploy replaces the database content with what is committed, so make lasting fixes in the repo, not in the Supabase table editor.
+
+Tests: `npm test` includes a round trip of every exam through its rows and a real-Postgres check (PGlite) that the schema and `load.sql` load twice, that anon can read but not write, and that every exam and guide reads back exactly. `npm run test:e2e:db` builds a database-mode copy in `dist-db/`, serves the exported rows from a local REST stand-in and checks in Chrome, under the production CSP, that content comes from the database and falls back correctly when it is down.
 
 ## Disclaimer
 

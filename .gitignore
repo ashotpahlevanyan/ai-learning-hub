@@ -5,3 +5,4 @@ dist
 .pipeline
 *.tsbuildinfo
 export
+dist-db

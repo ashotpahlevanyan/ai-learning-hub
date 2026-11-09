@@ -1,6 +1,7 @@
 // Exports all site content as database rows matching supabase/content.sql:
 //   export/json/<table>.json   one array of rows per table (for an API loader or another database)
 //   export/sql/NN-<table>.sql  INSERT statements, in dependency order, each file in one transaction
+//   export/load.sql            the full reload (clear + all inserts) in a single transaction
 // Run with `npm run content:export [-- <out dir>]`. It reads the same modules the site uses, so the
 // export always matches what is published. Loading replaces existing rows (see README).
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
@@ -8,6 +9,7 @@ import { join } from 'node:path';
 import { tracks } from '../src/content';
 import { library, topics } from '../src/content/library';
 import { roadmap } from '../src/content/roadmap';
+import { examToRows } from '../src/lib/contentRows';
 
 type Row = Record<string, unknown>;
 const out = process.argv[2] || 'export';
@@ -25,26 +27,9 @@ for (const [ti, t] of tracks.entries()) {
   t.paths?.forEach((p, i) => rows.track_paths.push({ track_id: t.id, position: i, who: p.who, exam_ids: p.order, why: p.why }));
 
   for (const [ei, s] of t.exams.entries()) {
-    const e = await s.load(), key = `${t.id}/${s.id}`;
-    if (e.id !== s.id) problems.push(`${key}: bundle id is ${e.id}`);
-    rows.exams.push({
-      key, track_id: t.id, id: s.id, position: ei, kind: s.kind, code: s.code, name: s.name, level: s.level, tier: s.tier, audience: s.audience,
-      price: s.price, items: s.items, minutes: s.minutes, passing: e.passing, format: e.format ?? null, scenarios: e.scenarios ?? [], review: e.review ?? null,
-    });
-    const domains = new Set(e.domains.map(d => d.id));
-    const domainOf = (kind: string, id: string, d: string) => { if (!domains.has(d)) problems.push(`${key} ${kind} ${id}: unknown domain ${d}`); return d; };
-    e.domains.forEach((d, i) => rows.domains.push({ exam_key: key, id: d.id, position: i, name: d.name, weight: d.weight, summary: d.summary ?? null, subskills: d.subskills ?? [] }));
-    e.lessons.forEach((l, i) => {
-      rows.lessons.push({ exam_key: key, id: l.id, domain_id: domainOf('lesson', l.id, l.domain), position: i, title: l.title, minutes: l.minutes ?? null, summary: l.summary ?? null, key_points: l.keyPoints ?? [], traps: l.gotchas ?? [], lab: l.lab ?? null });
-      l.sections.forEach((sec, j) => rows.lesson_sections.push({ exam_key: key, lesson_id: l.id, id: sec.id, position: j, heading: sec.heading, body: sec.body }));
-      l.sources?.forEach((src, j) => rows.sources.push({ exam_key: key, owner_type: 'lesson', owner_id: l.id, position: j, title: src.title, url: src.url }));
-    });
-    e.questions.forEach((q, i) => {
-      rows.questions.push({ exam_key: key, id: q.id, domain_id: domainOf('question', q.id, q.domain), position: i, difficulty: q.difficulty ?? null, scenario: q.scenario ?? null, stem: q.stem, explanation: q.explanation });
-      q.options.forEach((o, j) => rows.question_options.push({ exam_key: key, question_id: q.id, position: j, body: o, rationale: q.rationales?.[j] ?? null, is_correct: q.answer.includes(j) }));
-      q.sources?.forEach((src, j) => rows.sources.push({ exam_key: key, owner_type: 'question', owner_id: q.id, position: j, title: src.title, url: src.url }));
-    });
-    e.flashcards.forEach((c, i) => rows.flashcards.push({ exam_key: key, id: c.id, domain_id: domainOf('flashcard', c.id, c.domain), position: i, front: c.front, back: c.back }));
+    const { exam, ...examRows } = examToRows(t.id, ei, s, await s.load(), problems);
+    rows.exams.push(exam);
+    for (const [table, list] of Object.entries(examRows)) rows[table as keyof typeof examRows].push(...list);
   }
 }
 
@@ -86,6 +71,7 @@ rmSync(out, { recursive: true, force: true });
 mkdirSync(join(out, 'json'), { recursive: true });
 mkdirSync(join(out, 'sql'), { recursive: true });
 const BATCH = 200;
+const inserts: string[] = [];
 TABLES.forEach((t, i) => {
   const rs = rows[t];
   writeFileSync(join(out, 'json', `${t}.json`), JSON.stringify(rs, null, 2) + '\n');
@@ -94,10 +80,13 @@ TABLES.forEach((t, i) => {
   for (let j = 0; j < rs.length; j += BATCH) {
     chunks.push(`insert into public.${t} (${cols.join(', ')}) values\n${rs.slice(j, j + BATCH).map(r => `  (${cols.map(c => lit(c, r[c])).join(', ')})`).join(',\n')};`);
   }
-  writeFileSync(join(out, 'sql', `${String(i + 1).padStart(2, '0')}-${t}.sql`), `-- ${rs.length} rows\nbegin;\n${chunks.join('\n')}\ncommit;\n`);
+  writeFileSync(join(out, 'sql', `${String(i + 1).padStart(2, '0')}-${t}.sql`), `-- ${rs.length} rows\nbegin;\n${chunks.join('\n')}\ncommit;\n`);  inserts.push(`-- ${t}: ${rs.length} rows`, ...chunks);
 });
 // Clearing runs in reverse order so foreign keys never block it.
-writeFileSync(join(out, 'sql', '00-clear.sql'), `-- Remove existing content before a reload. Progress (public.progress) is not touched.\nbegin;\n${[...TABLES].reverse().map(t => `delete from public.${t};`).join('\n')}\ncommit;\n`);
+const clear = [...TABLES].reverse().map(t => `delete from public.${t};`).join('\n');
+writeFileSync(join(out, 'sql', '00-clear.sql'), `-- Remove existing content before a reload. Progress (public.progress) is not touched.\nbegin;\n${clear}\ncommit;\n`);
+// The whole reload in one transaction: readers see the old content or the new, never a half-loaded mix.
+writeFileSync(join(out, 'load.sql'), `-- Replace all content atomically. Progress (public.progress) is not touched.\nbegin;\n${clear}\n${inserts.join('\n')}\ncommit;\n`);
 
 console.log(TABLES.map(t => `${t.padEnd(18)} ${rows[t].length}`).join('\n'));
-console.log(`\nWrote ${out}/json and ${out}/sql.`);
+console.log(`\nWrote ${out}/json, ${out}/sql and ${out}/load.sql.`);
