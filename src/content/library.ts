@@ -164,7 +164,7 @@ export const library: LibraryItem[] = [
     why: 'Thirty named solutions to recurring problems (feature store, transform, checkpoints, rebalancing, continued evaluation) by Google Cloud engineers. Strong prep for PMLE.' },
   { title: 'Rules of Machine Learning', by: 'Martin Zinkevich, Google', url: 'https://developers.google.com/machine-learning/guides/rules-of-ml', kind: 'Guide', topic: 'mlops', tracks: ['gemini', 'aws', 'azure'],
     why: 'Forty-three hard-won rules for ML in production, from “do not be afraid to launch without ML” to training-serving skew.' },
-  { title: 'Hidden Technical Debt in Machine Learning Systems', by: 'Sculley et al. (2015)', url: 'https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems', kind: 'Paper', topic: 'mlops', tracks: CLOUD,
+  { title: 'Hidden Technical Debt in Machine Learning Systems', by: 'Sculley et al. (2015)', url: 'https://research.google/pubs/hidden-technical-debt-in-machine-learning-systems/', kind: 'Paper', topic: 'mlops', tracks: CLOUD,
     why: 'The classic paper on why ML code is a small part of an ML system: entanglement, feedback loops and pipeline jungles.' },
   { title: 'MLOps: continuous delivery and automation pipelines', by: 'Google Cloud', url: 'https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning', kind: 'Guide', topic: 'mlops', tracks: ['gemini'],
     why: 'Defines MLOps levels 0, 1 and 2 and what each automates. Frequently reflected in PMLE scenarios.' },

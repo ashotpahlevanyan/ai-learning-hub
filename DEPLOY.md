@@ -92,4 +92,3 @@ The production CSP adds the Supabase origin to `connect-src` automatically at bu
 
 - `katex` has one low-severity advisory, about prototype pollution bypassing the `trust` option. The site does not enable `trust`, and the fix is in 0.19 (a major version, along with `rehype-katex` and `remark-math`).
 - The remaining `npm audit` findings are in dev-only tooling (the vite and vitest dev servers) and do not ship. Upgrading them needs major versions.
-- The NeurIPS proceedings site (`papers.nips.cc`) timed out from CI and locally on 2026-11-09/10. If it is still down at the next weekly check, link the paper's arXiv page instead.
