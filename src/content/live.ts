@@ -19,7 +19,16 @@ async function recall<T>(key: string): Promise<T | undefined> {
   try { return await (await (await caches.open(CACHE)).match(cacheUrl(key)))?.json(); } catch { return undefined; }
 }
 
-async function preferDb<T>(key: string, remote: () => Promise<T>, bundled: () => Promise<T>): Promise<T> {
+// Search and the Today panel load many exams at once: read each from the database at most once per visit.
+const session = new Map<string, Promise<unknown>>();
+
+function preferDb<T>(key: string, remote: () => Promise<T>, bundled: () => Promise<T>): Promise<T> {
+  // A total failure (even the bundle) is not kept, so a retry can succeed.
+  if (!session.has(key)) session.set(key, load(key, remote, bundled).catch(err => { session.delete(key); throw err; }));
+  return session.get(key) as Promise<T>;
+}
+
+async function load<T>(key: string, remote: () => Promise<T>, bundled: () => Promise<T>): Promise<T> {
   try {
     const v = await remote();
     void remember(key, v);
