@@ -19,11 +19,11 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "2.118.0",
-    "katex": "0.16.11",
+    "katex": "0.16.47",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-markdown": "9.0.1",
-    "react-router-dom": "6.28.0",
+    "react-router-dom": "6.30.6",
     "rehype-katex": "7.0.1",
     "rehype-slug": "6.0.0",
     "remark-gfm": "4.0.0",
@@ -37,7 +37,7 @@
     "@vitejs/plugin-react": "4.3.4",
     "playwright-core": "1.47.2",
     "typescript": "5.6.3",
-    "vite": "5.4.11",
-    "vitest": "2.1.8"
+    "vite": "5.4.21",
+    "vitest": "2.1.9"
   }
 }
