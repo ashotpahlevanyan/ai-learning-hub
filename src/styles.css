@@ -410,3 +410,18 @@ select { max-width: 100%; }
 .ab-hint { flex: 1; text-align: right; font-size: 14px; padding-right: 4px; }
 @media (pointer: coarse) { .hide-touch { display: none; } }
 .ab-btn.spacer { visibility: hidden; }
+
+/* Mock score trend (ScoreTrend.tsx): one series, recessive grid, dashed pass line. */
+.trend { position: relative; margin: 8px 0 14px; }
+.trend svg { display: block; overflow: visible; }
+.trend .grid { stroke: var(--border); stroke-width: 1; }
+.trend .pass { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.trend .axis { fill: var(--muted); font-size: 11px; font-family: var(--mono); }
+.trend .label { paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.trend .line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.trend .dot { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.trend .hit { fill: transparent; cursor: pointer; outline: none; }
+.trend .hit:focus-visible { stroke: var(--accent); stroke-width: 2; }
+.trend-tip { position: absolute; transform: translate(-50%, calc(-100% - 12px)); pointer-events: none; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 13px; white-space: nowrap; box-shadow: 0 4px 14px rgb(0 0 0 / .12); }
+.trend-tip.start { transform: translate(-12px, calc(-100% - 12px)); }
+.trend-tip.end { transform: translate(calc(-100% + 12px), calc(-100% - 12px)); }

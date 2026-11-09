@@ -5,6 +5,7 @@ import { cardQueue, DAY } from '../lib/srs';
 import { barTone, domainStats, fmtTime, readiness } from '../lib/quiz';
 import { Bar, StatCard, Tag, pct } from '../components/ui';
 import { fmtHours, studyTime } from '../lib/studyTime';
+import ScoreTrend from '../components/ScoreTrend';
 import { fmtDay, isRetired, isRetiring, replacementOf } from '../lib/retire';
 
 export default function ExamDashboard() {
@@ -96,6 +97,7 @@ export default function ExamDashboard() {
       {p.mocks.length > 0 && (
         <section className="card">
           <h2 className="flush">{exam.kind === 'course' ? 'Practice test history' : 'Mock history'}</h2>
+          <ScoreTrend mocks={p.mocks} passing={exam.passing} />
           <div className="table-wrap">
             <table>
               <thead><tr><th>Date</th><th>Score</th><th>Correct</th><th>Time</th><th /></tr></thead>
