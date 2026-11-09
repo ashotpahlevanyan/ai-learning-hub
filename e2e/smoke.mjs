@@ -86,7 +86,7 @@ try {
     if (n) fail(`${p}: ${n} exam cards show no study time`);
   }
   await page.goto(`${B}/library`); await page.waitForSelector('.library li a[href^="https://"]').catch(() => fail('library has no entries'));
-  await page.goto(`${B}/library?track=azure&free=1`); if (!(await page.$$('.library li')).length) fail('library filter shows nothing for azure + free');
+  await page.goto(`${B}/library?track=azure&free=1`); await page.waitForSelector('.library li').catch(() => fail('library filter shows nothing for azure + free'));
   await page.goto(`${B}/roadmap`); await page.waitForSelector('.this-week .tasks input[type=checkbox]').catch(() => fail('roadmap shows no tasks for this week'));
   if ((await page.$$('details.week')).length !== 24) fail('roadmap does not show 24 weeks');
   await page.click('.this-week .tasks input[type=checkbox]'); await page.reload(); await page.waitForSelector('.this-week .tasks input');
