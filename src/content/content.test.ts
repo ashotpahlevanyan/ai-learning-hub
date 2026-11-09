@@ -48,7 +48,13 @@ describe.each(tracks.flatMap(t => t.exams.map(e => [`${t.id}/${e.id}`, t.id, e] 
     exam.lessons.forEach(l => sources('lesson', l.id, l.sources));
     exam.questions.forEach(q => sources('question', q.id, q.sources));
 
-    exam.lessons.forEach(l => { check('lesson', l); if (!l.title || !l.sections?.length) problems.push(`lesson ${l.id} is incomplete`); });
+    exam.lessons.forEach(l => {
+      check('lesson', l);
+      if (!l.title || !l.sections?.length) problems.push(`lesson ${l.id} is incomplete`);
+      // Section ids are database keys and page anchors: present, slug-shaped and unique within the lesson (npm run content:normalize).
+      const ids = (l.sections ?? []).map(s => s.id);
+      if (ids.some(id => !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(id ?? '')) || new Set(ids).size !== ids.length) problems.push(`lesson ${l.id}: section ids missing, malformed or repeated`);
+    });
     exam.flashcards.forEach(c => { check('card', c); if (!c.front || !c.back) problems.push(`card ${c.id} is incomplete`); });
     exam.questions.forEach(q => {
       check('question', q);

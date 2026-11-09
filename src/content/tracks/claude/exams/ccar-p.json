@@ -85,22 +85,27 @@
       "summary": "The core architect skill: pick the least complex pattern that meets the requirement, and justify the step up in autonomy with evidence.",
       "sections": [
         {
+          "id": "the-ladder-of-complexity",
           "heading": "The ladder of complexity",
           "body": "Anthropic's guidance on building effective agents distinguishes three levels, and the exam rewards choosing the **lowest rung that works**:\n\n- **Augmented LLM** — a single model call enhanced with retrieval, tools and memory. Most \"chat over my data\" and \"extract fields from this document\" problems live here.\n- **Workflow** — LLM calls orchestrated through **predefined code paths**. The developer decides the steps; the model executes each step. Predictable, testable, cheaper.\n- **Agent** — the model **dynamically directs its own process and tool use**, looping until the task is done. Flexible, but less predictable, more expensive and harder to evaluate.\n\nStart with the simplest option, measure, and only add autonomy when the simpler design demonstrably fails.\n\nAgentic systems trade **latency and cost for performance**, so often a single LLM call with retrieval and good examples is enough. Note that Anthropic's \"Building effective agents\" post (Dec 2024) now carries a note that much of its tooling landscape has changed; the **patterns** still hold, but check current docs for products and surfaces."
         },
         {
+          "id": "workflow-patterns-you-must-recognise",
           "heading": "Workflow patterns you must recognise",
           "body": "- **Prompt chaining** — fixed sequence of steps, each consuming the previous output; add programmatic \"gates\" between steps. Use when a task decomposes cleanly into fixed subtasks (draft → check → translate).\n- **Routing** — classify the input, then send it to a specialised prompt, tool set or model. Use when categories are distinct (billing vs technical vs refund) or to route easy queries to a cheaper model.\n- **Parallelization** — *sectioning* (independent subtasks run concurrently) or *voting* (same task run several times for confidence, e.g., multiple safety reviewers).\n- **Orchestrator–workers** — a central LLM breaks a task down dynamically and delegates to workers, then synthesises. Use when subtasks can't be predicted in advance.\n- **Evaluator–optimizer** — one call generates, another evaluates against criteria and feeds back, looping. Use when clear evaluation criteria exist and iteration measurably helps."
         },
         {
+          "id": "when-an-agent-is-justified",
           "heading": "When an agent is justified",
           "body": "An agent is easiest to justify when these hold (design judgment built on Anthropic's guidance that agents suit open-ended problems and need sandboxed testing and guardrails):\n\n- The path to the solution is **open-ended** — you cannot hard-code the steps.\n- The task has a **verifiable outcome** or the environment gives **ground-truth feedback** (tests pass, ticket resolved, query returns rows).\n- Errors are **recoverable or contained** — sandboxing, approvals, or reversible actions.\n- The **value of the task justifies** higher cost and latency.\n\nIf the steps are known, a workflow wins on cost, latency, predictability and auditability."
         },
         {
+          "id": "agent-computer-interface-and-where-the-loop-runs",
           "heading": "Agent-computer interface and where the loop runs",
           "body": "Anthropic's principles for agents are **simplicity**, **transparent planning** and a well-crafted **agent-computer interface (ACI)**. Treat tool design like UX: *poka-yoke* the tools so mistakes are hard to make. In Anthropic's example, requiring **absolute file paths** removed a whole class of errors that relative paths caused.\n\nOnce you know the pattern, choose where the loop runs:\n\n- **Client SDK** — you write the loop yourself (or use the beta tool runner). Maximum control.\n- **Agent SDK** (Python, TypeScript) — embeds Claude Code's loop, tools, permissions, sessions and hooks **in your own process**.\n- **Managed Agents** — Anthropic hosts the loop, running tools in an Anthropic cloud sandbox or a self-hosted sandbox.\n- **Claude Code CLI** — interactive use by developers.\n\nThird-party products must authenticate with API keys; they may not offer claude.ai login or its rate limits to their users without approval."
         },
         {
+          "id": "exam-reasoning-pattern",
           "heading": "Exam reasoning pattern",
           "body": "For any design question, ask in order:\n\n- What is the **business outcome** and how is it measured?\n- What is the **simplest** pattern meeting the accuracy, latency and risk constraints?\n- Where must **deterministic code** (not the model) enforce rules — authz, money movement, compliance?\n- Where are the **human checkpoints**?\n- How will we **evaluate** it before and after launch?\n\nDistractors usually add autonomy, agents or fine-tuning before the simpler options were tried."
         }
@@ -147,22 +152,27 @@
       "summary": "Multi-agent designs buy parallelism and context isolation at the price of tokens, latency, coordination failures and debugging difficulty.",
       "sections": [
         {
+          "id": "why-teams-reach-for-multi-agent",
           "heading": "Why teams reach for multi-agent",
           "body": "Legitimate reasons:\n\n- **Breadth-first, parallelisable work** — e.g., research across many independent sources, where subagents explore in parallel and return condensed findings.\n- **Context isolation** — each subagent gets a clean, focused context window instead of one bloated one; only summaries flow back.\n- **Separation of privilege** — a subagent with read-only tools does the risky reading of untrusted content; a different component holds write permissions.\n- **Specialisation** — distinct tool sets and instructions per role.\n\nAnthropic's write-up of its multi-agent research system (June 2025) is the reference point:\n\n- An Opus 4 lead with Sonnet 4 subagents beat a single Opus 4 agent by **90.2%** on an internal research eval.\n- **Token usage alone explained about 80%** of performance variance on BrowseComp — much of the gain is spending more tokens in parallel.\n- Agents used about **4×** the tokens of chat; multi-agent systems about **15×**.\n- Parallelisation cut research time by up to 90%; rewriting tool descriptions cut task time by 40%.\n\nThese are Anthropic-internal, directional results. The lesson: multi-agent is worth it only when the **task value** pays for the token multiplier."
         },
         {
+          "id": "topologies",
           "heading": "Topologies",
           "body": "- **Orchestrator–subagents (hub and spoke)** — a lead agent plans, spawns subagents with explicit task descriptions (objective, output format, tools, boundaries), and synthesises. Most common and easiest to reason about.\n- **Pipeline / assembly line** — fixed handoffs between specialised agents. Really a workflow with agentic steps.\n- **Peer / swarm** — agents message each other freely. Hard to debug, prone to loops and drift; rarely the right exam answer.\n- **Evaluator / critic** — an independent instance reviews another's output. Independent review catches errors that self-review rationalises away."
         },
         {
+          "id": "when-not-to-use-multi-agent",
           "heading": "When NOT to use multi-agent",
           "body": "- **Tightly coupled tasks** where every step depends on shared, evolving state — Anthropic says tasks that need shared context, which includes **most coding**, are \"not a good fit for multi-agent systems today\" — splitting causes conflicting edits and lost context.\n- **Low-value, high-volume tasks** where token multiplication destroys unit economics.\n- **Latency-critical interactions** (live chat) where serial orchestration adds seconds.\n- When a **single agent with better tools or context** would do.\n- **Simple queries.** Scale effort to complexity: simple fact-finding needs one agent with roughly 3–10 tool calls, not a fan-out.\n\nCommon failure modes: vague delegation (subagents duplicate work or misread scope), unbounded spawning, lost information in summaries, and no end-to-end trace."
         },
         {
+          "id": "design-controls",
           "heading": "Design controls",
           "body": "- Give each subagent a **precise brief**: goal, scope boundaries, expected output schema, tool list, effort budget.\n- Put **hard limits** in code: max subagents, max turns, max spend, timeouts.\n- **Trace** every agent with a shared correlation ID.\n- Have the orchestrator **verify** results (citations, tests) rather than trust them.\n- Keep **write/irreversible actions** out of agents that read untrusted content."
         },
         {
+          "id": "multi-model-strategies-and-subagent-economics",
           "heading": "Multi-model strategies and subagent economics",
           "body": "Anthropic's cost-and-intelligence guidance describes two multi-model patterns:\n\n- **Advisor** — a cheaper executor escalates hard decisions to a stronger model through the (beta) advisor tool. It adds prompt overhead to **every** request even when unused, and it can help only when the executor actually consults it.\n- **Orchestrator** — a frontier model plans and dispatches lower-cost workers.\n\nIn Anthropic's internal tests, delegation came out ahead only for **routine work with a long cost tail** and **work larger than one context window**. For a **single dependent chain**, the orchestrator-tier model alone at **lower effort** did better.\n\nA related lever is an **effort cascade**: run everything at low effort, then re-run only the failures at high effort. It needs a **reliable failure checker** (e.g., tests). Price the **tail** of the workload, not the median.\n\nIn Claude Code, subagents are \"a context-management tool, not a discount\": each has its own context window and spends its own tokens, returning only a summary. The cost lever is routing suitable subagents to a cheaper model. Keep work in the main conversation when it needs iteration, phases share context, the change is quick or latency matters."
         }
@@ -218,14 +228,17 @@
       "summary": "Architects must connect every design decision to a measurable outcome, total cost of ownership and risk appetite.",
       "sections": [
         {
+          "id": "start-from-the-outcome",
           "heading": "Start from the outcome",
           "body": "Frame every engagement as: **who** benefits, **what metric** moves (handle time, deflection rate, cost per document, cycle time, revenue), the **baseline** today, and the **target**. A design without a baseline cannot prove ROI.\n\nSeparate:\n\n- **Quality metrics** — accuracy, groundedness, task success rate.\n- **Operational metrics** — p50/p95 latency, availability, cost per task.\n- **Business metrics** — the KPI the sponsor actually cares about."
         },
         {
+          "id": "total-cost-of-ownership",
           "heading": "Total cost of ownership",
           "body": "Model tokens are only part of the bill. Include:\n\n- Tokens (input, output, cached, batch) × volume × growth.\n- Retrieval infrastructure, vector stores, observability tooling.\n- Human review time (HITL is a real cost line and can be a major one).\n- Evaluation and maintenance — prompt/version upkeep, eval set curation.\n- Integration and security work, compliance reviews.\n\nModel the **cost per successful outcome**, not cost per call — a cheaper model that fails more often and triggers human rework can be more expensive.\n\nAgentic workloads have **long cost tails** — a few hard tasks consume many more tokens than the median. Anthropic's guidance: **price the tail of your workload, not the median**."
         },
         {
+          "id": "build-vs-buy-vs-configure",
           "heading": "Build vs buy vs configure",
           "body": "Before custom architecture, check whether an existing product fits: Claude apps with connectors and projects, Claude Code, or partner solutions. Architects are judged on **time-to-value and risk**, not on building the most impressive system.\n\nPrefer phased delivery: a **thin vertical slice** to a real user group with measurement, then expand."
         }
@@ -267,18 +280,22 @@
       "summary": "Match model tier and effort level to task difficulty, latency and cost, then use routing and cascades so you don't pay top-tier prices for easy traffic.",
       "sections": [
         {
+          "id": "the-tiers",
           "heading": "The tiers",
           "body": "Claude models come in tiers that trade capability for speed and price. At the time of writing the current lineup is:\n\n- **Fable 5.1**: the highest capability, built for hours-long agent sessions. The slowest and most expensive tier.\n- **Opus 5.5**: complex agentic coding and enterprise work. The docs say: \"If you're unsure which model to use, start with Claude Opus 5.5.\"\n- **Sonnet 5.5**: everyday work that needs both speed and capability.\n- **Haiku 5.5**: the lowest latency and price. Use it for real-time UX, classification, routing, extraction and narrow subagents.\n\nExact versions, prices, context limits and default effort levels change, so always check the models overview page. On the exam, reason from the **relative** trade-offs, not memorised numbers."
         },
         {
+          "id": "effort-first-then-model",
           "heading": "Effort first, then model",
           "body": "Current models expose an **effort** setting (for example `low`, `medium`, `high`, `xhigh`, `max`) that controls how much the model thinks and works. The default differs by model. The model-selection guide says: \"Tuning effort is often a better lever than switching models.\"\n\nThere are two sensible starting points:\n\n- **Efficiency-first**: start on the smallest tier (Haiku) and upgrade only where evals show a capability gap.\n- **Capability-first**: start on Opus, then lower effort or downgrade while quality holds. Move up to Fable only if evals at the highest effort levels still fall short.\n\nFast mode is another lever: it gives higher output speed at premium pricing."
         },
         {
+          "id": "selection-method",
           "heading": "Selection method",
           "body": "- Define the quality bar with an **eval set** first. The docs call a good evaluation set \"the most important step\" when changing models.\n- Measure **cost per successful task**, latency (time to first token and total time), context needs and availability on your cloud or region.\n- Try effort changes before model changes, and re-run the eval on every model or version switch. Never assume a newer or larger model is better on *your* task.\n- Prompt engineering doesn't fix everything. Latency and cost failures are often easier to fix by changing model or effort."
         },
         {
+          "id": "routing-cascades-and-multi-model-patterns",
           "heading": "Routing, cascades and multi-model patterns",
           "body": "- **Routing**: a cheap classifier (often Haiku, or plain rules) sends each request to the right model or prompt. Most traffic goes to the cheaper tier and hard cases go up. The router needs its own eval, because a misrouted hard query is a quality incident.\n- **Effort cascade**: run everything at `low` effort, then re-run only the failures at `high`. In Anthropic's internal coding benchmark this solved slightly more tasks at a much lower cost per task than running everything at `high`. It only works with a **reliable failure checker** (tests, validators).\n- **Advisor pattern**: a cheaper executor escalates hard decisions to a stronger model. It adds prompt overhead on every request and only helps when the executor actually consults it.\n- **Orchestrator pattern**: a frontier model plans and dispatches cheaper workers. In Anthropic's tests, delegation won only for routine work with a long cost tail, or for work larger than one context window. For a single dependent chain, the strong model alone at lower effort did better.\n\n\"Price the tail of your workload, not the median.\" These results are Anthropic-internal and directional, so validate them on your own evals."
         }
@@ -336,18 +353,22 @@
       "summary": "System prompts set role, rules and format; guardrails make them robust; thinking and effort trade reasoning quality against latency and cost. Prefill and forced tool use have been replaced by structured outputs.",
       "sections": [
         {
+          "id": "effective-system-prompts",
           "heading": "Effective system prompts",
           "body": "A production system prompt typically contains:\n\n- **Role and audience**: who Claude is acting as, and for whom.\n- **Context**: product facts, policies, which tools exist and when to use them.\n- **Rules as principles with reasons**: \"Never quote prices from memory because they change weekly; use the pricing tool.\" Reasons generalise better than long lists of conditionals.\n- **Output format**: structure, length and tone.\n- **Escalation behaviour**: what to do when uncertain or out of scope, including explicit permission to say \"I don't know\".\n\nWrite at the **right altitude**, between brittle if-then logic and vague guidance. Start minimal and add instructions in response to observed failures. Use clear structure (for example XML-tagged sections), put long documents before the question, and give 3–5 **diverse, canonical examples** rather than near-duplicates.\n\n**Tone matters on current models.** Aggressive wording such as \"CRITICAL: You MUST…\" or \"If in doubt, use [tool]\" now causes **overtriggering**. Soften it and explain when the behaviour applies. For risky actions, prompt about reversibility, for example: take local, reversible actions freely and confirm before anything hard to undo."
         },
         {
+          "id": "guardrails-in-layers",
           "heading": "Guardrails in layers",
           "body": "Prompts are a **soft** control, so layer them:\n\n- **Input screening**: classify for jailbreaks, injection and out-of-scope topics. A cheap, fast model works well.\n- **Prompt level**: clear refusal and escalation rules, allowed topics, permission to say \"I don't know\".\n- **Tool level**: least-privilege tools, server-side validation, approval gates.\n- **Output screening**: PII detection, policy checks, schema validation, grounding checks.\n- **Monitoring**: sample and review conversations, and alert on anomalies.\n\nAnything that **must** hold (authorisation, limits, compliance) lives in deterministic code."
         },
         {
+          "id": "thinking-and-effort-on-current-models",
           "heading": "Thinking and effort on current models",
           "body": "On Claude 5+ models, thinking is **on by default** and is adaptive. The main lever is the **effort** setting, not a token budget:\n\n- The old manual mode (`thinking: {type: \"enabled\", budget_tokens}`) returns **400** on Opus 4.7 and every later model.\n- Thinking **cannot be disabled** on Opus 5.5, Sonnet 5.5 or Fable/Mythos 5.x. Sonnet 5.5 offers a `between_tools` mode instead. Haiku 5.5 can disable thinking at `high` effort or below. The Models API reports each model's capabilities.\n- Thinking tokens are **billed as output** and **count toward `max_tokens`**.\n- Thinking display defaults to **omitted** on 5.x. Opt into `display: \"summarized\"` if you need visibility. You never get the raw chain of thought.\n\nArchitect guidance: raise effort for hard multi-step reasoning, planning and difficult debugging where evals show a gain. Lower effort, or use a smaller model, for simple, latency-critical, high-volume paths. Classic \"think step by step in tags\" prompting is now a fallback, and asking for reasoning inside an output field or schema can trigger `reasoning_extraction` refusals. Treat thinking as internal reasoning, not an audit artefact."
         },
         {
+          "id": "prefill-structured-outputs-and-forced-tools",
           "heading": "Prefill, structured outputs and forced tools",
           "body": "- **Prefill** (starting the assistant turn yourself, for example with `{`) returns **400** from the Claude 4.6 models onward. Migrate to structured outputs or plain instructions.\n- **Structured outputs** (`output_config.format` with a JSON schema) use constrained decoding to guarantee the schema, **except** when the response stops for `refusal` or `max_tokens`, so still check `stop_reason`. They are incompatible with citations.\n- **Forcing a tool** (`tool_choice` `any` or `tool`) returns **400** on Opus 5.5, Sonnet 5.5, Fable 5.1 and Mythos 5.1. Use `auto` with `strict: true` tools, or structured outputs, instead.\n\nOld \"force a tool to get JSON\" and \"prefill a brace\" patterns are migration items, not best practice."
         }
@@ -405,18 +426,22 @@
       "summary": "Context is a finite, expensive resource: curate it, cache the stable prefix, and load specialised knowledge only when needed.",
       "sections": [
         {
+          "id": "context-engineering",
           "heading": "Context engineering",
           "body": "Context engineering is deciding **what tokens the model sees at each step**. Recall degrades as context grows (**context rot**), so treat context as a finite **attention budget**. Irrelevant material dilutes attention and adds cost and latency, and long agent sessions accumulate stale tool output.\n\nTechniques:\n\n- **Just-in-time retrieval**: keep references (paths, IDs, queries) and load data with tools, rather than stuffing everything up front. A hybrid also works.\n- **Tool-result clearing**: drop old, bulky tool results. This is the lightest touch.\n- **Compaction**: summarise long histories, keeping decisions, open issues and key facts.\n- **Structured notes / memory**: the agent writes durable notes (for example NOTES.md) outside the window and re-reads them.\n- **Subagents**: isolate deep exploration and return condensed summaries, often 1,000–2,000 tokens.\n- **Trim tool outputs**: return only needed fields; paginate and filter.\n- Put critical, persistent instructions in the system prompt, not 50 turns back in the history."
         },
         {
+          "id": "prompt-caching-mechanics",
           "heading": "Prompt caching mechanics",
           "body": "Prompt caching lets you mark a **stable prefix** with `cache_control` breakpoints. Requests with an **identical prefix** read it from cache more cheaply and with lower latency.\n\n- **Prefix order** is fixed: `tools` → `system` → `messages`. Put stable content first and volatile content (timestamps, user turn) last.\n- **Up to 4 breakpoints.** Automatic caching (a top-level `cache_control`) uses one of them. Each breakpoint looks back up to 20 positions for a hit.\n- **TTL**: 5 minutes by default, refreshed on each use. A 1-hour TTL is available. When mixing TTLs, the 1-hour entries come first.\n- **Minimum cacheable length**: a prompt below the model's minimum is **silently not cached**. The minimum is small on the newest models and larger on older ones.\n- **Invalidation is hierarchical**: changing tools invalidates everything. Toggling features such as web search or citations invalidates system and messages. Changing `tool_choice`, images, thinking parameters or effort invalidates the messages cache.\n- **Observe it** in the usage fields `cache_creation_input_tokens` and `cache_read_input_tokens`. If both are 0, the prompt probably fell below the minimum or the breakpoint is missing."
         },
         {
+          "id": "caching-economics",
           "heading": "Caching economics",
           "body": "At the time of writing (verify current pricing):\n\n- **Writes** cost a premium on base input: about 1.25× for the 5-minute TTL and 2× for the 1-hour TTL.\n- **Reads** cost a small fraction: 0.1× by default, and even less (0.05×–0.025×) on the newest top-tier models.\n- The multipliers **stack with the Batch discount**.\n\nWith the 5-minute TTL, a single cache hit already beats paying full price twice. The 1-hour TTL needs a couple of reads to pay back its larger write premium, but it is the right choice when reuse arrives more than 5 minutes apart. Caching does **not** help one-off requests with unique prompts, or prefixes that aren't reused within the TTL."
         },
         {
+          "id": "agent-skills-and-progressive-disclosure",
           "heading": "Agent Skills and progressive disclosure",
           "body": "An **Agent Skill** is a folder with a `SKILL.md` (YAML frontmatter with `name` and `description`, then instructions) plus optional scripts and reference files. Skills load in three levels:\n\n| Level | Loaded | Approximate cost |\n|---|---|---|\n| L1 metadata (name + description) | Always | About 100 tokens per Skill |\n| L2 SKILL.md body | When the Skill is triggered | Under 5k tokens |\n| L3 resources and scripts | Only as needed | Zero until read; a script's code never enters context, only its output |\n\nThis **progressive disclosure** lets you ship many specialised procedures without bloating every request. See the dedicated Agent Skills lesson for frontmatter rules, surfaces, compliance and security."
         }
@@ -470,18 +495,22 @@
       "summary": "How to author Skills that trigger reliably, where they run, what they cost in context, and why compliance and security reviews still apply.",
       "sections": [
         {
+          "id": "when-a-skill-is-the-right-tool",
           "heading": "When a Skill is the right tool",
           "body": "Use a Skill for **repeatable procedures and organisational know-how** that only some requests need: report formats, brand guidelines, data-analysis playbooks, document generation. Compare the options:\n\n- **System prompt**: for rules that apply to *every* request. Every token is paid on every call.\n- **Skill**: for procedures needed *sometimes*. About 100 tokens of metadata per Skill until it is triggered.\n- **Retrieval (RAG)**: for large, changing bodies of *facts* to search.\n- **Tools / MCP**: for *actions* and live data in external systems.\n\nBecause a script's code never enters context (only its output does), a Skill can bundle deterministic scripts for work such as file transforms that would be token-expensive or error-prone to do in prose."
         },
         {
+          "id": "authoring-frontmatter-that-triggers",
           "heading": "Authoring: frontmatter that triggers",
           "body": "Claude decides whether to load a Skill from its L1 metadata alone, so the frontmatter is the trigger:\n\n- `name`: at most 64 characters; lowercase letters, digits and hyphens only; must not contain reserved words such as \"anthropic\" or \"claude\".\n- `description`: at most 1,024 characters, and it must say **what the Skill does and when to use it**. A vague description (\"Helper for reports\") leads to missed or wrong triggers.\n- Keep the `SKILL.md` body focused (under about 5k tokens). Move long reference material into separate files that Claude reads only when needed."
         },
         {
+          "id": "surfaces-and-runtime",
           "heading": "Surfaces and runtime",
           "body": "- **API**: list the Skills' `skill_ids` in the `container` and include the **code execution tool**. The container has **no network access** and **no runtime package installs**, so bundle what the Skill needs. API Skills are shared workspace-wide.\n- **Claude Code**: Skills live in `~/.claude/skills/` (personal) or `.claude/skills/` (project, committed with the repo).\n- **claude.ai**: Skills are uploaded in the app.\n- Custom Skills **do not sync across surfaces**. A Skill uploaded to the API is not automatically available in Claude Code or claude.ai, so plan distribution for each surface.\n- Anthropic ships pre-built Skills for pptx, xlsx, docx and pdf."
         },
         {
+          "id": "compliance-and-security",
           "heading": "Compliance and security",
           "body": "- Agent Skills are **not eligible for Zero Data Retention or HIPAA** (nor is the code execution they rely on). In a HIPAA-enabled org, non-eligible features return 400. Keep PHI workloads on eligible features, or run non-PHI Skill workloads in a separate org.\n- Treat Skills like software: **use only trusted Skills**, audit their scripts and bundled files before installing, and remember that a Skill that fetches external content carries prompt-injection risk."
         }
@@ -535,18 +564,22 @@
       "summary": "Every tool is both a capability and an attack surface. Fewer, well-described, narrowly-scoped tools make agents more accurate and safer.",
       "sections": [
         {
+          "id": "tool-bloat",
           "heading": "Tool bloat",
           "body": "Connecting dozens of MCP servers or hundreds of tools causes:\n\n- **Selection errors** — overlapping tools with similar names/descriptions confuse the model.\n- **Context cost** — every tool definition consumes tokens on every request.\n- **Larger blast radius** — more ways for an injected instruction to cause harm.\n\nRemedies: consolidate overlapping tools into higher-level ones (e.g., one `schedule_meeting` instead of three low-level calendar calls), expose **task-scoped tool sets** per agent or route, load tools on demand, and remove unused tools."
         },
         {
+          "id": "progressive-discovery-instead-of-a-monolithic-tool-list",
           "heading": "Progressive discovery instead of a monolithic tool list",
           "body": "Loading every tool definition into every request is the tool-side version of a monolithic context. Prefer progressive discovery:\n\n- **Tool search.** Let the model search for the tools it needs instead of seeing all of them up front. Claude Code turns tool search on by default, and the MCP docs recommend progressive tool discovery for clients that federate many servers.\n- **Namespacing.** Prefix tool names by service or resource (for example `github_list_prs`, `jira_create_issue`). This separates look-alike tools and matters even more when tools are found by search.\n- **Consolidation.** One tool with an `action` parameter often beats several near-duplicates: \"fewer, more capable tools reduce selection ambiguity\". Prefer a targeted `search_contacts` over a `list_contacts` that dumps everything.\n- **Lean responses.** Offer a `response_format` parameter (`concise` / `detailed`), paginate, filter and truncate, and resolve opaque UUIDs to readable names. Claude Code warns when an MCP tool response passes about 10,000 tokens and caps it at 25,000 by default (`MAX_MCP_OUTPUT_TOKENS`); treat these as configurable defaults, not design targets."
         },
         {
+          "id": "designing-good-tools",
           "heading": "Designing good tools",
           "body": "- **Clear names and detailed descriptions.** Anthropic calls the description \"by far the most important factor\" in tool performance; aim for at least 3–4 sentences covering what it does, when to use it, when *not* to, and what each input means.\n- **Strict input schemas.** Enums, formats and required fields, with unambiguous parameter names (`user_id`, not `user`). Validate server-side anyway. `strict: true` on a tool makes Claude's inputs conform to the schema.\n- **Don't rely on forcing a tool.** On the newest models (Opus 5.5, Sonnet 5.5, Fable 5.1, Mythos 5.1) `tool_choice` `any`/`tool` returns a 400. Use `auto` with `strict: true` tools, or structured outputs, when you need guaranteed shapes.\n- **Return only what's useful.** High-signal fields, stable and human-readable identifiers, pagination.\n- **Actionable errors.** Structured messages the model can recover from (\"date must be YYYY-MM-DD\"), not stack traces or empty strings.\n- **Idempotency** for actions that may be retried."
         },
         {
+          "id": "least-privilege",
           "heading": "Least privilege",
           "body": "- Grant each agent/tool the **minimum scopes** needed (read-only where possible).\n- **Separate read and write** tools; gate writes and irreversible actions behind confirmation or human approval.\n- Use **per-user delegated credentials** so the agent can never see more than the requesting user could.\n- Never give the model raw secrets; the tool layer holds credentials.\n- Sandbox code execution and restrict network egress."
         }
@@ -596,22 +629,27 @@
       "summary": "Most serious agent incidents are authorization failures. Choose the right protocol and make identity flow end-to-end.",
       "sections": [
         {
+          "id": "authorization-gaps-and-the-confused-deputy",
           "heading": "Authorization gaps and the confused deputy",
           "body": "In general security terms, a **confused deputy** is a privileged component (agent, MCP server, service account) tricked into using *its* authority for a requester who lacks it. Example: an assistant with a broad service account answers an intern's question using executive-only documents.\n\nThe **MCP security best-practices page** describes a specific case: an MCP *proxy* server uses a **static client ID** with a third-party authorization server, supports dynamic client registration, and the third party sets a consent cookie. An attacker can then obtain authorization codes without the user's consent. Required mitigations for such proxies:\n\n- **Per-client consent** shown by the MCP proxy before forwarding to the third-party authorization server.\n- **Exact `redirect_uri` matching**.\n- A validated, **single-use `state`** parameter.\n\nGeneral controls for user-scoped authorisation:\n\n- **Propagate the end-user identity** to every downstream call and enforce authorization at the data source (document ACLs, row-level security). Running tool calls with the user's own scopes rather than a shared super-user account is a design inference from the MCP guidance, not a quoted rule.\n- Filter retrieval results by the **user's permissions before** they reach the model.\n- Don't let the model decide authorization; code does.\n- **No token passthrough.** \"MCP servers MUST NOT accept any tokens that were not explicitly issued for the MCP server\" (audience validation). The server obtains its own downstream credentials.\n- **Scope minimisation.** Start with minimal scopes and step up incrementally; avoid wildcard or omnibus scopes."
         },
         {
+          "id": "other-mcp-attack-classes",
           "heading": "Other MCP attack classes",
           "body": "- **SSRF.** A server or client that fetches URLs it was handed (for example during OAuth metadata discovery) can be steered at internal addresses. Block private IP ranges and route fetches through an egress proxy.\n- **State-handle hijacking** (formerly \"session hijacking\"). MCP is stateless, so any handle a server issues must be bound to the authenticated user. Possession of a handle is not authentication.\n- **Local server compromise.** A local stdio server runs a command on the user's machine. Show the exact command before running it, and sandbox it.\n- **Roots are advisory**, \"not a security boundary\". Enforce file access some other way."
         },
         {
+          "id": "choosing-a-connection-protocol",
           "heading": "Choosing a connection protocol",
           "body": "- **MCP (Model Context Protocol)**: an open standard for connecting AI applications to tools (actions), resources (data) and prompts. A host creates one client per server; messages are JSON-RPC 2.0 over **stdio** (local) or **Streamable HTTP** (remote, OAuth recommended). Best when a capability should be **reusable across many clients** (Claude apps, Claude Code, custom agents) or is provided by a vendor.\n- **Direct API / function calling**: define tools inline in your application. Best for app-specific tools tightly coupled to your backend, with the fewest moving parts.\n- **CLI**: agents like Claude Code can call existing command-line tools directly (git, cloud CLIs). Often the simplest integration for developer workflows; govern with permissions.\n- **Agent-to-agent**: one agent delegating to another agent owned by a different team or vendor. Useful across organisational boundaries; adds trust, contract and latency concerns.\n\nChoose by reuse, ownership, security boundary and latency, not by novelty."
         },
         {
+          "id": "what-changed-in-mcp-2026-07-28-and-in-claude-code",
           "heading": "What changed in MCP 2026-07-28 and in Claude Code",
           "body": "Protocol version `2026-07-28`:\n\n- The protocol is **stateless**. Every request carries the protocol version and capabilities in `_meta`; servers MUST implement `server/discover` and clients MAY skip calling it. Change notifications are opt-in via `subscriptions/listen`.\n- **Sampling, roots and logging are deprecated** as client primitives. Don't design new servers around them.\n- **Elicitation** is the client primitive for asking the user. **Form mode** must not request secrets; **URL mode** is for credentials and OAuth flows. Elicitation is also how a server gets user confirmation for an action.\n- A **Tasks** extension gives durable handles for long-running requests.\n\nClaude Code:\n\n- Use the **HTTP** transport for remote servers; **SSE is deprecated**.\n- Scopes: **local** (default, in `~/.claude.json`), **project** (`.mcp.json`, committed, needs approval in interactive sessions) and **user**. Precedence is local > project > user > plugin > claude.ai connectors, and the whole entry wins. Managed servers rank above all.\n- Unattended runs (`-p`, the SDK, cloud sessions) load project servers **without a prompt**; block one with `disabledMcpjsonServers`."
         },
         {
+          "id": "trusting-mcp-servers",
           "heading": "Trusting MCP servers",
           "body": "Treat third-party MCP servers like third-party code: vet the publisher, pin versions, review requested scopes, run with least privilege, and maintain an **allowlist**. Tool descriptions and outputs from servers are themselves untrusted input that can carry injected instructions.\n\nThe Claude Code docs warn: \"Servers that fetch external content can expose you to prompt injection risk.\""
         }
@@ -666,18 +704,22 @@
       "summary": "Retrieval quality usually determines answer quality. Design chunking, hybrid search, reranking and citations — and instrument everything.",
       "sections": [
         {
+          "id": "rag-building-blocks",
           "heading": "RAG building blocks",
           "body": "- **Ingestion**: parse documents faithfully (tables, headings) and attach metadata (source, owner, date, ACLs).\n- **Chunking**: chunk on semantic boundaries (sections/paragraphs) with modest overlap; chunk size trades precision against context.\n- **Contextual retrieval**: Anthropic's technique of prepending 50–100 tokens of chunk-specific context (generated by Claude from the whole document) *before* embedding **and** before building the BM25 index, so a chunk like \"revenue grew 3%\" keeps its company and period. In Anthropic's published results, measured as top-20 retrieval failure, contextual embeddings cut failures by about 35%, adding contextual BM25 by about 49%, and adding reranking by about 67%. Prompt caching makes generating the context a cheap, one-time indexing cost.\n- **Hybrid search**: combine **embeddings** (semantic similarity) with **BM25/keyword** (exact terms, IDs, product codes, error strings).\n- **Reranking**: retrieve a wider candidate set, then rerank. Anthropic's experiments found passing the top 20 chunks beat 5 or 10.\n- **Embeddings**: Anthropic does not offer its own embedding model. The docs use Voyage AI as the example (including domain models and rerankers) and say to evaluate other vendors too. Set `input_type` to query or document.\n- **Generation with citations**: instruct Claude to answer only from provided sources. The **Citations** feature returns pointers that are guaranteed to be valid locations in the documents you passed: `char_location` for text, `page_location` for PDFs, `content_block_location` for custom content. Plain text and PDFs are auto-chunked into sentences; use custom content documents to control granularity. `cited_text` does not count toward output tokens. Citations cannot be combined with structured outputs (`output_config.format`) in the same request."
         },
         {
+          "id": "when-not-to-use-rag",
           "heading": "When not to use RAG",
           "body": "Match the retrieval strategy to the shape of the data:\n\n- **Small corpus**: Anthropic's guidance is that a knowledge base under about 200,000 tokens (roughly 500 pages) can go straight into the prompt, with prompt caching, and skip RAG.\n- **Structured data** (tables, metrics, transactions): query it with SQL or a tool, not semantic search.\n- **Large, changing or permissioned unstructured corpora**: this is where RAG earns its complexity.\n\nAlso consider **agentic search** (the model iteratively issues queries or tool calls) for complex multi-hop questions, at higher latency."
         },
         {
+          "id": "accuracy-latency-trade-offs",
           "heading": "Accuracy–latency trade-offs",
           "body": "Every step adds latency: query rewriting, multiple retrievals, reranking, larger models, higher effort, verification passes. Levers (see the dedicated accuracy–latency lesson):\n\n- Use a small, fast model for query rewriting and classification.\n- Parallelise retrieval calls.\n- Stream responses to improve perceived latency.\n- Cache stable prefixes.\n- Tune **effort** before switching models; on Opus 5.5 and Sonnet 5.5 thinking can't be switched off, so effort is the lever.\n- Reserve multi-hop agentic retrieval and verification for queries that need them (route by complexity).\n\nState the SLO (for example p95 < 5s) and design to it; don't optimise accuracy blindly."
         },
         {
+          "id": "observability-at-scale",
           "heading": "Observability at scale",
           "body": "Instrument every request end-to-end:\n\n- **Traces** spanning user request → retrieval → model calls → tool calls, with correlation IDs (essential for multi-agent). Anthropic's multi-agent write-up recommends full production tracing and monitoring agent **decision patterns** and interaction structure rather than conversation contents.\n- Log the API **`request-id`** response header with each call so a specific request can be traced with Anthropic support.\n- Log **prompt/version IDs, model ID, retrieved document IDs, token counts (input, output, cache read, cache write), latency, stop reasons, tool errors**.\n- Track quality signals: user feedback, escalations, groundedness scores from sampled LLM-judge evaluation.\n- Redact or tokenise PII in logs and apply retention policies. Claude Code's OpenTelemetry export redacts prompt content by default.\n- Dashboards and alerts on cost per task, error rates, latency SLOs and drift."
         }
@@ -723,18 +765,22 @@
       "summary": "Pick the cheapest lever that meets the SLO: effort before model swaps, cascades before blanket upgrades, and just-in-time context instead of loading everything up front.",
       "sections": [
         {
+          "id": "effort-is-the-first-dial",
           "heading": "Effort is the first dial",
           "body": "Anthropic's model guidance says \"tuning effort is often a better lever than switching models\". Each current model has a default effort level, and you can go lower for speed and cost or higher (up to `xhigh` / `max`) for hard tasks.\n\nThinking has changed on the current generation:\n\n- On Claude 5+ models thinking is on by default.\n- Manual thinking (`type: \"enabled\"` with `budget_tokens`) returns a 400 on Opus 4.7 and every later model. Use adaptive thinking plus `effort`.\n- Thinking **cannot be disabled** on Opus 5.5, Sonnet 5.5 or Fable/Mythos 5.x. Haiku 5.5 can disable it at `high` effort or below.\n- Thinking tokens are billed as output and count toward `max_tokens`.\n\nSo \"turn thinking off on the fast path\" is usually the wrong answer for Opus or Sonnet 5.5. Lower the effort, or route the fast path to Haiku."
         },
         {
+          "id": "model-tiers-routing-and-cascades",
           "heading": "Model tiers, routing and cascades",
           "body": "- **Tiers.** Haiku 5.5 is the lowest-latency, lowest-price tier and suits real-time work and subagents. Opus 5.5 is the documented default when unsure. Fable 5.1 is the highest-capability tier and the slowest.\n- **Two starting points.** Efficiency-first: start on Haiku and upgrade only for observed capability gaps. Capability-first: start on Opus, then lower effort or downgrade while evals hold.\n- **Routing.** Classify requests and send simple ones down a cheaper, faster path.\n- **Cascade.** Run everything at low effort, then re-run only the failures at high effort. In Anthropic's internal coding benchmark this solved slightly more tasks at a markedly lower cost per task than running everything at high. It only works with a **reliable failure checker** (tests, validators, graders). Anthropic's summary: \"price the tail of your workload, not the median.\"\n- Always confirm a change with your own eval set; published numbers are directional."
         },
         {
+          "id": "interactive-vs-throughput-workloads",
           "heading": "Interactive vs throughput workloads",
           "body": "| Need | Lever |\n|---|---|\n| Users waiting on screen | Streaming for perceived latency; a smaller model or lower effort for actual latency |\n| Highest output speed, budget available | Fast mode: up to about 2.5× output speed at premium pricing |\n| Large offline jobs with no latency requirement | Batch API: 50% off, results arrive asynchronously |\n| Large repeated prefix | Prompt caching: cheaper and faster reads of the cached prefix |\n\nDon't put an interactive path on Batch, and don't pay for fast mode on overnight jobs."
         },
         {
+          "id": "progressive-discovery-vs-monolithic-context",
           "heading": "Progressive discovery vs monolithic context",
           "body": "Context is a finite attention budget, and recall degrades as it grows (\"context rot\"). Instead of loading every document and every tool definition up front:\n\n- **Just-in-time retrieval.** Keep lightweight references (paths, IDs, queries) and load data through tools when needed. A hybrid that pre-loads a small core works too.\n- **Tool search / progressive tool discovery** for large or federated tool sets.\n- **Match retrieval to data shape.** Structured data goes through SQL or a tool; unstructured text goes through RAG; a small corpus (under about 200k tokens) goes in the prompt with caching.\n\nMonolithic context is still right when the material is small, stable and needed on almost every request. Then caching makes it cheap."
         }
@@ -784,22 +830,27 @@
       "summary": "Without evals you cannot select models, ship prompt changes or prove value. Build them before you build the product.",
       "sections": [
         {
+          "id": "define-success-criteria-first",
           "heading": "Define success criteria first",
           "body": "Good success criteria are **specific, measurable, achievable and relevant** (Anthropic's guidance lists those four; there is no \"time-bound\" letter). Examples: \"≥95% of extracted invoice totals exactly match ground truth\", \"≤2% of responses contain unsupported claims\", \"p95 latency < 4s\". Vague goals (\"good answers\") cannot be tested.\n\nCover multiple dimensions: task fidelity, consistency, relevance and coherence, tone and style, privacy preservation, context utilisation, latency and price."
         },
         {
+          "id": "building-the-eval-set",
           "heading": "Building the eval set",
           "body": "- Draw from **real production-like inputs**, including messy, ambiguous and adversarial cases.\n- **Start small and real:** 20–50 tasks drawn from actual failures beat a large synthetic set you never look at. Grow it as incidents arrive (every incident becomes a test).\n- Include **edge cases** and keep a **held-out** portion to avoid overfitting prompts to the set.\n- Version the dataset alongside prompts.\n- **Volume over perfection:** many automatically graded cases usually beat a few hand-graded ones.\n- **Read transcripts.** Scores tell you *that* something failed; transcripts tell you *why*."
         },
         {
+          "id": "choosing-graders",
           "heading": "Choosing graders",
           "body": "- **Code-based grading:** exact match, regex, JSON schema validation, numeric tolerance, cosine similarity, ROUGE-L, unit tests. Fast, cheap, objective and reproducible, but lacks nuance. Use it whenever an objective answer exists.\n- **LLM-as-judge (model-based):** a model grades against a clear rubric (Likert scale or binary classification). Flexible and scalable but non-deterministic. Evaluate with a **different model from the one that generated the output**, constrain the grader's output format, validate what it returns, and **calibrate against human labels**.\n- **Human grading:** the gold standard for nuanced or high-stakes judgment, but slow and expensive. Use it for calibration, spot checks and sign-off.\n\nMature programmes combine all three."
         },
         {
+          "id": "capability-vs-regression-evals",
           "heading": "Capability vs regression evals",
           "body": "- **Capability evals** ask \"can it do this yet?\" They *start at a low pass rate* and give the team a hill to climb.\n- **Regression evals** ask \"did we break anything?\" They should sit *near 100%*, and any drop is a signal.\n- An eval is **saturated** when the agent passes every solvable task. At that point it only guards against regressions and no longer measures progress.\n\nWhen a capability task becomes reliably solved, promote it into the regression suite."
         },
         {
+          "id": "agent-evals-outcomes-not-paths",
           "heading": "Agent evals: outcomes, not paths",
           "body": "- **Grade outcomes, not paths.** Agents often find valid routes the eval author didn't foresee. Check the end state (ticket closed correctly, file contents right, record updated), not an exact tool-call sequence.\n- **pass@k**: at least one of *k* attempts succeeds. Useful when a user or downstream check can pick the good attempt.\n- **pass^k**: *all k* attempts succeed. Use it for customer-facing consistency, where every run has to be right.\n- Because agents are non-deterministic, run several trials per task before drawing conclusions."
         }
@@ -853,18 +904,22 @@
       "summary": "Treat prompts, models and tools as versioned code with CI gates. Diagnose failures by type before changing anything.",
       "sections": [
         {
+          "id": "regression-suites-and-ci",
           "heading": "Regression suites and CI",
           "body": "Every change — prompt edit, model version, tool schema, retrieval config — runs the eval suite in CI. Gate deploys on thresholds per metric, and watch for **regressions on previously-passing cases**, not just the average. LLM outputs are non-deterministic, so run enough samples to distinguish real change from noise."
         },
         {
+          "id": "a-b-testing-in-production",
           "heading": "A/B testing in production",
           "body": "Offline evals predict; online experiments confirm. A/B tests measure **actual user outcomes** (retention, task completion) that offline graders cannot see. Run A/B (or canary) tests with:\n\n- A **pre-registered primary metric** (resolution rate, CSAT, escalation rate) and guardrail metrics (safety incidents, latency, cost).\n- Adequate **sample size** and duration for significance.\n- Random assignment at the user or session level.\n- A rollback plan.\n\nShadow mode (the new version runs silently and outputs are compared) suits high-risk changes. Rolling out gradually while both versions run (\"rainbow\" style) limits blast radius for agents with long-lived sessions."
         },
         {
+          "id": "diagnosing-failures",
           "heading": "Diagnosing failures",
           "body": "Classify before you fix:\n\n- **Prompt/specification failure** — the model did what the prompt actually said, or instructions were ambiguous/conflicting. Fix: clarify instructions, add examples, restructure. Signal: consistent wrong behaviour that changes when the instruction changes.\n- **Hallucination / grounding failure** — confident claims unsupported by the provided context. Often caused by **retrieval misses** (the answer wasn't in context) or permission to answer from memory. Fix: improve retrieval, require citations, allow \"I don't know\", add grounding checks.\n- **Model mismatch** — the task exceeds the model's capability (deep reasoning on a small tier) or the model is overkill. Signal: failure persists across good prompts but disappears on a stronger tier.\n- **Tool/integration failure** — wrong tool choice, bad schemas, errors swallowed, truncated outputs.\n- **Context failure** — key information lost in a long context or after compaction.\n\nAlways inspect **traces** — what was retrieved, what the model saw — before blaming the model."
         },
         {
+          "id": "hallucination-check-what-changed-in-context-first",
           "heading": "Hallucination: check what changed in context first",
           "body": "A classic pattern: a RAG assistant that was fine **starts hallucinating right after a document refresh**. Nothing changed in the prompt or model, so investigate **retrieval and indexing first**: failed or partial re-indexing, changed chunking, stale embeddings, broken metadata filters. Upgrading the model or rewriting the prompt treats a symptom.\n\nPrompt-level techniques that reduce hallucination once retrieval is sound:\n\n- Explicitly allow \"I don't know\".\n- For long documents (over ~20k tokens), have Claude **extract direct quotes first**, then answer from those quotes.\n- **Verify with citations**: require a supporting quote for each claim and retract any claim that has none.\n- Restrict answers to the provided material (no outside knowledge).\n- Best-of-N comparison and iterative refinement to expose inconsistencies."
         }
@@ -915,14 +970,17 @@
       "summary": "Optimise against cost per successful task and latency SLOs using caching, batching, model routing and output control — then monitor for drift.",
       "sections": [
         {
+          "id": "the-optimisation-toolbox",
           "heading": "The optimisation toolbox",
           "body": "- **Effort tuning:** lowering the `effort` level is often a better first lever than switching models. Validate with evals.\n- **Prompt caching:** big savings on repeated stable prefixes (tools → system → messages). Cache reads cost a small fraction of base input price, and a prompt below the minimum cacheable length is silently not cached.\n- **Message Batches API:** asynchronous processing at **50% off** standard pricing. Results are not immediate: plan for turnaround measured in hours, not seconds. Ideal for offline or bulk work (nightly classification, backfills, eval runs); wrong for interactive traffic. **Caching discounts stack with the Batch discount.**\n- **Model routing and cascades:** move tasks that pass evals to a cheaper tier, or run everything at low effort and **re-run only the failures at high effort**. A cascade needs a reliable failure checker.\n- **Output length control:** output tokens are priced several times higher than input tokens. Ask for concise formats and avoid verbose preambles.\n- **Context trimming:** retrieve fewer, better chunks; prune tool outputs; compact history.\n- **Streaming:** improves perceived latency (time-to-first-token), not total cost.\n- **Fast mode:** substantially higher output speed at premium pricing. It buys latency, not savings.\n- **Parallelise** independent calls; avoid unnecessary sequential chains."
         },
         {
+          "id": "choosing-the-right-lever",
           "heading": "Choosing the right lever",
           "body": "Match the lever to the bottleneck:\n\n- Large repeated system prompt → caching.\n- Bulk, non-urgent volume → Batch API (plus caching for shared prefixes).\n- Quality headroom on a capable model → lower effort first, then consider a smaller tier.\n- Most tasks easy, a long tail hard → cascade (cheap pass first, re-run failures at higher effort or on a stronger model). Price the tail of the workload, not the median.\n- Slow perceived UX → streaming, parallelism, fast mode if the budget allows.\n- High output spend → format constraints.\n\nCheck constraints too: **Batch is not eligible for Zero Data Retention**, so a ZDR-dependent workload must weigh that before moving to Batch. Re-run evals after any optimisation; a cheaper pipeline that drops quality may cost more in rework."
         },
         {
+          "id": "production-monitoring-and-drift",
           "heading": "Production monitoring and drift",
           "body": "Monitor continuously:\n\n- **Quality:** sampled LLM-judge scores, user feedback, escalation and override rates.\n- **Input drift:** new topics, languages, document formats, seasonal shifts.\n- **Operational:** latency percentiles, error and timeout rates, rate-limit hits, stop reasons (for example responses cut off by max tokens).\n- **Cost:** tokens and spend per task, and cache effectiveness from the usage fields (`cache_creation_input_tokens`, `cache_read_input_tokens`). If both stay at zero, the cached prefix is probably below the minimum length or is being invalidated.\n\nCombine automated evals, production monitoring, A/B tests, user feedback and transcript review. Feed sampled production failures back into the eval set."
         }
@@ -980,14 +1038,17 @@
       "summary": "LLM failure modes are predictable. Defence in depth plus human checkpoints proportional to risk.",
       "sections": [
         {
+          "id": "llm-failure-modes",
           "heading": "LLM failure modes",
           "body": "- **Hallucination** — fluent, false content.\n- **Direct prompt injection / jailbreak** — the user tries to override instructions.\n- **Indirect prompt injection** — malicious instructions hidden in content the model reads (web pages, emails, documents, tool outputs, MCP descriptions).\n- **Data leakage** — revealing system prompts, other users' data, secrets or PII; exfiltration via tool calls or rendered links.\n- **Excessive agency** — the model takes actions beyond intent because tools allow it.\n- **Bias and unfair outcomes**, **sycophancy**, **over-refusal**."
         },
         {
+          "id": "defending-against-prompt-injection",
           "heading": "Defending against prompt injection",
           "body": "No prompt makes a model injection-proof. Architect defences in layers:\n\n- **Keep untrusted content in its lane** — put third-party text (web pages, emails, documents, tool output) only in `tool_result` blocks, never in the system prompt or as user instructions; label its source; state an untrusted-content policy in the system prompt; JSON-encode untrusted strings; don't put your own instructions inside tool results.\n- **Limit what an injected instruction could do**: least-privilege tools, sandboxing, no write tools in agents that read untrusted content, egress controls, no auto-rendering of arbitrary URLs/images (exfiltration channel).\n- **Screen** inputs and tool outputs with a fast, cheap model before the main model acts on them.\n- **Human approval** for consequential actions.\n- **Red-team and monitor** continuously.\n- Separate **privileged** and **quarantined** components: the component that reads untrusted text cannot directly trigger sensitive tools."
         },
         {
+          "id": "human-in-the-loop-design",
           "heading": "Human-in-the-loop design",
           "body": "HITL is a risk control and a cost. Decide **where** by impact × reversibility × confidence:\n\n- **Human-in-the-loop (pre-approval)** — irreversible, financial, legal, medical or customer-facing high-stakes outputs.\n- **Human-on-the-loop (post-review/sampling)** — lower-risk, reversible actions with monitoring and rollback.\n- **Fully automated** — low-risk, reversible, well-evaluated tasks.\n\nUse **confidence thresholds and routing**: auto-approve high-confidence low-risk cases, queue the rest. Design reviewer UX to avoid rubber-stamping (show sources, highlight uncertain fields), and measure override rates.\n\n**Enforce, don't just ask.** Prompting Claude to confirm before hard-to-reverse actions helps, but instructions in a system prompt or `CLAUDE.md` are context, not enforcement. In Claude Code, a **PreToolUse hook** can return a `permissionDecision` (`allow`, `deny`, `ask`) to gate a tool call regardless of what the model decides. In MCP, **elicitation** lets a server ask the user to confirm an action. Risk tiers themselves are a design judgment built on these primitives, not a scheme Anthropic publishes."
         }
@@ -1038,14 +1099,17 @@
       "summary": "Regulation shapes deployment choices: data flows, hosting, retention, transparency and audit trails.",
       "sections": [
         {
+          "id": "privacy-and-gdpr-principles",
           "heading": "Privacy and GDPR principles",
           "body": "- **Data minimisation** — send the model only the personal data needed; redact or pseudonymise where possible.\n- **Purpose limitation and lawful basis** — document why data is processed.\n- **Data residency** — keep processing where required: the Claude API offers a data-residency control (`inference_geo`), and cloud platforms (Amazon Bedrock, Google Cloud Vertex AI) offer regional deployments. Check which geographies each option supports today.\n- **Who is the processor** — Anthropic for the Claude API; on Amazon Bedrock (and Google-managed Vertex AI) the cloud provider is the processor. This shapes which DPA you rely on.\n- **Right to erasure** — design so personal data can be found and deleted across logs, vector stores, caches, memory and eval sets. Treat embeddings derived from personal data as personal data too.\n- **Retention limits** for prompts and logs; understand the provider's retention terms. On the Claude API, prompts and outputs are not retained by default except where a specific policy requires limited retention, and retained data is not used for training without express permission. **Zero Data Retention (ZDR)** is arranged through sales and enabled per organization; using a non-ZDR-eligible feature is not blocked, that data simply falls outside ZDR.\n- **DPIAs** for high-risk processing; automated-decision rules may require human review and explanation."
         },
         {
+          "id": "hipaa-and-fedramp",
           "heading": "HIPAA and FedRAMP",
           "body": "- **HIPAA** — PHI needs a **signed BAA plus a HIPAA-enabled organization** (standard BAA self-serve in the Console, or a custom BAA via sales). Enablement is **permanent**, and enforcement is at org level: calls to non-eligible features return an error (400). Use a **separate org** for non-PHI workloads that need those features.\n  - Not HIPAA eligible: Claude Code, the Console UI, Agent Skills, Batch processing, the Files API, code execution, the MCP connector and Managed Agents.\n  - Eligible examples: prompt caching, citations, inline PDF, web search, thinking, the memory tool, data residency (`inference_geo`).\n  - HIPAA readiness is an alternative to ZDR for PHI. Still apply minimum-necessary access, encryption, access logging, and keep PHI out of non-covered tooling (analytics, logging, chat tools).\n- **FedRAMP / government** — the **direct Claude API and Claude Enterprise are not FedRAMP authorized**. Authorized routes: **Amazon Bedrock in AWS GovCloud** (FedRAMP High, DoD IL4/IL5; commercial US regions are Moderate), **Google Vertex AI with Assured Workloads** (High, not IL5), or **Claude for Government** (High, not IL5). Statuses change, so confirm on the FedRAMP Marketplace.\n\nThe exam pattern: **compliance decides the hosting path and data flow first**, then you design within it."
         },
         {
+          "id": "responsible-ai-and-audit",
           "heading": "Responsible AI and audit",
           "body": "- **Bias and fairness** — test outcomes across demographic slices for decisions affecting people (lending, hiring, triage); keep humans accountable.\n- **Transparency** — tell users they're interacting with AI, show sources/citations, explain limitations.\n- **Audit logs** — immutable records of inputs, outputs, model/prompt versions, tool actions, approvals and who approved — with access controls and retention aligned to policy.\n- **Governance** — model/prompt change management, risk register, incident response playbook for AI failures."
         }
@@ -1095,18 +1159,22 @@
       "summary": "Guardrails work as a chain: screen inputs, keep untrusted content in its lane, constrain tools, enforce approvals outside the prompt, and monitor.",
       "sections": [
         {
+          "id": "two-threat-models",
           "heading": "Two threat models",
           "body": "- **Jailbreaks and direct injection** — the *user* is the adversary and tries to override your instructions.\n- **Indirect injection** — the user is trusted, but *third-party content* (web pages, emails, documents, tool results) carries adversarial instructions.\n\nThe controls differ, so name which threat model applies before picking guardrails."
         },
         {
+          "id": "direct-injection-layer",
           "heading": "Direct-injection layer",
           "body": "- **Harmlessness screen**: run user input through a fast, cheap model (Haiku-class) that classifies it with structured output before the main model sees it.\n- If the screen itself returns `stop_reason: \"refusal\"`, **treat that as a harmful verdict**, not as an error to retry.\n- **Input validation** (length, format, allowed characters for structured fields).\n- **System prompt** with explicit refusal instructions and the business reason behind them.\n- **Throttle or ban repeat offenders** at the account level."
         },
         {
+          "id": "indirect-injection-layer",
           "heading": "Indirect-injection layer",
           "body": "- Put untrusted content **only in `tool_result` blocks**, never in the system prompt or as user instructions.\n- **Label the source** of each piece of content.\n- State an **untrusted-content policy** in the system prompt (content from tools is data, not instructions).\n- **JSON-encode** untrusted strings so they are harder to pass off as structure.\n- **Do not put your own instructions inside tool results**: it teaches the model that tool output can carry instructions.\n- **Least privilege and sandboxing** for the tools the agent can call.\n- **Screen tool outputs** with a small model before Claude acts on them.\n- **Red-team** the agent."
         },
         {
+          "id": "enforcement-and-chain-safeguards",
           "heading": "Enforcement and chain safeguards",
           "body": "Prompts shape behaviour; enforcement lives outside the model.\n\n- **Claude Code**: `CLAUDE.md` is context. To block an action regardless of what Claude decides, use a **PreToolUse hook** returning `permissionDecision` `allow` / `deny` / `ask` (exit code 2 also blocks), or the permission system.\n- **MCP**: servers can use **elicitation** to get user confirmation for an action.\n- **Chain safeguards**: combine the layers (screen → constrained prompt → domain rules → output checks → monitoring) so one bypass does not defeat the system. A regulated advisor bot, for example, pairs domain directives in the system prompt with a screening tool and continuous monitoring."
         }
@@ -1156,10 +1224,12 @@
       "summary": "The architect's leverage is asking the right questions early and translating technical trade-offs into business language.",
       "sections": [
         {
+          "id": "structured-discovery",
           "heading": "Structured discovery",
           "body": "Before proposing architecture, establish:\n\n- **Problem and users** — who, what job, current process and pain.\n- **Success metrics** — baseline and target; how measured.\n- **Data** — sources, quality, sensitivity classification, ownership, access controls.\n- **Constraints** — compliance, residency, latency, budget, existing platforms/clouds, procurement.\n- **Risk appetite** — what errors cost; which actions need humans.\n- **Stakeholders** — sponsor, users, security, legal, operations, data owners.\n- **Integration points** — systems of record, identity provider, ticketing.\n\nValidate with real examples: collect 20–50 representative inputs and expected outputs early; they seed the eval set.\n\nTurn the sponsor's goal into **success criteria before building**. Good criteria are **Specific, Measurable, Achievable and Relevant**: \"resolve 60% of tier-1 billing tickets without escalation, with CSAT no lower than the human baseline\" beats \"the bot should be good\". Common criteria include task fidelity, consistency, tone, privacy preservation, latency and price."
         },
         {
+          "id": "communicating-trade-offs",
           "heading": "Communicating trade-offs",
           "body": "Executives need decisions framed as options with consequences:\n\n- Present **2–3 options** (e.g., fast/cheap pilot, balanced, full automation) with cost, time-to-value, quality, risk and what each requires from the business.\n- Express quality as **business impact** (\"about 1 in 50 summaries need clinician correction; review takes 30 seconds\") rather than model jargon.\n- Be explicit about **residual risk** and the controls that manage it.\n- Recommend one option and say why.\n\nSet expectations that LLM systems are **probabilistic**: quote error rates from evals, not promises of perfection.\n\nAnchor cost and latency claims in evidence. Agentic systems trade **latency and cost for task performance**, and Anthropic's multi-agent research reports agents using roughly **4x** the tokens of chat and multi-agent systems roughly **15x**. When a stakeholder asks for \"the most advanced\" design, show what that multiplier does to the business case next to a simpler option."
         }
@@ -1205,18 +1275,22 @@
       "summary": "Production AI is a living system: define SLOs, close the feedback loop, document for handoff, and manage it through pilot, scale and retirement.",
       "sections": [
         {
+          "id": "slas-and-slos",
           "heading": "SLAs and SLOs",
           "body": "Define service levels for **availability, latency (p95/p99), quality (e.g., groundedness rate), escalation time**. Align with what your upstream dependencies can support: model provider availability and rate limits, cloud region capacity. Design for degradation: retries with backoff, fallback models or regions, graceful \"a human will follow up\" paths.\n\nKnow the failure modes you are writing SLOs around: **429** means you hit a rate limit, **529 `overloaded_error`** means the API is temporarily overloaded. The official SDKs **retry automatically (twice by default) with backoff**, so runbooks start there and then fall back or degrade. Requests that may run longer than about 10 minutes should use **streaming** or Batch, and bulk work that need not be interactive belongs on the **Batch API**, which is discounted and asynchronous. Its SLA is a turnaround window, not an interactive latency target."
         },
         {
+          "id": "feedback-loops",
           "heading": "Feedback loops",
           "body": "- Capture **explicit feedback** (thumbs, corrections) and **implicit signals** (escalation, rephrasing, abandonment, human overrides).\n- Route feedback to triage: classify failures, add to eval set, fix, verify with regression run, release.\n- Report a regular quality review to stakeholders with trends, incidents and actions.\n\nNo single signal is enough. Combine **automated evals** (fast iteration), **production monitoring** (ground truth), **A/B tests** (actual user outcomes such as task completion) and **transcript review plus user feedback**."
         },
         {
+          "id": "documentation-and-handoff",
           "heading": "Documentation and handoff",
           "body": "Hand off a system an operations team can actually run:\n\n- Architecture and data-flow diagrams; threat model.\n- Prompt and model version registry, with change history and rationale.\n- Eval suite, thresholds and how to run it.\n- Runbooks: incident response (e.g., quality drop, injection attempt, provider outage), rollback, key rotation.\n- Ownership (RACI), on-call, escalation paths, cost dashboards."
         },
         {
+          "id": "lifecycle",
           "heading": "Lifecycle",
           "body": "- **Discovery / prototype** — prove feasibility on real examples.\n- **Pilot** — limited users, heavy HITL, measure against baseline.\n- **Production** — SLOs, monitoring, support.\n- **Scale** — more users/use cases, cost optimisation, platformisation (shared gateways, evals, guardrails).\n- **Continuous improvement** — model upgrades via eval-gated migration.\n- **Retire / replace** — deprecation plan when models are retired or the use case changes; migrate data, notify users.\n\nChange management matters: train users, set expectations, involve frontline staff, and track adoption.\n\n**Model lifecycle facts to plan around:**\n\n- Dateless model IDs from the 4.6 generation onward are **pinned snapshots**: behaviour under an ID does not drift, so upgrading is a deliberate, eval-gated decision.\n- Each current model publishes a retirement commitment of **\"not sooner than\"** a date. Treat it as the earliest possible retirement and finish migration well before it.\n- **Partner platforms** (Amazon Bedrock, Google-managed Vertex AI) set **their own** lifecycle dates; check the platform you actually call.\n- Roll out new versions gradually. **Rainbow deployments** shift traffic step by step while old and new versions both run, so long-running agent sessions are not broken mid-task."
         }
@@ -1266,14 +1340,17 @@
       "summary": "Write documentation that lets someone else operate, change and defend the system, and prove the receiving team can run it before you leave.",
       "sections": [
         {
+          "id": "document-decisions-not-just-diagrams",
           "heading": "Document decisions, not just diagrams",
           "body": "Diagrams show *what* was built; operators and future architects also need *why*. Keep short **architecture decision records**: the context and constraints, the options considered, the evidence (eval results, cost estimates), the decision and its consequences. A record saying \"multi-agent rejected: about 15x chat token usage, task needs shared context\" stops the same debate restarting six months later."
         },
         {
+          "id": "what-the-receiving-team-needs",
           "heading": "What the receiving team needs",
           "body": "- **Architecture and data-flow diagrams**, including where sensitive data goes and the threat model.\n- **Prompt and model version registry**: exact model IDs (pinned snapshots), prompt versions, change history, and the eval result that justified each change.\n- **Eval suite**: cases, graders, pass thresholds and the command to run it.\n- **Runbooks**: quality regression, prompt-injection attempt, 429 rate limiting, 529 overload or provider outage, rollback, key rotation. Tell responders to capture the **`request-id`** response header when escalating to the provider.\n- **Ownership**: RACI, on-call rota, escalation paths, cost dashboards and budget alerts.\n- **Lifecycle calendar**: the retirement commitments of the models in use (and of the partner platform, if any) and the planned migration window."
         },
         {
+          "id": "make-the-handoff-real",
           "heading": "Make the handoff real",
           "body": "A handoff is complete when the receiving team can operate the system without you, not when the documents are delivered.\n\n- **Shadow, then reverse-shadow**: the ops team watches you, then runs incidents while you watch.\n- **Drill the runbooks**: simulate a provider outage or a quality drop and have the new owners execute the steps and the regression suite themselves.\n- **Agree acceptance criteria** for the handoff up front and get explicit sign-off from the new owner."
         }
@@ -1314,18 +1391,22 @@
       "summary": "Enable developers fast while keeping policy, security and cost under central control.",
       "sections": [
         {
+          "id": "configuration-layers",
           "heading": "Configuration layers",
           "body": "Claude Code reads settings from several scopes: **managed** (a `managed-settings.json` file, MDM profile, or server-managed settings from the claude.ai console), the `--settings` command-line flag, **local project** (`.claude/settings.local.json`, not committed), **shared project** (`.claude/settings.json`, committed to the repo) and **user** (`~/.claude/settings.json`).\n\nPrecedence is managed > CLI > local > shared project > user, and users cannot override managed values. List settings such as `permissions.allow` **merge** across scopes rather than replacing each other.\n\nA few subtleties matter for rollouts:\n- Project `allow` rules only take effect once the workspace is **trusted**; `deny` and `ask` rules apply immediately.\n- `defaultMode` values `auto` and `bypassPermissions` do not take effect from project or local files.\n- A managed `model` is only a default. To actually restrict models, use `availableModels` / `deniedModels`.\n- Only server-managed settings reach cloud sessions."
         },
         {
+          "id": "permissions-hooks-and-mcp-governance",
           "heading": "Permissions, hooks and MCP governance",
           "body": "- **Permissions**: rules are evaluated **deny, then ask, then allow**, and the first match wins; a more specific allow does not beat a broader deny. Pre-approve safe, common commands to cut prompt fatigue and deny dangerous ones (reading `.env`, force-pushing). For filesystem and network enforcement that does not depend on command text, use **sandboxing**. In managed settings you can disable bypass/auto modes and set `allowManagedPermissionRulesOnly` so only admin rules count.\n- **Hooks**: user-defined handlers (command, http, mcp_tool, prompt, and an experimental agent type) that run at lifecycle events such as before a tool call. Exit code **2 blocks** the action; other non-zero codes are non-blocking errors, so a policy hook must use `exit 2`. Admins can set `allowManagedHooksOnly`, and only a managed-level `disableAllHooks` can switch managed hooks off.\n- **MCP governance**: share approved servers through the project `.mcp.json` (interactive sessions ask for approval). Servers defined via managed configuration rank above every other scope. Review each server's scopes and credentials like any third-party dependency."
         },
         {
+          "id": "shared-conventions-with-claude-md-and-skills",
           "heading": "Shared conventions with CLAUDE.md and skills",
           "body": "CLAUDE.md files give Claude persistent instructions: build/test commands, architecture notes, conventions and gotchas. Locations include a **managed policy** file deployed by admins (an OS-level path that `claudeMdExcludes` cannot exclude), the project file (committed), user-level and `CLAUDE.local.md`. Files are concatenated from the repo root down to the working directory; keep each one short (the docs suggest under about 200 lines). Claude Code also reads AGENTS.md natively.\n\nCLAUDE.md is **guidance, not enforcement**: pair a managed CLAUDE.md with managed `permissions.deny` rules for anything that must hold. Package repeatable team workflows as shared, version-controlled **skills** so everyone runs them the same way."
         },
         {
+          "id": "ai-assisted-workflows-and-operational-debugging",
           "heading": "AI-assisted workflows and operational debugging",
           "body": "- **Headless mode** (`claude -p`) runs non-interactively for CI: automated review, test-failure triage, issue-to-PR flows via GitHub Actions or GitLab CI/CD. Restrict tools and permissions in CI (see the next lesson).\n- Keep **human review of AI-authored changes** through the normal PR process and tests.\n- Track outcomes (cycle time, PR throughput, defect rates, cost) rather than raw usage.\n- **Operational debugging**: when Claude Code misbehaves for one team, run `/status` to see which settings sources loaded, run `claude doctor` to find rejected settings entries, check active CLAUDE.md content, permissions precedence and MCP server status, then check auth, proxy and provider configuration."
         }
@@ -1384,18 +1465,22 @@
       "summary": "Run Claude Code unattended in pipelines with reproducible, least-privilege configuration, parse its output safely, measure it with OpenTelemetry and debug it with built-in diagnostics.",
       "sections": [
         {
+          "id": "headless-runs-that-behave-predictably",
           "heading": "Headless runs that behave predictably",
           "body": "`claude -p \"<prompt>\"` runs once and exits, which is what CI needs. For pipelines:\n\n- Use **`--bare`** to skip hooks, skills, plugins, MCP, auto memory and CLAUDE.md, then pass the context and tools the job needs explicitly. The docs recommend it for CI and say it will become the `-p` default.\n- Without `--bare`, `-p` loads project hooks and `.mcp.json` servers **even in untrusted folders, without prompting**. Do not run unattended jobs on untrusted code with the default loading.\n- In recent versions, `-p` starts in **Manual** mode: any call that needs approval is **denied**. Pre-approve exactly the commands the job needs, or choose an explicit `--permission-mode` (for example `acceptEdits` or `dontAsk`). Avoid bypassing permissions wholesale.\n- Integrations exist for GitHub Actions and GitLab CI/CD; the same least-privilege rules apply."
         },
         {
+          "id": "parsing-output-safely",
           "heading": "Parsing output safely",
           "body": "- `--output-format text|json|stream-json`. JSON output includes the result and cost fields; `stream-json` emits events as they happen.\n- `--json-schema` places a schema-conformant result in **`structured_output`**. The field is **absent if the run failed**, so gate on the exit code and on the field's presence before using it.\n- Exit code 0 means success. Treat anything else as a failed step, not as empty output."
         },
         {
+          "id": "measuring-adoption-with-opentelemetry",
           "heading": "Measuring adoption with OpenTelemetry",
           "body": "Enable telemetry with `CLAUDE_CODE_ENABLE_TELEMETRY=1` plus OTEL metrics/logs exporters. Admins set these centrally through the managed settings `env`; repository settings files cannot set the exporter variables.\n\nMetrics cover sessions, lines of code, commits, pull requests, cost, tokens, edit-tool accept/reject decisions and active time. Events include prompts, tool results and decisions, API requests, errors and refusals. Prompt content is **redacted by default**. Combine these with delivery outcomes (cycle time, defect rates) rather than reporting raw usage alone."
         },
         {
+          "id": "operational-debugging-playbook",
           "heading": "Operational debugging playbook",
           "body": "1. **Configuration**: `/status` shows which settings sources loaded; `claude doctor` lists rejected settings entries. Then check precedence (a managed deny beats any allow) and whether project `allow` rules are waiting for workspace trust.\n2. **Headless runs**: in `stream-json`, the `system/init` event lists `mcp_server_errors` and `plugin_errors`. Fail the job when a required server is missing. `system/api_retry` events show retried API calls.\n3. **Telemetry problems**: use `--debug-file` to capture debug output.\n4. **Permissions**: denials in `-p` usually mean Manual mode met an unapproved call, not a model refusal.\n5. Only then look at the network layer: auth, proxy and provider configuration."
         }

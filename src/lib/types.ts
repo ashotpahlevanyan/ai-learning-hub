@@ -18,7 +18,8 @@ export interface Lesson {
   title: string;
   minutes?: number;
   summary?: string;
-  sections: { heading: string; body: string }[];
+  /** `id` is a slug of the heading, unique within the lesson (added by scripts/normalize-content.mjs). */
+  sections: { id: string; heading: string; body: string }[];
   keyPoints?: string[];
   gotchas?: { trap: string; correct: string }[];
   lab?: string;

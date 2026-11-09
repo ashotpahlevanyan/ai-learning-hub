@@ -67,18 +67,22 @@
       "summary": "Pick the right storage format, ingestion path and processing engine for batch and streaming ML data: Amazon S3, Parquet/ORC/CSV/JSON, Kinesis, Data Firehose, Managed Service for Apache Flink, AWS Glue and Amazon EMR.",
       "sections": [
         {
+          "id": "amazon-s3-is-the-default-ml-data-lake",
           "heading": "Amazon S3 is the default ML data lake",
           "body": "Almost every SageMaker AI and Amazon Bedrock workflow reads training and reference data from **Amazon S3**. Task 1.1 of the exam guide (\"Collect and store data\") is about choosing *how* data lands there and in which shape.\n\n- Organise data with **prefixes and partitions** (for example `year=/month=/day=`) so query engines can skip whole folders.\n- Register datasets in the **AWS Glue Data Catalog** (crawlers can infer schemas) so Athena, Glue, EMR and Redshift Spectrum share one schema.\n- Govern access to lake tables with **AWS Lake Formation** when many teams share the data."
         },
         {
+          "id": "choose-the-format-from-the-access-pattern",
           "heading": "Choose the format from the access pattern",
           "body": "The exam guide asks you to choose Parquet, JSON, CSV or ORC \"based on data access patterns\".\n\n| Format | Layout | Good for |\n|---|---|---|\n| **Parquet** / **ORC** | Columnar, compressed, typed | Analytics that read a few columns of wide tables; Athena and Spark scan less data, so queries are faster and cheaper |\n| **CSV** | Row text | Simple interchange, many built-in algorithms accept it |\n| **JSON / JSONL** | Row, nested | Semi-structured events; JSONL is the Bedrock fine-tuning format |\n\nSageMaker built-in algorithms also accept **RecordIO-protobuf**, a binary format that suits streaming records into training. Treat it as background knowledge: the C02 guide names Parquet, JSON, CSV and ORC."
         },
         {
+          "id": "streaming-ingestion",
           "heading": "Streaming ingestion",
           "body": "- **Amazon Kinesis Data Streams**: durable, ordered shards; you write the consumers. Use when several applications must read the same stream or you need custom processing.\n- **Amazon Data Firehose**: fully managed delivery to S3, Redshift or OpenSearch with buffering. It can **convert JSON records to Parquet or ORC** on the way into S3 using a Glue table schema, which is the low-ops way to get a query-friendly lake from a stream.\n- **Amazon Managed Service for Apache Flink**: stateful, low-latency stream processing (windowed aggregations, joins) for near-real-time features.\n- **Apache Kafka** is also named in the guide as a streaming source."
         },
         {
+          "id": "batch-processing-and-merging-glue-vs-emr",
           "heading": "Batch processing and merging: Glue vs EMR",
           "body": "- **AWS Glue** is serverless Spark ETL with the Data Catalog and crawlers built in. Pick it to join and merge sources (S3, JDBC databases) without managing clusters.\n- **Amazon EMR** runs managed Spark, Hive and other open-source frameworks on clusters you configure. Pick it when you need control over cluster software, custom libraries or very large long-running jobs.\n- **Amazon Athena** runs SQL directly on S3, and `CREATE TABLE AS SELECT` can rewrite CSV into partitioned Parquet.\n\nRule of thumb: serverless and integrated → Glue; full control of the Spark/Hadoop environment → EMR."
         }
@@ -127,18 +131,22 @@
       "summary": "Choose a vector store for Amazon Bedrock Knowledge Bases, match embedding dimensions to the index, and pick a chunking strategy and metadata design that make retrieval accurate and affordable.",
       "sections": [
         {
+          "id": "vector-store-options",
           "heading": "Vector store options",
           "body": "The C02 guide names vector databases such as **OpenSearch Service, RDS/Aurora with pgvector and Amazon S3** (Skill 1.1.7). For Bedrock Knowledge Bases the supported stores include:\n\n- **Amazon OpenSearch Serverless** and **OpenSearch Service managed clusters**. These are the only options that support **binary vectors**. Managed domains that sit behind a VPC are **not** supported for Knowledge Bases; public access is required.\n- **Amazon S3 Vectors**: cost-effective, sub-second queries, \"best suited for infrequent query workloads\". Float embeddings only, a limited amount of custom metadata per vector, cosine or Euclidean distance.\n- **Amazon Aurora PostgreSQL (pgvector)**: must be in the same account; credentials come from a Secrets Manager secret.\n- **Neptune Analytics** for GraphRAG, plus third-party stores (Pinecone, Redis Enterprise Cloud, MongoDB Atlas)."
         },
         {
+          "id": "embeddings-and-dimensions",
           "heading": "Embeddings and dimensions",
           "body": "An embedding model turns each chunk into a vector, and the index dimension must match the model output. Titan Text Embeddings V2, for example, can output 1,024, 512 or 256 dimensions. Fewer dimensions mean smaller indexes and lower storage cost, usually at some cost in accuracy.\n\nChanging the embedding model or its dimension means **re-embedding the whole corpus** into an index of the new dimension: vectors from different models or sizes are not comparable."
         },
         {
+          "id": "chunking-strategies-in-knowledge-bases",
           "heading": "Chunking strategies in Knowledge Bases",
           "body": "| Strategy | How it works | When to use |\n|---|---|---|\n| **Default** | About 300 tokens, honours sentence boundaries | Good starting point |\n| **Fixed-size** | Max tokens plus overlap percentage | Uniform documents, predictable cost |\n| **Hierarchical** | Small child chunks are matched, the larger parent chunk is returned | Precise matching but answers need surrounding context. Not recommended with S3 Vectors because of metadata limits |\n| **Semantic** | Splits on meaning using an FM (buffer size, breakpoint threshold) | Topic-shifting prose; costs extra because it calls a model |\n| **No chunking** | Each file is one chunk | Documents you have already split, or custom chunking in a **Lambda transformation** |\n\nNova multimodal embeddings chunk audio and video by time segments."
         },
         {
+          "id": "metadata",
           "heading": "Metadata",
           "body": "Attach metadata (department, date, product, access level) to source documents so retrieval can be **filtered** to the right subset before similarity ranking. Keep metadata compact when the vector store limits metadata size per vector, as S3 Vectors does."
         }
@@ -183,18 +191,22 @@
       "summary": "Clean, impute, encode and scale features without leaking information, using SageMaker Data Wrangler (now in SageMaker Canvas), AWS Glue DataBrew and Spark on Glue or EMR.",
       "sections": [
         {
+          "id": "tools-for-the-job",
           "heading": "Tools for the job",
           "body": "- **SageMaker Data Wrangler** has been integrated into **SageMaker Canvas** and adds a natural-language interface. It imports from S3, Athena, Redshift, Snowflake and Databricks, applies hundreds of built-in transforms, and exports a flow to **S3, SageMaker Pipelines, Feature Store or a Python script**. Its **Data Quality and Insights report** flags anomalies, duplicates and **target leakage**.\n- **AWS Glue DataBrew** is a visual, no-code tool for profiling and cleaning datasets, aimed at analysts. Recipes can be rerun as jobs.\n- **AWS Glue / Amazon EMR (Spark)** handle large-scale or code-first transformations."
         },
         {
+          "id": "missing-values-and-outliers",
           "heading": "Missing values and outliers",
           "body": "- **Drop** rows or columns only when the missing share is small or the column is useless.\n- **Mean imputation** suits roughly symmetric numeric data; **median imputation** is robust to outliers and skew.\n- **Most-frequent or a constant \"missing\" category** suits categorical features; a missing-indicator column keeps the signal that a value was absent.\n- Handle outliers by clipping, log transforms, or investigating them as data errors."
         },
         {
+          "id": "encoding-and-scaling",
           "heading": "Encoding and scaling",
           "body": "- **One-hot encoding** for nominal categories with a modest number of values. **Ordinal encoding** only when the categories have a true order (low < medium < high); otherwise the model learns a fake order.\n- **High-cardinality** categories explode one-hot width; consider grouping rare values, hashing, or embeddings.\n- **Standardisation** (zero mean, unit variance) and **min-max scaling** matter for distance- and gradient-based models (k-NN, linear models, neural networks). Tree-based models such as XGBoost are largely insensitive to scaling.\n- **Binning**, log transforms and date-part extraction create new features from raw columns."
         },
         {
+          "id": "avoid-leakage",
           "heading": "Avoid leakage",
           "body": "Split the data **before** fitting any transform that learns statistics (imputer, scaler, encoder). Fit on the training split and apply the fitted transform to validation and test data. Drop features that would not be known at prediction time or that are derived from the label; the Data Wrangler insights report helps spot them."
         }
@@ -243,18 +255,22 @@
       "summary": "Use feature groups with online and offline stores to serve the same features for training and real-time inference, avoid training-serving skew, and build point-in-time training sets.",
       "sections": [
         {
+          "id": "feature-groups",
           "heading": "Feature groups",
           "body": "A **feature group** is a set of features described by a schema. Every record needs a **record identifier** (for example `customer_id`) and an **event time** feature that says when the values were valid."
         },
         {
+          "id": "online-vs-offline-store",
           "heading": "Online vs offline store",
           "body": "| | Online store | Offline store |\n|---|---|---|\n| Contents | Only the **latest** record per identifier | **Append-only history** of every record |\n| Storage | Low-latency key-value | Amazon S3 in **Parquet** |\n| Access | Millisecond reads for real-time inference | Athena or Spark queries for training and batch |\n\nA feature group can enable one or both. `DeleteRecord` removes a record from the online store."
         },
         {
+          "id": "ingestion",
           "heading": "Ingestion",
           "body": "- **Streaming**: the synchronous `PutRecord` API writes a record; it lands in the online store and is replicated to the offline store.\n- **Batch**: SageMaker Processing jobs or a **Data Wrangler export** write many records at once."
         },
         {
+          "id": "why-teams-use-it",
           "heading": "Why teams use it",
           "body": "- **Reduce training-serving skew**: training and inference read features produced by the same pipeline, not two separate code paths.\n- **Reuse and discovery**: teams share curated features instead of rebuilding them.\n- **Point-in-time correctness**: because the offline store keeps history keyed by event time, you can build a training set using only feature values that were known at each label's timestamp, avoiding future leakage."
         }
@@ -295,18 +311,22 @@
       "summary": "Validate data with AWS Glue Data Quality and DataBrew, measure pre-training bias, label data, and split datasets correctly, while knowing which SageMaker AI features are now closed to new customers.",
       "sections": [
         {
+          "id": "data-quality-checks",
           "heading": "Data quality checks",
           "body": "Task 1.3 is \"Validate data quality and manage bias\". The guide names **AWS Glue DataBrew** and **AWS Glue Data Quality**.\n\n- **Glue Data Quality** evaluates rules (completeness, uniqueness, value ranges, freshness) against Data Catalog tables or inside Glue ETL jobs, so a pipeline can stop or quarantine bad data.\n- **DataBrew** profiles datasets visually and can run data quality rules in profile jobs.\n- Typical checks: schema drift, nulls, duplicates, out-of-range values, label distribution."
         },
         {
+          "id": "pre-training-bias-metrics",
           "heading": "Pre-training bias metrics",
           "body": "Bias can be measured on the data before any model is trained. Key definitions (as documented for SageMaker Clarify):\n\n- **Class Imbalance (CI)**: one facet (group) has far fewer members than another.\n- **Difference in Proportions of Labels (DPL)**: the share of positive labels differs between facets.\n- Distribution distances between facets: **KL**, **JS**, **Lp-norm**, **TVD**, **KS**, and **CDD** (conditional demographic disparity).\n\nMitigations include collecting more data for under-represented groups, resampling (oversampling or undersampling), and reweighting.\n\n**Availability note:** SageMaker Clarify is in maintenance and **closed to new customers** (2026). AWS guidance is to compute these metrics with pandas and scikit-learn and to use the SHAP library directly."
         },
         {
+          "id": "labeling-and-annotation",
           "heading": "Labeling and annotation",
           "body": "The guide says \"Label and annotate data\" without naming a tool. **SageMaker Ground Truth** supports private and vendor workforces, **automated data labeling** (a model labels confident items and sends the rest to humans), and streaming labeling jobs. Ground Truth is also **closed to new customers**, and **Ground Truth Plus reached end of support on 30 Jun 2026**. For confidential data, use a **private workforce** of your own employees."
         },
         {
+          "id": "splitting-datasets",
           "heading": "Splitting datasets",
           "body": "- **Random** train/validation/test splits for independent records.\n- **Stratified** splits keep class proportions, important for rare positive classes.\n- **Chronological** splits for time series and any problem where the future must not inform the past.\n- Keep related records (same customer, same patient) in one split to avoid leakage.\n- Resample to fix imbalance **only on the training split**; evaluate on the real distribution."
         }
@@ -359,14 +379,17 @@
       "summary": "Mask and redact sensitive data across S3, text, logs and model traffic, and prepare validated JSONL datasets for Amazon Bedrock fine-tuning, reinforcement fine-tuning and distillation.",
       "sections": [
         {
+          "id": "find-and-remove-pii",
           "heading": "Find and remove PII",
           "body": "Skill 1.2.8 covers masking and redaction. Match the tool to where the data is:\n\n- **Amazon Macie** discovers sensitive data (PII, credentials) in **S3 buckets**.\n- **Amazon Comprehend** detects PII entities in text and can **redact** them, which suits cleaning documents or transcripts before training or indexing.\n- **Bedrock Guardrails sensitive information filters** **block or mask** PII (and custom regex patterns) in prompts and model responses at inference time.\n- **CloudWatch Logs data protection** policies mask sensitive values in log events.\n- Encryption (KMS) protects data at rest but does **not** remove PII from the content a model learns from."
         },
         {
+          "id": "bedrock-customisation-data-formats",
           "heading": "Bedrock customisation data formats",
           "body": "Current Bedrock customisation methods are **supervised fine-tuning**, **reinforcement fine-tuning** and **distillation**.\n\n- Training data is **JSONL** in S3: one JSON object per line.\n- Non-conversational records: `{\"prompt\": \"...\", \"completion\": \"...\"}`.\n- Conversational records use the Converse format with `\"schemaVersion\": \"bedrock-conversation-2024\"`, a `system` field and a `messages` array.\n- **Distillation**: you supply prompts; a teacher model generates responses that are used to fine-tune a smaller student model.\n- **Reinforcement fine-tuning** uses reward functions and can draw on prompt datasets or Bedrock invocation logs.\n\nThe exam guide also mentions continuous pre-training; treat it as a concept, since the current Bedrock customisation page does not list it as a job type."
         },
         {
+          "id": "validate-prompt-response-pairs",
           "heading": "Validate prompt-response pairs",
           "body": "Skill 1.3.6 asks you to validate prompt-response pairs and screen content safety before customisation:\n\n- Every line parses as JSON and has the required fields; no empty or truncated completions.\n- Remove duplicates and contradictory answers; check the length distribution against model limits (estimate about 6 characters per token).\n- Screen pairs for toxic or unsafe content and PII, for example with the standalone **ApplyGuardrail** API.\n- Hold out a validation set to measure the customised model."
         }
@@ -415,14 +438,17 @@
       "summary": "Pick the least-effort option that meets the requirement: an AWS AI service, a SageMaker AI built-in algorithm, a JumpStart model, a Bedrock FM (with RAG or customisation), or your own training script.",
       "sections": [
         {
+          "id": "start-from-the-problem-not-the-tool",
           "heading": "Start from the problem, not the tool",
           "body": "Task statement 2.1 asks you to choose an appropriate modeling approach. Exam scenarios usually reward the option with the **least custom work** that still meets accuracy, control, latency and cost requirements. A useful ladder, from least to most effort:\n\n1. **AWS AI services**: pre-trained APIs for common tasks. **Amazon Textract** extracts text, forms and tables from documents. **Amazon Comprehend** handles NLP tasks such as sentiment, entities and PII detection. **Amazon Rekognition** analyses images and video. **Amazon Transcribe** converts speech to text.\n2. **Amazon Bedrock foundation models**: serverless API access to FMs, used with prompting, **retrieval-augmented generation (RAG)** through Knowledge Bases, or customisation.\n3. **SageMaker JumpStart**: a catalog of pre-trained and open-weight models with sample notebooks, deployed to SageMaker AI endpoints in your account, where you control the instances.\n4. **SageMaker AI built-in algorithms**: managed implementations (for example XGBoost for tabular data) where you supply data and hyperparameters but no training code.\n5. **Your own code**: script mode with a prebuilt framework container (PyTorch, TensorFlow, scikit-learn and others), or a custom container when nothing prebuilt fits."
         },
         {
+          "id": "generative-ai-choices-prompt-rag-or-customise",
           "heading": "Generative AI choices: prompt, RAG or customise",
           "body": "- **Prompt engineering** first: cheapest and fastest to iterate. Store and version prompts with **Bedrock Prompt Management** (variables, variants, versions).\n\n- **RAG** when answers must reflect **private or frequently changing** knowledge, or need citations. Retrieval happens at query time, so updating the knowledge base updates answers without retraining. Retrieval quality depends on chunking strategy (default, fixed-size, hierarchical, semantic or none), embeddings and reranking.\n\n- **Customisation** (fine-tuning or distillation) when you need a consistent **behaviour, style, format or task skill** that prompting cannot reliably produce. It does not keep facts fresh.\n\n- **Bedrock Custom Model Import** when you already have weights for a supported architecture in Hugging Face format and want to call them through the Bedrock API on demand."
         },
         {
+          "id": "classical-ml-choices",
           "heading": "Classical ML choices",
           "body": "Match the algorithm family to the data and target: regression for continuous values, classification for categories, clustering for unlabeled grouping, time-series forecasting for sequences over time. Tree ensembles such as XGBoost are a strong default for structured tabular data. Deep learning suits unstructured data (images, audio, text). Consider interpretability: a regulated lending model may favour a simpler, explainable model over a marginal accuracy gain."
         }
@@ -480,22 +506,27 @@
       "summary": "Script mode, distributed training (data vs model parallelism), Spot capacity with checkpoints, HyperPod for long FM training, and the regularisation and ensemble techniques that fix fit problems.",
       "sections": [
         {
+          "id": "script-mode-and-training-jobs",
           "heading": "Script mode and training jobs",
           "body": "A SageMaker AI training job pulls data from S3 (or another configured source), runs your training code in a container on managed instances, writes model artifacts back to S3, and shuts the instances down. In **script mode** you bring a normal training script and run it with a prebuilt framework container, passing hyperparameters as arguments. This is the usual answer when a team already has working PyTorch, TensorFlow or scikit-learn code."
         },
         {
+          "id": "distributed-training",
           "heading": "Distributed training",
           "body": "- **Data parallelism**: the model fits on one device, but the dataset is large. Each GPU or instance holds a full copy of the model and processes a different shard of each batch; gradients are synchronised. This shortens wall-clock time.\n\n- **Model parallelism**: the model is **too large to fit in one device’s memory**. The model itself (layers, tensors, optimizer state) is split across devices.\n\n- **SageMaker HyperPod** provides resilient clusters for long-running FM training. It automatically detects and replaces faulty nodes, and is orchestrated with Slurm or Amazon EKS."
         },
         {
+          "id": "cost-spot-capacity-and-checkpoints",
           "heading": "Cost: Spot capacity and checkpoints",
           "body": "Managed Spot Training runs training jobs on spare EC2 capacity at a lower price. Jobs can be interrupted, so write **checkpoints to S3** and let the job resume from the last checkpoint. Set a maximum wait time that covers both running and waiting for capacity. Suits jobs that tolerate delays; avoid it for hard deadlines."
         },
         {
+          "id": "fixing-fit-problems",
           "heading": "Fixing fit problems",
           "body": "| Symptom | Diagnosis | Typical fixes |\n|---|---|---|\n| Low training error, much higher validation error | **Overfitting** (high variance) | L1/L2 regularisation, dropout, early stopping, more or augmented data, fewer features, simpler model |\n| High training and validation error | **Underfitting** (high bias) | More model capacity, better features, less regularisation, train longer |\n| Loss diverges or becomes NaN | Unstable optimisation | Lower learning rate, scale or normalise inputs, gradient clipping, check for bad data |\n\n**Ensembles** (task 2.2.6) combine models: **bagging** (for example random forests) mainly reduces variance, **boosting** (for example XGBoost) builds models sequentially to reduce bias, and **stacking** trains a meta-model on the outputs of base models."
         },
         {
+          "id": "debugging-convergence-in-a-new-build",
           "heading": "Debugging convergence in a new build",
           "body": "SageMaker Debugger offers built-in rules for problems such as vanishing gradients and overfitting, but Debugger is **in maintenance and closed to new customers from 30 Jul 2026**, and SageMaker Profiler is entering sunset. For a new build, log loss, gradient norms and learning rate to MLflow on SageMaker AI or CloudWatch and inspect the curves yourself. Treat Debugger as an existing-customer tool."
         }
@@ -553,14 +584,17 @@
       "summary": "SageMaker AI automatic model tuning (AMT) runs many training jobs to optimise an objective metric. Know when to use grid, random, Bayesian and Hyperband search.",
       "sections": [
         {
+          "id": "how-amt-works",
           "heading": "How AMT works",
           "body": "You define hyperparameter ranges (categorical, continuous or integer), an **objective metric** to minimise or maximise (for example `validation:auc`), the total number of training jobs and the number to run in parallel. AMT launches training jobs, reads the objective metric and returns the best training job."
         },
         {
+          "id": "search-strategies",
           "heading": "Search strategies",
           "body": "- **Grid search**: tries every combination. Works with **categorical** parameters only, and AMT computes the number of jobs for you. Use when the space is small and you want an exhaustive sweep.\n\n- **Random search**: picks values at random. Each job is **independent of earlier results**, so you can run the maximum number of concurrent jobs without hurting search quality.\n\n- **Bayesian optimisation**: treats tuning as a regression problem and uses earlier results to choose the next values, balancing exploration and exploitation. Usually finds good values in **fewer jobs**, but heavy parallelism reduces what each round can learn.\n\n- **Hyperband**: a multi-fidelity strategy for **iterative** algorithms that report intermediate metrics. It stops under-performing jobs early and gives more resources to promising ones. It has its own internal early stopping, so `TrainingJobEarlyStoppingType` must be **OFF**."
         },
         {
+          "id": "practical-tips",
           "heading": "Practical tips",
           "body": "- Use log scaling for ranges that span orders of magnitude, such as learning rate.\n\n- Keep the number of tuned hyperparameters small; each extra dimension makes the search harder.\n\n- Combine AMT with Spot training to cut cost on large sweeps.\n\n- Make sure the training script emits the objective metric in the format AMT expects, or the job cannot be scored."
         }
@@ -597,18 +631,22 @@
       "summary": "Bedrock supervised fine-tuning, reinforcement fine-tuning and distillation; continued pre-training as a concept; catastrophic forgetting; serving custom models; and versioning models and prompts.",
       "sections": [
         {
+          "id": "bedrock-customisation-methods",
           "heading": "Bedrock customisation methods",
           "body": "The current Bedrock customisation page lists three methods:\n\n- **Supervised fine-tuning (SFT)**: train on **labeled** examples (prompt and desired response) to teach a task, style or output format.\n- **Reinforcement fine-tuning (RFT)**: improve the model using **reward functions** (for example a grader in AWS Lambda) instead of gold answers. Training data can be prompt datasets or Bedrock invocation logs.\n- **Distillation**: a larger **teacher** model generates responses to your prompts, and a smaller **student** model is fine-tuned on them. You get a cheaper, faster model that approaches the teacher on your use case.\n\nTraining is billed on tokens processed multiplied by epochs, plus monthly storage for the custom model. Training data is **JSONL**: `{\"prompt\": ..., \"completion\": ...}` records for non-conversational tasks, or the Converse-style `bedrock-conversation-2024` schema for conversational tasks."
         },
         {
+          "id": "continued-pre-training-and-catastrophic-forgetting",
           "heading": "Continued pre-training and catastrophic forgetting",
           "body": "**Continued pre-training** means further training a base model on large amounts of **unlabeled domain text** so it absorbs domain vocabulary. The exam guide still names it as a data-preparation target, but it is not listed on the current Bedrock customisation page, so treat it as a concept rather than a specific Bedrock job type.\n\n**Catastrophic forgetting** (task 2.2.5) is when training on a narrow dataset degrades the model’s general abilities. Mitigations: mix general-purpose examples into the training data, use fewer epochs or a lower learning rate, prefer parameter-efficient methods, and always evaluate on a general benchmark as well as the target task."
         },
         {
+          "id": "serving-a-custom-model",
           "heading": "Serving a custom model",
           "body": "A model customised in Bedrock is served through **Provisioned Throughput** or, for supported base models and Regions, an **on-demand custom model deployment**. You cannot invoke it like the base model with no setup. Provisioned Throughput is billed hourly per model unit, with no-commitment, 1-month or 6-month terms. By contrast, **Custom Model Import** brings supported open-weight architectures into Bedrock for on-demand invocation."
         },
         {
+          "id": "versioning-models-and-prompts",
           "heading": "Versioning models and prompts",
           "body": "- **SageMaker Model Registry**: model package groups hold numbered **versions** with metrics, lineage and an **approval status**. Approval changes can drive CI/CD deployments. Groups can be organised into collections.\n\n- **MLflow on SageMaker AI**: managed experiment tracking (MLflow Tracking Servers or serverless MLflow Apps). Runs record parameters, metrics and artifacts, and models can be auto-registered into Model Registry.\n\n- **Bedrock Prompt Management**: prompts with variables, **variants** for side-by-side comparison, and immutable **versions** you reference from applications or Flows."
         }
@@ -666,18 +704,22 @@
       "summary": "Classification and regression metrics, the confusion matrix, AUC, NLP metrics, Bedrock evaluations including LLM-as-a-judge and RAG evaluation, and explainability with SHAP.",
       "sections": [
         {
+          "id": "classification-metrics",
           "heading": "Classification metrics",
           "body": "From the confusion matrix (TP, FP, FN, TN):\n\n- **Accuracy** = (TP + TN) / total. Misleading on imbalanced data.\n- **Precision** = TP / (TP + FP). Use when false positives are costly (for example flagging legitimate emails as spam).\n- **Recall** (sensitivity) = TP / (TP + FN). Use when false negatives are costly (fraud, disease screening).\n- **F1** = harmonic mean of precision and recall; balances both.\n- **ROC AUC** summarises performance across **all thresholds**, so it compares models independently of the chosen cut-off. **PR AUC** is more informative when positives are rare."
         },
         {
+          "id": "regression-metrics",
           "heading": "Regression metrics",
           "body": "**MAE** averages absolute errors. **RMSE** squares errors before averaging, so it **penalises large errors more**, and it is in the same units as the target. **R²** is the share of variance explained. Choose RMSE when big misses are especially costly."
         },
         {
+          "id": "generative-ai-metrics-and-evaluation",
           "heading": "Generative AI metrics and evaluation",
           "body": "- **BLEU**: n-gram precision against references, traditionally for translation.\n- **ROUGE**: n-gram overlap (recall-oriented) against references, common for summarisation.\n- **BERTScore** and **semantic similarity**: embedding-based, so correct paraphrases are not penalised.\n\n**Amazon Bedrock evaluations** support programmatic (automatic) evaluation, **human-worker** evaluation, **judge-model** evaluation (**LLM-as-a-judge**, scoring qualities such as correctness or helpfulness at scale), and **RAG evaluations** of Knowledge Bases or external RAG sources. They can evaluate base, customised, imported and provisioned models. Open-source `fmeval` is another option for FM evaluation."
         },
         {
+          "id": "explainability-and-tool-status",
           "heading": "Explainability and tool status",
           "body": "**SHAP** values attribute each prediction to its input features. SageMaker Clarify uses SHAP internally, but Clarify (like Debugger and Model Monitor) is **in maintenance and no longer open to new customers** (AWS service availability update, mid-2026). AWS points new users to the SHAP library directly, to pandas or scikit-learn for bias metrics, and to Bedrock Evaluations or the open-source `fmeval` library for FM evaluation.\n\nOn the exam, prefer generic wording such as \"explain model outputs\" and \"debug convergence\" mapped to tools a new customer can actually use: SHAP, MLflow, CloudWatch and Bedrock evaluations."
         }
@@ -731,18 +773,22 @@
       "summary": "Match latency, payload size, processing time and traffic shape to real-time, serverless, asynchronous or batch transform inference, and know what each option cannot do.",
       "sections": [
         {
+          "id": "four-ways-to-serve-a-sagemaker-ai-model",
           "heading": "Four ways to serve a SageMaker AI model",
           "body": "Task 3.1 asks you to manage deployment infrastructure for different model types. SageMaker AI gives four inference options, and most exam scenarios are decided by four signals: **latency need**, **payload size**, **processing time**, and **traffic shape**.\n\n| Option | Best for | Shape of the limits (check current docs for exact numbers) |\n|---|---|---|\n| **Real-time** | Interactive, low-latency, steady traffic | Tens of MB payload, about a minute of processing (longer when streaming) |\n| **Serverless** | Intermittent or unpredictable traffic that can tolerate cold starts | Smaller payloads, about a minute of processing, no instances to manage |\n| **Asynchronous** | Large payloads or long processing, near-real-time is fine | Up to about 1 GB payload and up to about an hour of processing; requests are queued; can scale to zero |\n| **Batch transform** | Scoring a whole dataset offline | GB-scale datasets, jobs can run for days, **no persistent endpoint** |\n\nA useful rule: if a scenario mentions a payload of hundreds of MB or processing measured in minutes, real-time and serverless are out."
         },
         {
+          "id": "serverless-inference-what-you-give-up",
           "heading": "Serverless Inference: what you give up",
           "body": "Serverless endpoints are sized by **memory** (1 GB steps up to about 6 GB) and a concurrency setting. You pay per use and capacity scales down when idle, but the first request after idle may see a **cold start**. **Provisioned Concurrency** keeps capacity warm, and the `OverheadLatency` CloudWatch metric reveals cold-start overhead.\n\nServerless does **not** support:\n\n- GPUs\n- Multi-model endpoints\n- VPC configuration or network isolation\n- Data capture, multiple production variants, Model Monitor, inference pipelines\n\nYou can convert a serverless endpoint to real-time, but not the other way round. If a scenario needs a GPU, private VPC access or a shadow test, serverless is the wrong answer."
         },
         {
+          "id": "asynchronous-inference-and-batch-transform",
           "heading": "Asynchronous inference and batch transform",
           "body": "**Asynchronous inference** puts requests in an internal queue. The client sends the input location in Amazon S3, gets an output location back, and can be notified through Amazon SNS when the result is ready. Because requests queue, the endpoint can **scale its instance count to zero** when the queue is empty, which makes it attractive for bursty, heavy workloads such as large documents, video, or long generative jobs.\n\n**Batch transform** is not an endpoint at all. It starts compute, reads a dataset from S3, writes predictions back to S3 and shuts down. Choose it for nightly or periodic scoring of large datasets where nobody waits for an individual prediction."
         },
         {
+          "id": "bedrock-models-and-the-edge-note",
           "heading": "Bedrock models and the edge note",
           "body": "For foundation models on **Amazon Bedrock** there is no endpoint to size for on-demand use. Capacity choices are on-demand, cross-Region inference and **Provisioned Throughput** (or an on-demand custom model deployment, for supported base models) to serve a model you customised in Bedrock. Models you trained elsewhere in a supported Hugging Face architecture can be brought in with **Custom Model Import** and invoked on demand.\n\n**Edge deployment is not tested on MLA-C02.** The C01-to-C02 comparison removed \"methods to optimize models on edge devices (for example, SageMaker Neo)\", and AWS IoT services are out of scope. If you studied Neo for C01, you can drop it."
         }
@@ -801,18 +847,22 @@
       "summary": "Share endpoints with multi-model endpoints and inference components, validate new versions with shadow tests and production variants, and shift traffic with deployment guardrails.",
       "sections": [
         {
+          "id": "many-models-one-endpoint",
           "heading": "Many models, one endpoint",
           "body": "- **Multi-model endpoints (MME)** host many models behind one endpoint and one serving container. Models are stored in S3 and loaded into memory on demand, so a rarely used model may see extra latency on its first call. MME fits **large numbers of similar models** (for example one per customer or per region) that use the same framework and are invoked unevenly.\n- **Inference components** let you place several models (often different foundation models) on one endpoint and assign each its own compute share, such as accelerators and memory, then **scale each model independently**. Use them when models differ in size and traffic but you want to pack them onto shared GPU instances.\n- **Multi-container endpoints** and **serial inference pipelines** chain or co-host different containers, for example a preprocessing container followed by a model container.\n\nMME is not supported on serverless endpoints, and shadow tests are not supported on multi-model endpoints."
         },
         {
+          "id": "validating-a-new-model-with-real-traffic",
           "heading": "Validating a new model with real traffic",
           "body": "- **Production variants** split live traffic by weight across model versions on one endpoint. Every variant returns real responses, so this is A/B testing.\n- **Shadow tests** send a **copy** of production traffic to a shadow variant. Only the production variant's responses go back to callers, so you can compare latency, errors and outputs with **zero customer impact**. Shadow tests are not supported for serverless, asynchronous, multi-model or multi-container endpoints.\n\nIf a scenario says \"evaluate on live traffic without affecting users\", the answer is a shadow test, not a weighted variant."
         },
         {
+          "id": "deployment-guardrails-blue-green-with-automatic-rollback",
           "heading": "Deployment guardrails: blue/green with automatic rollback",
           "body": "When you update an endpoint, SageMaker AI **deployment guardrails** provision a new (green) fleet and shift traffic from the old (blue) fleet using one of three modes:\n\n- **All at once**: shift everything, then watch during a baking period.\n- **Canary**: shift a small slice first, bake, then the rest.\n- **Linear**: shift in equal steps.\n\nYou attach **CloudWatch alarms**. If an alarm fires during baking, traffic rolls back automatically to the blue fleet. This is the standard answer for \"reduce risk when updating a production endpoint\" and \"roll back automatically if errors rise\"."
         },
         {
+          "id": "hosting-foundation-models-on-bedrock",
           "heading": "Hosting foundation models on Bedrock",
           "body": "- **On-demand** invocation: pay per token, no capacity to manage.\n- **Provisioned Throughput**: dedicated capacity billed hourly per Model Unit, with no-commitment, 1-month or 6-month terms. A model you customised in Bedrock needs Provisioned Throughput, unless the base model and Region support an on-demand custom model deployment.\n- **Custom Model Import**: bring Hugging Face-format weights (`.safetensors`, config and tokenizer files) from S3 for supported architectures such as Llama, Mistral, Mixtral, Flan-T5 and Qwen families. Imported models are invoked **on demand** through `InvokeModel`. Batch inference, CloudFormation and embedding models are not supported for imported models."
         }
@@ -875,18 +925,22 @@
       "summary": "Right-size instances, scale endpoints with Application Auto Scaling (including GPU-bound and scale-to-zero cases), run endpoints in a VPC, and build and maintain inference containers.",
       "sections": [
         {
+          "id": "pick-the-instance-before-you-scale-it",
           "heading": "Pick the instance before you scale it",
           "body": "**SageMaker Inference Recommender** runs load tests against candidate instance types and reports latency, throughput and cost, so you can choose an instance type from evidence instead of guessing. Use it before setting scaling policies, because a wrong instance family (for example CPU for a model that needs an accelerator) cannot be fixed by adding more instances.\n\nFor large-scale foundation model training and serving on clusters, **SageMaker HyperPod** provides resilient clusters that detect and replace faulty nodes, orchestrated by **Slurm or Amazon EKS**."
         },
         {
+          "id": "auto-scaling-endpoints",
           "heading": "Auto scaling endpoints",
           "body": "SageMaker AI endpoints scale through **Application Auto Scaling**. You register the variant (or inference component) as a scalable target with a minimum and maximum, then add a policy:\n\n- **Target tracking**: keep a metric near a target. The common predefined metric is invocations per instance.\n- **Step scaling**: add or remove capacity in steps based on alarm thresholds.\n- **Scheduled scaling**: change capacity at known times, such as business hours.\n\n**GPU-bound models** (for example LLMs with long generations) may be saturated while the invocation count looks low. For those, track a metric that reflects real load, such as GPU utilisation or concurrent requests, through a customised metric specification.\n\n**Asynchronous endpoints** can use a minimum of zero instances and scale on queue backlog, so you pay nothing while idle."
         },
         {
+          "id": "networking-endpoints-in-a-vpc",
           "heading": "Networking: endpoints in a VPC",
           "body": "To let an endpoint reach private resources, or to keep traffic off the internet, attach a **VPC configuration** (private subnets and security groups) to the model. Add VPC endpoints (AWS PrivateLink) for S3 and other services the container calls. Network isolation can block all outbound calls from the container.\n\nRemember that **serverless endpoints do not support VPC configuration**, so a hard requirement for private networking rules serverless out."
         },
         {
+          "id": "containers-for-ml-and-ai-workloads",
           "heading": "Containers for ML and AI workloads",
           "body": "Skill 3.2.3 is \"Build and maintain containers for ML and AI workloads\". The C02 outline removed deep bring-your-own-container mechanics, so focus on the operational basics:\n\n- Start from AWS-provided framework or deep learning containers where possible and extend them, rather than building from scratch.\n- Store images in **Amazon ECR**. Use image scanning (enhanced scanning uses Amazon Inspector) and tag immutability so a tag cannot be silently overwritten.\n- Build images in **CodeBuild** inside your CI/CD pipeline, and reference an exact tag or digest in the model definition so deployments are reproducible.\n- Rebuild regularly to pick up patched base images."
         }
@@ -945,18 +999,22 @@
       "summary": "Define ML infrastructure with CloudFormation and the CDK, version models in the Model Registry, and promote approved models through CodePipeline, CodeBuild, CodeDeploy and CodeConnections.",
       "sections": [
         {
+          "id": "infrastructure-as-code",
           "heading": "Infrastructure as code",
           "body": "- **AWS CloudFormation** provisions resources from declarative JSON or YAML templates as **stacks**, and updates them through change sets so you can preview changes.\n- The **AWS CDK** lets you define the same infrastructure in a programming language (Python, TypeScript and others). It **synthesises CloudFormation templates**, and deployment still happens through CloudFormation.\n\nDefine models, endpoint configurations, endpoints, scaling policies and IAM roles as code so that dev, staging and prod are identical and rebuildable. Treat manual console changes as drift."
         },
         {
+          "id": "model-registry-as-the-hand-off-point",
           "heading": "Model Registry as the hand-off point",
           "body": "The **SageMaker Model Registry** organises models into **model (package) groups** with numbered versions, optionally grouped into Collections. Each version carries metadata, lineage and an **approval status**. A typical pattern:\n\n1. The training pipeline registers a new version as `PendingManualApproval`.\n2. A reviewer (or an automated gate) sets it to `Approved`.\n3. The status change emits an **Amazon EventBridge** event that starts the deployment pipeline.\n\nManaged **MLflow on SageMaker AI** can auto-register models into the Model Registry, so experiment tracking and promotion connect."
         },
         {
+          "id": "the-aws-developer-tools-chain",
           "heading": "The AWS developer tools chain",
           "body": "- **CodeConnections** links CodePipeline and other services to external Git providers such as GitHub, GitLab and Bitbucket.\n- **CodePipeline** models the release as stages (source, build, test, deploy, approval).\n- **CodeBuild** runs builds and tests, for example building a container, running unit tests or synthesising a CDK app.\n- **CodeDeploy** handles deployment strategies for compute targets.\n- **CodeArtifact** stores packages; **CodeCommit** is still listed in scope.\n\nA common ML layout uses two pipelines: a **model build** pipeline (runs SageMaker Pipelines and registers a version) and a **model deploy** pipeline (triggered on approval, deploys to staging, waits for a manual approval action, then deploys to production)."
         },
         {
+          "id": "testing-before-promotion",
           "heading": "Testing before promotion",
           "body": "CI/CD for ML tests more than code. Gate promotion on:\n\n- Unit and integration tests for preprocessing and inference code.\n- Model metrics compared against a threshold or the current production model.\n- A smoke test against the staging endpoint.\n- For generative AI, prompt tests and evaluations (see the orchestration lesson).\n\nThe production deploy then uses deployment guardrails so a bad release rolls back automatically."
         }
@@ -1014,18 +1072,22 @@
       "summary": "Choose between SageMaker Pipelines, Step Functions and Amazon MWAA, use the right pipeline steps, and automate knowledge base refreshes and prompt testing.",
       "sections": [
         {
+          "id": "which-orchestrator",
           "heading": "Which orchestrator?",
           "body": "| Orchestrator | Choose it when |\n|---|---|\n| **SageMaker Pipelines** | The workflow is mostly ML steps (processing, training, tuning, evaluation, registration, batch transform) and you want lineage and integration with the Model Registry |\n| **AWS Step Functions** | You coordinate many AWS services (Lambda, Bedrock, SageMaker AI, DynamoDB, SQS), need branching, retries, error handling or human approval, and want a serverless state machine |\n| **Amazon MWAA** | The team already writes **Apache Airflow** DAGs (often for data engineering) and wants a managed Airflow environment instead of migrating |\n\nThese combine: Step Functions or Airflow can start a SageMaker pipeline, and a SageMaker pipeline can call Lambda."
         },
         {
+          "id": "sagemaker-pipelines-steps-you-should-know",
           "heading": "SageMaker Pipelines steps you should know",
           "body": "- **Processing**, **Training**, **Tuning**, **AutoML**, **Transform** (batch transform).\n- **Model / Create model / Register model / Deploy model**.\n- **Condition**: branch on a value, for example register only if evaluation accuracy beats a threshold.\n- **Fail**: stop the run with a clear failure message.\n- **Callback**: pause until an external system reports back (useful for work outside SageMaker AI).\n- **Lambda**: run a short function, for example to call an API.\n- **EMR**, **Notebook job**, **Execute code**, and the `@step` decorator to turn Python functions into steps.\n- **QualityCheck / ClarifyCheck** steps exist but depend on features now closed to new customers, so do not treat them as the default new-build answer.\n\n**Step caching** reuses results of an unchanged step from a previous run, saving time and cost on reruns."
         },
         {
+          "id": "step-functions-patterns-for-ml",
           "heading": "Step Functions patterns for ML",
           "body": "Step Functions has optimised integrations with SageMaker AI and other services. The **run a job (.sync)** pattern waits for a training or transform job to finish before moving on. The **wait for callback with a task token** pattern pauses until something external (for example a human approver or a third-party system) returns the token. Built-in **Retry** and **Catch** handle transient errors and failures without custom code."
         },
         {
+          "id": "pipelines-for-generative-ai-assets",
           "heading": "Pipelines for generative AI assets",
           "body": "C02 adds orchestration of GenAI assets:\n\n- **Knowledge base refresh** (Skill 3.3.11): when source documents in S3 change, start a Bedrock Knowledge Base **ingestion job** (data source sync) on a schedule or from an event, so the vector index stays current.\n- **Prompt versioning and testing** (Skills 3.3.7, 3.3.9): keep prompts in **Bedrock Prompt Management**, which supports variables, variants and immutable versions. In CI, run an evaluation (for example **Bedrock Evaluations** with programmatic metrics or LLM-as-a-judge) on a candidate prompt version and promote it only if it passes.\n- **Agent version pipelines** (Skill 3.3.8): treat agent code, prompts and tool definitions as versioned artifacts that move through test and production in the same pipeline."
         }
@@ -1084,18 +1146,22 @@
       "summary": "Deploy agents on Amazon Bedrock AgentCore, connect tools with MCP, coordinate agents with A2A, manage agent state with Memory, and know the status of Bedrock Agents Classic.",
       "sections": [
         {
+          "id": "where-agents-run-now",
           "heading": "Where agents run now",
           "body": "**Amazon Bedrock AgentCore** is the recommended way to build and run agents on AWS. **Bedrock Agents Classic** (formerly Bedrock Agents) has been closed to new customers since 30 July 2026 and its model catalogue is frozen. Bedrock Knowledge Bases and Guardrails are unaffected. For a new agent, the answer is AgentCore, not Agents Classic."
         },
         {
+          "id": "agentcore-building-blocks",
           "heading": "AgentCore building blocks",
           "body": "- **Runtime**: serverless hosting for agents built with any framework, with **session isolation**, and support for **MCP** and **A2A**.\n- **Harness**: a managed agent loop.\n- **Memory**: short-term (within a session) and long-term (across sessions) memory.\n- **Gateway**: turns existing APIs and Lambda functions into **MCP tools** that agents can discover and call.\n- **Identity**: manages how agents authenticate to tools and act on behalf of users.\n- **Code Interpreter** and **Browser**: managed sandboxes for running code and using websites.\n- **Observability** (OpenTelemetry-based), **Evaluations**, **Optimization** (A/B testing), **Policy** (Cedar-compatible rules) and **Registry**."
         },
         {
+          "id": "protocols-and-state",
           "heading": "Protocols and state",
           "body": "- **Model Context Protocol (MCP)** standardises how an agent calls **tools and data sources**.\n- **Agent2Agent (A2A)** standardises how **agents talk to other agents**, for example a supervisor delegating to specialist agents.\n\n**Agent state** (Skill 3.2.9): keep conversation and user context out of the prompt you hand-assemble on every call. Use AgentCore Memory for short-term session context and long-term facts or preferences, and rely on Runtime session isolation so one user's session state never leaks into another's."
         },
         {
+          "id": "operating-agents-through-a-pipeline",
           "heading": "Operating agents through a pipeline",
           "body": "Treat an agent like any other deployable:\n\n- Version agent code (container or package), prompts (Prompt Management versions) and guardrail versions together.\n- Run automated evaluations (AgentCore Evaluations or Bedrock Evaluations) before promotion.\n- Use A/B testing (AgentCore Optimization) to compare a new version with the current one on real traffic.\n- Trace tool calls and model invocations with AgentCore Observability and CloudWatch."
         }
@@ -1141,18 +1207,22 @@
       "summary": "How production models degrade, the four classic drift monitors (data quality, model quality, bias drift, feature attribution drift), what replaced SageMaker Model Monitor for new customers, and safe rollout with A/B and shadow tests.",
       "sections": [
         {
+          "id": "why-a-deployed-model-needs-monitoring",
           "heading": "Why a deployed model needs monitoring",
           "body": "A model is trained on a snapshot of the world. Once deployed, the incoming data changes: new customer segments, seasonal patterns, upstream schema changes or a broken feature pipeline. Task 4.1 of the exam guide asks you to **monitor ML and AI model inference and performance**, which means detecting these changes before they hurt the business.\n\n- **Data drift** — the statistical distribution of input features moves away from the training data.\n- **Concept drift / model quality drift** — the relationship between inputs and the label changes, so accuracy drops even if inputs look similar. You can only measure it once **ground truth labels** arrive.\n- **Bias drift** — a fairness metric for a group (for example, difference in positive prediction rates) moves over time.\n- **Feature attribution drift** — the features that drive predictions change rank or weight (typically measured with SHAP values)."
         },
         {
+          "id": "the-model-monitor-pattern-capture-baseline-schedule",
           "heading": "The Model Monitor pattern: capture, baseline, schedule",
           "body": "SageMaker Model Monitor implemented these checks with a three-part pattern that is still the right mental model, whatever tool you use:\n\n1. **Data capture** on the endpoint (or batch transform job) writes a sample of requests and responses to Amazon S3.\n2. A **baseline** is computed from the training dataset: statistics and suggested constraints.\n3. A **monitoring schedule** runs a job that compares captured traffic against the baseline, writes violation reports and emits **CloudWatch metrics**, which you alarm on.\n\n| Monitor type | Compares | Needs ground truth? |\n|---|---|---|\n| Data quality | Feature statistics vs baseline constraints | No |\n| Model quality | Predictions vs actual labels (accuracy, RMSE, etc.) | **Yes** |\n| Bias drift | Fairness metrics over time | Depends on metric |\n| Feature attribution drift | SHAP-based attributions vs baseline | No |\n\nLimits worth remembering: Model Monitor works on **tabular** data and does **not support multi-model endpoints**. Serverless endpoints do not support data capture or Model Monitor at all."
         },
         {
+          "id": "availability-change-what-to-recommend-for-new-builds",
           "heading": "Availability change: what to recommend for new builds",
           "body": "As of 30 July 2026 **Model Monitor, Clarify and Debugger are in maintenance and closed to new customers**. Existing customers can keep using them, but the MLA-C02 guide uses generic wording such as \"drift detection pipelines\" rather than naming them.\n\nAWS points new customers to the **open-source SageMaker AI monitoring solutions**: managed **MLflow Apps** combined with **Evidently AI** for drift reports, **Amazon Quick (QuickSight)** dashboards, and **CloudWatch anomaly detection** on metrics. The capture-baseline-compare pattern is the same; only the engine changes. When a question asks for the new-build answer, do not pick a closed service as the default."
         },
         {
+          "id": "safe-rollout-a-b-tests-and-shadow-tests",
           "heading": "Safe rollout: A/B tests and shadow tests",
           "body": "- **A/B testing with production variants** — one endpoint hosts several variants, and traffic is split by **variant weight** (or a caller targets a variant explicitly). Real users get responses from both models, so you compare business metrics per variant in CloudWatch.\n- **Shadow tests** — a copy of live traffic is sent to a **shadow variant** on the same endpoint, but **only the production variant's responses are returned** to callers. Use it to validate latency, errors and output quality of a candidate model with zero user impact. Shadow tests are not supported for serverless, asynchronous, multi-model or multi-container endpoints, Marketplace containers or Inf1 instances.\n\nRule of thumb: **shadow first** to prove the candidate is safe, then **A/B** to prove it is better."
         }
@@ -1206,14 +1276,17 @@
       "summary": "Use CloudWatch metrics, logs and alarms for SageMaker endpoints, CloudWatch generative AI observability and Bedrock invocation logging for FM workloads, and tracing with X-Ray, ADOT and AgentCore Observability for agents.",
       "sections": [
         {
+          "id": "endpoint-metrics-that-matter",
           "heading": "Endpoint metrics that matter",
           "body": "SageMaker AI endpoints publish metrics to CloudWatch per endpoint and variant:\n\n- **Invocations**, **Invocation4XXErrors**, **Invocation5XXErrors** — traffic and failures.\n- **ModelLatency** — time spent inside your model container. **OverheadLatency** — time added by SageMaker around the container (on serverless endpoints, it also reveals **cold starts**).\n- **CPUUtilization, MemoryUtilization, GPUUtilization, GPUMemoryUtilization** — instance metrics, useful for right-sizing.\n\nContainer stdout/stderr goes to **CloudWatch Logs**. Build **alarms** on latency percentiles and error rates, and use **CloudWatch anomaly detection** when \"normal\" changes by time of day."
         },
         {
+          "id": "generative-ai-observability",
           "heading": "Generative AI observability",
           "body": "**CloudWatch generative AI observability** gives curated dashboards for **model invocations** and for **AgentCore agents**. It surfaces invocation counts, **input and output token usage**, latency (average, P90, P99), errors and throttling, and cost attribution. End-to-end prompt tracing uses the **AWS Distro for OpenTelemetry (ADOT)**.\n\n**Bedrock model invocation logging** (off by default) records the full request and response payloads of model calls to CloudWatch Logs and/or S3. You need it to audit prompts and outputs, build evaluation datasets, or investigate a bad answer. Token counts and latency alone do not tell you *what* the model said."
         },
         {
+          "id": "tracing-agents-and-rag-pipelines",
           "heading": "Tracing agents and RAG pipelines",
           "body": "An agent request fans out into model calls, retrieval, tool calls and sometimes other agents. Metrics alone cannot tell you which hop failed.\n\n- **AWS X-Ray** and OpenTelemetry traces show each segment of a request with its latency and errors.\n- **AgentCore Observability** emits OTEL-compatible traces, spans and metrics for agents running on AgentCore Runtime, viewable in the CloudWatch agents dashboard.\n- The guide (4.1.5) calls out **agent failure modes** to monitor: **truncated streaming responses**, **tool invocation failures**, timeouts and loops. Instrument tool spans and log the finish/stop reason so truncation is visible.\n- For **RAG**, track retrieval latency, empty or low-relevance retrievals and grounding failures, for example Guardrails contextual grounding interventions."
         }
@@ -1263,18 +1336,22 @@
       "summary": "Match instance types and endpoint options to load, scale with auto scaling, buy compute with the right purchasing option, track spend with Budgets and tags, and cut FM costs with caching, batch and the right throughput model.",
       "sections": [
         {
+          "id": "right-size-before-you-buy",
           "heading": "Right-size before you buy",
           "body": "- **SageMaker Inference Recommender** load-tests a model on candidate instance types and reports latency, throughput and cost so you can pick the cheapest instance that meets your SLA.\n- **CloudWatch utilisation metrics** reveal over-provisioning: a GPU endpoint at low GPUUtilization is a candidate for a smaller or CPU instance.\n- **AWS Compute Optimizer** and **Trusted Advisor** give right-sizing and idle-resource recommendations for EC2-based infrastructure.\n- Choose the **endpoint type** by traffic shape: spiky or intermittent traffic with small payloads suits **serverless**; large payloads or long processing suits **asynchronous** (it can scale to zero); offline scoring of a dataset suits **batch transform**, which leaves no idle endpoint."
         },
         {
+          "id": "auto-scaling",
           "heading": "Auto scaling",
           "body": "Real-time endpoint variants scale with Application Auto Scaling. The common policy is **target tracking** on `SageMakerVariantInvocationsPerInstance`; step and scheduled scaling are also available. Set a sensible **minimum** for steady traffic and use **cooldowns** to avoid thrashing. Load-test to find the invocations per instance a single instance can sustain before setting the target."
         },
         {
+          "id": "purchasing-options",
           "heading": "Purchasing options",
           "body": "| Option | Fits | Caveat |\n|---|---|---|\n| On-Demand | Unpredictable or short-lived work | Highest unit price |\n| **Managed Spot Training** | Interruptible training jobs | Must **checkpoint** to S3 and set a max wait time; not for real-time endpoints |\n| **Savings Plans** (including SageMaker Savings Plans) | Steady baseline usage over 1 or 3 years | Commitment to a spend per hour |\n| Reserved / provisioned capacity | Guaranteed capacity for critical workloads | Commitment term |\n\nUse **AWS Budgets** for alerts against a threshold, **Cost Explorer** to analyse trends, and **cost allocation tags** (for example `project`, `team`) on endpoints, training jobs and notebooks so costs can be attributed."
         },
         {
+          "id": "foundation-model-cost-levers",
           "heading": "Foundation model cost levers",
           "body": "Generative AI costs are driven by **tokens**, plus embedding and vector-store costs for RAG (Skill 4.2.10).\n\n- **Prompt caching** reuses a long, stable prompt prefix (system prompt, documents, tool definitions). Cache reads are cheaper than normal input tokens. Caching has a model-specific minimum prefix size and a short default TTL, and it is not supported with batch inference.\n- **Batch inference** suits large, non-urgent jobs (files in and out of S3).\n- **Provisioned Throughput** buys Model Units by the hour for predictable high volume. A **customised model** is served either through Provisioned Throughput or, for supported base models and Regions, through a **custom model deployment** that gives on-demand, pay-per-use inference.\n- Pick a smaller model where quality allows, cap output tokens, and choose a vector store that matches query volume; for example, **S3 Vectors** is cost-effective for infrequent queries."
         }
@@ -1332,18 +1409,22 @@
       "summary": "Least-privilege execution roles, Bedrock API keys versus IAM credentials, private networking with VPCs and PrivateLink, network isolation, KMS encryption, secrets handling and vulnerability scanning in CI/CD.",
       "sections": [
         {
+          "id": "identity-roles-policies-and-api-keys",
           "heading": "Identity: roles, policies and API keys",
           "body": "- Every SageMaker AI job, endpoint and notebook runs as an **execution role**. Scope it to the specific S3 prefixes, ECR repositories and KMS keys it needs, not `*`.\n- Use **condition keys** to enforce guardrails, for example requiring a VPC configuration or a KMS key on `CreateTrainingJob`.\n- **Bedrock API keys**: **short-term** keys last up to 12 hours (or the session), inherit the IAM principal's permissions and are recommended for production. **Long-term** keys create an IAM user with a set expiry and are for exploration only. Control use with `bedrock:CallWithBearerToken` and the `bedrock:bearerTokenType` condition key, and cap long-term key age with `iam:ServiceSpecificCredentialAgeDays`. Calls are recorded in CloudTrail.\n- Store database passwords and third-party API tokens in **Secrets Manager**, not in code or environment variables baked into images."
         },
         {
+          "id": "network-vpcs-privatelink-and-isolation",
           "heading": "Network: VPCs, PrivateLink and isolation",
           "body": "- Attach training jobs, processing jobs and endpoints to **private subnets and security groups** in your VPC so they can reach private data sources.\n- Use **interface VPC endpoints (AWS PrivateLink)** for the SageMaker API and runtime and for Bedrock, plus an **S3 gateway endpoint**, so traffic stays on the AWS network without an internet gateway or NAT.\n- **Network isolation** blocks the container from making any outbound network calls, which protects against exfiltration by untrusted code. SageMaker still moves the input data and model artifacts for you.\n- For distributed training, enable **inter-container traffic encryption**.\n- Note: serverless endpoints do not support VPC configuration or network isolation."
         },
         {
+          "id": "encryption-and-data-protection",
           "heading": "Encryption and data protection",
           "body": "- Use **AWS KMS customer managed keys** for training volumes, model artifacts in S3, endpoint storage and Feature Store. Key policies plus IAM decide who can decrypt, and every use of the key is logged.\n- Encrypt data in transit with TLS; SageMaker and Bedrock API endpoints are HTTPS.\n- **Amazon Macie** discovers sensitive data (PII) in S3 buckets that feed training or RAG.\n- **Bedrock Guardrails sensitive information filters** block or mask PII in prompts and responses at inference time."
         },
         {
+          "id": "securing-the-pipeline",
           "heading": "Securing the pipeline",
           "body": "Skill 4.3.1 names **Amazon Inspector** (vulnerability scanning of ECR container images, Lambda functions and EC2) and **Amazon CodeGuru** (code review findings) as CI/CD controls. Add them as gates in CodePipeline so a model container with critical CVEs never reaches an endpoint. Track configuration drift with **AWS Config** and API activity with **CloudTrail**."
         }
@@ -1398,14 +1479,17 @@
       "summary": "Apply Bedrock Guardrails to model inputs and outputs, document models with Model Cards and Model Registry, trace artifacts with lineage, and audit with CloudTrail and AWS Config.",
       "sections": [
         {
+          "id": "amazon-bedrock-guardrails",
           "heading": "Amazon Bedrock Guardrails",
           "body": "Guardrails apply configurable safeguards to **both prompts and responses**:\n\n- **Content filters** — Hate, Insults, Sexual, Violence, Misconduct and **Prompt Attack** (jailbreak and injection) for text and images, with adjustable strength.\n- **Denied topics** — topics the application must refuse, defined in natural language.\n- **Word filters** — exact words and phrases, including profanity.\n- **Sensitive information filters** — block or **mask** PII types, plus custom regex.\n- **Contextual grounding checks** — score whether a response is grounded in the retrieved source and relevant to the query, catching RAG hallucinations.\n- **Automated Reasoning checks** — validate responses against formal rules.\n\nGuardrails can run **inline** with model invocation or **standalone with the `ApplyGuardrail` API**, which lets you screen text for any model, including ones hosted outside Bedrock. They are versioned, so production can pin a tested version."
         },
         {
+          "id": "model-governance-model-cards-model-registry-and-lineage",
           "heading": "Model governance: Model Cards, Model Registry and lineage",
           "body": "- **SageMaker Model Cards** document intended use, risk rating, training details and evaluation results in one place, and can be exported for auditors.\n- **Model Registry** organises versions in model package groups with an **approval status** (for example PendingManualApproval to Approved) that can gate CI/CD deployment, and it shows Model Cards and lineage.\n- **Lineage tracking** links datasets, processing and training jobs, models and endpoints so you can answer \"which data trained the model behind this endpoint?\"\n- **MLflow on SageMaker AI** tracks experiments and can auto-register models into Model Registry."
         },
         {
+          "id": "audit-and-compliance",
           "heading": "Audit and compliance",
           "body": "- **AWS CloudTrail** records who called which SageMaker AI or Bedrock API, when and from where.\n- **AWS Config** records resource configuration over time and evaluates rules, for example flagging endpoints without a KMS key or notebooks with direct internet access.\n- Combine these with invocation logging for content-level audit, and with Model Cards for documentation-level audit."
         }

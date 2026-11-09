@@ -79,22 +79,27 @@
       "summary": "Choose the right BigQuery ML MODEL_TYPE, use the TRANSFORM clause to avoid training-serving skew, and hand models to Agent Platform Model Registry for online serving.",
       "sections": [
         {
+          "id": "why-bigquery-ml-is-the-low-code-default",
           "heading": "Why BigQuery ML is the low-code default",
           "body": "When the training data already sits in BigQuery and the team is SQL-fluent, **BigQuery ML** lets you train, evaluate and predict with SQL statements, without exporting data or managing infrastructure. Treat it as the fastest path for analysts and for tabular problems that do not need custom architectures.\n\nThe core statement is `CREATE MODEL ... OPTIONS(MODEL_TYPE = ...) AS SELECT ...`. Pick the model type from the business problem, not from habit."
         },
         {
+          "id": "matching-model-type-to-the-problem",
           "heading": "Matching MODEL_TYPE to the problem",
           "body": "| Problem | MODEL_TYPE |\n|---|---|\n| Predict a number | `LINEAR_REG`, `BOOSTED_TREE_REGRESSOR`, `RANDOM_FOREST_REGRESSOR`, `DNN_REGRESSOR`, `AUTOML_REGRESSOR` |\n| Predict a class | `LOGISTIC_REG`, `BOOSTED_TREE_CLASSIFIER`, `RANDOM_FOREST_CLASSIFIER`, `DNN_CLASSIFIER`, `AUTOML_CLASSIFIER` |\n| Segment customers (no labels) | `KMEANS` |\n| Recommendations from user-item interactions | `MATRIX_FACTORIZATION` |\n| Reduce dimensions / anomaly detection by reconstruction | `PCA`, `AUTOENCODER` |\n| Forecast a time series | `ARIMA_PLUS`, `ARIMA_PLUS_XREG` (with external regressors) |\n| Explain what drove a metric change | `CONTRIBUTION_ANALYSIS` |\n| Bring an existing model | `TENSORFLOW`, `TENSORFLOW_LITE`, `ONNX`, `XGBOOST` |\n\n`ARIMA` is being deprecated in favour of `ARIMA_PLUS`. Remote models have no fixed MODEL_TYPE: you create them with a connection to an Agent Platform endpoint and then query them from SQL. A simple, interpretable baseline (linear or logistic regression) is usually the right first step; boosted trees are the typical upgrade for non-linear tabular data."
         },
         {
+          "id": "built-in-externally-trained-imported-and-remote",
           "heading": "Built-in, externally trained, imported and remote",
           "body": "The BigQuery ML introduction groups models as:\n\n- **Built-in**: linear and logistic regression, k-means, matrix factorization, PCA, ARIMA_PLUS / ARIMA_PLUS_XREG, contribution analysis.\n- **Externally trained in Agent Platform**: DNN, Wide & Deep, autoencoder, boosted trees, random forest, AutoML. You still write SQL; training runs on Agent Platform.\n- **Imported**: ONNX, TensorFlow, TensorFlow Lite, XGBoost.\n- **Remote**: an Agent Platform endpoint (for example a Gemini or custom model). The CREATE MODEL statement for a remote model has no BigQuery charge; queries incur Agent Platform charges.\n\nThere is also `AI.FORECAST`, which uses the built-in TimesFM model (Preview) to forecast without training your own model."
         },
         {
+          "id": "feature-engineering-with-transform",
           "heading": "Feature engineering with TRANSFORM",
           "body": "Put preprocessing (scaling, bucketizing, crossing, string parsing) inside the `TRANSFORM` clause of CREATE MODEL. BigQuery ML stores it with the model and **applies it automatically at evaluation and prediction**, so callers pass raw columns. This is the BigQuery ML answer to **training-serving skew**.\n\nRules worth remembering: only the TRANSFORM output columns are used for training, and the TRANSFORM select list cannot contain aggregations, UDFs or subqueries."
         },
         {
+          "id": "from-sql-model-to-online-serving",
           "heading": "From SQL model to online serving",
           "body": "BigQuery ML predictions are naturally batch (SQL over a table). When an application needs low-latency online predictions, register the model in **Agent Platform Model Registry** (formerly Vertex AI Model Registry) by setting `MODEL_REGISTRY = 'VERTEX_AI'` (with optional `VERTEX_AI_MODEL_ID` and `VERTEX_AI_MODEL_VERSION_ALIASES`). The model is registered without a manual export, and you can deploy it to an endpoint for online inference."
         }
@@ -149,18 +154,22 @@
       "summary": "Pick between pre-trained APIs, Model Garden foundation and open models, and RAG with Agent Builder components (RAG Engine, Agent Search) before considering custom training.",
       "sections": [
         {
+          "id": "start-with-the-least-custom-option",
           "heading": "Start with the least custom option",
           "body": "The exam rewards the lowest-effort solution that meets the requirement. In order of increasing effort: a **task-specific or industry API** (for example Document AI for documents, or the Retail API that the exam guide names for retail use cases), a **foundation model** used by prompting, a foundation model **grounded with RAG**, a **tuned** model, and only then custom training."
         },
         {
+          "id": "model-garden",
           "heading": "Model Garden",
           "body": "**Model Garden** (formerly Vertex AI Model Garden) is a library for discovering, testing, customising and deploying Google and partner models. It covers:\n\n- **Foundation models**, tuned through Agent Studio, the API or the SDK.\n- **Fine-tunable models**, tuned with notebooks or pipelines (billed at custom training rates).\n- **Task-specific solutions**.\n- **Open-source models**, deployed to an endpoint with serving containers such as vLLM, Hex-LLM, xDiT or Hugging Face, on GPUs or TPUs, using Spot VMs or reservations.\n\nThird-party models are scanned for malware, and organization policies can restrict which models users can access, which matters for governed enterprises."
         },
         {
+          "id": "industry-apis-document-ai-and-retail",
           "heading": "Industry APIs: Document AI and Retail",
           "body": "**Document AI** extracts structured data from documents such as invoices, forms and receipts with pre-trained and customisable processors, so you do not need to build OCR plus entity extraction yourself. The exam guide also names the **Retail API** for retail use cases (check current documentation for its present product name). When a scenario describes a standard document or retail problem with tight timelines, these APIs usually beat custom models."
         },
         {
+          "id": "rag-with-agent-builder-components",
           "heading": "RAG with Agent Builder components",
           "body": "The exam guide says \"Vertex AI Agent Builder\". Its pieces now live in **Gemini Enterprise Agent Platform**: Vertex AI Search is **Agent Search**, Vertex AI RAG Engine is **RAG Engine**, Vertex AI Vector Search is **Vector Search**, Agent Engine is **Agent Runtime**, and Vertex AI Studio is **Agent Studio**.\n\n**RAG Engine** pipeline: ingest (local files, Cloud Storage, Google Drive) → transform and chunk → embed → index into a **corpus** → retrieve → generate a grounded answer. It supports VPC-SC and CMEK; data residency is not supported.\n\n**Agent Search** can act as the retrieval backend: create a search data store, then a search app, then point the RAG corpus at the app's serving config (`default_search`).\n\nRAG is the right answer when the model must answer from private or frequently changing documents and cite them; tuning is the wrong tool for injecting fresh facts."
         }
@@ -215,18 +224,22 @@
       "summary": "Know what Agent Platform AutoML still supports, how to prepare data for it, what replaced AutoML Text and Video, and how to debug weak AutoML models.",
       "sections": [
         {
+          "id": "current-automl-scope",
           "heading": "Current AutoML scope",
           "body": "**Agent Platform AutoML** (formerly Vertex AI AutoML) currently supports:\n\n- **Tabular**: classification / regression, and **forecasting**.\n- **Image**: classification and object detection.\n\nThe 2024 exam guide still lists text, speech and video. Be careful: **AutoML Text shut down on 2025-06-15** (replacement: Gemini prompting and tuning) and **AutoML Video shut down on 2025-07-31** (replacement: Gemini video tuning). The legacy AutoML Tables, Vision, Video Intelligence and Natural Language products shut down in 2024. On the exam, recognise the concept; in real projects, use Gemini for text and video."
         },
         {
+          "id": "preparing-data",
           "heading": "Preparing data",
           "body": "AutoML is low-code, not no-thinking. You still own:\n\n- **Labels**: correct, consistent and representative. The Data Labeling Service shut down on 2024-10-03; label in the console or through Marketplace partners.\n- **Target leakage**: drop columns that are only known after the outcome (for example a \"refund issued\" flag when predicting churn). Leakage produces suspiciously high offline metrics and poor production results.\n- **Class balance and coverage**: enough examples of each class, including rare but important ones.\n- **Forecasting columns**: a time column, a series identifier and the target, plus covariates you will actually know at prediction time."
         },
         {
+          "id": "choosing-automl-vs-bigquery-ml-vs-custom",
           "heading": "Choosing AutoML vs BigQuery ML vs custom",
           "body": "- Data in BigQuery, SQL team, standard model → **BigQuery ML** (it can even call AutoML via `AUTOML_CLASSIFIER` / `AUTOML_REGRESSOR`).\n- Tabular or image data, little ML expertise, want the platform to search architectures and tune → **AutoML**.\n- Text or video understanding → **Gemini prompting or tuning**, not AutoML.\n- Need full control of architecture, loss or framework → **custom training**."
         },
         {
+          "id": "debugging-automl-models",
           "heading": "Debugging AutoML models",
           "body": "When an AutoML model underperforms, look at the data first: confusion matrix and per-class metrics for weak classes, mislabeled examples, too few examples for some labels, train / serving distribution differences, and leakage. Feature importance on tabular models helps spot leaking or useless features. AutoML models register in Model Registry like custom models, so the same deployment and batch-inference workflow applies."
         }
@@ -280,18 +293,22 @@
       "summary": "How teams explore and preprocess data across Google Cloud stores, share features through Feature Store (V2, BigQuery-backed), avoid training-serving skew, and protect PII/PHI with Sensitive Data Protection.",
       "sections": [
         {
+          "id": "where-the-data-lives",
           "heading": "Where the data lives",
           "body": "ML data on Google Cloud usually sits in **Cloud Storage** (files, images, TFRecords), **BigQuery** (analytical tables), or operational databases such as **Cloud SQL** and **Spanner**. Large-scale transformation runs on **Dataflow** (Apache Beam) or Spark, which is now called **Managed Service for Apache Spark** (formerly Dataproc).\n\nThe usual collaboration pattern is to land curated, analysis-ready data in BigQuery. Analysts and ML engineers then work from one governed copy instead of exporting CSVs to laptops."
         },
         {
+          "id": "preprocessing-without-training-serving-skew",
           "heading": "Preprocessing without training-serving skew",
           "body": "Skew happens when features are computed one way at training time and another way at serving time. Two exam-relevant fixes:\n\n- **TFX Transform** (built on TensorFlow Transform) produces one transformation graph that is used at both training and serving. It runs on Apache Beam, so it scales on Dataflow.\n- **BigQuery ML `TRANSFORM` clause**: preprocessing declared at `CREATE MODEL` time is applied automatically during evaluation and prediction, so callers pass raw columns.\n\nTFX also offers **StatisticsGen**, **SchemaGen** and **ExampleValidator** (built on TFDV) to profile data and catch anomalies before training."
         },
         {
+          "id": "feature-store-v2-as-a-team-contract",
           "heading": "Feature Store (V2) as a team contract",
           "body": "**Agent Platform Feature Store** (formerly Vertex AI Feature Store; the exam guide says Vertex AI Feature Store) keeps feature data in **BigQuery**. BigQuery is the offline store, so no copy is needed. Feature Store is a metadata layer that adds:\n\n- a **feature registry**, so teams can discover and reuse features instead of rebuilding them\n- **online serving backed by Bigtable** for low-latency lookups\n- **embedding** support with vector similarity search\n- metadata tracked in **Knowledge Catalog** (formerly Dataplex)\n\n**Feature Store (Legacy)** and **Optimized online serving** were deprecated on 2026-02-17 and shut down on 2027-02-17. New designs should use V2 with Bigtable online serving, or Vector Search for embeddings."
         },
         {
+          "id": "pii-and-phi-with-sensitive-data-protection",
           "heading": "PII and PHI with Sensitive Data Protection",
           "body": "**Sensitive Data Protection** covers the privacy workflow:\n\n1. **Discovery and profiling** across BigQuery, Cloud SQL and Cloud Storage, to find where sensitive data lives.\n2. **Inspection** by infoType (for example email addresses or ID numbers).\n3. **De-identification** by masking, redaction, bucketing, date shifting and tokenisation.\n4. **Re-identification risk analysis** (for example k-anonymity) on BigQuery data.\n\nDe-identify before sharing data with wider data science teams. Pick a technique that keeps the analytic value you need: bucketing keeps rough ranges, date shifting keeps intervals between events, and tokenisation keeps joinability."
         }
@@ -349,14 +366,17 @@
       "summary": "Choosing between Workbench instances and Colab Enterprise, using Spark from notebooks, securing notebook environments, and starting from Model Garden models.",
       "sections": [
         {
+          "id": "workbench-instances",
           "heading": "Workbench instances",
           "body": "**Agent Platform Workbench** (formerly Vertex AI Workbench) instances provide JupyterLab with TensorFlow and PyTorch preinstalled, conda kernels, custom containers, and CPU or GPU machines. Features that matter for teams:\n\n- built-in browsing of BigQuery and Cloud Storage\n- Spark through **Managed Service for Apache Spark** (formerly Dataproc)\n- an **executor** for one-off or scheduled runs that use custom training and keep running while the instance is off\n- GitHub sync and idle shutdown (on by default)\n\n**Security:** your own VPC, service perimeters, CMEK and Confidential VM. Access to data goes through the **instance service account**. The **executor is not supported with VPC Service Controls**.\n\nManaged notebooks and user-managed notebooks are retired. Managed notebook instances were deleted on 2026-03-30, and user-managed notebooks became plain Compute Engine VMs on the same date. Use Workbench instances."
         },
         {
+          "id": "colab-enterprise",
           "heading": "Colab Enterprise",
           "body": "**Colab Enterprise** (now Agent Platform Colab Enterprise) gives managed runtimes from **runtime templates** (machine type, accelerators, disk), idle shutdown, scheduled runs, CMEK, Access Transparency and Gemini code help. Notebooks can be shared with users, groups or domains through **IAM**, opened from the BigQuery editor, and are stored in regional Dataform storage.\n\nKey difference: Colab Enterprise **uses the user's own credentials by default**. Workbench uses the instance service account. That affects auditing and least-privilege design."
         },
         {
+          "id": "starting-from-model-garden",
           "heading": "Starting from Model Garden",
           "body": "**Model Garden** is a library to discover, test, customise and deploy Google, partner and open models. Foundation models can be tuned through Agent Studio, the API or SDK. Fine-tunable open models are tuned in notebooks or pipelines. Open models deploy to endpoints with serving containers such as vLLM or Hugging Face, on GPUs or TPUs.\n\nFor governance, third-party models are scanned for malware, and **organisation policies** can restrict which models users can access."
         }
@@ -410,14 +430,17 @@
       "summary": "Tracking parameters, metrics and lineage with Experiments on Agent Platform, TensorBoard and pipelines, and evaluating generative AI solutions with Gen AI evals.",
       "sections": [
         {
+          "id": "experiments-on-agent-platform",
           "heading": "Experiments on Agent Platform",
           "body": "**Experiments on Agent Platform** (formerly Vertex AI Experiments) groups **experiment runs** and **pipeline runs** under one experiment. Each run logs:\n\n- **parameters** (for example learning rate)\n- **summary metrics** (for example final accuracy)\n- **time-series metrics** (for example loss per step), stored in managed **TensorBoard**\n\nA Kubeflow `PipelineJob` linked to an experiment counts as a run, and its parameters and metrics are inferred. Experiments integrates with **ML Metadata** for lineage, so a team can trace which data and parameters produced a model."
         },
         {
+          "id": "pipelines-and-lineage",
           "heading": "Pipelines and lineage",
           "body": "**Agent Platform Pipelines** runs pipelines written with the **Kubeflow Pipelines SDK** or the **TFX SDK**. Parameters and artifacts are recorded in ML Metadata, which gives lineage graphs that can sync to Knowledge Catalog. That is the collaboration benefit: another engineer can find the dataset, code and settings behind any model without asking the author."
         },
         {
+          "id": "gen-ai-evals",
           "heading": "Gen AI evals",
           "body": "**Gen AI evals** (formerly the Gen AI evaluation service) evaluates prompts, models, tuned models and agents.\n\n- **Computation-based metrics** such as ROUGE and BLEU compare output with a **reference answer**, so they need references.\n- **Model-based metrics** use an **LLM judge**. **Adaptive rubrics** (recommended) generate pass/fail tests per prompt. **Static rubrics** score on a fixed scale such as 1 to 5.\n- **Custom Python metrics** run only in the SDK.\n\nInterfaces: the console, the GenAI Client in the Agent Platform SDK (recommended, Preview), and the older **EvalTask** (GA, no adaptive rubrics). Evaluation datasets can be uploaded, sampled from production logs, or generated synthetically.\n\nTypical uses: choosing or migrating models, improving prompts, and checking whether a tuned model beats the base model."
         }
@@ -467,18 +490,22 @@
       "summary": "How to pick a framework, a model family and a training path when you scale a prototype, and how interpretability requirements narrow those choices.",
       "sections": [
         {
+          "id": "from-notebook-to-managed-training",
           "heading": "From notebook to managed training",
           "body": "A prototype usually starts in a notebook. Scaling it means packaging the training code so it runs on **Agent Platform Managed Training** (formerly Vertex AI Training; the exam guide says Vertex AI custom training). The legacy AI Platform Training service was shut down on 2025-04-07, so all custom training now targets Managed Training.\n\nYou can run code in a **prebuilt container** (prebuilt images exist for TensorFlow, scikit-learn, PyTorch and XGBoost) or bring a **custom container** when you need another framework or system dependency. JAX on TPUs, for example, needs a custom container."
         },
         {
+          "id": "choosing-the-framework-and-architecture",
           "heading": "Choosing the framework and architecture",
           "body": "Let the problem and the team decide:\n\n- **Tabular data, strong baselines, need for explanations**: gradient-boosted trees (XGBoost) or linear models are fast to train and easy to explain.\n- **Unstructured data (images, text, audio)** or very large datasets: deep neural networks in TensorFlow, PyTorch or JAX, often trained on GPUs or TPUs.\n- **Generative tasks**: start from a foundation model in Model Garden and prompt or tune it rather than training from scratch.\n\nAlso check the hardware path. TensorFlow is not supported on TPU v6e in custom training, so a TensorFlow model that must run on TPUs has to target an earlier TPU version or move to PyTorch/XLA or JAX."
         },
         {
+          "id": "interpretability-requirements",
           "heading": "Interpretability requirements",
           "body": "When a regulator, auditor or product owner needs to know *why* a model predicted something, the requirement shapes the model and the explanation method. The exam guide asks for \"modeling techniques given interpretability requirements\".\n\nFeature attribution methods in Explainable AI (the exam guide says Vertex Explainable AI):\n\n| Method | Use it for |\n|---|---|\n| Sampled Shapley | Non-differentiable models such as tree ensembles; any custom model and AutoML tabular |\n| Integrated gradients | Differentiable models (neural networks), large feature spaces, low-contrast images such as X-rays |\n| XRAI | Region-based explanations for natural images; builds on integrated gradients |\n\nAttributions are always relative to a **baseline** you choose. **Example-based explanations** return nearest neighbours from an embedding space and help with debugging, outlier detection and active learning, but they support TensorFlow models only (not tree models, PyTorch or XGBoost)."
         },
         {
+          "id": "deprecation-to-plan-around",
           "heading": "Deprecation to plan around",
           "body": "Vertex Explainable AI was **deprecated on 2026-03-16 and shuts down on 2027-03-16**. Google suggests open-source **SHAP** or **LIME** as replacements. It is still in the exam guide, so learn the method-selection rules, but for a new long-lived system plan to compute explanations with an open-source library."
         }
@@ -527,18 +554,22 @@
       "summary": "Worker pools, cluster environment variables, Reduction Server and Horovod, and when to use managed training or Kubeflow on GKE.",
       "sections": [
         {
+          "id": "worker-pools",
           "heading": "Worker pools",
           "body": "A distributed custom training job lists `workerPoolSpecs[]`. The **position** of each pool sets its role:\n\n| Index | Role |\n|---|---|\n| 0 | Primary replica (chief); `replicaCount` must be 1 |\n| 1 | Workers |\n| 2 | Parameter servers **or Reduction Server** |\n| 3 | Evaluators |\n\nEvery replica gets a `CLUSTER_SPEC` environment variable describing the cluster. `TF_CONFIG` is set **only for distributed jobs**, so code that reads it must cope with its absence on a single-replica run."
         },
         {
+          "id": "reduction-server",
           "heading": "Reduction Server",
           "body": "**Reduction Server** is an all-reduce algorithm that raises throughput and cuts latency for gradient exchange across nodes. Requirements and tuning:\n\n- Workers must use **GPUs** and **NCCL-based data-parallel** training (TensorFlow or PyTorch).\n- Reducer replicas need **no GPUs**; a CPU machine such as n1-highcpu-16 is recommended.\n- Total reducer bandwidth should be **at least** the worker bandwidth, or the reducers become the bottleneck.\n- With **Horovod**, set `HOROVOD_FUSION_THRESHOLD` to at least 128 MB.\n- With **PyTorch DDP**, set `bucket_cap_mb` to 64."
         },
         {
+          "id": "organising-and-ingesting-training-data",
           "heading": "Organising and ingesting training data",
           "body": "Keep training data close to the compute (same region) in Cloud Storage or BigQuery. Sharded, binary formats such as TFRecord let many workers read in parallel without one file becoming a hot spot. Split train, validation and test sets before training, and keep preprocessing logic shared between training and serving to avoid training-serving skew."
         },
         {
+          "id": "managed-training-or-kubeflow-on-gke",
           "heading": "Managed training or Kubeflow on GKE?",
           "body": "Managed Training is serverless: you submit a job and Google provisions and tears down the machines. **Agent Platform Pipelines** is also serverless and runs pipelines written with the **Kubeflow Pipelines SDK** or the TFX SDK, compiled to YAML.\n\nRunning Kubeflow yourself on **GKE** gives full control of the cluster and suits teams that already operate Kubernetes and need portability, but the team owns upgrades, scaling and security. If the goal is to stop managing clusters while keeping KFP code, move the pipelines to Agent Platform Pipelines."
         }
@@ -588,18 +619,22 @@
       "summary": "Search algorithms, parameter scales and metric reporting for tuning jobs, plus a checklist for jobs that fail, diverge or scale badly.",
       "sections": [
         {
+          "id": "how-a-tuning-job-works",
           "heading": "How a tuning job works",
           "body": "A hyperparameter tuning job runs your training code many times (**trials**) with different values. Each tuned hyperparameter reaches your code as a **command-line argument**, and your code reports the objective metric with the **cloudml-hypertune** package. Trials are billed by duration, so a smarter search saves money."
         },
         {
+          "id": "algorithms",
           "heading": "Algorithms",
           "body": "- **Default (`ALGORITHM_UNSPECIFIED`)**: Bayesian optimisation (Gaussian process bandits or linear combination search). It learns from earlier trials and usually finds good values in fewer trials.\n- **`GRID_SEARCH`**: tries every combination; only allowed when all parameters are INTEGER, CATEGORICAL or DISCRETE.\n- **`RANDOM_SEARCH`**: samples values at random; a simple baseline."
         },
         {
+          "id": "scales",
           "heading": "Scales",
           "body": "Choose a scale for each numeric parameter: `UNIT_LINEAR_SCALE`, `UNIT_LOG_SCALE` or `UNIT_REVERSE_LOG_SCALE`. Use a log scale when the range spans orders of magnitude, such as a learning rate from 1e-5 to 1e-1. Log scales need a strictly positive range."
         },
         {
+          "id": "troubleshooting-training",
           "heading": "Troubleshooting training",
           "body": "Common failure patterns when scaling up:\n\n- **Loss turns NaN or does not converge**: check feature logic, scaling and learning rate. The MLOps guidance lists convergence and NaN checks among the tests to run in pipeline CI.\n- **Distributed job is slower than expected**: check the gradient-exchange path. With Reduction Server, make sure reducer bandwidth at least matches worker bandwidth and tune Horovod or DDP bucket sizes.\n- **Code crashes only on single-node runs**: it probably expects `TF_CONFIG`, which exists only for distributed jobs.\n- **Comparing runs**: log parameters and metrics to **Experiments on Agent Platform**, which stores time-series metrics in TensorBoard and records lineage in ML Metadata."
         }
@@ -644,18 +679,22 @@
       "summary": "Match the model and framework to CPUs, GPUs or TPUs, know the TPU caveats, and recognise when inference belongs on the device.",
       "sections": [
         {
+          "id": "cpu-gpu-or-tpu",
           "heading": "CPU, GPU or TPU",
           "body": "- **CPUs** suit classical ML (linear models, many tree libraries), data preprocessing, and coordinating roles such as Reduction Server reducers.\n- **GPUs** suit deep learning in most frameworks and are required for Reduction Server workers (NCCL).\n- **TPUs** are accelerators built for large matrix workloads, such as training large neural networks for long periods."
         },
         {
+          "id": "tpu-caveats-in-custom-training",
           "heading": "TPU caveats in custom training",
           "body": "Custom training documents TPU v2, v3, v5e and v6e VMs. Watch for:\n\n- **TensorFlow is not supported from TPU v6e.**\n- **JAX** needs a custom container.\n- **PyTorch/XLA** sets the environment variable `PJRT_DEVICE=TPU` (the PJRT runtime; Google's Dockerfile marks it as a v5e/v6e requirement).\n- TPUs are available only in some regions, so pick the region first."
         },
         {
+          "id": "edge",
           "heading": "Edge",
           "body": "Run inference on the device when you need it to work offline, need very low latency, or must keep raw data on the device. Edge models are usually compressed (for example quantised) versions of a cloud-trained model, so plan the export step when you choose the architecture."
         },
         {
+          "id": "cost-and-scale",
           "heading": "Cost and scale",
           "body": "Bigger is not always better. Profile a short run first, then scale out. For multi-node GPU data-parallel training, Reduction Server can raise throughput without adding GPUs, because reducers are CPU-only machines."
         }
@@ -696,18 +735,22 @@
       "summary": "When to prompt and when to tune, and how supervised, preference and reinforcement fine-tuning differ, plus LoRA versus full fine-tuning.",
       "sections": [
         {
+          "id": "prompt-first",
           "heading": "Prompt first",
           "body": "Start with prompting. Tune when prompting is not enough. Tuning can also cut inference cost, because a tuned model no longer needs long few-shot examples in every request."
         },
         {
+          "id": "three-ways-to-tune-gemini",
           "heading": "Three ways to tune Gemini",
           "body": "| Method | Data | Good for |\n|---|---|---|\n| Supervised fine-tuning (SFT) | Hundreds to thousands of labelled prompt/response pairs (about 100 or more suggested) | Classification, extraction, summarisation, style and format |\n| Preference tuning | Chosen and rejected responses for the same prompt | Steering towards preferred answers |\n| Reinforcement learning fine-tuning (RLFT) | Dozens to a few hundred prompts plus up to 16 weighted reward functions | Verifiable reasoning such as code and SQL |\n\nRLFT reward functions can be string match, a Gemini autorater, code execution or a Cloud Run service, and RLFT updates a LoRA adapter. Supported models change quickly (for example, SFT for Gemini 3 models reached GA on 2026-10-19 and RLFT is in Preview), so always check the tuning page."
         },
         {
+          "id": "peft-lora-or-full-fine-tuning",
           "heading": "PEFT/LoRA or full fine-tuning",
           "body": "**Parameter-efficient fine-tuning (PEFT)** such as LoRA trains a small adapter. It is cheaper and needs less data. **Full fine-tuning** updates all weights and can give higher quality, but costs more to train and to serve."
         },
         {
+          "id": "open-models-from-model-garden",
           "heading": "Open models from Model Garden",
           "body": "Open models in Model Garden are tuned with notebooks or pipelines and billed at custom training rates, then deployed to an endpoint on GPUs or TPUs with serving containers such as vLLM or Hugging Face."
         }
@@ -748,18 +791,22 @@
       "summary": "Match the inference pattern to the latency need and to where the data already lives: Agent Platform batch inference, BigQuery ML, Dataflow RunInference, or an online endpoint.",
       "sections": [
         {
+          "id": "the-first-question-does-anyone-wait-for-the-answer",
           "heading": "The first question: does anyone wait for the answer?",
           "body": "If a user or service waits on each prediction, you need **online inference** from a model deployed to an endpoint. If predictions can be computed ahead of time for a whole dataset (nightly scores, weekly churn lists, backfills), use **batch inference**. Batch needs no always-on endpoint, so you do not pay for idle serving nodes.\n\nProduct names changed in 2026. Vertex AI is now part of **Gemini Enterprise Agent Platform**: prediction is now *Agent Platform Inference*, and endpoints are *Agent Platform Endpoints*. The exam guide (2024) still uses the Vertex AI names, so learn both."
         },
         {
+          "id": "agent-platform-batch-inference",
           "heading": "Agent Platform batch inference",
           "body": "- **Inputs:** JSONL, CSV, TFRecord (optionally gzip), a Cloud Storage file list, or a BigQuery table.\n- **Outputs:** Cloud Storage or BigQuery, in the **same region as the model**.\n- You start a job from a model (or model version) in Model Registry. **You do not deploy it to an endpoint first.**\n- Batch jobs **do not autoscale**. `max_replica_count` is ignored, so size the job with the starting replica count. Each replica takes about 5 minutes to start.\n- `generateExplanation` can return feature attributions, except for forecasting models and example-based explanations."
         },
         {
+          "id": "bigquery-ml-and-dataflow",
           "heading": "BigQuery ML and Dataflow",
           "body": "**BigQuery ML** runs batch inference with `ML.PREDICT`, both for models trained in BigQuery and for **imported** models (ONNX, TensorFlow, TensorFlow Lite, XGBoost). All processing stays inside BigQuery. A **remote model** points to a model hosted on an Agent Platform endpoint, which suits large models that need GPUs. If you need low-latency online prediction for a BQML model, register it in Model Registry (`MODEL_REGISTRY = 'VERTEX_AI'`) and deploy it to an endpoint. No export step is needed.\n\n**Dataflow ML** adds the Apache Beam `RunInference` transform to a pipeline. It runs local or remote inference in **batch and streaming** pipelines, with guides for PyTorch, scikit-learn and TensorFlow. It can also call a deployed Agent Platform endpoint through a built-in model handler. RunInference can **swap in a new model (through side inputs) without stopping the pipeline**, and Dataflow jobs can use GPUs or TPUs.\n\nTeams whose data and models already live in a Spark stack can also score in batch on Managed Service for Apache Spark (formerly Dataproc)."
         },
         {
+          "id": "decision-cheatsheet",
           "heading": "Decision cheatsheet",
           "body": "| Need | Good fit |\n|---|---|\n| Score a BigQuery table with a BQML or imported model | `ML.PREDICT` in BigQuery |\n| Score files or a table with a custom model from the registry | Agent Platform batch inference |\n| Inference inside a streaming event pipeline | Dataflow `RunInference` |\n| Per-request answers with low latency | Deploy to an Agent Platform endpoint |\n| Low-latency serving of a BQML model | Register in Model Registry, then deploy |"
         }
@@ -809,18 +856,22 @@
       "summary": "Version models in Model Registry, package PyTorch, XGBoost, scikit-learn or TensorFlow artifacts for prebuilt or custom containers, and roll out with traffic splits.",
       "sections": [
         {
+          "id": "model-registry-formerly-vertex-ai-model-registry",
           "heading": "Model Registry (formerly Vertex AI Model Registry)",
           "body": "Model Registry is the central place to manage model **versions**, **aliases** and **labels**. It holds custom models, AutoML models (tabular and image), and BigQuery ML models registered straight from BigQuery. The **`default` alias** marks the version that is used when no version is named, so it usually marks production. Promoting a version means moving the alias. You can deploy to an endpoint by version or alias, and start batch inference or evaluation from a specific version."
         },
         {
+          "id": "prebuilt-serving-containers",
           "heading": "Prebuilt serving containers",
           "body": "Prebuilt containers exist for **TensorFlow**, the **optimized TensorFlow runtime**, **PyTorch**, **scikit-learn** and **XGBoost**, organised by framework version. Each one expects its artifacts in a specific form, and the file names must match exactly:\n\n| Framework | Artifact |\n|---|---|\n| TensorFlow | a SavedModel directory |\n| XGBoost | `model.bst` or `model.joblib` |\n| scikit-learn | `model.joblib` |\n| PyTorch | a model archive named `model.mar` |\n\nPoint the model's `artifactUri` at the Cloud Storage folder that holds the artifact."
         },
         {
+          "id": "custom-containers",
           "heading": "Custom containers",
           "body": "Use a custom container when you need your own server, preprocessing or an unsupported framework. Its requirements:\n\n- Run an HTTP server that listens on **`0.0.0.0`** on the configured port (`AIP_HTTP_PORT`, default **8080**). The entrypoint must keep running in the foreground.\n- Answer GET requests on the **health route** with `200 OK` within 10 seconds when ready. After 4 failed health checks, the platform stops routing traffic to the container.\n- Accept POST requests on the **predict route** with `{\"instances\": [...], \"parameters\": {...}}` and return `{\"predictions\": [...]}`.\n- Read artifacts from `AIP_STORAGE_URI`, a read-only managed copy of `artifactUri`. Changing artifacts means creating a new Model."
         },
         {
+          "id": "rolling-out-traffic-split-a-b-and-rolling-deployment",
           "heading": "Rolling out: traffic split, A/B and rolling deployment",
           "body": "An endpoint can host several deployed models, and a model can be deployed to several endpoints. To run a **canary or A/B test**, deploy the new version to the **same endpoint** and give it a small traffic share, then raise it gradually to 100%. Clients keep the same endpoint URL. A **rolling deployment** replaces a deployed model with a new version of the same model and reuses its compute. Best practice is to keep one model type (for example AutoML tabular or custom-trained) per endpoint.\n\nMost deployment settings, including the machine type, cannot be changed after deployment. To change them, deploy again (for example a new deployed model on the same endpoint, then shift traffic). The docs say only some resources can be updated in place, and the endpoint location and model container never can."
         }
@@ -874,10 +925,12 @@
       "summary": "Know the four endpoint types, their limits, and which one fits network-isolation, VPC Service Controls, payload and tuned-Gemini requirements.",
       "sections": [
         {
+          "id": "the-four-endpoint-types",
           "heading": "The four endpoint types",
           "body": "| Type | Key traits |\n|---|---|\n| **Dedicated public** (recommended default) | Optimised latency, timeout up to 1 h, 10 MB payloads, no fixed QPM limit, HTTP or gRPC, streaming, traffic split, logging. **No VPC Service Controls.** |\n| **Shared public** | 60 s timeout, 1.5 MB payloads, 30,000 QPM, HTTP only. **The only option for tuned Gemini models.** |\n| **Private Service Connect (PSC) dedicated private** | Recommended for private production access, including from on-premises. Up to 1 h timeout, 10 MB, gRPC, streaming, traffic split, logging, **VPC-SC**, optional self-signed TLS. |\n| **Private (VPC peering)** | 60 s timeout. **No traffic split, no logging, no streaming, no encryption in transit.** |\n\nLimits like these change, so check the endpoint-type page before you rely on exact numbers."
         },
         {
+          "id": "picking-one",
           "heading": "Picking one",
           "body": "1. Is the model a **tuned Gemini model**? Use the shared public endpoint.\n2. Must traffic stay private or inside a **VPC-SC perimeter**, or come from on-premises? Use a **PSC** dedicated private endpoint.\n3. Otherwise, use a **dedicated public endpoint**, especially for large payloads, long-running requests or streaming.\n4. VPC peering private endpoints are the older private option and are not the recommended choice. They lack traffic split and logging, so they are a poor fit for canary rollouts or auditing."
         }
@@ -922,18 +975,22 @@
       "summary": "Tune replica bounds and autoscaling metrics, choose machine types and accelerators, co-host small models, use the optimized TensorFlow runtime, and serve online features from Feature Store.",
       "sections": [
         {
+          "id": "autoscaling",
           "heading": "Autoscaling",
           "body": "- Set `minReplicaCount` and `maxReplicaCount`. Autoscaling is on when max is greater than min.\n- Default targets: **CPU utilisation 60%** and, on GPU machines, **GPU duty cycle 60%**. With GPUs, the platform scales on whichever is higher. A request-count-per-replica metric exists but is off by default.\n- If you override `autoscalingMetricSpecs` with CPU only, a GPU-bound model **will not scale up** even when the GPU is saturated.\n- The platform checks every 15 seconds over a 5-minute window and follows the highest value, so scale-up is fast and scale-down is slow. New nodes take time to start, so set `minReplicaCount` to cover baseline traffic when spikes hurt latency.\n- **Quota is reserved for `maxReplicaCount`**, not for the replicas that are running. A very high max can cause quota errors.\n- **Scale to zero** (Preview, `minReplicaCount: 0`): requests to a scaled-down model get HTTP 429 and are dropped while it scales up. It is not available on shared public endpoints or multi-host GPU/TPU deployments."
         },
         {
+          "id": "hardware-and-memory",
           "heading": "Hardware and memory",
           "body": "CPU series (for example E2, N1, N2, N2D, C2, C3) suit most tabular and small models. GPU machine series (for example A2, A3, G2) suit deep learning and LLM serving. GPUs are **not recommended for AutoML tabular models**. To cut cost for many small, low-traffic models, **co-host** them in a **deployment resource pool**, which shares VMs across deployments. Co-hosting has limits: TensorFlow (GA) or PyTorch (Preview) prebuilt containers only, the same container image and framework version, no AutoML models, no custom containers, and no isolation between models."
         },
         {
+          "id": "latency-and-throughput",
           "heading": "Latency and throughput",
           "body": "The **optimized TensorFlow runtime** is backward compatible with the prebuilt TF Serving containers. Switching to it needs no model code changes, only a different serving container image, and it aims for faster, cheaper inference (gains vary by model). Optional XLA precompilation (helps large batches) and model compression (can affect precision slightly) are off by default. Dedicated endpoints give optimised latency and gRPC. Keep preprocessing consistent: for example, the BigQuery ML `TRANSFORM` clause applies training-time preprocessing at prediction time, so callers pass raw columns."
         },
         {
+          "id": "online-features",
           "heading": "Online features",
           "body": "Feature Store on Agent Platform (V2) keeps feature data in **BigQuery**, which is the offline store. You create an **online store** (Bigtable is the current serving type) and a **feature view** that syncs feature data from BigQuery for low-latency serving. **Bigtable online serving** suits large data volumes and supports continuous sync, but it does not support embeddings management. Use **Vector Search** for embeddings. **Feature Store (Legacy) and Optimized online serving were deprecated on 2026-02-17 and shut down on 2027-02-17**, so do not choose them for new designs, even though older material still mentions them."
         }
@@ -995,18 +1052,22 @@
       "summary": "How Google frames MLOps levels 0, 1 and 2, and what data validation and model validation do inside an automated training pipeline.",
       "sections": [
         {
+          "id": "level-0-manual-process",
           "heading": "Level 0: manual process",
           "body": "At **level 0** every step is manual and notebook-driven: a data scientist trains a model, hands an artifact to engineering, and engineering deploys it. Releases are infrequent, there is no CI/CD, and there is no monitoring loop.\n\nThe classic failure is **training-serving skew**: preprocessing written in a notebook is re-implemented separately in the serving stack, and the two drift apart."
         },
         {
+          "id": "level-1-continuous-training-ct",
           "heading": "Level 1: continuous training (CT)",
           "body": "At **level 1** you deploy the **whole training pipeline**, not just a model. The same pipeline runs in development and production, and it retrains automatically on fresh data. Level 1 adds:\n\n- **Data validation** before training. *Schema skew* (missing or unexpected features, wrong types) should **stop the pipeline** for investigation. *Value skew* (significant shifts in statistical distributions) is a signal to **retrain**.\n- **Model validation** before promotion: offline comparison with the current production model, including per-segment checks, followed by online validation such as a canary or A/B test.\n- An optional **feature store** and **metadata management** for lineage and reproducibility."
         },
         {
+          "id": "pipeline-triggers",
           "heading": "Pipeline triggers",
           "body": "The architecture guide lists these retraining triggers: **on demand**, **on a schedule**, **when new training data is available**, **when model performance degrades**, and **when data distributions shift significantly**. The right trigger depends on how fast the data changes and what retraining costs."
         },
         {
+          "id": "level-2-ci-cd-of-the-pipeline",
           "heading": "Level 2: CI/CD of the pipeline",
           "body": "At **level 2** the pipeline code itself goes through CI/CD. The stages are development and experimentation, **pipeline CI** (build and test components), **pipeline CD** (deploy the pipeline), automated triggering, **model CD** (serve the trained model), and monitoring.\n\n- CI tests: unit tests for feature engineering logic, checks that training converges, and checks that training produces no NaN values.\n- CD checks: compatibility with the target infrastructure, load and latency tests, and performance thresholds before rollout."
         }
@@ -1043,18 +1104,22 @@
       "summary": "The serverless pipeline service, the Kubeflow Pipelines and TFX SDKs, the standard TFX components, and when another orchestrator fits better.",
       "sections": [
         {
+          "id": "agent-platform-pipelines-formerly-vertex-ai-pipelines",
           "heading": "Agent Platform Pipelines (formerly Vertex AI Pipelines)",
           "body": "**Agent Platform Pipelines** (the exam guide says Vertex AI Pipelines) is **serverless**: you do not manage a cluster.\n\n- Write the pipeline with the **Kubeflow Pipelines (KFP) SDK** or the **TFX SDK**, then compile it to YAML.\n- Steps run on on-demand compute, or they **delegate work** to BigQuery, Dataflow or Managed Service for Apache Spark (formerly Dataproc).\n- Use **Google Cloud Pipeline Components** (for example AutoML training), or build custom components from Python functions or containers.\n- Parameters and artifacts are recorded in **ML Metadata**, which produces lineage graphs.\n- A **scheduler API** runs pipelines on a recurring basis (pause, resume, delete), and a Template Gallery holds reusable templates.\n\nThe legacy AI Platform Pipelines product was shut down on 2025-01-31."
         },
         {
+          "id": "tfx-components",
           "heading": "TFX components",
           "body": "TFX is an end-to-end platform built on TensorFlow libraries:\n\n| Component | Role |\n|---|---|\n| ExampleGen | Ingest and split data |\n| StatisticsGen | Compute dataset statistics |\n| SchemaGen | Infer a schema |\n| ExampleValidator | Detect anomalies using statistics and schema |\n| Transform | Feature engineering with TFT; the same graph runs in training and serving |\n| Trainer / Tuner | Train; tune with KerasTuner |\n| Evaluator | TFMA sliced metrics; gate the candidate against a baseline |\n| InfraValidator | Canary-load the model in a sandbox serving environment |\n| Pusher | Push a validated model to a deployment target |\n| BulkInferrer | Batch inference |\n\nTFX needs **Apache Beam**, which runs on Dataflow, Flink or Spark. TFX pipelines can be orchestrated by Airflow, Beam or Kubeflow."
         },
         {
+          "id": "training-serving-consistency",
           "heading": "Training-serving consistency",
           "body": "Skew happens when training and serving compute features differently. The fix is to define preprocessing **once** and reuse it:\n\n- **TFX Transform** exports a transform graph that is attached to the serving model.\n- The BigQuery ML **TRANSFORM** clause applies the training-time preprocessing automatically at prediction and evaluation time, so callers pass raw columns.\n- A feature store can serve the same feature values to training and serving."
         },
         {
+          "id": "choosing-an-orchestrator",
           "heading": "Choosing an orchestrator",
           "body": "- **Agent Platform Pipelines**: managed, serverless ML pipelines with built-in metadata and lineage. This is the default answer for ML workflows on Google Cloud.\n- **Kubeflow Pipelines on your own Kubernetes**: when you must run the same pipeline definitions on premises or in other clouds (hybrid or multicloud). You operate the cluster yourself.\n- **Cloud Composer** (managed Apache Airflow): when an organisation already orchestrates broader data workflows as Airflow DAGs and ML training is one step among many.\n- **Cloud Build** and **Cloud Run**: CI/CD for building, testing and deploying pipeline code and serving containers. They are not ML pipeline orchestrators themselves.\n- **MLflow** also appears in the exam guide. It is an open-source experiment-tracking and model-management tool that you run yourself; on Google Cloud, Experiments and Model Registry cover similar needs as managed services."
         }
@@ -1100,18 +1165,22 @@
       "summary": "Choosing retraining triggers, testing pipeline code in CI, and promoting models safely with Model Registry aliases and endpoint traffic splitting.",
       "sections": [
         {
+          "id": "retraining-policy",
           "heading": "Retraining policy",
           "body": "A retraining policy says **when** the pipeline runs and **what must pass** before a new model serves traffic.\n\n- **Schedule**: simple and predictable, for data that changes at a steady rate.\n- **New data**: run when a fresh batch of labelled data lands.\n- **Performance degradation**: run when monitored quality metrics fall below a threshold, once ground truth is available.\n- **Distribution shift**: run when Model Monitoring detects significant feature drift or skew.\n\nAgent Platform Pipelines has a scheduler API for recurring runs. Event-based triggers come from monitoring alerts or data-arrival events."
         },
         {
+          "id": "continuous-integration",
           "heading": "Continuous integration",
           "body": "In CI, every change to pipeline code is built and tested automatically, for example by a **Cloud Build** trigger on the repository. Typical CI work:\n\n- unit tests for feature engineering functions\n- checks that training converges and produces no NaN values\n- building component container images\n- compiling the pipeline definition\n\nCI tests the **code**. It does not decide whether a model is good enough to serve."
         },
         {
+          "id": "continuous-delivery-of-models",
           "heading": "Continuous delivery of models",
           "body": "Model CD gates the **trained model**:\n\n- verify compatibility with the target serving infrastructure\n- load and latency tests\n- performance thresholds against the current production model\n\nThen roll out gradually. An endpoint can host several models, and **traffic split** lets you send a small share to the new model (canary or A/B test) while the endpoint URL stays the same. Shift more traffic as it proves itself, or roll back by moving traffic back."
         },
         {
+          "id": "registry-driven-promotion",
           "heading": "Registry-driven promotion",
           "body": "**Agent Platform Model Registry** stores **versions**, **aliases** and labels. The **`default`** alias marks the version treated as production. A CD step can deploy by alias rather than by a hard-coded version ID, so promotion becomes moving an alias.\n\nIf callers need private access with canary rollouts, choose a **Private Service Connect** dedicated private endpoint. The older VPC-peering private endpoint does not support traffic split or request logging."
         }
@@ -1160,14 +1229,17 @@
       "summary": "Using ML Metadata, Experiments on Agent Platform and Model Registry to track runs, version models and answer lineage questions.",
       "sections": [
         {
+          "id": "ml-metadata-and-lineage",
           "heading": "ML Metadata and lineage",
           "body": "When an Agent Platform pipeline runs, its **parameters and artifacts** (datasets, models, metrics) are written to **Agent Platform ML Metadata**. That record produces a **lineage graph**: which data and parameters went into which step, and which model came out. Lineage can sync to Knowledge Catalog (formerly Dataplex).\n\nUse lineage to answer audit questions (\"which data trained the production model?\"), to debug regressions, and to reproduce a run.\n\nIn TFX, the same idea comes from the ML Metadata (MLMD) library."
         },
         {
+          "id": "experiments-on-agent-platform",
           "heading": "Experiments on Agent Platform",
           "body": "**Experiments on Agent Platform** (formerly Vertex AI Experiments) groups **experiment runs** and **pipeline runs**.\n\n- It logs parameters, summary metrics and time-series metrics. Time-series data is stored in managed TensorBoard.\n- A PipelineJob linked to an experiment counts as a run, and its parameters and metrics are inferred.\n- It integrates with ML Metadata for lineage.\n\nUse it to compare runs side by side and pick the best configuration."
         },
         {
+          "id": "model-and-dataset-versioning",
           "heading": "Model and dataset versioning",
           "body": "**Model Registry** versions models and lets you organise them with aliases and labels. It supports custom models, AutoML tabular and image models, and BigQuery ML models. A BigQuery ML model can register directly with `MODEL_REGISTRY = 'VERTEX_AI'` (plus `VERTEX_AI_MODEL_ID`), with no export step, and then deploy to an endpoint.\n\nKeep datasets reproducible by recording the exact data snapshot or table a run used as a pipeline artifact, so it appears in lineage."
         }
@@ -1211,18 +1283,22 @@
       "summary": "How Model Monitoring on Agent Platform (formerly Vertex AI Model Monitoring) detects training-serving skew and prediction drift, how v1 and v2 differ, and how alerts feed continuous evaluation and retraining.",
       "sections": [
         {
+          "id": "why-monitor-a-deployed-model",
           "heading": "Why monitor a deployed model",
           "body": "A model that passed offline evaluation can still degrade in production. The two classic causes are:\n\n- **Training-serving skew**: production inputs differ from the data the model was trained on (for example a feature computed differently at serving time).\n- **Drift**: production inputs or outputs change over time compared with earlier production data (for example user behaviour shifts).\n\nThe MLOps architecture guide lists \"when performance degrades\" and \"when distributions shift\" as triggers for retraining, alongside on-demand, scheduled and new-data triggers. Monitoring is what produces those signals."
         },
         {
+          "id": "baselines-what-you-compare-against",
           "heading": "Baselines: what you compare against",
           "body": "| Signal | Baseline | Needs training data? |\n|---|---|---|\n| Skew | The training dataset | Yes |\n| Drift | Past production data | No |\n\nIf you cannot access the original training data, you can still run drift detection. If you want to catch a serving pipeline that computes a feature differently from training, you need skew detection against the training data."
         },
         {
+          "id": "model-monitoring-v1-vs-v2",
           "heading": "Model Monitoring v1 vs v2",
           "body": "**v1 (GA)** works for models deployed to Agent Platform endpoints. Monitoring settings apply to **all models on an endpoint**. The default alert threshold is 0.3 per feature, with email alerts. Sampling reduces cost, and the monitoring frequency also sets the analysis window.\n\n**v2 (Preview, recommended for new setups)** is tied to a **model version** rather than an endpoint. It works with models served outside Agent Platform and with both batch and online inference. Objectives are input feature drift, output inference drift and **feature attribution** (SHAP-based). Jobs run on demand or on a schedule. Migration from v1 is not required.\n\nDistance metrics: categorical features use L-infinity (v1 and v2) or Jensen-Shannon divergence (v2); numerical features use Jensen-Shannon divergence."
         },
         {
+          "id": "continuous-evaluation-and-retraining",
           "heading": "Continuous evaluation and retraining",
           "body": "At MLOps level 1 the whole training pipeline is deployed, so a monitoring alert can trigger it. Data validation in the pipeline stops on schema skew and treats value skew as a reason to retrain; model validation compares the new model with the current one (including per-segment checks) before an online canary or A/B test. Preventing skew at the source matters too: BigQuery ML `TRANSFORM` and TFX Transform reuse the same preprocessing at training and serving."
         }
@@ -1268,22 +1344,27 @@
       "summary": "Feature attribution methods (Sampled Shapley, integrated gradients, XRAI), baselines, example-based explanations, and the deprecation of Vertex Explainable AI.",
       "sections": [
         {
+          "id": "status-first",
           "heading": "Status first",
           "body": "The exam guide names **Vertex Explainable AI**, so it is exam content. Note that it was **deprecated on 2026-03-16 and shuts down on 2027-03-16**; the deprecations page points to open-source **SHAP** or **LIME** as replacements. For new long-lived projects, plan for those libraries."
         },
         {
+          "id": "picking-an-attribution-method",
           "heading": "Picking an attribution method",
           "body": "| Method | Use when |\n|---|---|\n| **Sampled Shapley** | Non-differentiable models such as tree ensembles; works for any custom model and AutoML tabular |\n| **Integrated gradients** | Differentiable models (neural networks), large feature spaces, low-contrast images such as X-rays |\n| **XRAI** | Image models where you want salient **regions** in natural images; builds on integrated gradients |\n\nFeature-based attributions are available for AutoML, custom (TensorFlow, scikit-learn, XGBoost) and BigQuery ML models."
         },
         {
+          "id": "baselines",
           "heading": "Baselines",
           "body": "Attributions are always **relative to a baseline** you choose (for example an all-black image or an average feature vector). A poor baseline produces misleading attributions, so if results look odd, check the baseline before blaming the model."
         },
         {
+          "id": "example-based-explanations",
           "heading": "Example-based explanations",
           "body": "Instead of feature scores, example-based explanations return the **nearest neighbours** of an input in embedding space. Uses include debugging mislabeled data, outlier detection and active learning (choosing what to label next). They are supported for TensorFlow models only: not tree models, PyTorch or XGBoost."
         },
         {
+          "id": "explanations-in-monitoring",
           "heading": "Explanations in monitoring",
           "body": "Batch inference can return attributions (`generateExplanation`), except for forecasting models and example-based explanations. Model Monitoring v2 can track **feature attribution drift**, which flags when the features driving predictions change even if raw input distributions look similar."
         }
@@ -1334,18 +1415,22 @@
       "summary": "Assessing fairness readiness with sliced evaluation, monitoring for bias, and protecting data, models and inference traffic on Google Cloud.",
       "sections": [
         {
+          "id": "what-the-exam-guide-asks",
           "heading": "What the exam guide asks",
           "body": "Section 6.1 of the exam guide covers building secure AI systems (protecting against exploitation of data or models), aligning with Responsible AI practices (for example monitoring for bias), and assessing AI solution readiness (for example fairness and bias). Treat these as design-time and run-time checks, not one-off reviews."
         },
         {
+          "id": "fairness-readiness-through-sliced-evaluation",
           "heading": "Fairness readiness through sliced evaluation",
           "body": "An aggregate metric can hide large gaps for subgroups. TFX **Evaluator** uses TensorFlow Model Analysis (TFMA) to compute **sliced metrics** (per region, device, age band and so on) and to gate a **candidate model against a baseline** before Pusher deploys it. The MLOps guide also calls for per-segment model validation before rollout. A model that improves overall but regresses on a protected slice should not be pushed automatically."
         },
         {
+          "id": "bias-monitoring-in-production",
           "heading": "Bias monitoring in production",
           "body": "Fairness can degrade after launch as the population shifts. Combine Model Monitoring drift and feature attribution signals with periodic sliced evaluation on fresh labelled data, and route regressions into the retraining pipeline."
         },
         {
+          "id": "securing-data-and-models",
           "heading": "Securing data and models",
           "body": "- **Sensitive data**: Sensitive Data Protection discovers and profiles data across BigQuery, Cloud SQL and Cloud Storage, inspects by infoType and de-identifies with masking, redaction, bucketing, date shifting or tokenisation. It can also analyse re-identification risk (k-anonymity) on BigQuery data.\n- **Inference traffic**: a Private Service Connect dedicated private endpoint supports VPC Service Controls and is recommended for private production access. Dedicated public endpoints do not support VPC-SC, and VPC-peering private endpoints have no logging, streaming or encryption in transit.\n- **Model supply chain**: Model Garden scans third-party models for malware, and organisation policies can restrict which models users can access.\n- **Encryption and perimeters**: services such as RAG Engine and Workbench support CMEK and VPC-SC."
         }

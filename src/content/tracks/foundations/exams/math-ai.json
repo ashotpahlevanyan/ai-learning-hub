@@ -73,22 +73,27 @@
       "summary": "Why every embedding search, every attention score and every linear layer is, at heart, a dot product, and why embeddings are compared by angle rather than by raw length.",
       "sections": [
         {
+          "id": "a-vector-is-a-point-and-a-direction",
           "heading": "A vector is a point and a direction",
           "body": "An embedding model maps text, an image or a token to a vector $$x\\in\\mathbb{R}^d$$, a list of $$d$$ real numbers such as 768 or 3072. Read it in two ways at once:\n\n- **Algebraically**, it is an array: `x = np.array([0.12, -0.80, ...])` with shape `(d,)`.\n- **Geometrically**, it is an arrow from the origin. The *direction* of the arrow carries meaning (\"about refunds\", \"about Python errors\"). The *length* often carries things you do not want to compare on, such as text length, token frequency or how confident the model was.\n\nMost of what follows is a precise way of saying \"compare directions, not lengths\"."
         },
         {
+          "id": "norms-measuring-length",
           "heading": "Norms: measuring length",
           "body": "A norm is a length function. The three you will meet:\n\n| Norm | Formula | Use in ML |\n|---|---|---|\n| L2 (Euclidean) | $$\\|x\\|_2=\\sqrt{\\sum_i x_i^2}$$ | default length, weight decay, normalising embeddings |\n| L1 | $$\\|x\\|_1=\\sum_i |x_i|$$ | sparsity penalties |\n| L∞ | $$\\|x\\|_\\infty=\\max_i |x_i|$$ | absmax quantisation scales |\n\nA **unit vector** has $$\\|u\\|_2=1$$. Normalising means $$u=x/\\|x\\|_2$$: same direction, length 1.\n\nIn NumPy, `np.linalg.norm(X, axis=1, keepdims=True)` gives one norm per row of an `(N, d)` matrix with shape `(N, 1)`, ready to divide `X` by. Dropping `keepdims=True` gives shape `(N,)`, which broadcasts against the *columns*. That is a classic bug, covered in the tensors lesson."
         },
         {
+          "id": "the-dot-product-two-definitions-that-agree",
           "heading": "The dot product, two definitions that agree",
           "body": "**Algebraic:** $$a\\cdot b=a^\\top b=\\sum_i a_i b_i$$. This is $$d$$ multiply-adds, which is what GPUs are built for.\n\n**Geometric:** $$a\\cdot b=\\|a\\|\\,\\|b\\|\\cos\\theta$$, where $$\\theta$$ is the angle between the arrows.\n\nWhy they agree, in two lines: expand the squared length of the difference vector,\n$$\\|a-b\\|^2=(a-b)\\cdot(a-b)=\\|a\\|^2+\\|b\\|^2-2\\,a\\cdot b,$$\nand compare with the law of cosines, $$\\|a-b\\|^2=\\|a\\|^2+\\|b\\|^2-2\\|a\\|\\|b\\|\\cos\\theta$$. Matching terms gives the geometric form.\n\nConsequences to keep at your fingertips:\n\n- $$a\\cdot b>0$$: the vectors point broadly the same way. $$=0$$: orthogonal. $$<0$$: opposed.\n- The **Cauchy–Schwarz inequality** $$|a\\cdot b|\\le\\|a\\|\\|b\\|$$ guarantees that cosine lies in $$[-1,1]$$.\n- $$\\|a\\|^2=a\\cdot a$$, so the norm is just the dot product of a vector with itself."
         },
         {
+          "id": "cosine-similarity-and-why-embeddings-use-it",
           "heading": "Cosine similarity and why embeddings use it",
           "body": "$$\\cos(a,b)=\\frac{a\\cdot b}{\\|a\\|\\,\\|b\\|}$$\n\nIt is the dot product with the lengths divided out, so it depends **only on the angle**. Worked examples (verified in NumPy):\n\n- $$a=(1,2,3)$$, $$b=(2,4,6)$$: $$a\\cdot b=28$$, $$\\|a\\|=\\sqrt{14}\\approx3.742$$, $$\\|b\\|=2\\sqrt{14}$$, so cos = 1.0. The vectors are parallel; $$b$$ is just longer.\n- $$a=(1,2,3)$$, $$c=(3,-1,0)$$: $$a\\cdot c=3-2+0=1$$, so cos $$=1/\\sqrt{140}\\approx0.0845$$, nearly orthogonal.\n\n**Why it fits embeddings.** If two passages say the same thing but one vector is longer, a raw dot product would favour the longer vector for *every* query. Cosine removes that bias.\n\n**The production trick.** Normalise every vector once at index time. For unit vectors, $$u\\cdot v=\\cos(u,v)$$, so the database can run a plain inner-product search, which is a single matrix multiply.\n\n**Euclidean distance agrees on unit vectors.** From the expansion above with $$\\|u\\|=\\|v\\|=1$$:\n$$\\|u-v\\|^2=2-2\\cos(u,v).$$\nSmaller distance means larger cosine, so the nearest-neighbour *ranking* is identical. Only the score scale differs."
         },
         {
+          "id": "python-similarity-for-a-whole-batch-at-once",
           "heading": "Python: similarity for a whole batch at once",
           "body": "Never loop over pairs in Python. With queries `Q` of shape `(N, d)` and documents `Dm` of shape `(M, d)`:\n\n```python\nimport numpy as np\n\ndef l2_normalize(X, eps=1e-12):\n    return X / np.maximum(np.linalg.norm(X, axis=1, keepdims=True), eps)\n\nQn, Dn = l2_normalize(Q), l2_normalize(Dm)\nS = Qn @ Dn.T                 # (N, d) @ (d, M) -> (N, M) cosine matrix\ntop5 = np.argsort(-S, axis=1)[:, :5]   # best 5 documents per query\n```\n\n`S[i, j]` is the cosine between query `i` and document `j`. The `eps` guard stops a zero vector from producing `nan`. Attention does the same thing: $$QK^\\top$$ is a matrix of dot products between every query and every key, before scaling and softmax."
         }
@@ -138,22 +143,27 @@
       "summary": "A matrix is a function that moves vectors. Matrix multiplication is function composition, and every bug in a model forward pass starts as a shape you did not reason about.",
       "sections": [
         {
+          "id": "what-linear-means",
           "heading": "What \"linear\" means",
           "body": "A map $$f:\\mathbb{R}^n\\to\\mathbb{R}^m$$ is linear when $$f(\\alpha x+\\beta y)=\\alpha f(x)+\\beta f(y)$$. Every such map is a matrix $$A\\in\\mathbb{R}^{m\\times n}$$ with $$f(x)=Ax$$, and the **columns of $$A$$ are where the basis vectors land**: column $$j$$ is $$Ae_j$$.\n\nThat one sentence lets you read any matrix. A $$2\\times2$$ rotation by 90° is $$\\begin{bmatrix}0&-1\\\\1&0\\end{bmatrix}$$ because it sends $$e_1=(1,0)$$ to $$(0,1)$$ and $$e_2$$ to $$(-1,0)$$.\n\nEach output entry is a dot product: $$(Ax)_i=\\text{row}_i(A)\\cdot x$$. So a linear layer computes \"how much does the input align with each learned row direction\"."
         },
         {
+          "id": "matrix-multiplication-is-composition",
           "heading": "Matrix multiplication is composition",
           "body": "$$(AB)x=A(Bx)$$: apply $$B$$ first, then $$A$$. The entry formula follows:\n$$C=AB,\\qquad C_{ij}=\\sum_k A_{ik}B_{kj}.$$\n\nRules that fall out of this:\n\n- **Inner dimensions must match**: $$(m\\times n)(n\\times p)\\to(m\\times p)$$.\n- **Not commutative.** With $$A=\\begin{bmatrix}1&2\\\\3&4\\end{bmatrix}$$ and the swap $$B=\\begin{bmatrix}0&1\\\\1&0\\end{bmatrix}$$, $$AB$$ swaps the *columns* of $$A$$ while $$BA$$ swaps its *rows*: $$AB=\\begin{bmatrix}2&1\\\\4&3\\end{bmatrix}$$, $$BA=\\begin{bmatrix}3&4\\\\1&2\\end{bmatrix}$$.\n- **Associative**: $$(AB)C=A(BC)$$, but the cost can differ a lot, so the order of evaluation matters for speed.\n- **Cost**: $$m\\cdot n\\cdot p$$ multiply-adds, roughly $$2mnp$$ floating-point operations. This is where \"about 2 FLOPs per parameter per token\" for a forward pass comes from.\n- Stacking linear maps without a nonlinearity gives **another single linear map**. That is why networks put activations between layers."
         },
         {
+          "id": "nn-linear-written-out",
           "heading": "nn.Linear, written out",
           "body": "PyTorch's `nn.Linear(in_features, out_features)` computes $$y=xW^\\top+b$$ and stores `weight` with shape `(out_features, in_features)`. The input can have any leading dimensions; only the last one must equal `in_features`.\n\nParameter count = $$\\text{in}\\times\\text{out}+\\text{out}$$ (with bias). For a transformer MLP up-projection `nn.Linear(768, 3072)`: $$768\\cdot3072+3072=2{,}362{,}368$$ parameters, and `weight.shape == (3072, 768)` (verified on PyTorch 2.8).\n\nThe transpose in $$xW^\\top$$ is a storage convention: each *row* of `weight` is one output neuron's direction, so $$y_j=x\\cdot W_j+b_j$$."
         },
         {
+          "id": "shape-reasoning-batch-seq-dim",
           "heading": "Shape reasoning: batch × seq × dim",
           "body": "Language models carry activations of shape `(B, T, D)`: batch, sequence length, model width. Learn to read every operation as a shape transformation.\n\n| Step | Shapes | Result |\n|---|---|---|\n| Token embeddings | ids `(B, T)` indexing a table `(V, D)` | `(B, T, D)` |\n| Linear projection | `(B, T, D) @ (D, D')` | `(B, T, D')` |\n| Split heads | reshape to `(B, T, h, d)`, then transpose | `(B, h, T, d)`, with $$D=h\\cdot d$$ |\n| Attention scores | `Q @ K.transpose(-2, -1)`: `(B, h, T, d) @ (B, h, d, T)` | `(B, h, T, T)` |\n| Weighted values | `softmax(scores) @ V` | `(B, h, T, d)` |\n\nKey facts:\n\n- `@` / `matmul` on tensors with more than 2 dims treats the **last two** as the matrix and the rest as a **batch** that broadcasts. `(2, 5, 8) @ (8, 16)` gives `(2, 5, 16)`; `(4, 1, 5, 8) @ (3, 8, 2)` gives `(4, 3, 5, 2)` (both verified).\n- A linear layer on `(B, T, D)` acts on every token independently with the **same** weights. Mixing *across* tokens only happens in attention, through the `(T, T)` score matrix.\n- The `(T, T)` scores are why attention costs grow with the square of sequence length."
         },
         {
+          "id": "habits-that-prevent-shape-bugs",
           "heading": "Habits that prevent shape bugs",
           "body": "- Write the shape next to every tensor in comments: `# (B, h, T, d)`.\n- Assert shapes at module boundaries: `assert x.shape[-1] == self.d_model`.\n- Name the contracted dimension: in `Q @ K.transpose(-2, -1)` the shared `d` disappears and two `T` axes remain.\n- Use `einsum` when the shape story matters more than the call: `np.einsum('bhqd,bhkd->bhqk', Q, K)` states the contraction explicitly.\n- Prefer `transpose(-2, -1)` over `.T` on batched tensors: `.T` reverses *all* axes."
         }
@@ -207,18 +217,22 @@
       "summary": "The vocabulary that tells you when a system has a unique answer, when information has been lost, and how least squares finds the closest answer when no exact one exists.",
       "sections": [
         {
+          "id": "transpose",
           "heading": "Transpose",
           "body": "$$(A^\\top)_{ij}=A_{ji}$$: rows become columns. The rules you use daily:\n\n- $$(AB)^\\top=B^\\top A^\\top$$ (the order reverses, just like taking off socks and shoes).\n- $$a\\cdot b=a^\\top b$$, so $$x^\\top A y$$ is a scalar \"bilinear\" score; attention's $$q^\\top k$$ is the special case $$A=I$$.\n- A matrix is **symmetric** when $$A=A^\\top$$. Covariance matrices and Gram matrices $$X^\\top X$$ are always symmetric, which buys them real eigenvalues (next lesson)."
         },
         {
+          "id": "linear-independence-span-and-rank",
           "heading": "Linear independence, span and rank",
           "body": "Vectors $$v_1,\\dots,v_k$$ are **linearly independent** if no one of them is a combination of the others, equivalently $$\\sum c_iv_i=0$$ only when all $$c_i=0$$.\n\nThe **rank** of $$A$$ is the number of independent columns, which always equals the number of independent rows. It is the dimension of the column space: the set of all outputs $$Ax$$ can reach.\n\n- $$\\begin{bmatrix}1&2\\\\2&4\\end{bmatrix}$$ has rank 1 (`np.linalg.matrix_rank` confirms): column 2 is twice column 1, so every output lies on one line. Its determinant is 0.\n- $$\\operatorname{rank}(A)\\le\\min(m,n)$$, and $$\\operatorname{rank}(AB)\\le\\min(\\operatorname{rank}A,\\operatorname{rank}B)$$. A product that passes through a narrow $$r$$-dimensional bottleneck has rank at most $$r$$, which is exactly the LoRA idea.\n- Numerically, rank is the number of singular values above a tolerance, which is how `matrix_rank` computes it.\n\nA rank-deficient map **loses information**: different inputs collapse to the same output (the null space is non-trivial), so it cannot be undone."
         },
         {
+          "id": "inverse-and-why-you-rarely-compute-it",
           "heading": "Inverse, and why you rarely compute it",
           "body": "A square $$A$$ is invertible iff it has full rank (equivalently $$\\det A\\ne0$$, equivalently its null space is just $$\\{0\\}$$). Then $$A^{-1}A=I$$ and $$(AB)^{-1}=B^{-1}A^{-1}$$.\n\n**Orthogonal matrices** are the friendliest case: $$Q^\\top Q=I$$, so $$Q^{-1}=Q^\\top$$. They preserve lengths and dot products ($$\\|Qx\\|=\\|x\\|$$, $$(Qx)\\cdot(Qy)=x\\cdot y$$). Rotations are orthogonal; RoPE rotates query and key pairs so that their dot product depends only on the relative position.\n\n**In code, solve instead of invert.** To get $$x$$ from $$Ax=b$$, call `np.linalg.solve(A, b)`, not `np.linalg.inv(A) @ b`. Solving is cheaper and more accurate. When $$A$$ is ill-conditioned (largest/smallest singular value is huge) results lose digits either way; the NumPy docs suggest checking `np.linalg.cond`. A condition number of $$10^k$$ can cost up to about $$k$$ digits."
         },
         {
+          "id": "projections-and-least-squares",
           "heading": "Projections and least squares",
           "body": "The projection of $$v$$ onto the line through $$u$$ is\n$$\\operatorname{proj}_u v=\\frac{v\\cdot u}{u\\cdot u}\\,u.$$\n*Derivation:* look for $$\\hat v=c\\,u$$ whose residual $$v-cu$$ is orthogonal to $$u$$: $$(v-cu)\\cdot u=0\\Rightarrow c=\\frac{v\\cdot u}{u\\cdot u}$$.\n\nExample: $$v=(3,1)$$, $$u=(1,1)$$: $$c=4/2=2$$, so $$\\hat v=(2,2)$$ and the residual $$(1,-1)$$ is perpendicular to $$u$$.\n\n**Onto a subspace.** For the column space of $$A$$ (full column rank), the same orthogonality condition $$A^\\top(b-A\\hat x)=0$$ gives the **normal equations**\n$$A^\\top A\\,\\hat x=A^\\top b,\\qquad P=A(A^\\top A)^{-1}A^\\top.$$\nThis is least squares, i.e. linear regression: the best fit is the projection of the targets onto the span of the features. A projection matrix satisfies $$P^2=P$$ (projecting twice changes nothing).\n\nExample: fit $$y=c_0+c_1t$$ to points $$(0,1),(1,2),(2,2)$$. `np.linalg.lstsq`, the normal equations and `np.linalg.pinv(A) @ b` all give $$c_0=7/6$$, $$c_1=1/2$$. In practice prefer `lstsq`, which works through the SVD and also handles rank-deficient $$A$$ via the pseudoinverse."
         }
@@ -276,22 +290,27 @@
       "summary": "Decompositions reveal the few directions that matter. The SVD gives the best low-rank approximation of any matrix, PCA is the SVD of centred data, and LoRA bets that fine-tuning updates are low-rank.",
       "sections": [
         {
+          "id": "eigenvalues-and-eigenvectors",
           "heading": "Eigenvalues and eigenvectors",
           "body": "An eigenvector of a square $$A$$ is a direction the map only stretches: $$Av=\\lambda v$$, with eigenvalue $$\\lambda$$.\n\n**Symmetric matrices** (the spectral theorem): all eigenvalues are real and the eigenvectors can be chosen orthonormal, so $$A=Q\\Lambda Q^\\top$$. In words: rotate into the eigenbasis, scale each axis, rotate back.\n\nExample: $$A=\\begin{bmatrix}2&1\\\\1&2\\end{bmatrix}$$. $$A(1,1)^\\top=(3,3)^\\top$$ and $$A(1,-1)^\\top=(1,-1)^\\top$$, so the eigenvalues are 3 and 1 with eigenvectors along $$(1,1)$$ and $$(1,-1)$$. `np.linalg.eigvalsh` returns them as `[1., 3.]`: **ascending** order.\n\nWhy ML cares:\n- A covariance matrix is symmetric positive semi-definite, so its eigenvalues are $$\\ge0$$ and equal the variance along each eigenvector.\n- Eigenvalues of a Hessian measure curvature per direction; a large ratio means an ill-conditioned problem for gradient descent.\n- Repeatedly applying $$A$$ amplifies the top-eigenvalue direction, the linear-algebra root of exploding and vanishing signals."
         },
         {
+          "id": "the-svd-every-matrix-is-rotate-scale-rotate",
           "heading": "The SVD: every matrix is rotate, scale, rotate",
           "body": "Any real $$A\\in\\mathbb{R}^{m\\times n}$$, square or not, factors as\n$$A=U\\Sigma V^\\top=\\sum_{i=1}^{r}\\sigma_i\\,u_i v_i^\\top,$$\nwith orthonormal columns in $$U$$ and $$V$$ and singular values $$\\sigma_1\\ge\\sigma_2\\ge\\dots\\ge0$$.\n\n- $$\\sigma_i^2$$ are the eigenvalues of $$A^\\top A$$; $$v_i$$ are its eigenvectors.\n- Rank = number of non-zero $$\\sigma_i$$.\n- The sum form shows $$A$$ as a weighted stack of **rank-1** pieces, ordered by importance.\n\nNumPy details: `np.linalg.svd` returns `U, S, Vh` with `S` in **descending** order and `Vh` already transposed. By default `full_matrices=True`, so for a `(6, 4)` input `U` is `(6, 6)`; pass `full_matrices=False` for the compact `(6, 4)` version."
         },
         {
+          "id": "eckart-young-the-best-low-rank-approximation",
           "heading": "Eckart–Young: the best low-rank approximation",
           "body": "Keep the top $$k$$ terms: $$A_k=\\sum_{i\\le k}\\sigma_iu_iv_i^\\top$$. The Eckart–Young theorem says no rank-$$k$$ matrix is closer to $$A$$, in either norm:\n$$\\|A-A_k\\|_2=\\sigma_{k+1},\\qquad \\|A-A_k\\|_F=\\sqrt{\\textstyle\\sum_{i>k}\\sigma_i^2}.$$\n\nWorked example (`rng = np.random.default_rng(0); A = rng.standard_normal((6, 4))`): $$\\sigma=(3.0361,\\,2.0335,\\,1.8563,\\,0.8954)$$.\n- Rank 1: spectral error $$\\sigma_2=2.0335$$; Frobenius error $$\\sqrt{2.0335^2+1.8563^2+0.8954^2}\\approx2.8953$$.\n- Rank 2: spectral error $$\\sigma_3=1.8563$$; Frobenius error $$\\sqrt{1.8563^2+0.8954^2}\\approx2.0610$$.\n- Energy kept by rank 2: $$(\\sigma_1^2+\\sigma_2^2)/\\sum\\sigma_i^2\\approx0.76$$.\n\nA random Gaussian matrix has a *flat* spectrum, so truncation hurts. Real weight updates and real data often have a fast-decaying spectrum, so a small $$k$$ keeps almost everything."
         },
         {
+          "id": "pca-is-the-svd-of-centred-data",
           "heading": "PCA is the SVD of centred data",
           "body": "Given data $$X\\in\\mathbb{R}^{n\\times d}$$:\n1. Centre: subtract the column means (scikit-learn's `PCA` does this for you; it does not scale features).\n2. SVD: $$X_c=U\\Sigma V^\\top$$. The rows of $$V^\\top$$ are the principal directions (`components_`).\n3. Variance along component $$i$$ is $$\\sigma_i^2/(n-1)$$; `explained_variance_ratio_` is each share of the total.\n4. Project: $$Z=X_cV_k$$ gives $$k$$-dimensional coordinates.\n\nEquivalently, the components are eigenvectors of the covariance $$\\frac{1}{n-1}X_c^\\top X_c$$. Without centring, the first \"component\" mostly points at the mean, not along the spread.\n\nExample: 200 samples of 3-D Gaussian noise scaled by $$(3,1,0.1)$$ give explained variance ratios of about $$[0.902,0.097,0.001]$$: two components carry 99.9% of the variance. This is how you visualise embeddings in 2-D, and why compressing embeddings to fewer dimensions can lose little."
         },
         {
+          "id": "why-lora-works",
           "heading": "Why LoRA works",
           "body": "Full fine-tuning learns an update $$\\Delta W$$ the size of $$W_0\\in\\mathbb{R}^{d\\times k}$$. LoRA (Hu et al., 2021) freezes $$W_0$$ and constrains the update to a product of two thin matrices:\n$$h=W_0x+\\Delta Wx=W_0x+BAx,\\qquad B\\in\\mathbb{R}^{d\\times r},\\ A\\in\\mathbb{R}^{r\\times k},\\ r\\ll\\min(d,k).$$\n\n- **Rank budget.** $$\\operatorname{rank}(BA)\\le r$$: the update can only move the layer's outputs within an $$r$$-dimensional subspace.\n- **Parameter count.** $$r(d+k)$$ instead of $$dk$$. For $$d=k=4096$$, $$r=8$$: 65,536 vs 16,777,216, 256× fewer for that matrix.\n- **Initialisation.** $$A$$ is random Gaussian and $$B$$ is zero, so $$\\Delta W=BA=0$$ at step 0 and the adapted model starts exactly at the pretrained one.\n- **Scaling.** The update is scaled by $$\\alpha/r$$, which reduces the need to retune the learning rate when $$r$$ changes.\n- **No inference latency.** After training, merge $$W=W_0+\\frac{\\alpha}{r}BA$$; the deployed layer is a single matrix again.\n- **The hypothesis.** The paper argues that weight *updates* during adaptation have a low \"intrinsic rank\", which Eckart–Young says can be captured well by a rank-$$r$$ factorisation. Their experiments mostly adapt $$W_q$$ and $$W_v$$, and found even very small $$r$$ competitive. On GPT-3 175B they report about 10,000× fewer trainable parameters and about 3× less GPU memory than full fine-tuning."
         }
@@ -350,18 +369,22 @@
       "summary": "Deep-learning code is written in whole-tensor operations. Broadcasting rules decide which of those operations are legal and, more dangerously, which illegal-looking ones silently succeed.",
       "sections": [
         {
+          "id": "tensors-shape-dtype-device-and-named-axes",
           "heading": "Tensors: shape, dtype, device, and named axes",
           "body": "A tensor is an n-dimensional array: a scalar (0-D), vector (1-D), matrix (2-D), or more. What matters in practice is its **shape** and what each axis *means*:\n\n- Text model activations: `(B, T, D)` = batch, tokens, features.\n- Multi-head attention: `(B, h, T, d)` with $$D=h\\cdot d$$.\n- Images: `(B, C, H, W)` in PyTorch.\n\nReductions take an `axis`/`dim` and remove it unless you pass `keepdims=True` / `keepdim=True`. Mean-pooling a sequence is `x.mean(dim=1)`: `(B, T, D)` to `(B, D)`."
         },
         {
+          "id": "the-broadcasting-rules",
           "heading": "The broadcasting rules",
           "body": "When two arrays of different shapes meet in an element-wise operation, NumPy and PyTorch compare shapes **from the trailing (rightmost) dimension leftward**. Two dimensions are compatible when\n\n1. they are equal, or\n2. one of them is 1.\n\nA missing leading dimension is treated as 1. Each size-1 dimension is (virtually) stretched to match; nothing is copied in memory.\n\n| A | B | Result |\n|---|---|---|\n| `(3, 1)` | `(1, 4)` | `(3, 4)` |\n| `(5, 4)` | `(4,)` | `(5, 4)` (per-column bias) |\n| `(5, 4)` | `(5,)` | error: trailing 4 vs 5 |\n| `(15, 3, 5)` | `(3, 1)` | `(15, 3, 5)` |\n| `(8, 1, 6, 1)` | `(7, 1, 5)` | `(8, 7, 6, 5)` |\n\nAll rows were checked with `np.broadcast_shapes`. Adding a bias `b` of shape `(D,)` to `(B, T, D)` works because `(D,)` aligns with the last axis."
         },
         {
+          "id": "silent-broadcasting-bugs",
           "heading": "Silent broadcasting bugs",
           "body": "Broadcasting errors are loud. Broadcasting *successes* you did not intend are the real danger.\n\n**1. The (N,) minus (N, 1) trap.** `y` has shape `(N,)` and `pred` has shape `(N, 1)`. `y - pred` broadcasts to `(N, N)`: every target minus every prediction. `((y - pred)**2).mean()` runs, returns a number, and is wrong. Fix with `pred.squeeze(-1)` or `y[:, None]`.\n\n**2. Row normalisation without keepdims.** `X / np.linalg.norm(X, axis=1)` divides `(N, D)` by `(N,)`. It errors when $$N\\ne D$$, but when the matrix happens to be square it silently divides *columns* by row norms. Always `keepdims=True`.\n\n**3. Masked mean-pooling.** Hidden states `(B, T, D)` times an attention mask `(B, T)` fails (trailing `D` vs `T`). The fix is `mask[..., None]` to make `(B, T, 1)`:\n\n```python\nm = mask[..., None].to(h.dtype)          # (B, T, 1)\npooled = (h * m).sum(1) / m.sum(1)       # (B, D) / (B, 1) -> (B, D)\n```\n\n**Defence:** assert shapes after any operation that mixes tensors of different rank."
         },
         {
+          "id": "reshape-view-transpose-and-einsum",
           "heading": "Reshape, view, transpose and einsum",
           "body": "Splitting heads is the canonical sequence:\n\n```python\nx = x.view(B, T, h, d).transpose(1, 2)   # (B, T, D) -> (B, h, T, d)\n# ... attention ...\nx = x.transpose(1, 2).reshape(B, T, D)   # back to (B, T, D)\n```\n\n- `transpose` only swaps axes in the metadata (strides); the result is usually **non-contiguous**.\n- `view` needs compatible strides and raises an error on many non-contiguous tensors. `reshape` returns a view when it can and copies when it must. That is why the merge step uses `reshape` (or `.contiguous().view(...)`).\n- Reshaping `(B, T, D)` straight to `(B, h, T, d)` without the transpose is legal but **scrambles** tokens and features: the numbers end up in the wrong axes.\n\n**einsum** writes the contraction explicitly: `np.einsum('qd,kd->qk', Q, K)` equals `Q @ K.T`. Letters on both inputs but not the output are summed over; letters that survive define the output shape."
         }
@@ -416,18 +439,22 @@
       "summary": "The derivative as the best local linear model, partial derivatives, the gradient vector, directional derivatives and why the negative gradient is the steepest way down. Ends with checking gradients numerically in Python.",
       "sections": [
         {
+          "id": "the-derivative-is-a-local-linear-model",
           "heading": "The derivative is a local linear model",
           "body": "The single most useful way to read a derivative is as the slope of the best straight-line approximation near a point:\n\n$$f(x+h)\\approx f(x)+f'(x)\\,h\\quad\\text{for small }h$$\n\nwith $$f'(x)=\\lim_{h\\to0}\\frac{f(x+h)-f(x)}{h}$$. Everything in optimisation is built on this idea: if you know the slope you know which way to nudge $$x$$ to make $$f$$ smaller, and roughly how much it will drop.\n\nDerivatives you should be able to write without thinking, because they appear in every network:\n\n| Function | Derivative | Why it matters |\n|---|---|---|\n| $$x^n$$ | $$n x^{n-1}$$ | squared-error losses |\n| $$e^x$$ | $$e^x$$ | softmax, exp in attention |\n| $$\\ln x$$ | $$1/x$$ | log-likelihood, cross-entropy |\n| $$\\sigma(x)=\\frac{1}{1+e^{-x}}$$ | $$\\sigma(x)(1-\\sigma(x))$$ | max value 0.25 at $$x=0$$, the root of vanishing gradients |\n| $$\\tanh x$$ | $$1-\\tanh^2 x$$ | max value 1 at $$x=0$$ |\n| $$\\mathrm{ReLU}(x)=\\max(0,x)$$ | 1 if $$x>0$$, 0 if $$x<0$$ | not differentiable at 0; frameworks pick a convention |\n\nPlus the product rule $$(uv)'=u'v+uv'$$ and the chain rule (next lesson)."
         },
         {
+          "id": "partial-derivatives-and-the-gradient",
           "heading": "Partial derivatives and the gradient",
           "body": "A loss depends on many parameters. A **partial derivative** $$\\partial f/\\partial x_i$$ is the ordinary derivative with respect to one coordinate while all the others are held fixed. Stack them and you get the **gradient**:\n\n$$\\nabla f(x)=\\Big(\\frac{\\partial f}{\\partial x_1},\\dots,\\frac{\\partial f}{\\partial x_n}\\Big)$$\n\nThe multivariable version of the linear model is\n\n$$f(x+\\delta)\\approx f(x)+\\nabla f(x)\\cdot\\delta$$\n\n**Worked example.** Take $$f(x,y)=x^2+3y^2$$. Then $$\\partial f/\\partial x=2x$$ and $$\\partial f/\\partial y=6y$$, so at $$(1,1)$$ the gradient is $$(2,6)$$.\n\n**Shape rule for code.** The gradient of a scalar loss with respect to a tensor has the *same shape as that tensor*. In PyTorch, `p.grad` always has `p.shape`. If you ever compute a gradient whose shape differs from the parameter, you made a mistake."
         },
         {
+          "id": "directional-derivatives-and-steepest-descent",
           "heading": "Directional derivatives and steepest descent",
           "body": "How fast does $$f$$ change if you move in direction $$u$$? For a **unit** vector $$u$$:\n\n$$D_u f(x)=\\nabla f(x)\\cdot u=\\|\\nabla f(x)\\|\\cos\\theta$$\n\nwhere $$\\theta$$ is the angle between $$u$$ and the gradient. Three consequences follow straight from $$\\cos\\theta$$:\n\n1. $$\\theta=0$$: moving along $$\\nabla f$$ gives the **largest** increase, at rate $$\\|\\nabla f\\|$$.\n2. $$\\theta=180^\\circ$$: moving along $$-\\nabla f$$ gives the **steepest decrease**. This is why gradient descent steps along the negative gradient.\n3. $$\\theta=90^\\circ$$: moving perpendicular to the gradient leaves $$f$$ unchanged to first order. The gradient is perpendicular to level sets (contour lines).\n\n**Worked example.** At $$(1,1)$$ for $$f=x^2+3y^2$$, $$\\nabla f=(2,6)$$ and $$\\|\\nabla f\\|=\\sqrt{40}\\approx6.32$$. In the direction of $$(3,4)$$ you must first normalise: $$u=(0.6,0.8)$$, so $$D_uf=2(0.6)+6(0.8)=6.0$$. Forgetting to normalise gives 30, which is wrong by the factor $$\\|(3,4)\\|=5$$.\n\nNote that the steepest-descent direction $$-(2,6)/\\sqrt{40}$$ does **not** point at the minimum $$(0,0)$$. On a stretched bowl the gradient points across the valley, not along it. That mismatch is the seed of the zig-zag behaviour you will meet in the curvature lesson."
         },
         {
+          "id": "checking-a-gradient-numerically",
           "heading": "Checking a gradient numerically",
           "body": "When you derive a gradient by hand, check it against finite differences:\n\n- Forward difference: $$\\frac{f(x+h)-f(x)}{h}$$, error $$O(h)$$.\n- Central difference: $$\\frac{f(x+h)-f(x-h)}{2h}$$, error $$O(h^2)$$.\n\nFor $$f=x^3$$ at $$x=2$$ (true value 12) with $$h=10^{-3}$$, forward gives 12.006001 and central gives 12.000001. The central formula is about three orders of magnitude more accurate for the same $$h$$.\n\nDo not shrink $$h$$ without limit: subtracting two nearly equal floats loses digits (catastrophic cancellation), so very small $$h$$ makes things *worse*, especially in float32. Do checks in float64. PyTorch ships `torch.autograd.gradcheck`, which compares analytical gradients with finite differences for you.\n\n```python\nimport torch\nx = torch.tensor([1.0, 1.0], requires_grad=True)\nf = x[0]**2 + 3 * x[1]**2\nf.backward()\nprint(x.grad)                         # tensor([2., 6.])\nu = torch.tensor([3.0, 4.0]); u = u / u.norm()\nprint((x.grad @ u).item())            # 6.0  directional derivative\n```"
         }
@@ -482,22 +509,27 @@
       "summary": "Derive gradients through composed functions, see backpropagation as the chain rule applied in reverse over a graph, work a tiny network by hand, and learn the autograd behaviours that cause real bugs.",
       "sections": [
         {
+          "id": "the-chain-rule",
           "heading": "The chain rule",
           "body": "If $$y=g(u)$$ and $$u=h(x)$$, then\n\n$$\\frac{dy}{dx}=\\frac{dy}{du}\\cdot\\frac{du}{dx}$$\n\n**Worked example.** $$y=(3x^2+1)^2$$ at $$x=2$$. Let $$u=3x^2+1=13$$, so $$y=169$$. Then $$dy/du=2u=26$$ and $$du/dx=6x=12$$, giving $$dy/dx=26\\times12=312$$. Autograd returns exactly 312.\n\n**Multivariable chain rule.** If $$x$$ influences $$y$$ through several intermediate variables $$u_1,\\dots,u_k$$, you sum over the paths:\n\n$$\\frac{\\partial y}{\\partial x}=\\sum_j\\frac{\\partial y}{\\partial u_j}\\frac{\\partial u_j}{\\partial x}$$\n\nThis \"sum over paths\" is why, in a computational graph, gradients arriving at a node that fans out to several consumers are **added**."
         },
         {
+          "id": "computational-graphs-forward-caches-backward-multiplies",
           "heading": "Computational graphs: forward caches, backward multiplies",
           "body": "Write the computation as a graph of primitive operations. Training then has two passes:\n\n- **Forward pass.** Evaluate the nodes in order and **cache** the intermediate values that the local derivatives will need (for example the pre-activation of each ReLU).\n- **Backward pass.** Start from $$\\partial L/\\partial L=1$$ and visit nodes in reverse order. Each node multiplies the incoming upstream gradient by its local derivative and passes the result to its inputs. Where a value was used twice, its gradients add.\n\nTwo practical consequences:\n\n1. **Activation memory.** The cached intermediates are why training needs much more memory than inference, and why techniques such as activation checkpointing trade recomputation for memory.\n2. **Reverse mode is cheap for scalar losses.** One backward pass yields the gradient with respect to *every* parameter at a cost that is a small constant multiple of the forward pass. Forward-mode differentiation would need one pass per input direction, which is hopeless with billions of parameters."
         },
         {
+          "id": "backprop-by-hand-on-a-tiny-network",
           "heading": "Backprop by hand on a tiny network",
           "body": "Model: $$z=w_1x+b_1$$, $$h=\\mathrm{ReLU}(z)$$, $$\\hat y=w_2h$$, $$L=(\\hat y-y)^2$$.\nValues: $$x=1$$, $$w_1=2$$, $$b_1=-0.5$$, $$w_2=3$$, $$y=2$$.\n\n**Forward:** $$z=1.5$$, $$h=1.5$$, $$\\hat y=4.5$$, $$L=2.5^2=6.25$$.\n\n**Backward** (each line = upstream gradient × local derivative):\n\n| Quantity | Computation | Value |\n|---|---|---|\n| $$\\partial L/\\partial\\hat y$$ | $$2(\\hat y-y)$$ | 5 |\n| $$\\partial L/\\partial w_2$$ | $$5\\cdot h$$ | 7.5 |\n| $$\\partial L/\\partial h$$ | $$5\\cdot w_2$$ | 15 |\n| $$\\partial L/\\partial z$$ | $$15\\cdot\\mathrm{ReLU}'(1.5)=15\\cdot1$$ | 15 |\n| $$\\partial L/\\partial w_1$$ | $$15\\cdot x$$ | 15 |\n| $$\\partial L/\\partial b_1$$ | $$15\\cdot1$$ | 15 |\n\nPyTorch agrees on every number.\n\n**Dead ReLU.** Change $$b_1$$ to $$-3$$. Now $$z=-1$$, $$h=0$$, $$\\hat y=0$$, $$L=4$$. The ReLU derivative at $$z<0$$ is 0, so $$\\partial L/\\partial w_1=\\partial L/\\partial b_1=0$$, and $$\\partial L/\\partial w_2=2(0-2)\\cdot h=0$$ as well. If a unit is negative for every input in the data, it never receives a gradient again. That is a \"dead\" ReLU."
         },
         {
+          "id": "two-gradients-worth-memorising",
           "heading": "Two gradients worth memorising",
           "body": "**Logistic loss.** For $$L=-\\log\\sigma(z)$$ with $$z=w\\cdot x$$ (positive label), $$\\frac{dL}{dz}=\\sigma(z)-1$$, so\n\n$$\\nabla_wL=(\\sigma(z)-1)\\,x$$\n\nWith $$w=(0.5,-0.3)$$ and $$x=(1,2)$$: $$z=-0.1$$, $$\\sigma(z)=0.47502$$, gradient $$=(-0.5250,-1.0500)$$. The sign is negative, so gradient *descent* increases $$w\\cdot x$$, which pushes the predicted probability up toward the true label. Good sanity check.\n\n**Softmax plus cross-entropy.** With logits $$o$$, probabilities $$p=\\mathrm{softmax}(o)$$ and one-hot label $$y$$, the gradient of the cross-entropy with respect to the logits is\n\n$$\\frac{\\partial L}{\\partial o}=p-y$$\n\n\"Prediction minus target.\" It is bounded in $$[-1,1]$$ per entry, which is part of why this pairing trains so well. It is also why PyTorch's `CrossEntropyLoss` takes raw logits and fuses the log-softmax internally."
         },
         {
+          "id": "autograd-behaviours-that-cause-real-bugs",
           "heading": "Autograd behaviours that cause real bugs",
           "body": "**Gradients accumulate.** Calling `backward()` *adds* into `.grad`. It does not overwrite it.\n\n```python\nw = torch.tensor(1.0, requires_grad=True)\nfor _ in range(3):\n    (2 * w).backward()\nprint(w.grad)   # tensor(6.)  not 2\n```\n\nThat is why every training loop calls `optimizer.zero_grad()` each step. Forgetting it means each update uses the running sum of all past gradients. Deliberate accumulation over several micro-batches before one `optimizer.step()` is the legitimate use of the same behaviour (divide the loss by the number of micro-batches so the scale matches).\n\n**Masking after the fact does not stop NaN gradients.** The PyTorch autograd notes warn that if a division by zero is recorded in the graph, autograd still differentiates through it even if you mask the result out afterwards:\n\n```python\nx = torch.tensor([0.0, 1.0], requires_grad=True)\ny = torch.where(x > 0, 1 / x, torch.zeros_like(x))\ny.sum().backward()\nprint(x.grad)   # tensor([nan, -1.])\n```\n\nThe fix is to keep the bad operation out of the graph: make the denominator safe *before* dividing (for example compute on `torch.where(x > 0, x, torch.ones_like(x))`) and then select."
         }
@@ -552,22 +584,27 @@
       "summary": "Vector-valued derivatives, second derivatives and what curvature does to gradient descent: the 2/λ stability limit, condition numbers, classifying critical points and why Newton's method is not used for large models.",
       "sections": [
         {
+          "id": "the-jacobian-derivatives-of-vector-functions",
           "heading": "The Jacobian: derivatives of vector functions",
           "body": "For $$f:\\mathbb{R}^n\\to\\mathbb{R}^m$$ the **Jacobian** is the $$m\\times n$$ matrix $$J_{ij}=\\partial f_i/\\partial x_j$$: one row per output, one column per input. The linear model becomes $$f(x+\\delta)\\approx f(x)+J\\delta$$, and the chain rule becomes matrix multiplication:\n\n$$J_{g\\circ f}(x)=J_g(f(x))\\,J_f(x)$$\n\nA classifier head mapping a 768-dimensional feature to 10 logits has a $$10\\times768$$ Jacobian.\n\n**Softmax Jacobian.** For $$s=\\mathrm{softmax}(z)$$:\n\n$$\\frac{\\partial s_i}{\\partial z_j}=s_i(\\delta_{ij}-s_j)\\quad\\Longleftrightarrow\\quad J=\\mathrm{diag}(s)-ss^\\top$$\n\nFor $$z=(2,1,0.1)$$ this is a $$3\\times3$$ matrix with diagonal $$\\approx(0.225,0.184,0.089)$$ and negative off-diagonals. It is **symmetric**, and every row and column **sums to zero**: adding the same constant to all logits does not change the softmax, so the all-ones direction is in its null space, and the Jacobian is singular.\n\n**Backprop never builds full Jacobians.** For a scalar loss it only needs vector-Jacobian products $$v^\\top J$$, which can be computed without materialising $$J$$. That is what keeps reverse mode cheap."
         },
         {
+          "id": "the-hessian-curvature",
           "heading": "The Hessian: curvature",
           "body": "For a scalar $$f:\\mathbb{R}^n\\to\\mathbb{R}$$, the **Hessian** is the $$n\\times n$$ matrix of second derivatives $$H_{ij}=\\partial^2f/\\partial x_i\\partial x_j$$ (symmetric for smooth $$f$$). The second-order Taylor model is\n\n$$f(x+\\delta)\\approx f(x)+\\nabla f^\\top\\delta+\\tfrac12\\delta^\\top H\\delta$$\n\nThe eigenvectors of $$H$$ are the principal curvature directions and the eigenvalues are how sharply the surface bends along them. For $$f=x^2+3y^2$$, $$H=\\mathrm{diag}(2,6)$$: the bowl is three times steeper in $$y$$ than in $$x$$.\n\n**Condition number** $$\\kappa=\\lambda_{\\max}/\\lambda_{\\min}$$ (here 3) measures how stretched the bowl is. Large $$\\kappa$$ means ill-conditioning."
         },
         {
+          "id": "curvature-sets-the-maximum-learning-rate",
           "heading": "Curvature sets the maximum learning rate",
           "body": "On a quadratic, gradient descent along an eigen-direction with curvature $$\\lambda$$ multiplies the error by $$(1-\\eta\\lambda)$$ each step. It converges only if $$|1-\\eta\\lambda|<1$$, that is\n\n$$\\eta<\\frac{2}{\\lambda_{\\max}}$$\n\nand the **largest** eigenvalue sets the limit.\n\n- $$f=x^2$$ ($$\\lambda=2$$), five steps from $$x=1$$: $$\\eta=0.1\\to0.32768$$ (smooth), $$\\eta=0.9\\to-0.32768$$ (oscillates, still converges), $$\\eta=1.1\\to-2.48832$$ (diverges).\n- $$f=x^2+3y^2$$: limit $$2/6\\approx0.333$$. With $$\\eta=0.3$$ both coordinates shrink (factors 0.4 and 0.8). With $$\\eta=0.34$$ the $$y$$ factor is $$|1-2.04|=1.04$$, so $$y$$ grows (about 2.19 after 20 steps) even though $$x$$ converges nicely.\n\nThe squeeze: $$\\eta$$ must be small enough for the steepest direction, but then progress along the flattest direction runs at rate $$1-\\eta\\lambda_{\\min}$$, which is slow when $$\\kappa$$ is large. The visible symptom is **zig-zagging** across a narrow valley. Momentum and per-parameter adaptive methods (Adam) are practical answers."
         },
         {
+          "id": "classifying-critical-points",
           "heading": "Classifying critical points",
           "body": "At a critical point $$\\nabla f=0$$. The Hessian's eigenvalues decide what it is:\n\n| Hessian eigenvalues | Point |\n|---|---|\n| all $$>0$$ (positive definite) | local minimum |\n| all $$<0$$ | local maximum |\n| mixed signs | **saddle point** |\n| some $$=0$$ | test is inconclusive |\n\n$$f=x^2-y^2$$ has $$H=\\mathrm{diag}(2,-2)$$ at the origin: a saddle. Downhill exists (along $$y$$) even though the gradient is zero there. In high-dimensional non-convex losses, critical points with a mix of signs are far more common than true local minima, so \"gradient near zero\" usually does not mean \"at a minimum\"."
         },
         {
+          "id": "newton-s-method-and-why-llms-do-not-use-it",
           "heading": "Newton's method and why LLMs do not use it",
           "body": "Minimising the quadratic model gives the **Newton step**\n\n$$x\\leftarrow x-H^{-1}\\nabla f$$\n\nOn an exact quadratic it lands on the minimum in one step: from $$(1,1)$$ on $$x^2+3y^2$$, $$H^{-1}\\nabla f=(1,1)$$, so the next point is $$(0,0)$$. It rescales every direction by its curvature, so ill-conditioning disappears.\n\nWhy it is not used to train large networks:\n\n1. **Size.** $$H$$ has $$n^2$$ entries. For $$n=7\\times10^9$$ that is about $$4.9\\times10^{19}$$ numbers, far beyond any memory, and inversion costs $$O(n^3)$$.\n2. **Saddles.** Newton's method jumps to *any* critical point of the quadratic model, including saddles, unless modified.\n3. **Noise.** Mini-batch Hessian estimates are noisy.\n\nAdam's division by $$\\sqrt{\\hat v}$$ can be read, as an intuition, as a cheap diagonal rescaling per parameter: a poor man's preconditioner.\n\n```python\nimport torch\nfrom torch.autograd.functional import jacobian, hessian\nprint(jacobian(lambda z: torch.softmax(z, 0), torch.tensor([2., 1., .1])).shape)  # (3, 3)\nprint(hessian(lambda v: v[0]**2 + 3*v[1]**2, torch.tensor([1., 1.])))             # diag(2, 6)\n```"
         }
@@ -622,26 +659,32 @@
       "summary": "How every common optimiser actually updates parameters, with verified numbers: mini-batch noise, the learning rate, momentum, Adam's bias correction, decoupled weight decay in AdamW, and warmup plus cosine schedules as used in real LLM recipes.",
       "sections": [
         {
+          "id": "from-gradient-descent-to-mini-batch-sgd",
           "heading": "From gradient descent to mini-batch SGD",
           "body": "The training loss is an average over examples, $$L(\\theta)=\\frac1N\\sum_i\\ell_i(\\theta)$$. Full-batch gradient descent uses the exact gradient: $$\\theta\\leftarrow\\theta-\\eta\\nabla L(\\theta)$$.\n\n**Mini-batch SGD** uses the average gradient over a random batch of $$B$$ examples. It is an unbiased estimate of the full gradient, and its noise standard deviation shrinks like $$1/\\sqrt B$$ (the standard error of a mean). In a simulation with per-example gradient std 2, the batch-mean std was 0.50 at $$B=16$$ and 0.25 at $$B=64$$: **4x the batch halves the noise**, it does not quarter it.\n\nVocabulary: one **step** (iteration) = one parameter update; one **epoch** = one pass over the data. Some noise is useful: it helps escape saddles and sharp regions."
         },
         {
+          "id": "the-learning-rate",
           "heading": "The learning rate",
           "body": "The learning rate $$\\eta$$ is the single most important hyperparameter. From the curvature lesson: on a quadratic, $$\\eta<2/\\lambda_{\\max}$$ or training diverges. Practical reading of a loss curve:\n\n- Loss decreasing very slowly and smoothly: $$\\eta$$ probably too small.\n- Loss oscillating or jumping up, or NaN: $$\\eta$$ too large (or a numerical problem).\n\nFive steps on $$f=x^2$$ from $$x=1$$: $$\\eta=0.1\\to0.328$$, $$\\eta=0.9\\to-0.328$$ (oscillates), $$\\eta=1.1\\to-2.488$$ (diverges)."
         },
         {
+          "id": "momentum",
           "heading": "Momentum",
           "body": "PyTorch's `SGD` with momentum $$\\mu$$ (dampening 0) keeps a buffer:\n\n$$b_t=\\mu b_{t-1}+g_t,\\qquad\\theta_t=\\theta_{t-1}-\\eta\\,b_t$$\n\n(the first step sets $$b_1=g_1$$). The buffer is a running sum of past gradients with geometric decay.\n\n- **Consistent directions accelerate.** With a constant gradient the step grows toward $$\\eta g/(1-\\mu)$$. With $$\\mu=0.9$$, $$\\eta=0.1$$, $$g=1$$: steps of 0.1, 0.19, … approaching 1.0, which is 10x plain SGD.\n- **Oscillating directions cancel.** In a zig-zagging valley the across-valley components alternate in sign and partly cancel, while the along-valley components add up.\n\nPyTorch notes that its formulation puts the learning rate outside the buffer, which differs subtly from some papers. `nesterov=True` uses a look-ahead variant."
         },
         {
+          "id": "adam-per-parameter-adaptive-steps",
           "heading": "Adam: per-parameter adaptive steps",
           "body": "Adam keeps exponential moving averages of the gradient and of its square:\n\n$$m_t=\\beta_1m_{t-1}+(1-\\beta_1)g_t,\\qquad v_t=\\beta_2v_{t-1}+(1-\\beta_2)g_t^2$$\n\nBecause $$m_0=v_0=0$$, early averages are biased toward zero, so Adam **bias-corrects** them:\n\n$$\\hat m_t=\\frac{m_t}{1-\\beta_1^t},\\qquad\\hat v_t=\\frac{v_t}{1-\\beta_2^t},\\qquad\\theta_t=\\theta_{t-1}-\\eta\\frac{\\hat m_t}{\\sqrt{\\hat v_t}+\\epsilon}$$\n\n**Consequences you can verify:**\n\n- On step 1, $$\\hat m_1=g$$ and $$\\hat v_1=g^2$$, so the step is about $$\\eta\\,\\mathrm{sign}(g)$$ **whatever the gradient's size**. With $$\\eta=0.1$$ a parameter at 1.0 moves to 0.9 whether $$g=123$$ or $$g=0.001$$.\n- Without bias correction, step 1 would be $$\\eta\\cdot\\frac{0.1g}{\\sqrt{0.001g^2}}\\approx3.16\\eta$$: an oversized first step.\n- Step size is roughly scale-invariant per parameter: rarely updated or small-gradient parameters still move.\n\nPyTorch 2.8 defaults: `Adam(lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0)`."
         },
         {
+          "id": "weight-decay-l2-and-adamw",
           "heading": "Weight decay, L2 and AdamW",
           "body": "For plain SGD, adding an L2 penalty $$\\frac\\lambda2\\|\\theta\\|^2$$ to the loss is equivalent (after rescaling) to shrinking weights each step. **For Adam it is not** (Loshchilov & Hutter). The L2 term $$\\lambda\\theta$$ is added to the gradient, so it flows into $$m$$ and $$v$$ and is then divided by $$\\sqrt{\\hat v}$$; the effective decay depends on each parameter's gradient history.\n\n**AdamW decouples** the decay and applies it directly to the weights:\n\n$$\\theta\\leftarrow\\theta-\\eta\\lambda\\theta$$\n\nThe PyTorch docs say weight decay \"does not accumulate in the momentum nor variance.\" With zero gradient, $$\\eta=0.1$$ and $$\\lambda=0.01$$, a weight goes from 1.0 to 0.999 in one step.\n\nA 100-step experiment ($$\\eta=0.01$$, $$\\lambda=0.1$$, zero task gradient on that weight): coupled L2 in Adam shrank it from 1.0 to about 0.22, because Adam normalised the tiny decay gradient into full-size steps; decoupled decay shrank it to $$0.999^{100}\\approx0.905$$, exactly as the formula predicts.\n\nPyTorch 2.8 specifics (check the version you run):\n\n- `AdamW` default `weight_decay=0.01`; `Adam` default `weight_decay=0`.\n- `Adam(weight_decay=…)` is coupled L2 **unless** `decoupled_weight_decay=True`, which makes it behave like AdamW."
         },
         {
+          "id": "schedules-and-warmup",
           "heading": "Schedules and warmup",
           "body": "The learning rate usually changes over training.\n\n**Transformer (2017) schedule:** $$\\eta=d_{model}^{-0.5}\\min(\\text{step}^{-0.5},\\ \\text{step}\\cdot\\text{warmup}^{-1.5})$$ with warmup = 4000. It rises linearly, peaks at step 4000 (about $$6.99\\times10^{-4}$$ for $$d_{model}=512$$) and then decays as $$1/\\sqrt{\\text{step}}$$, halving by step 16000. The paper used Adam with $$\\beta_2=0.98$$ and $$\\epsilon=10^{-9}$$.\n\n**Llama 2 recipe (Sec. 2.2):** AdamW with $$\\beta_1=0.9$$, $$\\beta_2=0.95$$, eps $$10^{-5}$$; cosine schedule with 2000 warmup steps decaying to 10% of peak (peak $$3\\times10^{-4}$$ for 7B/13B, so the final value is $$3\\times10^{-5}$$); weight decay 0.1; gradient clipping 1.0.\n\n**Why warmup.** At the start, weights are random, gradients can be large and Adam's second-moment estimates are based on very few samples. A short ramp avoids large destabilising early updates. (This is the common practical explanation.)\n\n```python\nopt = torch.optim.AdamW(model.parameters(), lr=3e-4, betas=(0.9, 0.95), weight_decay=0.1)\nwarm = torch.optim.lr_scheduler.LinearLR(opt, start_factor=0.01, total_iters=2000)\ncos  = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=total - 2000, eta_min=3e-5)\nsched = torch.optim.lr_scheduler.SequentialLR(opt, [warm, cos], milestones=[2000])\nfor batch in loader:\n    opt.zero_grad()\n    loss = model(batch).loss\n    loss.backward()\n    torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)\n    opt.step()\n    sched.step()          # after opt.step()\n```\n\nPyTorch warns that calling `scheduler.step()` **before** `optimizer.step()` skips the first value of the schedule."
         }
@@ -697,22 +740,27 @@
       "summary": "Convex versus non-convex losses, why saddle points matter more than local minima in high dimensions, the multiplication that makes gradients vanish or explode, and the remedies: activations, initialisation, residual paths and gradient clipping.",
       "sections": [
         {
+          "id": "convexity-when-local-equals-global",
           "heading": "Convexity: when local equals global",
           "body": "A function is **convex** if the chord between any two points lies on or above the graph:\n\n$$f(\\lambda a+(1-\\lambda)b)\\le\\lambda f(a)+(1-\\lambda)f(b),\\quad\\lambda\\in[0,1]$$\n\nFor twice-differentiable $$f$$, convexity is equivalent to the Hessian being positive semidefinite everywhere. The payoff: **every local minimum of a convex function is a global minimum**, so a gradient method with a suitable step size cannot get trapped.\n\nConvex in the parameters: least-squares linear regression, logistic regression's negative log-likelihood. **Not convex:** essentially any neural network with a hidden layer. One easy argument: permuting the hidden units of a layer gives a different parameter vector with the same loss, so minima come in many equivalent copies, and the average of two such copies is generally worse, which violates convexity.\n\nConvexity does **not** make any learning rate safe: the $$\\eta<2/\\lambda_{\\max}$$ limit still applies."
         },
         {
+          "id": "local-minima-saddle-points-and-plateaus",
           "heading": "Local minima, saddle points and plateaus",
           "body": "In non-convex losses three kinds of places slow training down:\n\n- **Local minima** that are worse than the best one.\n- **Saddle points**: zero gradient but downhill directions exist (Hessian has negative eigenvalues).\n- **Plateaus**: wide flat regions with tiny gradients.\n\nIn high dimensions, a critical point is a local minimum only if *every* one of millions of curvature directions curves upward. Saddle points with mixed curvature are therefore much more common than local minima, and much of the \"stuck\" behaviour in deep learning is near saddles or on plateaus rather than in bad minima. Plain gradient descent slows near a saddle because the gradient is small, but mini-batch noise and momentum help push the iterate off it.\n\nDiagnostic: a loss that plateaus with a tiny gradient norm and then suddenly drops again is the classic saddle or plateau signature."
         },
         {
+          "id": "vanishing-and-exploding-gradients",
           "heading": "Vanishing and exploding gradients",
           "body": "Backprop through $$L$$ layers multiplies $$L$$ Jacobians:\n\n$$\\frac{\\partial\\mathcal L}{\\partial h_0}=\\frac{\\partial\\mathcal L}{\\partial h_L}\\,J_L J_{L-1}\\cdots J_1$$\n\nA product of many factors either shrinks or grows geometrically:\n\n- Sigmoid derivatives are at most 0.25, so across ten sigmoid layers the activation derivatives alone multiply the gradient by at most $0.25^{10}\\approx9.5\\times10^{-7}$. Early layers stop learning: **vanishing**.\n- Per-layer factor 0.9 for 50 layers gives $$0.9^{50}\\approx0.005$$; factor 1.1 gives $$1.1^{50}\\approx117$$: **exploding**.\n\nPascanu et al. analyse this for recurrent networks, where the same weight matrix is multiplied in at every time step, and tie it to the size of that matrix: a largest singular value below 1 (scaled by a bound on the activation derivative) is sufficient for vanishing, and above 1 is necessary for exploding; in the linear case the spectral radius plays this role.\n\n**Remedies, each tied to the maths:**\n\n| Remedy | What it does to the product |\n|---|---|\n| ReLU-family activations | derivative 1 on the active side instead of at most 0.25 |\n| Careful initialisation (He: variance $$2/\\text{fan-in}$$ for ReLU) | keeps each layer's signal and gradient variance near 1 |\n| Residual connections $$h_{l+1}=h_l+F(h_l)$$ | Jacobian is $$I+\\partial F/\\partial h$$, an identity path that does not shrink |\n| Normalisation (LayerNorm, RMSNorm) | keeps activations at a controlled scale |\n| Gradient clipping | caps the size of an exploding update (does not fix vanishing) |"
         },
         {
+          "id": "gradient-clipping-in-practice",
           "heading": "Gradient clipping in practice",
           "body": "**Clip by global norm** (the usual choice):\n\n$$g\\leftarrow g\\cdot\\min\\Big(1,\\frac{c}{\\|g\\|}\\Big)$$\n\nwhere $$\\|g\\|$$ is the norm of **all** parameter gradients concatenated into one vector. The direction is preserved; only the length is capped.\n\nPyTorch: `clip_grad_norm_(parameters, max_norm, norm_type=2.0, error_if_nonfinite=False, foreach=None)` returns the **total norm before clipping**. If parameter A has gradient 3 and B has gradient 4, the global norm is 5; with `max_norm=1.0` the call returns 5.0 and the gradients become 0.6 and 0.8.\n\n**Clip by value** (`clip_grad_value_`) clamps each element independently to $$[-c,c]$$. The same (3, 4) with $$c=1$$ becomes (1, 1): the direction changes. That is why norm clipping is the default for transformers (Llama 2 uses a norm of 1.0).\n\nLog the returned norm every step. Spikes in the gradient norm often precede loss spikes and NaNs and are one of the most useful health signals in LLM training."
         },
         {
+          "id": "a-debugging-checklist-for-unstable-training",
           "heading": "A debugging checklist for unstable training",
           "body": "When loss spikes or goes NaN:\n\n1. **Plot the global gradient norm** (from `clip_grad_norm_`). Spikes point to exploding updates.\n2. **Check the learning rate and warmup.** Too high a peak or no warmup is the most common cause.\n3. **Enable or lower norm clipping** (1.0 is a common starting point).\n4. **Look for numerical hazards**: `log(0)`, division by zero in a masked branch, softmax without max-subtraction, fp16 overflow.\n5. **Check initialisation and normalisation placement** if gradients vanish in early layers.\n\nFix the cause before reaching for a smaller learning rate everywhere: an unnecessarily small $$\\eta$$ just makes training slow."
         }
@@ -767,22 +815,27 @@
       "summary": "Build the vocabulary every ML paper assumes: random variables, the Bernoulli, categorical and Gaussian distributions, and the algebra of expectation and variance, plus the variance convention traps in NumPy, pandas and PyTorch.",
       "sections": [
         {
+          "id": "random-variables-numbers-attached-to-outcomes",
           "heading": "Random variables: numbers attached to outcomes",
           "body": "A **random variable** $$X$$ maps each outcome of an experiment to a number. A **discrete** variable has a probability mass function (PMF) $$P(X=x)$$ that sums to 1. A **continuous** variable has a probability density function (PDF) $$p(x)$$ that integrates to 1.\n\nA density is *not* a probability: $$p(x)$$ can exceed 1 (a Gaussian with $$\\sigma=0.1$$ peaks near 4). Only areas under it, $$P(a\\le X\\le b)=\\int_a^b p(x)\\,dx$$, are probabilities.\n\nIn ML you meet random variables everywhere: a per-item eval score (0 or 1), the next token an LLM samples, the noise in a regression target, a mini-batch gradient, the initial value of a weight."
         },
         {
+          "id": "the-three-distributions-you-must-know-cold",
           "heading": "The three distributions you must know cold",
           "body": "| Distribution | Support | Parameters | Mean | Variance | Where it shows up |\n|---|---|---|---|---|---|\n| Bernoulli($$p$$) | {0, 1} | $$p$$ | $$p$$ | $$p(1-p)$$ | one eval item right/wrong, a binary label |\n| Categorical($$\\pi_1..\\pi_K$$) | {1..K} | $$K$$ probabilities summing to 1 ($$K-1$$ free) | — | — | next-token prediction over a vocabulary |\n| Gaussian $$\\mathcal N(\\mu,\\sigma^2)$$ | all reals | $$\\mu,\\sigma^2$$ | $$\\mu$$ | $$\\sigma^2$$ | weight init, regression noise, CLT limit |\n\n- A **binomial** count is the sum of $$n$$ independent Bernoullis: mean $$np$$, variance $$np(1-p)$$.\n- A categorical variable is often written as a **one-hot** vector; then $$E[\\text{one-hot}]=\\pi$$, the probability vector itself. A softmax layer outputs exactly such a $$\\pi$$.\n- For a Gaussian, about **68.3% / 95.4% / 99.7%** of mass lies within 1 / 2 / 3 standard deviations, and the two-sided 95% point is $$z\\approx1.96$$."
         },
         {
+          "id": "expectation-linear-always",
           "heading": "Expectation: linear, always",
           "body": "$$E[X]=\\sum_x x\\,P(X=x)$$ (or $$\\int x\\,p(x)\\,dx$$). A fair die has $$E[X]=3.5$$, a value it can never show.\n\n**Linearity** holds with *no* independence assumption:\n$$E[aX+bY+c]=aE[X]+bE[Y]+c$$\n\nSo the expected number of correct answers on $$n$$ items with per-item accuracies $$p_i$$ is $$\\sum p_i$$, even if the items are correlated. In general $$E[f(X)]\\neq f(E[X])$$ unless $$f$$ is linear (Jensen's inequality covers convex $$f$$)."
         },
         {
+          "id": "variance-and-covariance",
           "heading": "Variance and covariance",
           "body": "$$\\mathrm{Var}(X)=E[(X-\\mu)^2]=E[X^2]-\\mu^2$$, and the standard deviation is $$\\sigma=\\sqrt{\\mathrm{Var}(X)}$$, in the same units as $$X$$.\n\n- $$\\mathrm{Var}(aX+b)=a^2\\mathrm{Var}(X)$$: shifting does nothing, scaling squares.\n- $$\\mathrm{Var}(X+Y)=\\mathrm{Var}(X)+\\mathrm{Var}(Y)+2\\,\\mathrm{Cov}(X,Y)$$.\n- If $$X,Y$$ are independent, $$\\mathrm{Cov}=0$$, so $$\\mathrm{Var}(X\\pm Y)=\\mathrm{Var}(X)+\\mathrm{Var}(Y)$$. Variances **add even when you subtract**.\n- The mean of $$n$$ i.i.d. variables has variance $$\\sigma^2/n$$. This one line is the root of standard errors, mini-batch gradient noise and why bigger evals are more trustworthy.\n\nZero covariance does **not** imply independence (take $$X$$ symmetric around 0 and $$Y=X^2$$)."
         },
         {
+          "id": "sample-variance-in-code-the-ddof-trap",
           "heading": "Sample variance in code: the ddof trap",
           "body": "Dividing by $$n$$ gives the maximum-likelihood (biased) estimate; dividing by $$n-1$$ (Bessel's correction) gives the unbiased one. Libraries disagree on the default:\n\n| Call on [1, 2, 3, 4] | Divisor | Result |\n|---|---|---|\n| `np.var(x)` | $$n$$ (`ddof=0`) | 1.25 |\n| `pd.Series(x).var()` | $$n-1$$ (`ddof=1`) | 1.6667 |\n| `torch.var(t)` | $$n-1$$ (`correction=1`) | 1.6667 |\n| `statistics.variance(x)` | $$n-1$$ | 1.6667 |\n| `statistics.pvariance(x)` | $$n$$ | 1.25 |\n\nWhen a port from NumPy to PyTorch \"almost\" matches, check this first. LayerNorm, by contrast, normalises with the biased (divide-by-$$n$$) variance."
         }
@@ -840,18 +893,22 @@
       "summary": "Learn to reason about P(A | B) precisely, tell independence from conditional independence, and apply Bayes' theorem so that base rates never fool you about classifiers, LLM judges or safety filters.",
       "sections": [
         {
+          "id": "conditional-probability-and-the-product-rule",
           "heading": "Conditional probability and the product rule",
           "body": "$$P(A\\mid B)=\\frac{P(A\\cap B)}{P(B)}$$ for $$P(B)>0$$. Read it as: restrict the world to cases where $$B$$ happened, then ask how often $$A$$ also happened.\n\nRearranged, this is the **product rule** $$P(A\\cap B)=P(A\\mid B)P(B)$$, and summing over a partition gives the **law of total probability**:\n$$P(A)=\\sum_i P(A\\mid B_i)P(B_i)$$\n\nAn autoregressive LLM is the product rule applied repeatedly: $$p(x_1..x_T)=\\prod_t p(x_t\\mid x_{<t})$$."
         },
         {
+          "id": "independence-vs-conditional-independence",
           "heading": "Independence vs conditional independence",
           "body": "- **Independent:** $$P(A\\cap B)=P(A)P(B)$$, equivalently $$P(A\\mid B)=P(A)$$. Knowing $$B$$ tells you nothing about $$A$$.\n- **Mutually exclusive** is a different idea: $$P(A\\cap B)=0$$. Two exclusive events with positive probability are maximally *dependent*.\n- **Conditionally independent given C:** $$P(A\\cap B\\mid C)=P(A\\mid C)P(B\\mid C)$$. Naive Bayes assumes features are conditionally independent given the class. That does *not* make them marginally independent: two symptoms of the same disease are correlated in the population precisely because both depend on the disease.\n\nInclusion-exclusion links the pieces: $$P(A\\cup B)=P(A)+P(B)-P(A\\cap B)$$."
         },
         {
+          "id": "bayes-theorem",
           "heading": "Bayes' theorem",
           "body": "$$P(H\\mid E)=\\frac{P(E\\mid H)\\,P(H)}{P(E)}=\\frac{P(E\\mid H)P(H)}{P(E\\mid H)P(H)+P(E\\mid\\neg H)P(\\neg H)}$$\n\n- $$P(H)$$ is the **prior** (base rate, prevalence).\n- $$P(E\\mid H)$$ is the **likelihood**; for a test, sensitivity (recall, true-positive rate).\n- $$P(E\\mid\\neg H)$$ is the false-positive rate (1 − specificity).\n- $$P(H\\mid E)$$ is the **posterior**; for a classifier, the precision (positive predictive value)."
         },
         {
+          "id": "base-rates-the-worked-example-you-should-be-able-to-do-in-yo",
           "heading": "Base rates: the worked example you should be able to do in your head",
           "body": "A detector flags 1% prevalence content with 99% sensitivity and a 5% false-positive rate. Think in **natural frequencies** over 10,000 items:\n\n- 100 are truly positive; 99 of them are flagged.\n- 9,900 are negative; 5% of them, 495, are flagged anyway.\n- Flags total 594, of which 99 are real: $$99/594\\approx0.1667$$.\n\nA \"99% accurate\" detector is right only **one time in six** when it fires, because negatives vastly outnumber positives. At 10% prevalence the same detector gives 0.6875. A second, conditionally independent positive updates 0.1667 to about 0.798: yesterday's posterior is today's prior.\n\nThis is exactly the situation of an LLM judge, toxicity filter or fraud model on rare events: always ask for the base rate before interpreting a flag."
         }
@@ -905,22 +962,27 @@
       "summary": "Derive why almost every model is trained by minimising an average negative log-likelihood: cross-entropy for classification and next-token prediction, mean squared error under Gaussian noise, and weight decay as a Gaussian prior.",
       "sections": [
         {
+          "id": "likelihood-and-the-mle",
           "heading": "Likelihood and the MLE",
           "body": "Given i.i.d. data $$x_1..x_n$$ and a model $$p(x\\mid\\theta)$$, the **likelihood** is $$L(\\theta)=\\prod_i p(x_i\\mid\\theta)$$, viewed as a function of $$\\theta$$ with the data fixed. The **maximum-likelihood estimate** is $$\\hat\\theta_{MLE}=\\arg\\max_\\theta L(\\theta)$$.\n\n**Bernoulli derivation.** With $$k$$ successes in $$n$$ trials, $$\\log L(p)=k\\log p+(n-k)\\log(1-p)$$. Setting the derivative $$k/p-(n-k)/(1-p)$$ to zero gives $$\\hat p=k/n$$. Seven heads in ten tosses gives 0.7."
         },
         {
+          "id": "why-the-log-and-why-the-minus-sign",
           "heading": "Why the log, and why the minus sign",
           "body": "- **Same argmax.** $$\\log$$ is strictly increasing, so maximising $$\\log L$$ maximises $$L$$.\n- **Products become sums.** $$\\log\\prod_i p_i=\\sum_i\\log p_i$$, which is what SGD wants: an average of per-example losses estimated on mini-batches.\n- **Numerical stability.** A product of thousands of probabilities underflows to 0.0 in floating point; a sum of logs does not.\n- **Minus sign.** Optimisers minimise, so we minimise the **negative log-likelihood** $$-\\frac1n\\sum_i\\log p(x_i\\mid\\theta)$$."
         },
         {
+          "id": "cross-entropy-is-categorical-nll",
           "heading": "Cross-entropy is categorical NLL",
           "body": "For a classifier with softmax output $$\\hat\\pi$$ and true class $$y$$, the categorical likelihood of that one label is $$\\hat\\pi_y$$, so the per-example NLL is $$-\\log\\hat\\pi_y$$. That is the cross-entropy between the one-hot target and $$\\hat\\pi$$.\n\nAn LLM is trained the same way: the loss is the mean of $$-\\log p_\\theta(x_t\\mid x_{<t})$$ over tokens, which is MLE of a categorical model at every position. Its exponential is perplexity.\n\nIn PyTorch, `nn.CrossEntropyLoss` takes **raw logits** and applies log-softmax internally. Feeding it probabilities you already softmaxed applies softmax twice and silently distorts the loss and gradients."
         },
         {
+          "id": "gaussian-noise-gives-mean-squared-error",
           "heading": "Gaussian noise gives mean squared error",
           "body": "Assume $$y=f_\\theta(x)+\\varepsilon$$ with $$\\varepsilon\\sim\\mathcal N(0,\\sigma^2)$$ and fixed $$\\sigma$$. Then\n$$-\\log p(y\\mid x,\\theta)=\\frac{(y-f_\\theta(x))^2}{2\\sigma^2}+\\text{const}$$\nso MLE is exactly least squares. (Laplace noise would give absolute error instead.)\n\nThe MLE of a Gaussian variance divides by $$n$$, not $$n-1$$: for [2, 4, 4, 4, 5, 5, 7, 9] it is 4.0, while the unbiased estimate is 4.571. MLE can be biased; it is consistent as $$n\\to\\infty$$."
         },
         {
+          "id": "map-adding-a-prior",
           "heading": "MAP: adding a prior",
           "body": "**Maximum a posteriori** maximises the posterior $$p(\\theta\\mid D)\\propto p(D\\mid\\theta)p(\\theta)$$:\n$$\\hat\\theta_{MAP}=\\arg\\min_\\theta\\big[-\\log p(D\\mid\\theta)-\\log p(\\theta)\\big]$$\n\n- A Gaussian prior $$\\theta\\sim\\mathcal N(0,\\tau^2 I)$$ adds $$\\frac{1}{2\\tau^2}\\|\\theta\\|_2^2$$: **L2 regularisation**. For plain SGD this equals weight decay; for adaptive optimisers like Adam it does not, which is why AdamW decouples the decay.\n- A Laplace prior adds an L1 penalty, which favours sparse weights.\n- A uniform (flat) prior leaves MAP equal to MLE.\n- With a Beta($$a,b$$) prior on a Bernoulli $$p$$, $$\\hat p_{MAP}=\\frac{k+a-1}{n+a+b-2}$$. Beta(2, 2) with 7/10 gives 8/12 = 0.667, pulled toward 0.5. As $$n$$ grows, the data overwhelm the prior."
         }
@@ -978,18 +1040,22 @@
       "summary": "Understand why averages stabilise, why their errors look Gaussian, and how to put an honest error bar on an eval score or a mini-batch estimate.",
       "sections": [
         {
+          "id": "samples-estimators-and-sampling-distributions",
           "heading": "Samples, estimators and sampling distributions",
           "body": "A **statistic** is any function of a sample, such as the sample mean $$\\bar X=\\frac1n\\sum X_i$$. Because the sample is random, $$\\bar X$$ is itself a random variable with its own **sampling distribution**. An estimator is **unbiased** if its expectation equals the true parameter.\n\nYour eval set is one sample from the space of possible items. Its accuracy is an estimate of the model's true accuracy on that item distribution, not the true value itself."
         },
         {
+          "id": "law-of-large-numbers",
           "heading": "Law of large numbers",
           "body": "For i.i.d. draws with finite mean $$\\mu$$, $$\\bar X_n\\to\\mu$$ as $$n\\to\\infty$$. Simulated Bernoulli(0.3) means at n = 10, 100, 1000, 10000 came out 0.4, 0.37, 0.31, 0.297: noisy early, settling later.\n\nThis is why Monte Carlo estimates work, why a mini-batch gradient is an unbiased but noisy estimate of the full gradient, and why averaging several sampled generations stabilises a metric. The LLN says *where* the mean goes, not how fast."
         },
         {
+          "id": "central-limit-theorem",
           "heading": "Central limit theorem",
           "body": "For i.i.d. draws with mean $$\\mu$$ and finite variance $$\\sigma^2$$, the standardised mean $$\\frac{\\bar X_n-\\mu}{\\sigma/\\sqrt n}$$ approaches $$\\mathcal N(0,1)$$ in distribution.\n\nThe CLT is about the **mean**, not the data: per-item eval scores stay 0 or 1 however large $$n$$ is. Means of 50 draws from a skewed exponential distribution already had standard deviation 0.1427, against the CLT prediction $$1/\\sqrt{50}=0.1414$$. Very skewed or heavy-tailed data need larger $$n$$; infinite-variance data break the theorem."
         },
         {
+          "id": "standard-error-and-the-square-root-law",
           "heading": "Standard error and the square-root law",
           "body": "The **standard error** is the standard deviation of an estimator. For a mean, $$SE=\\sigma/\\sqrt n$$; with $$\\sigma=2$$ and $$n=100$$, SE = 0.2.\n\nFor an accuracy $$\\hat p$$ on $$n$$ independent items, $$SE=\\sqrt{\\hat p(1-\\hat p)/n}$$. At 0.80 on 500 items, SE = 0.0179, about 1.8 points.\n\nThe **square-root law**: to halve the SE you need **four times** the data. To get a 95% margin of ±1 point at 80% accuracy you need about $$1.96^2\\cdot0.16/0.01^2\\approx6{,}147$$ items; ±2 points needs about 1,537.\n\nDistinguish SD (spread of individual scores) from SE (uncertainty of the mean). Error bars that show SD when the claim is about the mean overstate uncertainty; bars that show SE when the claim is about individual items understate it."
         }
@@ -1039,18 +1105,22 @@
       "summary": "Decide whether \"model B scored 3 points higher\" is real. Covers confidence intervals, p-values, significance vs practical importance, paired designs, multiple comparisons and the habits that keep eval comparisons honest.",
       "sections": [
         {
+          "id": "confidence-intervals",
           "heading": "Confidence intervals",
           "body": "An approximate 95% CI for a mean is $$\\hat\\theta\\pm1.96\\cdot SE$$. For 0.80 accuracy on 500 items: [0.765, 0.835].\n\nInterpretation: the *procedure* captures the true value in about 95% of repeated samples. It is not \"a 95% probability the true accuracy lies in this particular interval\" (that is a Bayesian credible interval). For small $$n$$ or accuracies near 0 or 1, the normal approximation is poor; use an exact or Wilson-type interval or a bootstrap.\n\nReport evals as \"80.0% ± 3.5 (95% CI, n = 500)\", not a bare number."
         },
         {
+          "id": "hypothesis-tests-and-p-values",
           "heading": "Hypothesis tests and p-values",
           "body": "1. State a **null hypothesis** $$H_0$$ (for example, both models have equal true accuracy) and a significance level $$\\alpha$$, usually 0.05, **before** looking.\n2. Compute a test statistic, such as $$z=(\\hat p_B-\\hat p_A)/SE_{diff}$$.\n3. The **p-value** is the probability, *assuming $$H_0$$ is true*, of a statistic at least as extreme as the one observed.\n\nA p-value is not $$P(H_0\\mid\\text{data})$$, not the probability the result is a fluke, and not an effect size. A non-significant result does not prove the models are equal; it means the data cannot distinguish them at this sample size.\n\n**Errors.** Type I: rejecting a true null (rate $$\\alpha$$). Type II: missing a real effect. **Power** $$=1-P(\\text{Type II})$$ rises with sample size and effect size. Detecting 0.80 vs 0.83 with 80% power at $$\\alpha=0.05$$ needs roughly 2,600 items per arm in an unpaired design."
         },
         {
+          "id": "worked-a-b-is-a-3-point-gain-real",
           "heading": "Worked A/B: is a 3-point gain real?",
           "body": "Model A gets 800/1000, model B 830/1000 on independent item sets. Pooled $$\\hat p=0.815$$, $$SE_{diff}=\\sqrt{0.815\\cdot0.185\\cdot2/1000}\\approx0.0174$$, $$z\\approx1.73$$, two-sided $$p\\approx0.084$$. **Not significant at 0.05.**\n\nWhen both models answer the **same** items, use a **paired** analysis on per-item differences: items both get right or both get wrong carry no information about the difference, and pairing removes item-difficulty variance, so it is usually far more powerful. McNemar's test on the discordant items is the classic choice for paired binary outcomes.\n\n**Statistical vs practical significance.** With huge $$n$$ a 0.2-point gain can have a tiny p-value and still not matter. Always report the effect size with its CI."
         },
         {
+          "id": "multiple-comparisons-and-other-ways-to-fool-yourself",
           "heading": "Multiple comparisons and other ways to fool yourself",
           "body": "Run 20 independent tests at $$\\alpha=0.05$$ with no real effects and the chance of at least one \"significant\" result is $$1-0.95^{20}\\approx0.64$$.\n\n- **Bonferroni:** test each at $$\\alpha/m$$ (0.0025 for 20 tests). Simple and conservative. Benjamini–Hochberg controls the false discovery rate instead and is less conservative.\n- **Optional stopping (peeking):** re-checking the p-value as data arrive and stopping at the first $$p<0.05$$ inflates the false-positive rate. Fix the sample size in advance or use a sequential method designed for it.\n- **Garden of forking paths:** choosing the metric, subset or prompt after seeing results is multiple comparisons in disguise.\n- **Non-independent items:** near-duplicate items or many questions per document make the effective $$n$$ smaller than the count; cluster your SEs or deduplicate.\n- **Run-to-run noise:** with sampling at temperature above 0, rerun evals with several seeds and report the spread."
         }
@@ -1104,22 +1174,27 @@
       "summary": "How a network turns raw scores into probabilities, why the naive formula breaks at large logits, and how log-sum-exp makes it safe.",
       "sections": [
         {
+          "id": "logits-are-unnormalised-log-probabilities",
           "heading": "Logits are unnormalised log-probabilities",
           "body": "A classifier or language model ends with a linear layer that outputs one real number per class (or per vocabulary token). These numbers are **logits**: any real value, positive or negative, with no constraint to sum to anything.\n\nSoftmax turns a logit vector $$z\\in\\mathbb{R}^K$$ into a probability distribution:\n\n$$\\mathrm{softmax}(z)_i=\\frac{e^{z_i}}{\\sum_{j=1}^{K}e^{z_j}}$$\n\nRead it as: exponentiate (makes everything positive and turns differences into ratios), then divide by the total (makes it sum to 1). Taking the log of both sides shows why logits are called \"unnormalised log-probabilities\":\n\n$$\\log p_i = z_i-\\log\\sum_j e^{z_j}$$\n\nSo a logit is a log-probability up to one shared constant, the **log-partition** $$\\log\\sum_j e^{z_j}$$.\n\nWorked example: softmax([2, 1, 0.1]) = [0.6590, 0.2424, 0.0986]. The gap of 1 between the first two logits becomes a ratio of $$e^1\\approx2.72$$ between their probabilities (0.6590 / 0.2424 ≈ 2.72)."
         },
         {
+          "id": "shift-invariance-the-property-everything-else-uses",
           "heading": "Shift invariance: the property everything else uses",
           "body": "Adding the same constant $$c$$ to every logit does not change softmax:\n\n$$\\frac{e^{z_i+c}}{\\sum_j e^{z_j+c}}=\\frac{e^{c}e^{z_i}}{e^{c}\\sum_j e^{z_j}}=\\mathrm{softmax}(z)_i$$\n\nConsequences you should be able to state from memory:\n- Only **differences** between logits matter. A model cannot express anything with the absolute level of its logits.\n- Multiplying logits by a constant **does** change the distribution. That is exactly what temperature does (lesson 3).\n- You may subtract any constant you like for numerical reasons. The standard choice is $$c=-\\max_j z_j$$."
         },
         {
+          "id": "sigmoid-is-the-two-class-softmax",
           "heading": "Sigmoid is the two-class softmax",
           "body": "The sigmoid (logistic) function maps one logit to a probability:\n\n$$\\sigma(x)=\\frac{1}{1+e^{-x}}$$\n\nKey values: $$\\sigma(0)=0.5$$, $$\\sigma(2)\\approx0.8808$$, and $$\\sigma(-x)=1-\\sigma(x)$$.\n\nFor two classes with logits $$z_0,z_1$$, softmax gives\n\n$$p_0=\\frac{e^{z_0}}{e^{z_0}+e^{z_1}}=\\frac{1}{1+e^{-(z_0-z_1)}}=\\sigma(z_0-z_1)$$\n\nSo a binary classifier needs only **one** logit: the difference. Example: logits [2, 0.5] give $$p_0=\\sigma(1.5)\\approx0.8176$$. Use sigmoid for binary or **multi-label** problems (each label independently yes/no) and softmax when exactly one of K classes is correct."
         },
         {
+          "id": "why-the-naive-formula-fails-and-the-log-sum-exp-fix",
           "heading": "Why the naive formula fails, and the log-sum-exp fix",
           "body": "In floating point, $$e^{x}$$ overflows to infinity for moderately large $$x$$: around 89 in float32 and around 710 in float64. With logits [1000, 1001, 1002] the naive formula computes inf / inf = **nan**. Very negative logits have the opposite problem: every $$e^{z_j}$$ underflows to 0 and you divide 0 by 0.\n\nThe fix uses shift invariance. Let $$m=\\max_j z_j$$:\n\n$$\\log\\sum_j e^{z_j}=m+\\log\\sum_j e^{z_j-m}$$\n\nAfter the shift the largest exponent is $$e^0=1$$, so nothing overflows, and the sum is at least 1, so the log never sees 0. For [1000, 1001, 1002]: logsumexp = 1002.4076, log-softmax = [-2.4076, -1.4076, -0.4076] and softmax = [0.0900, 0.2447, 0.6652].\n\nThis is why libraries expose **log-softmax** and fused losses. `torch.nn.CrossEntropyLoss` takes raw logits and applies log-softmax internally; `BCEWithLogitsLoss` fuses sigmoid and binary cross-entropy for the same reason. Computing `log(softmax(z))` in two steps can still produce `log(0) = -inf` for tiny probabilities."
         },
         {
+          "id": "python-you-should-be-able-to-write-cold",
           "heading": "Python you should be able to write cold",
           "body": "```python\nimport numpy as np\nfrom scipy.special import logsumexp\n\ndef log_softmax(z, axis=-1):\n    z = np.asarray(z, dtype=float)\n    return z - logsumexp(z, axis=axis, keepdims=True)\n\ndef softmax(z, axis=-1):\n    return np.exp(log_softmax(z, axis))\n\nsoftmax([1000, 1001, 1002])   # [0.0900, 0.2447, 0.6652], no nan\n```\n\nNote `keepdims=True`: it keeps the reduced axis as size 1 so the subtraction broadcasts row by row when `z` has shape (batch, K). Forgetting it is the most common shape bug in hand-written softmax."
         }
@@ -1173,18 +1248,22 @@
       "summary": "The information-theory core of LLM training: what the loss number means in bits and nats, why cross-entropy = entropy + KL, and how perplexity is just exp(loss).",
       "sections": [
         {
+          "id": "self-information-and-entropy",
           "heading": "Self-information and entropy",
           "body": "The **information content** (surprisal) of an outcome with probability $$p$$ is $$-\\log p$$. Rare events carry more information; a certain event carries none. With $$\\log_2$$ the unit is **bits**; with the natural log it is **nats**. Convert with $$1\\text{ nat}=1/\\ln2\\approx1.4427$$ bits.\n\n**Entropy** is the expected surprisal under the distribution itself:\n\n$$H(p)=-\\sum_x p(x)\\log p(x)$$\n\nIt measures the irreducible uncertainty of $$p$$. Facts to know:\n- It is 0 for a one-hot distribution and maximal ($$\\log K$$) for the uniform distribution over K outcomes. A uniform choice among 4 outcomes has 2 bits.\n- For p = (0.5, 0.25, 0.25): $$H(p)=0.5\\cdot1+0.25\\cdot2+0.25\\cdot2=1.5$$ bits."
         },
         {
+          "id": "cross-entropy-and-kl-divergence",
           "heading": "Cross-entropy and KL divergence",
           "body": "If the data come from $$p$$ but you encode (or predict) with a model $$q$$, the expected surprisal is the **cross-entropy**:\n\n$$H(p,q)=-\\sum_x p(x)\\log q(x)$$\n\nThe **Kullback–Leibler divergence** is the extra cost of using $$q$$ instead of the true $$p$$:\n\n$$D_{KL}(p\\|q)=\\sum_x p(x)\\log\\frac{p(x)}{q(x)}$$\n\nExpanding the log gives the central identity:\n\n$$H(p,q)=H(p)+D_{KL}(p\\|q)$$\n\nCheck with p = (0.5, 0.25, 0.25) and q = (0.25, 0.5, 0.25): H(p) = 1.5 bits, H(p, q) = 1.75 bits, KL = 0.25 bits.\n\nProperties:\n- $$D_{KL}(p\\|q)\\ge0$$, with equality only when $$p=q$$ (Gibbs' inequality). So $$H(p,q)\\ge H(p)$$.\n- **KL is not symmetric**, so it is not a distance metric. For p = (0.9, 0.1) and q = (0.5, 0.5): KL(p‖q) ≈ 0.531 bits but KL(q‖p) ≈ 0.737 bits.\n- Because $$H(p)$$ does not depend on the model, **minimising cross-entropy over q is the same as minimising KL(p‖q)**. That is why \"train with cross-entropy\" and \"fit the data distribution\" are the same statement."
         },
         {
+          "id": "what-the-training-loss-actually-is",
           "heading": "What the training loss actually is",
           "body": "For a classifier or LM, the target is one-hot (the actual next token), so $$p$$ puts all mass on the true token $$y$$ and the cross-entropy collapses to the **negative log-likelihood**:\n\n$$\\mathcal{L}=-\\log q(y)=-z_y+\\mathrm{logsumexp}(z)$$\n\nAveraged over tokens this is the number your training loop prints, in **nats** (PyTorch uses the natural log). Example: `cross_entropy([[2, 1, 0.1]], target=0)` = 0.41703 = −ln 0.6590.\n\nTwo sanity checks:\n- **Initial loss.** An untrained model that is roughly uniform over a vocabulary of V tokens should start near $$\\ln V$$. For V = 50,000 that is about 10.82 nats. A step-0 loss far above this usually means the initial logits are too large (an over-confident wrong model).\n- **Padding.** `CrossEntropyLoss` ignores targets equal to `ignore_index` (default −100) and, with `reduction='mean'`, averages over the remaining tokens only.\n\nIn PyTorch, `F.kl_div(input, target)` expects `input` as **log-probabilities** of the model q and `target` as probabilities p, and computes KL(p‖q). The docs warn that `reduction='mean'` does not return the true KL value and recommend `'batchmean'`."
         },
         {
+          "id": "perplexity-and-bits-per-token",
           "heading": "Perplexity and bits per token",
           "body": "**Perplexity** is the exponential of the average per-token negative log-likelihood:\n\n$$\\mathrm{PPL}=\\exp\\Big(-\\frac1t\\sum_{i=1}^{t}\\log p_\\theta(x_i\\mid x_{<i})\\Big)$$\n\nInterpretation: the model is as uncertain as if it were choosing uniformly among PPL tokens at each step. A uniform model over V tokens has PPL = V.\n\nConversions (loss L in nats):\n- PPL = $$e^{L}$$. L = 2.0 nats gives PPL ≈ 7.389.\n- Bits per token = $$L/\\ln2$$. L = 2.0 nats ≈ 2.885 bits/token, and $$2^{2.885}\\approx7.389$$: the same perplexity.\n- Example: token probabilities [0.5, 0.25, 0.125] give mean NLL 1.3863 nats and PPL 4.0 (their geometric mean probability is 1/4).\n\nPerplexity comparisons are fragile:\n- It **depends on the tokenizer**. A model that splits text into more, easier tokens can show lower per-token PPL without being better. Compare on the same tokenization, or normalise total NLL per character or byte.\n- It depends on how much context each token sees. The Hugging Face guide shows GPT-2 large on WikiText-2 scoring PPL 19.44 with a sliding-window stride of 1024 vs 16.44 with stride 512, because a smaller stride gives each scored token more context.\n- It is defined for **causal** (autoregressive) models; it is not well defined for masked language models such as BERT."
         }
@@ -1239,22 +1318,27 @@
       "summary": "Greedy, temperature, top-k and top-p are each a simple transform of the next-token distribution. Work them by hand and you can predict any sampler setting.",
       "sections": [
         {
+          "id": "the-decoding-loop",
           "heading": "The decoding loop",
           "body": "At each step the model outputs logits $$u$$ over the vocabulary. A decoding strategy turns those logits into one chosen token, which is appended and fed back. Every strategy below is a function **logits → distribution → token**. The running example uses logits [2, 1, 0, −1], whose softmax at T = 1 is [0.6439, 0.2369, 0.0871, 0.0321] with cumulative sums [0.6439, 0.8808, 0.9679, 1.0]."
         },
         {
+          "id": "greedy-decoding",
           "heading": "Greedy decoding",
           "body": "Greedy picks $$\\arg\\max_i u_i$$ every step. It is deterministic and is the limit of temperature sampling as $$T\\to0$$, and the same as top-k with k = 1. It suits extraction, classification and other tasks with one right answer. For open-ended text it tends to produce bland, repetitive output, which is the motivation in Holtzman et al. for sampling with truncation."
         },
         {
+          "id": "temperature",
           "heading": "Temperature",
           "body": "Temperature divides the logits before softmax:\n\n$$p_i=\\frac{\\exp(u_i/T)}{\\sum_j\\exp(u_j/T)}$$\n\n- $$T<1$$ sharpens: T = 0.5 gives [0.8650, 0.1171, 0.0158, 0.0021].\n- $$T>1$$ flattens: T = 2 gives [0.4551, 0.2760, 0.1674, 0.1015].\n- $$T\\to\\infty$$ approaches uniform; $$T\\to0$$ approaches greedy.\n- Dividing by a positive T never changes the **ranking** of tokens, so the argmax is unchanged.\n\nThe same operation applied after training to fix over-confidence is called **temperature scaling** (lesson 4)."
         },
         {
+          "id": "top-k-and-top-p-nucleus",
           "heading": "Top-k and top-p (nucleus)",
           "body": "Both are **truncate then renormalise**.\n\n**Top-k** keeps the k most probable tokens and rescales them to sum to 1. With k = 2 on the running example: 0.6439 / 0.8808 = 0.7311 and 0.2369 / 0.8808 = 0.2689. The weakness: a fixed k is too many when the model is confident and too few when it is not.\n\n**Top-p** (nucleus sampling, Holtzman et al.) keeps the **smallest** set of top tokens whose cumulative probability is at least p, then renormalises. The set size adapts to the shape of the distribution:\n- T = 1, p = 0.85: cumulative 0.6439 < 0.85 ≤ 0.8808, so 2 tokens.\n- T = 1, p = 0.9: need 0.9679, so 3 tokens.\n- T = 2, p = 0.9: cumulative [0.4551, 0.7311, 0.8985, 1.0], so all 4 tokens. Raising temperature widens the nucleus.\n- T = 0.5, p = 0.9: cumulative [0.8650, 0.9820, ...], so 2 tokens.\n\nOrder matters in practice: in common implementations temperature is applied to the logits first, and truncation then works on the tempered distribution, which is what the examples above assume."
         },
         {
+          "id": "implementation-sketch",
           "heading": "Implementation sketch",
           "body": "```python\nimport numpy as np\n\ndef top_p_filter(probs, p):\n    order = np.argsort(probs)[::-1]\n    cum = np.cumsum(probs[order])\n    keep = order[: np.searchsorted(cum, p) + 1]  # smallest prefix with cum >= p\n    out = np.zeros_like(probs)\n    out[keep] = probs[keep]\n    return out / out.sum()\n```\n\nLibraries such as Hugging Face `generate` expose these as `do_sample`, `temperature`, `top_k` and `top_p`; with `do_sample=False` (and one beam) the result is greedy decoding."
         }
@@ -1295,18 +1379,22 @@
       "summary": "Pick the loss that matches the output, the metric that matches the decision, and check that probabilities mean what they say.",
       "sections": [
         {
+          "id": "mean-squared-error",
           "heading": "Mean squared error",
           "body": "For a real-valued target, **MSE** $$=\\frac1n\\sum_i(y_i-\\hat y_i)^2$$. It is the negative log-likelihood of a Gaussian noise model (up to constants), so it is the natural loss for regression.\n\nBecause errors are squared, large errors dominate. For y = [3, 5, 2] and ŷ = [2.5, 5, 4], MSE = (0.25 + 0 + 4) / 3 ≈ 1.4167, and the single 2.0 error contributes 4.0 of the 4.25 total. Use MAE or a robust loss if outliers should not dominate.\n\nFor **classification**, cross-entropy is preferred over MSE on probabilities: it is the likelihood of a categorical model, and its gradient with respect to the logits is simply $$q-p$$ (predicted minus target probabilities), which stays large when the model is confidently wrong."
         },
         {
+          "id": "binary-cross-entropy-done-safely",
           "heading": "Binary cross-entropy done safely",
           "body": "Binary cross-entropy for target $$y\\in\\{0,1\\}$$ and probability $$\\hat p$$ is $$-[y\\log\\hat p+(1-y)\\log(1-\\hat p)]$$. A confident correct prediction ($$\\hat p=0.9$$, y = 1) costs 0.105 nats; a confident wrong one ($$\\hat p=0.1$$, y = 1) costs 2.303.\n\nComputing `sigmoid` then `BCELoss` is fragile: in float32 `sigmoid(40)` rounds to exactly 1.0, so $$\\log(1-\\hat p)$$ is −inf. PyTorch's `BCELoss` clamps its log at −100, so a logit of 40 with target 0 reports a loss of 100 instead of the true 40. `BCEWithLogitsLoss` takes the logit directly and uses the log-sum-exp trick, returning 40."
         },
         {
+          "id": "precision-recall-and-f1",
           "heading": "Precision, recall and F1",
           "body": "From the confusion counts (TP, FP, FN, TN):\n\n$$\\text{precision}=\\frac{TP}{TP+FP},\\quad\\text{recall}=\\frac{TP}{TP+FN},\\quad F_1=\\frac{2PR}{P+R}$$\n\nExample: y_true = [1,1,1,1,0,0,0,0,0,0], y_pred = [1,1,1,0,1,1,0,0,0,0] gives TP = 3, FP = 2, FN = 1, so precision 0.6, recall 0.75, F1 ≈ 0.6667.\n\n- **Accuracy misleads under class imbalance.** With 5% positives, predicting \"negative\" always gives 95% accuracy and 0 recall.\n- F1 is a harmonic mean, so it is pulled towards the smaller value: P = 0.9, R = 0.1 gives F1 = 0.18, not 0.5.\n- Choose by cost: favour **recall** when misses are expensive (fraud, safety flags), **precision** when false alarms are expensive.\n- In scikit-learn, `f1_score` defaults to `average='binary'` with `pos_label=1`; multi-class needs `average='macro'`, `'micro'` or `'weighted'`."
         },
         {
+          "id": "calibration",
           "heading": "Calibration",
           "body": "A model is **calibrated** when its confidence matches its accuracy: among predictions made with 0.9 confidence, about 90% should be correct. If only 70% are, the model is **over-confident** by 0.2 in that bin.\n\n- A **reliability diagram** bins predictions by confidence and plots observed accuracy per bin; scikit-learn provides `calibration_curve` (default `n_bins=5`).\n- Guo et al. found modern deep networks are often poorly calibrated and that **temperature scaling** (one scalar T fitted on a held-out validation set by minimising NLL) is surprisingly effective.\n- Temperature scaling divides logits by T, so it **does not change the argmax** and therefore leaves accuracy unchanged; it only fixes the confidence.\n- Proper scoring rules such as log loss and the Brier score reward calibrated probabilities; accuracy and F1 ignore confidence entirely."
         }
@@ -1360,18 +1448,22 @@
       "summary": "How a string becomes a matrix the transformer can compute with: token ids, the embedding lookup as a matrix product, why attention needs positional information, and how sinusoidal encodings and RoPE supply it.",
       "sections": [
         {
+          "id": "from-text-to-a-seq-d-model-matrix",
           "heading": "From text to a (seq × d_model) matrix",
           "body": "A tokenizer maps text to a sequence of integer ids drawn from a vocabulary of size $$V$$. The model owns an **embedding matrix** $$E\\in\\mathbb{R}^{V\\times d_{model}}$$. Looking up token $$t$$ is just selecting row $$t$$, which is mathematically the same as multiplying a one-hot vector by $$E$$:\n\n$$x_t = \\mathrm{onehot}(t)^\\top E$$\n\nSo a sequence of $$n$$ tokens becomes an $$n\\times d_{model}$$ matrix, and a batch becomes a $$B\\times n\\times d_{model}$$ tensor. Every later layer keeps that last dimension at $$d_{model}$$, which is what lets residual connections add tensors together.\n\n**Parameter cost.** The table has $$V\\cdot d_{model}$$ entries. With $$V=32{,}000$$ and $$d_{model}=4096$$ that is 131,072,000 parameters (about 262 MB in bf16). Kaplan et al. exclude embeddings when they count $$N$$ for scaling laws, so keep \"non-embedding\" and \"total\" parameter counts apart.\n\n**Weight tying.** The original Transformer shares the same weight matrix between the input embedding and the pre-softmax output projection, and multiplies the embedding by $$\\sqrt{d_{model}}$$. Many later models (Llama 2 among them) keep the input and output matrices separate, which doubles this cost."
         },
         {
+          "id": "why-position-has-to-be-injected",
           "heading": "Why position has to be injected",
           "body": "Self-attention computes a weighted sum over a **set** of vectors: if you permute the input tokens (and apply no mask), the outputs are permuted in exactly the same way. Attention is *permutation-equivariant*, so \"dog bites man\" and \"man bites dog\" would look the same to it. Something must break that symmetry. The original paper adds a positional encoding to the embedding before the first layer: \"since our model contains no recurrence and no convolution... we must inject some information about the relative or absolute position of the tokens.\"\n\nNote that a **causal mask** alone already breaks full permutation symmetry (token 5 can see four predecessors, token 2 only one), but it does not tell the model *how far apart* two tokens are, so explicit position information is still used."
         },
         {
+          "id": "sinusoidal-encodings",
           "heading": "Sinusoidal encodings",
           "body": "Vaswani et al. use fixed (not learned) functions:\n\n$$PE_{(pos,2i)}=\\sin\\!\\left(\\frac{pos}{10000^{2i/d_{model}}}\\right),\\qquad PE_{(pos,2i+1)}=\\cos\\!\\left(\\frac{pos}{10000^{2i/d_{model}}}\\right)$$\n\nEach pair of dimensions is a sine/cosine at its own frequency, with wavelengths in a geometric progression from $$2\\pi$$ up to $$10000\\cdot2\\pi$$. Worked example for $$pos=1$$, $$d_{model}=4$$: the frequencies are $$1$$ and $$1/100$$, so\n\n$$PE_1=[\\sin 1,\\ \\cos 1,\\ \\sin 0.01,\\ \\cos 0.01]=[0.8415,\\ 0.5403,\\ 0.0100,\\ 0.99995]$$\n\nLow dimensions spin fast (fine position), high dimensions spin slowly (coarse position): think of the hands of a clock. The authors chose sinusoids because for any fixed offset $$k$$, $$PE_{pos+k}$$ is a linear function (a rotation) of $$PE_{pos}$$, which they hypothesised makes relative positions easy to learn."
         },
         {
+          "id": "rope-rotate-queries-and-keys",
           "heading": "RoPE: rotate queries and keys",
           "body": "Rotary Position Embedding (Su et al.) does not add anything to the embedding. Instead it **rotates** each 2-D slice of the query and key vectors by an angle proportional to the position, $$m\\theta_i$$, with $$\\theta_i=10000^{-2(i-1)/d}$$. For a single 2-D slice:\n\n$$f(q,m)=R(m\\theta)\\,q,\\qquad R(\\alpha)=\\begin{pmatrix}\\cos\\alpha&-\\sin\\alpha\\\\ \\sin\\alpha&\\cos\\alpha\\end{pmatrix}$$\n\nBecause rotations are orthogonal, $$R(a)^\\top R(b)=R(b-a)$$, so the attention score becomes\n\n$$\\langle R(m\\theta)q,\\ R(n\\theta)k\\rangle = q^\\top R((n-m)\\theta)\\,k$$\n\nIt depends on the positions **only through the offset** $$n-m$$. Numerically: with the same $$q, k$$, positions $$(5,3)$$ and $$(12,10)$$ give the identical score ($$-1.86744$$ in the research check). Rotation also preserves vector norms, so RoPE never changes the length of $$q$$ or $$k$$. RoPE is applied to $$Q$$ and $$K$$ only, inside every attention layer, not to $$V$$. Llama 2 uses RoPE."
         }
@@ -1417,18 +1509,22 @@
       "summary": "Attention computed by hand, with the shape of every tensor: why we divide by the square root of d_k, how causal masks work, how multi-head attention splits d_model, and how MQA/GQA and FlashAttention change cost without changing the math.",
       "sections": [
         {
+          "id": "the-equation-one-step-at-a-time",
           "heading": "The equation, one step at a time",
           "body": "$$\\mathrm{Attention}(Q,K,V)=\\mathrm{softmax}\\!\\left(\\frac{QK^\\top}{\\sqrt{d_k}}\\right)V$$\n\nFor one head and one sequence of $$n$$ tokens:\n\n1. Project: $$Q=XW_Q$$, $$K=XW_K$$, $$V=XW_V$$ with $$X\\in\\mathbb{R}^{n\\times d_{model}}$$, giving $$Q,K\\in\\mathbb{R}^{n\\times d_k}$$ and $$V\\in\\mathbb{R}^{n\\times d_v}$$.\n2. Scores: $$S=QK^\\top/\\sqrt{d_k}\\in\\mathbb{R}^{n\\times n}$$. Entry $$S_{ij}$$ says how much query $$i$$ matches key $$j$$.\n3. Mask (optional): set forbidden entries to $$-\\infty$$.\n4. Softmax **along each row** (over keys $$j$$), so each row of $$A$$ is a probability distribution summing to 1.\n5. Output: $$AV\\in\\mathbb{R}^{n\\times d_v}$$: each output row is a convex combination of value rows.\n\nThe $$n\\times n$$ score matrix is where the quadratic cost lives: self-attention is $$O(n^2 d)$$ per layer."
         },
         {
+          "id": "why-divide-by-d-k",
           "heading": "Why divide by √d_k",
           "body": "The paper's footnote: if the components of $$q$$ and $$k$$ are independent with mean 0 and variance 1, then $$q\\cdot k=\\sum_{i=1}^{d_k}q_ik_i$$ has mean 0 and **variance $$d_k$$** (a sum of $$d_k$$ unit-variance terms). For $$d_k=64$$ the standard deviation is 8 (a simulation gave variance 63.4). Logits that spread out push softmax toward a one-hot output, where its gradient is tiny (\"extremely small gradients\"). Dividing by $$\\sqrt{d_k}$$ brings the variance back to 1.\n\nA quick experiment to run yourself: score one random query against a handful of random keys with $d_k=64$, and compare the largest softmax weight with and without dividing by 8. Unscaled, the weights are typically much closer to one-hot; scaled, they stay soft enough to learn.\n\nIn PyTorch, `F.scaled_dot_product_attention` uses $$1/\\sqrt{E}$$ by default (E = the query's last dimension); the keyword-only `scale` argument overrides it."
         },
         {
+          "id": "causal-masking",
           "heading": "Causal masking",
           "body": "A decoder predicting token $$i$$ must not see tokens $$j>i$$. The mask sets every entry above the diagonal to $$-\\infty$$ before the softmax; since $$e^{-\\infty}=0$$, those keys get exactly zero weight and each row still sums to 1 over the allowed keys.\n\n```python\nn = S.shape[-1]\nmask = torch.triu(torch.ones(n, n, dtype=torch.bool), diagonal=1)\nA = S.masked_fill(mask, float('-inf')).softmax(dim=-1)\n```\n\nThis matches `F.scaled_dot_product_attention(q, k, v, is_causal=True)`. Two traps from the 2.8 docs: in a **boolean** `attn_mask`, **True means \"take part in attention\"** (the opposite of the `masked_fill` mask above), and passing both `attn_mask` and `is_causal=True` raises an error. A causal mask over $$n$$ tokens keeps $$n(n+1)/2$$ score entries (8,390,656 for $$n=4096$$), still $$O(n^2)$$.\n\nMasking with $$-\\infty$$ must be done **before** the softmax. Zeroing probabilities after the softmax leaves rows that no longer sum to 1."
         },
         {
+          "id": "multi-head-attention-and-its-cheaper-variants",
           "heading": "Multi-head attention and its cheaper variants",
           "body": "$$\\mathrm{MultiHead}(Q,K,V)=\\mathrm{Concat}(head_1,\\ldots,head_h)W^O,\\quad head_i=\\mathrm{Attention}(XW_i^Q,XW_i^K,XW_i^V)$$\n\nThe base Transformer uses $$h=8$$ heads with $$d_k=d_v=d_{model}/h=64$$, so total compute is similar to a single head of full width, but each head can attend to a different pattern. In tensor form you reshape $$(B,n,d_{model})\\to(B,h,n,d_k)$$, run attention per head, then reshape back and apply $$W^O$$. The four projection matrices $$W^Q,W^K,W^V,W^O$$ cost $$4d_{model}^2$$ parameters (ignoring biases), whatever $$h$$ is.\n\n- **MQA** (Shazeer, 2019): all query heads share one K and one V head, shrinking the K/V tensors (and the KV cache) by a factor of $$h$$.\n- **GQA** (Ainslie et al., 2023): $$g$$ groups of query heads share K/V; it interpolates between MHA ($$g=h$$) and MQA ($$g=1$$). Llama 2 uses GQA for its 34B and 70B models. PyTorch 2.8 SDPA has `enable_gqa` for this.\n- **FlashAttention** computes **exact** attention, tiled so the $$n\\times n$$ matrix is never written to GPU high-bandwidth memory. It is an IO optimisation: same result, fewer memory reads/writes, memory linear in sequence length. It does not make the FLOPs sub-quadratic."
         }
@@ -1490,18 +1586,22 @@
       "summary": "What sits around attention in every layer: residual streams, LayerNorm vs RMSNorm, pre-LN vs post-LN, the feed-forward block (ReLU and SwiGLU), and how to count parameters to within a percent from the config alone.",
       "sections": [
         {
+          "id": "residual-connections",
           "heading": "Residual connections",
           "body": "Every sublayer is wrapped as \"input plus correction\". The original (post-LN) Transformer computes $$\\mathrm{LayerNorm}(x+\\mathrm{Sublayer}(x))$$; most modern LLMs use **pre-LN**: $$x+\\mathrm{Sublayer}(\\mathrm{Norm}(x))$$.\n\nWhy residuals matter mathematically: if $$y=x+F(x)$$ then $$\\frac{\\partial y}{\\partial x}=I+\\frac{\\partial F}{\\partial x}$$. The identity term gives the gradient a direct path through dozens of layers, which is the cure for vanishing gradients in deep stacks. It also forces every sublayer to output the same width $$d_{model}$$, so you can think of the model as a **residual stream** that each attention and MLP block reads from and writes to.\n\nXiong et al. show that with post-LN the gradients near the output are large at initialisation, so a learning-rate warm-up stage is needed; pre-LN keeps gradients well-behaved at initialisation and can be trained without warm-up."
         },
         {
+          "id": "layernorm-and-rmsnorm",
           "heading": "LayerNorm and RMSNorm",
           "body": "**LayerNorm** normalises each token vector over its features (the last dimension), not over the batch:\n\n$$\\mathrm{LN}(x)=\\gamma\\odot\\frac{x-\\mu}{\\sqrt{\\sigma^2+\\epsilon}}+\\beta,\\quad \\mu=\\frac1d\\sum_i x_i,\\ \\sigma^2=\\frac1d\\sum_i(x_i-\\mu)^2$$\n\nNote the **biased** variance (divide by $$d$$). Worked example: $$x=[1,2,3,4]$$ has $$\\mu=2.5$$, $$\\sigma^2=1.25$$, so $$\\mathrm{LN}(x)\\approx[-1.3416,-0.4472,0.4472,1.3416]$$ (with $$\\gamma=1,\\beta=0$$). PyTorch's default is eps = 1e-5, and `nn.LayerNorm` has a `bias` argument in 2.8.\n\n**RMSNorm** (Zhang & Sennrich) drops the mean subtraction and the bias, rescaling by the root mean square only:\n\n$$\\mathrm{RMSNorm}(x)=\\gamma\\odot\\frac{x}{\\sqrt{\\frac1d\\sum_i x_i^2+\\epsilon}}$$\n\nIt is cheaper and, the authors report, comparably effective. Llama 2 uses pre-norm RMSNorm; `torch.nn.RMSNorm` is built in (eps=None by default)."
         },
         {
+          "id": "the-mlp-feed-forward-block",
           "heading": "The MLP (feed-forward) block",
           "body": "Applied to each position independently:\n\n- Original: $$\\mathrm{FFN}(x)=\\max(0,xW_1+b_1)W_2+b_2$$ with $$d_{ff}=4d_{model}$$ (2048 for $$d_{model}=512$$). Two matrices: $$2\\cdot d_{model}\\cdot d_{ff}=8d_{model}^2$$ parameters.\n- **SwiGLU** (Shazeer, 2020): $$\\mathrm{FFN}_{SwiGLU}(x)=(\\mathrm{Swish}(xW)\\odot xV)\\,W_2$$. Three matrices, so to keep the parameter count equal the hidden size is cut to about $$\\frac{2}{3}\\cdot4d_{model}$$. Llama-7B-style configs use $$d_{ff}=11008$$ for $$d_{model}=4096$$, costing $$3\\cdot4096\\cdot11008=135{,}266{,}304$$ parameters per layer.\n\nThe MLP holds about two thirds of a layer's parameters; attention holds the other third."
         },
         {
+          "id": "counting-parameters-from-a-config",
           "heading": "Counting parameters from a config",
           "body": "**Classic block** (Kaplan's approximation, $$d_{attn}=d_{model}$$, $$d_{ff}=4d_{model}$$, biases and norms ignored):\n\n$$\\underbrace{4d^2}_{Q,K,V,O}+\\underbrace{8d^2}_{\\text{MLP}}=12d^2\\ \\text{per layer},\\qquad N\\approx12\\,n_{layer}\\,d_{model}^2$$\n\nFor $$d=4096$$, 32 layers: $$12\\cdot4096^2=201.3$$M per layer, 6.44B non-embedding.\n\n**Llama-7B-style** (SwiGLU, $$d_{ff}=11008$$, $$V=32000$$, untied embeddings):\n\n| piece | formula | count |\n|---|---|---|\n| attention per layer | $$4d^2$$ | 67,108,864 |\n| SwiGLU per layer | $$3\\,d\\,d_{ff}$$ | 135,266,304 |\n| 32 layers | | 6,476,005,376 |\n| in + out embeddings | $$2Vd$$ | 262,144,000 |\n| **total** | | **6.738B** |\n\nNorm weights ($$d$$ per norm) are a rounding error. With GQA the K and V projections shrink to $$d\\cdot n_{kv}d_{head}$$ each: at $$d=8192$$ with 8 KV heads of 128 that is 8.4M instead of 67.1M per matrix."
         }
@@ -1563,18 +1663,22 @@
       "summary": "Back-of-the-envelope numbers that let you reason about any LLM: 2N FLOPs per token for inference, 6N for training, Kaplan vs Chinchilla compute-optimal allocation, weight and optimiser memory, KV-cache size, and what long context really costs.",
       "sections": [
         {
+          "id": "flops-per-token-2n-and-6n",
           "heading": "FLOPs per token: 2N and 6N",
           "body": "A matrix-vector product with an $$m\\times k$$ weight costs about $$2mk$$ FLOPs (one multiply and one add per weight). Summed over all weights, the **forward pass costs about $$2N$$ FLOPs per token**. Kaplan et al. give\n\n$$C_{forward}\\approx2N+2\\,n_{layer}\\,n_{ctx}\\,d_{attn}$$\n\nwhere the second term is attention over the context. The backward pass costs about twice the forward, so **training costs about $$6N$$ FLOPs per token**, and a whole run costs $$C\\approx6ND$$ for $$D$$ training tokens.\n\nExamples: generating one token with a 7B model needs about $$1.4\\times10^{10}$$ FLOPs. Training 7B on 2T tokens needs $$6\\cdot7\\times10^9\\cdot2\\times10^{12}=8.4\\times10^{22}$$ FLOPs. Chinchilla (70B, 1.4T tokens) is $$5.88\\times10^{23}$$."
         },
         {
+          "id": "when-context-length-starts-to-dominate",
           "heading": "When context length starts to dominate",
           "body": "Take a classic model with $$d=4096$$, 32 layers, $$N=12\\cdot32\\cdot4096^2=6.44$$B. The context term $$2\\cdot32\\cdot n_{ctx}\\cdot4096$$ as a share of forward FLOPs per token:\n\n| $$n_{ctx}$$ | attention share |\n|---|---|\n| 2,048 | 4% |\n| 4,096 | 7.7% |\n| 32,768 | 40% |\n| 131,072 | 73% |\n\nAt short context the parameters dominate; at long context the quadratic attention term takes over. Memory is the second cost: a naive implementation materialises an $$n\\times n$$ score matrix per head (4 GiB in fp32 for one head at $$n=32{,}768$$), which is the motivation for FlashAttention's tiling."
         },
         {
+          "id": "scaling-laws-kaplan-vs-chinchilla",
           "heading": "Scaling laws: Kaplan vs Chinchilla",
           "body": "**Kaplan et al. (2020)** fit power laws: loss falls as $$N^{-0.076}$$, $$D^{-0.095}$$ and $$C_{min}^{-0.050}$$. Their compute-optimal recipe puts most new compute into model size, $$N_{opt}\\propto C^{\\approx0.73}$$, and stops training well before convergence, because larger models are more sample-efficient.\n\n**Hoffmann et al. (2022, Chinchilla)** trained 400+ models and found **parameters and tokens should scale equally**: $$N_{opt}\\propto C^{a}$$, $$D_{opt}\\propto C^{b}$$ with $$a\\approx b\\approx0.5$$ (0.50/0.50, 0.49/0.51, 0.46/0.54 across three methods). Their fitted loss is\n\n$$L(N,D)=E+\\frac{A}{N^{\\alpha}}+\\frac{B}{D^{\\beta}},\\quad E=1.69,\\ A=406.4,\\ B=410.7,\\ \\alpha=0.34,\\ \\beta=0.28$$\n\nChinchilla (70B, 1.4T tokens) used about the same compute as Gopher (280B, 300B tokens) and outperformed it. The ratio $$1.4\\text{T}/70\\text{B}=20$$ gives the popular \"~20 tokens per parameter\" rule of thumb, a derived heuristic rather than the paper's law.\n\n**What a 4× compute increase buys:** Chinchilla: $$N$$ and $$D$$ each ×2. Kaplan: $$N\\times4^{0.73}\\approx2.75$$, $$D\\times4^{0.27}\\approx1.45$$. Compute-optimal is about training cost only; if a model will serve billions of tokens, a smaller model trained on more tokens can be cheaper overall."
         },
         {
+          "id": "memory-weights-optimiser-and-the-kv-cache",
           "heading": "Memory: weights, optimiser and the KV cache",
           "body": "**Weights** = params × bytes/param. For 7B: fp32 28 GB, bf16 14 GB, int8 7 GB, int4 3.5 GB.\n\n**Training** with mixed-precision Adam is commonly budgeted at about **16 bytes/param** (an accounting convention: 2 for fp16/bf16 weights, 2 for gradients, 4+4+4 for fp32 master weights, Adam $$m$$ and $$v$$), i.e. 112 GB for 7B **before activations**.\n\n**KV cache.** During generation each layer stores K and V for every previous token:\n\n$$\\text{KV bytes}=2\\cdot n_{layers}\\cdot n_{kv\\_heads}\\cdot d_{head}\\cdot \\text{seq}\\cdot\\text{batch}\\cdot\\text{bytes}$$\n\nAssume a Llama-2-7B-like shape (32 layers, 32 heads, $$d_{head}=128$$) in bf16: 0.5 MiB per token, 2 GiB at 4k tokens, 16 GiB at 32k tokens or at 4k × batch 8. The cache grows **linearly** in sequence length and batch, and can exceed the weights. With a 70B-like shape (80 layers, 8 KV heads via GQA), 4k tokens take 1.25 GiB instead of 10 GiB with 64 full heads: GQA divides the cache by $$h/n_{kv}=8$$. Storing the cache in 8 bits halves it again."
         }
@@ -1632,14 +1736,17 @@
       "summary": "How floating-point formats trade range for precision, why fp16 training needs loss scaling and bf16 does not, and how int8/int4 quantisation works, how big its error is and why outliers break it.",
       "sections": [
         {
+          "id": "three-formats-one-trade-off",
           "heading": "Three formats, one trade-off",
           "body": "A float stores sign, exponent (range) and mantissa (precision). Machine epsilon is the gap between 1 and the next representable number, $$2^{-\\text{mantissa bits}}$$.\n\n| dtype | exponent / mantissa bits | max | eps (torch.finfo) |\n|---|---|---|---|\n| fp32 | 8 / 23 | 3.4028e38 | 1.19e-7 |\n| fp16 | 5 / 10 | 65504 | 0.000977 |\n| bf16 | 8 / 7 | 3.3895e38 | 0.0078125 |\n\n**bf16 keeps fp32's range but has very little precision; fp16 has more precision but tiny range.** Consequences (checked in PyTorch):\n\n- fp16: 70000 → inf (overflow); 2049 → 2048; 1 + 0.0004 → 1; 1e-8 → 0 (underflow; the smallest normal fp16 is about 6.1e-5).\n- bf16: 1 + 0.003 → 1; 256 + 1 → 256; but 1e-8 is still representable.\n- Even fp64: `0.1 + 0.2 == 0.3` is False. Compare floats with a tolerance.\n\nNote: `np.finfo(np.float16).max` prints 65500.0 because of display rounding; the true value is 65504."
         },
         {
+          "id": "mixed-precision-training",
           "heading": "Mixed-precision training",
           "body": "Micikevicius et al. train in half precision while keeping accuracy with three techniques: an **fp32 master copy of the weights** (small updates would vanish if added to fp16 weights), **loss scaling** (multiply the loss so small gradients do not underflow fp16, then unscale before the step), and **fp32 accumulation** in matrix products. Memory drops by nearly 2×.\n\nPyTorch AMP (2.8 docs): with fp16, use `torch.autocast` **plus** `GradScaler`; with bf16, autocast alone is usually enough because bf16 has fp32's exponent range. Autocast runs precision-sensitive ops such as `softmax`, `log`, `exp` and `layer_norm` in fp32. Use `torch.amp.autocast(\"cuda\", ...)` or `torch.autocast(device_type=...)`; the `torch.cuda.amp.autocast` spelling is deprecated."
         },
         {
+          "id": "quantisation-and-its-error",
           "heading": "Quantisation and its error",
           "body": "**Symmetric absmax int8**: scale $$s=\\max|w|/127$$, store $$q=\\mathrm{round}(w/s)$$, dequantise $$\\hat w=qs$$. Example: $$w=[0.1,-0.5,0.25,1.27]$$ gives $$s=0.01$$, $$q=[10,-50,25,127]$$. Rounding error is at most $$s/2$$ (0.005 here).\n\n**int4** has only 16 levels. With levels $$-7\\ldots7$$: $$s=\\max|w|/7$$. For $$w=[0.35,-1.4,0.95,0.05]$$, $$s=0.2$$, $$q=[2,-7,5,0]$$, $$\\hat w=[0.4,-1.4,1.0,0]$$, max error 0.05, bounded by $$s/2=0.1$$. The error bound grows linearly with $$\\max|w|$$, which is the key fact.\n\n**Outliers.** For $$w=[0.01,0.02,-0.03,10.0]$$ one absmax scale is $$10/127\\approx0.079$$, so the three small weights all round to **0**. Quantising that group without the outlier gives $$s\\approx0.00024$$ and nearly exact values. Hence **per-channel / per-group (block-wise) scales**, and LLM.int8's mixed-precision decomposition, which keeps outlier feature dimensions in 16-bit while more than 99.9% of values use 8-bit, halving memory with no degradation up to 175B parameters.\n\nOther methods: **GPTQ** quantises weights one-shot to 3–4 bits using approximate second-order information; **QLoRA** stores the frozen base model in 4-bit NormalFloat (NF4) with double quantisation, enough to fine-tune a 65B model on one 48 GB GPU."
         }

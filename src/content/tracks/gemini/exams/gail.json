@@ -67,14 +67,17 @@
       "summary": "The vocabulary the whole exam rests on: AI, ML, deep learning, gen AI, foundation models, LLMs, multimodal and diffusion models, prompt engineering and prompt tuning.",
       "sections": [
         {
+          "id": "nested-circles",
           "heading": "Nested circles",
           "body": "Think of the terms as nested circles:\n\n- **Artificial intelligence (AI):** the broad field of making machines perform tasks that normally need human intelligence.\n- **Machine learning (ML):** a subset of AI where systems **learn patterns from data** instead of following hand-written rules.\n- **Deep learning:** ML using many-layered neural networks. It powers modern vision, speech and language systems.\n- **Generative AI (gen AI):** models that **create new content** (text, images, code, audio, video) rather than only classifying or predicting.\n- **Natural language processing (NLP):** the area of AI that deals with understanding and producing human language. LLMs are today's dominant NLP technology."
         },
         {
+          "id": "foundation-models-and-llms",
           "heading": "Foundation models and LLMs",
           "body": "A **foundation model** is a very large model trained on broad data that can be **adapted to many tasks** (summarising, answering, coding, classifying) without training a new model each time.\n\n- **Large language model (LLM):** a foundation model specialised in text. It predicts the next token (a word piece) based on everything before it.\n- **Multimodal foundation model:** understands and/or generates several modalities (text, images, audio, video, code). Gemini is natively multimodal.\n- **Diffusion model:** generates images or video by starting from noise and removing it step by step, guided by the prompt. Image and video generators such as Imagen and Veo typically rely on diffusion-style techniques.\n\nKey business point: foundation models let you start from a capable general model and **customise it**, which is far cheaper and faster than training from scratch."
         },
         {
+          "id": "prompt-engineering-vs-prompt-tuning",
           "heading": "Prompt engineering vs prompt tuning",
           "body": "- **Prompt engineering:** writing and refining the instructions, context and examples you send to the model. No change to the model itself. Cheap, fast, the first thing to try.\n- **Prompt tuning:** a parameter-efficient technique where a small set of learned \"soft prompt\" values is trained and prepended to inputs. The base model's weights stay frozen.\n- **Fine-tuning:** further training the model (or an adapter) on your labelled examples so its behaviour changes more deeply.\n\nExam pattern: when a question asks for the **least effort / lowest cost** way to improve output, prompt engineering is usually right. Tuning comes when prompting can't reach the quality or consistency you need."
         }
@@ -115,10 +118,12 @@
       "summary": "Supervised, unsupervised and reinforcement learning, and the five lifecycle stages with the Google Cloud tools that support each.",
       "sections": [
         {
+          "id": "three-ways-machines-learn",
           "heading": "Three ways machines learn",
           "body": "| Approach | Learns from | Typical use |\n|---|---|---|\n| **Supervised** | Labelled examples (input + correct answer) | Classifying support tickets, predicting churn, spam detection |\n| **Unsupervised** | Unlabelled data, finding structure | Customer segmentation, anomaly detection, topic clustering |\n| **Reinforcement** | Rewards and penalties from actions | Robotics, game playing, and tuning LLMs from human feedback (RLHF) |\n\nLLM pre-training is largely **self-supervised**: the \"label\" is simply the next word in the text, so no human labelling is needed at that scale."
         },
         {
+          "id": "the-lifecycle-stages",
           "heading": "The lifecycle stages",
           "body": "The exam guide names five stages. Know one or two Google Cloud tools for each:\n\n1. **Data ingestion:** bring data in. Cloud Storage, BigQuery, Pub/Sub for streams.\n2. **Data preparation:** clean, transform, label. BigQuery, Dataflow, Dataproc, and data labelling tools.\n3. **Model training:** train or tune. Gemini Enterprise Agent Platform (formerly Vertex AI) training, Agent Platform AutoML, tuning of Gemini, BigQuery ML.\n4. **Model deployment:** serve predictions. Agent Platform endpoints, Cloud Run, GKE.\n5. **Model management:** version, monitor, retrain. Agent Platform Model Registry, Agent Platform Pipelines, Model Monitoring on Agent Platform, Agent Platform Feature Store.\n\nProduct names changed in April 2026 when Vertex AI became **Gemini Enterprise Agent Platform**. Exam items use the new names; some docs and APIs still say Vertex AI."
         }
@@ -158,10 +163,12 @@
       "summary": "Why data quality and accessibility decide gen AI outcomes, and the structured/unstructured and labelled/unlabelled distinctions.",
       "sections": [
         {
+          "id": "data-quality-dimensions",
           "heading": "Data quality dimensions",
           "body": "The guide lists the characteristics to know:\n\n- **Completeness:** are required fields and records present?\n- **Consistency:** do the same facts agree across systems and formats?\n- **Relevance:** does the data actually relate to the use case?\n- **Availability and accessibility:** can the model or team get to it, with the right permissions?\n- **Cost:** what does it cost to collect, store, clean and label?\n- **Format:** is it in a form the model and pipeline can use?\n\nRule of thumb: **garbage in, garbage out** applies even more to gen AI, because a grounded model will confidently repeat whatever wrong or stale content it retrieves."
         },
         {
+          "id": "structured-vs-unstructured-labelled-vs-unlabelled",
           "heading": "Structured vs unstructured, labelled vs unlabelled",
           "body": "- **Structured:** fits rows and columns with a schema. Sales tables, CRM records, inventory in BigQuery.\n- **Unstructured:** no fixed schema. Emails, PDFs, contracts, call recordings, images, video. **Most enterprise data is unstructured**, and gen AI is especially good at using it.\n- **Semi-structured:** JSON, logs, XML.\n- **Labelled:** each example has the correct answer attached (a ticket tagged \"billing\"). Needed for supervised training and fine-tuning.\n- **Unlabelled:** raw data with no answers. Plentiful and cheap; used for pre-training, clustering, and as retrieval sources for RAG."
         }
@@ -197,14 +204,17 @@
       "summary": "Infrastructure → models → platforms → agents → applications, and when to choose Gemini, Gemma, Imagen or Veo.",
       "sections": [
         {
+          "id": "five-layers",
           "heading": "Five layers",
           "body": "The guide frames the landscape as five layers. Each has different owners and decisions:\n\n| Layer | What it is | Google examples |\n|---|---|---|\n| **Infrastructure** | Compute, storage, networking for training and serving | AI Hypercomputer, TPUs, GPUs, data centres |\n| **Models** | The foundation models themselves | Gemini, Gemma, Imagen, Veo, plus third-party models in Model Garden |\n| **Platforms** | Tools to access, customise, deploy and govern models | Gemini Enterprise Agent Platform |\n| **Agents** | Systems that reason, plan and use tools to complete tasks | Agents built with Agent Platform, ADK, agents in Gemini Enterprise |\n| **Applications** | Finished experiences end users touch | Gemini app, Gemini for Workspace, Gemini Enterprise, contact-centre apps |\n\nBusiness implication: the higher the layer, the faster to value and the less control. The lower, the more control and engineering effort."
         },
         {
+          "id": "choosing-the-right-google-model",
           "heading": "Choosing the right Google model",
           "body": "- **Gemini:** Google's flagship **multimodal** family (text, code, images, audio and video in), with long context windows. Tiers trade capability against speed and cost:\n  - **Pro:** the most capable tier, for complex reasoning, long analysis and hard coding tasks.\n  - **Flash:** fast and cost-efficient, a good default for most production workloads.\n  - **Flash-Lite:** the cheapest, lowest-latency tier, for very high-volume simple tasks such as classification or extraction.\n  Version numbers change often, so reason about the tier, not the version.\n- **Gemma:** **open-weight**, lightweight models built from the same research. Run them on your own infrastructure, on-device or at the edge, and fine-tune freely. Choose them for data-sovereignty, offline or tight cost-control needs.\n- **Imagen:** text-to-image generation and image editing. The exam guide names it; Google's current model catalogue also offers image generation through **Gemini Image** models, so do not assume a specific model is still listed.\n- **Veo:** text- and image-to-video generation.\n- **Lyria:** music generation (not named in the exam guide, but part of Google's current model catalogue).\n\nGoogle embeds **SynthID**, an imperceptible watermark, in content generated by its models to help identify it as AI-generated."
         },
         {
+          "id": "model-selection-factors",
           "heading": "Model selection factors",
           "body": "The guide lists the factors to weigh: **modality, context window, security, availability and reliability, cost, performance, fine-tuning and customisation**. A typical exam item gives a business constraint (e.g. \"must run in our own data centre\" or \"must analyse hour-long video\") and asks which model fits. Map the constraint to the factor, then the model."
         }
@@ -253,10 +263,12 @@
       "summary": "The create, summarise, discover and automate pattern, with industry examples.",
       "sections": [
         {
+          "id": "four-verbs",
           "heading": "Four verbs",
           "body": "The guide groups use cases into four verbs:\n\n- **Create:** draft emails, marketing copy, images, code, product descriptions.\n- **Summarise:** condense calls, documents, meetings, research.\n- **Discover:** find and synthesise information across large unstructured sources (enterprise search, research assistants).\n- **Automate:** run multi-step processes with agents (triage tickets, process claims, update systems).\n\nTypical outputs: text generation, image generation, code generation, video generation, data analysis and personalised user experiences."
         },
         {
+          "id": "picking-a-good-first-use-case",
           "heading": "Picking a good first use case",
           "body": "Strong first use cases are **high value, feasible with available data, and low risk if the model errs**. Internal summarisation and drafting with a human reviewer is a classic starting point. Fully autonomous, customer-facing decisions in a regulated area are not."
         }
@@ -291,10 +303,12 @@
       "summary": "Google’s AI-first approach, the enterprise-ready platform, the open ecosystem, AI-optimized infrastructure, data control and democratisation.",
       "sections": [
         {
+          "id": "the-strengths-the-exam-expects-you-to-name",
           "heading": "The strengths the exam expects you to name",
           "body": "- **AI-first and research-led:** Google invented the Transformer architecture behind modern LLMs, and DeepMind/Google Research feed products directly.\n- **Enterprise-ready platform:** responsible, secure, private, reliable and scalable, with IAM, audit logging, data residency options and SLAs.\n- **Integrated ecosystem:** gen AI built into Workspace, Search, Cloud, Android and more.\n- **Open approach:** Model Garden offers first-party, **third-party/partner** models (for example Anthropic's Claude) and **open** models (such as Gemma and Meta's Llama), plus open frameworks and protocols such as the Agent Development Kit (ADK), Agent2Agent (A2A) and support for MCP. Avoids lock-in to a single model.\n- **Data control:** your prompts and data stay under your control and are **not used to train Google's foundation models without permission**. Governance, open and first-party models, pre-built and customisable solutions.\n- **Democratisation:** low-code and no-code tools, pre-trained models and APIs, so non-specialists can build."
         },
         {
+          "id": "ai-optimized-infrastructure",
           "heading": "AI-optimized infrastructure",
           "body": "- **AI Hypercomputer:** Google Cloud's integrated supercomputing architecture combining hardware, software and consumption models for AI workloads.\n- **TPUs (Tensor Processing Units):** Google's custom-designed AI accelerators, used to train and serve Gemini. New generations arrive regularly, so focus on the idea (purpose-built chips for training and inference), not version names.\n- **GPUs:** NVIDIA GPUs are also offered for customers who want them.\n- **Data centres and cloud computing:** global regions, energy efficiency and elastic scale.\n\nBusiness framing: performance per dollar, choice of accelerator, and capacity to scale without buying hardware."
         }
@@ -338,14 +352,17 @@
       "summary": "The ready-made ways people use Gemini at work (Gemini app and Gems, Gemini Notebook, Gemini Enterprise, Gemini for Google Workspace) and how to tell them apart.",
       "sections": [
         {
+          "id": "gemini-app-and-gems",
           "heading": "Gemini app and Gems",
           "body": "The **Gemini app** is Google's AI assistant on the web and mobile. The exam guide still says **Gemini Advanced**, the old name of the paid subscription; it has since been rebranded (Google AI Pro), and plan names keep changing. Paid tiers add access to more capable models, longer context and features such as Deep Research.\n\n**Gems** are custom versions of Gemini that you set up once with instructions and reference files, for example a \"contract reviewer\" or \"brand voice editor\". Business value: repeatable, consistent help without rewriting the prompt every time.\n\n**Gemini Notebook** (renamed from NotebookLM in July 2026; the same standalone product) is a research assistant that works over the sources **you** add, such as documents, notes and links, so answers stay grounded in that material."
         },
         {
+          "id": "gemini-enterprise",
           "heading": "Gemini Enterprise",
           "body": "**Gemini Enterprise** (formerly Google Agentspace, renamed October 2025) is described by Google as an **intranet search, AI assistant and agentic platform** for employees:\n\n- **Enterprise search across company data:** prebuilt connectors to sources such as Google Drive, Microsoft SharePoint, Jira, Confluence and ServiceNow, respecting each user's existing permissions.\n- **Multimodal search** over documents, images and other content.\n- **Agent Gallery:** out-of-the-box agents, including Made by Google agents such as **Deep Research**, **Gemini Notebook Enterprise** and Co-Scientist, plus partner agents from the Marketplace.\n- **Custom agents:** the platform hosts agents your teams build, including no-code agents created by business users and agents built by developers on Agent Platform.\n- **Gemini Notebook Enterprise:** the notebook research assistant with enterprise controls (the guide also mentions a Gemini Notebook API).\n\nChoose it when people need answers and actions **across many systems**, not only inside Workspace."
         },
         {
+          "id": "gemini-for-google-workspace",
           "heading": "Gemini for Google Workspace",
           "body": "**Gemini for Google Workspace** (formerly Duet AI; Google's site now brands it **Google Workspace with Gemini**) puts Gemini inside the apps people already use: drafting in **Gmail** and **Docs**, organising and analysing in **Sheets**, creating in **Slides** and **Vids**, summaries in **Meet**, and help in **Chat** and **Drive**. Gemini is included in Workspace business plans; check current plan details rather than memorising prices.\n\nData commitment: Workspace states that company data is yours and is **not used to train models** or for ads.\n\nChoose it when the work happens **inside Workspace documents and email**. Choose Gemini Enterprise when the knowledge lives across many third-party systems or you need agents that act."
         }
@@ -394,10 +411,12 @@
       "summary": "External search and the contact-centre products, and the business value of each.",
       "sections": [
         {
+          "id": "external-search",
           "heading": "External search",
           "body": "- **Agent Search on Gemini Enterprise Agent Platform** (formerly Vertex AI Search): Google-quality search and gen AI answers over **your own** website, catalogue or document content, for your customers or apps. It is also Google's pre-built RAG offering.\n- **Google Search grounding:** connects model answers to fresh public web information.\n\nUse case: a retailer's site search that understands \"waterproof hiking boots under $150 for wide feet\" and answers with products from its catalogue."
         },
         {
+          "id": "customer-engagement-suite",
           "heading": "Customer Engagement Suite",
           "body": "Google's contact-centre portfolio:\n\n- **Conversational Agents:** build virtual agents (chat and voice) that handle customer conversations end to end, using generative and deterministic flows. This is the evolution of Dialogflow.\n- **Agent Assist:** helps **human** agents in real time with suggested replies, knowledge snippets, summaries and next steps.\n- **Conversational Insights** (formerly Contact Center AI Insights): analyses conversations at scale for sentiment, topics, drivers of contact and agent performance.\n- **Google Cloud Contact Center as a Service (CCaaS):** the cloud contact-centre platform that ties channels, routing and the above together.\n\nMap the need: **automate** conversations → Conversational Agents. **Help** humans → Agent Assist. **Understand** trends → Conversational Insights. **Run** the whole contact centre → CCaaS."
         }
@@ -436,14 +455,17 @@
       "summary": "Model Garden, Agent Studio, AutoML, RAG offerings, custom agents, agent tools and pre-built APIs, and Agent Studio vs Google AI Studio.",
       "sections": [
         {
+          "id": "platform-components",
           "heading": "Platform components",
           "body": "**Gemini Enterprise Agent Platform** (Vertex AI until April 2026) is Google Cloud's unified platform for models and agents:\n\n- **Model Garden:** catalogue of first-party, third-party and open models to discover, test, tune and deploy.\n- **Agent Studio** (formerly Vertex AI Studio): console workspace to design and test prompts, compare models and tune, with a low-code canvas for agents.\n- **Agent Platform AutoML:** train custom models on your own data with little or no code (classification, forecasting, vision and more).\n- **Agent Search and RAG APIs:** pre-built RAG with Agent Search, or build-your-own retrieval with RAG Engine and Vector Search.\n- **Custom agents:** build agents with the open-source **Agent Development Kit (ADK)**, deploy them to **Agent Runtime** (formerly Agent Engine), and connect them with protocols such as A2A and MCP.\n\nThe next lesson covers building, running and evaluating agents in more depth."
         },
         {
+          "id": "how-agents-use-tools",
           "heading": "How agents use tools",
           "body": "An agent is a model that can **reason, plan and act**. It acts through **tools**: the guide names **extensions, functions, data stores and plugins**.\n\n- **Functions:** the model asks your code to run an action (look up an order, create a ticket).\n- **Data stores:** sources the agent retrieves from (documents, websites, databases).\n- **Extensions and plugins:** packaged connections to external services.\n\nGoogle Cloud building blocks agents often call: Cloud Storage, databases, Cloud Functions, Cloud Run, plus **pre-built AI APIs**: Speech-to-Text, Text-to-Speech, Translation, Document Translation, **Document AI** (extract data from forms and invoices), Cloud Vision, Video Intelligence, Natural Language. The Google Cloud API Library lists them all."
         },
         {
+          "id": "agent-studio-or-google-ai-studio",
           "heading": "Agent Studio or Google AI Studio?",
           "body": "| | **Google AI Studio** | **Agent Studio** (on Agent Platform) |\n|---|---|---|\n| For | Developers prototyping fast | Enterprises building production apps |\n| Access | Google account + Gemini API key, free tier | Google Cloud project with billing |\n| Controls | Light; no enterprise compliance certifications | IAM, data residency, customer-managed encryption keys (CMEK), compliance, audit logs, SLAs |\n| Models | Gemini (and Gemma) | Gemini plus third-party and open models via Model Garden |\n\nRule: **prototype or individual developer → AI Studio. Enterprise governance, security and scale → Agent Studio / Agent Platform.**"
         }
@@ -488,18 +510,22 @@
       "summary": "The code and low-code ways to build agents, the managed services that run them, the retrieval building blocks, and how Gen AI evals keep quality measurable.",
       "sections": [
         {
+          "id": "build-code-or-low-code",
           "heading": "Build: code or low-code",
           "body": "Gemini Enterprise Agent Platform supports several ways to build an agent:\n\n- **Agent Development Kit (ADK):** Google's open-source, code-first framework for agents and multi-agent systems. Pick it when developers need full control over logic, tools and orchestration.\n- **Agent Garden:** a library of sample agents and tools to start from instead of a blank page.\n- **Agent Studio** (formerly Vertex AI Studio): a console workspace with a **low-code canvas** to design, prompt and test agents and compare models.\n- **No-code agents in Gemini Enterprise:** business users create agents for their own teams inside the employee app, without writing code. Google renames these builder tools often, so focus on the capability, not the name.\n\nFor quick personal experiments with the Gemini API, developers often start in **Google AI Studio** (free, API key) and move to Agent Platform for production."
         },
         {
+          "id": "run-managed-services-for-agents",
           "heading": "Run: managed services for agents",
           "body": "- **Agent Runtime** (formerly Agent Engine): a managed place to deploy, scale and operate agents, so teams don't run their own servers.\n- **Sessions:** keep the history of an ongoing conversation.\n- **Memory Bank:** long-term memory so an agent can recall facts and preferences across sessions.\n- **Agent Gateway and IAM:** control which agents and users can reach which tools and data.\n- **Protocols:** A2A (agent to agent) and MCP (model to tools and data) connect agents to other agents and systems."
         },
         {
+          "id": "ground-retrieval-building-blocks",
           "heading": "Ground: retrieval building blocks",
           "body": "| Need | Offering |\n|---|---|\n| Ready-made search and RAG over your content, little to build | **Agent Search** (formerly Vertex AI Search): the guide's pre-built RAG |\n| Your own RAG pipeline with control over ingestion and retrieval | **RAG Engine** (the RAG APIs) |\n| Fast similarity search over embeddings at scale | **Vector Search** |\n| Fresh public information | **Grounding with Google Search** |"
         },
         {
+          "id": "evaluate-and-improve",
           "heading": "Evaluate and improve",
           "body": "A demo that looks good is not proof of quality. Agent Platform includes:\n\n- **Gen AI evals** (formerly the Gen AI evaluation service): score model and agent outputs against criteria such as accuracy, groundedness, safety and task completion, and compare prompts or models side by side.\n- **Agent evaluation:** test the agent's whole behaviour, including whether it chose the right tools and steps, not only its final answer.\n- **Online monitoring and observability:** watch quality, cost and errors after launch.\n- **Prompt optimisation:** improve prompts systematically against an evaluation set.\n\nLeader takeaway: agree on evaluation criteria and a test set **before** launch, then keep monitoring in production because models, data and user behaviour change."
         }
@@ -548,14 +574,17 @@
       "summary": "Data dependency, knowledge cutoff, bias, fairness, hallucinations and edge cases, and the matching fix for each.",
       "sections": [
         {
+          "id": "limitations",
           "heading": "Limitations",
           "body": "- **Data dependency:** a model is only as good as its training data and the data you give it.\n- **Knowledge cutoff:** it doesn't know events after training.\n- **Bias and fairness:** it can reproduce skews in its training data.\n- **Hallucinations:** fluent, confident, wrong answers.\n- **Edge cases:** rare or unusual inputs it handles poorly."
         },
         {
+          "id": "matching-mitigations",
           "heading": "Matching mitigations",
           "body": "| Problem | First fix |\n|---|---|\n| Needs current or company-specific facts | **Grounding / RAG** with Google Search or your data |\n| Wrong format, tone or unclear task | **Prompt engineering** |\n| Needs consistent specialised style or behaviour at scale | **Fine-tuning** |\n| High-stakes decision or low confidence | **Human in the loop (HITL)** |\n| Bias | Diverse data, evaluation across groups, human review |\n\nKey distinction: **RAG supplies knowledge; fine-tuning shapes behaviour.** Don't fine-tune to teach facts that change monthly."
         },
         {
+          "id": "monitoring-and-evaluation-in-production",
           "heading": "Monitoring and evaluation in production",
           "body": "The guide's list of continuous practices: **automatic model upgrades** (with testing before you accept them), **KPIs**, **security patches and updates**, **versioning** of models and prompts, **performance tracking**, **drift monitoring** (inputs or outputs shift over time), and **Agent Platform Feature Store** (formerly Vertex AI Feature Store) for consistent, governed features.\n\nOn Gemini Enterprise Agent Platform (formerly Vertex AI), **Gen AI evals** (formerly the Gen AI evaluation service) scores model or agent output against your own test set and criteria, and **Model Monitoring on Agent Platform** watches production behaviour over time. Evaluate before you launch or switch versions; monitor after."
         }
@@ -599,10 +628,12 @@
       "summary": "Zero-, one- and few-shot, role prompting, prompt chaining, chain-of-thought and ReAct, and when to use each.",
       "sections": [
         {
+          "id": "core-techniques",
           "heading": "Core techniques",
           "body": "- **Zero-shot:** just the instruction. Good for simple, common tasks.\n- **One-shot / few-shot:** include one or several examples of input and desired output. Best for a specific format, style or classification scheme.\n- **Role prompting:** \"You are an experienced HR policy advisor…\". Sets expertise, tone and perspective.\n- **Prompt chaining:** split a complex job into steps, feeding each output into the next prompt (extract → analyse → draft)."
         },
         {
+          "id": "advanced-techniques",
           "heading": "Advanced techniques",
           "body": "- **Chain-of-thought (CoT):** ask the model to reason step by step before answering. Improves multi-step reasoning, maths and logic.\n- **ReAct (Reason + Act):** the model alternates **thinking** and **taking actions with tools** (search, calculator, API), observes the result, then continues. This is the pattern behind agents.\n\n```\nThought: I need the customer's order status.\nAction: lookup_order(id=123)\nObservation: shipped, arriving Friday\nThought: I can now answer.\n```"
         }
@@ -645,10 +676,12 @@
       "summary": "First-party, third-party and world-data grounding; Google’s grounding offerings; temperature, top-p, token limits and safety settings.",
       "sections": [
         {
+          "id": "three-kinds-of-grounding-data",
           "heading": "Three kinds of grounding data",
           "body": "- **First-party enterprise data:** your own documents, databases, CRM. Grounded via Agent Search or RAG APIs.\n- **Third-party data:** licensed or partner data from external providers (market data, specialist datasets) that is neither your own nor the open web.\n- **World data:** the public web, via **Grounding with Google Search**.\n\n**RAG (retrieval-augmented generation):** retrieve the most relevant passages, put them in the prompt, and instruct the model to answer from them, ideally with citations. It reduces hallucination and keeps answers current **without retraining**.\n\nGoogle Cloud offerings, as listed in the guide: **pre-built RAG with Agent Search**, **RAG APIs** (build your own pipeline), and **Grounding with Google Search**."
         },
         {
+          "id": "sampling-parameters-and-settings",
           "heading": "Sampling parameters and settings",
           "body": "| Setting | What it does | Business guidance |\n|---|---|---|\n| **Temperature** | Randomness. Low = focused and repeatable; high = varied and creative | Low for factual answers and extraction; higher for brainstorming |\n| **Top-p (nucleus sampling)** | Samples only from the smallest set of tokens whose probabilities add up to p | Lower = safer, more predictable wording |\n| **Top-k** (background only, not named in the exam guide) | Samples from the k most likely tokens | Similar effect to top-p |\n| **Token count / output length** | Max tokens the model may generate | Caps cost and verbosity; too low truncates answers |\n| **Safety settings** | Thresholds for blocking harmful content categories | Stricter for public-facing apps |\n\nTokens are word pieces; cost and limits are measured in tokens."
         }
@@ -688,18 +721,22 @@
       "summary": "Google Cloud’s recommended path from use case to scaled solution, and the metrics that prove value.",
       "sections": [
         {
+          "id": "choosing-the-right-solution",
           "heading": "Choosing the right solution",
           "body": "Factors that drive the choice: **business requirements** (goal, users, quality bar, risk) and **technical constraints** (data availability, integration, latency, budget, skills, compliance).\n\nDecision ladder, from fastest to most custom:\n\n1. **Use a pre-built application:** Gemini for Workspace, Gemini Enterprise, Customer Engagement Suite.\n2. **Configure:** Gems, no-code agents, Agent Search over your content.\n3. **Build on the platform:** Agent Platform with Gemini, RAG and tools.\n4. **Customise models:** tuning, or open models such as Gemma on your own infrastructure.\n\nPick the lowest rung that meets the need. Moving up adds control, cost and time, and needs more in-house ML and engineering **skills**. Regulated data or strict latency, residency or customisation needs are what usually justify moving up."
         },
         {
+          "id": "integrating-gen-ai-into-an-organisation",
           "heading": "Integrating gen AI into an organisation",
           "body": "1. **Align** on strategy and executive sponsorship; pick use cases with clear value.\n2. **Prepare data** and governance: access, quality, privacy.\n3. **Pilot** with a small group, a human in the loop and defined success criteria.\n4. **Measure** against a baseline.\n5. **Scale** with training, change management and support.\n6. **Operate:** monitor, evaluate and improve continuously.\n\nPeople matter as much as tech: training, champions, clear usage policies and communicating how roles change.\n\n**Executive sponsorship** gives the programme budget, priority and a mandate to change processes. **Upskilling** (role-based training, prompt-writing practice, internal champions) is what turns licences into adoption."
         },
         {
+          "id": "measuring-impact",
           "heading": "Measuring impact",
           "body": "- **Productivity:** time saved per task, throughput.\n- **Quality:** accuracy, error rates, CSAT/NPS.\n- **Financial:** cost per interaction, revenue uplift, ROI.\n- **Adoption:** active users, repeat use.\n- **Risk:** escalations, policy incidents.\n\nAlways measure **against a pre-launch baseline**, or you can't show improvement."
         },
         {
+          "id": "calculating-roi",
           "heading": "Calculating ROI",
           "body": "A simple ROI formula:\n\n**ROI = (benefit − cost) ÷ cost**\n\n- **Benefit:** value of hours saved, extra revenue, lower cost per interaction, fewer errors.\n- **Cost:** licences or usage, integration and engineering, data preparation, training and change management, ongoing operation.\n\nExample: a pilot saves 2,000 hours a year valued at $50/hour ($100,000) and costs $40,000 in total. ROI = (100,000 − 40,000) ÷ 40,000 = **150%**.\n\nInclude the *full* cost (people, training, operations), not just the model or licence bill."
         }
@@ -745,14 +782,17 @@
       "summary": "Security across the ML lifecycle, SAIF’s purpose, and the Google Cloud security tools to name.",
       "sections": [
         {
+          "id": "threats-to-ai-systems",
           "heading": "Threats to AI systems",
           "body": "- **Prompt injection:** inputs (or retrieved documents) that try to override instructions.\n- **Data poisoning:** tampering with training or grounding data.\n- **Model theft and extraction.**\n- **Sensitive data leakage** through prompts or outputs.\n- **Misuse:** generating harmful content, abusing agents' tool access.\n\nSecurity has to cover **the whole lifecycle**: data collection, training, deployment, and ongoing operation."
         },
         {
+          "id": "saif",
           "heading": "SAIF",
           "body": "**Google's Secure AI Framework (SAIF)** is Google's conceptual framework for securing AI systems. Its current site describes it as a practitioner's guide to navigating AI security, with a **SAIF Map** of the AI development lifecycle, a catalogue of AI risks with matching controls, and a growing focus on **agent security** (including an agent risk self-assessment).\n\nGoogle's widely cited core elements of SAIF (check the current wording on saif.google):\n\n- Expand strong security foundations to the AI ecosystem.\n- Extend detection and response to bring AI into the threat universe.\n- Automate defences to keep pace with existing and new threats.\n- Harmonise platform-level controls for consistent security across the organisation.\n- Adapt controls and create faster feedback loops (for example red-teaming).\n- Contextualise AI system risks in surrounding business processes.\n\nPurpose: give organisations a common, practical way to manage AI-specific risks alongside existing security programmes, not a product you install."
         },
         {
+          "id": "google-cloud-security-tools",
           "heading": "Google Cloud security tools",
           "body": "The exam guide names four:\n\n- **Secure-by-design infrastructure:** encryption by default, hardened data centres.\n- **Identity and Access Management (IAM):** least-privilege access to data, models and agents.\n- **Security Command Center:** centralised visibility of risks, misconfigurations and threats, including AI workloads.\n- **Workload monitoring tools:** for example Cloud Logging, Cloud Monitoring and audit logs.\n\nRelated (useful background, not named in the guide): VPC Service Controls (data perimeters), customer-managed encryption keys, **Sensitive Data Protection** (formerly Cloud DLP) for finding and masking sensitive data, and **Model Armor** for screening prompts and responses."
         }
@@ -792,10 +832,12 @@
       "summary": "Transparency, privacy, bias and fairness, accountability and explainability, and why they protect value.",
       "sections": [
         {
+          "id": "why-it-matters",
           "heading": "Why it matters",
           "body": "Responsible AI is a **business requirement**, not a nice-to-have: it protects customer trust, reduces legal and reputational risk, and improves quality.\n\nGoogle's **AI Principles** (rewritten in 2025) are organised under three themes: **bold innovation**, **responsible development and deployment**, and **collaborative progress, together**. Older lists of seven objectives are out of date."
         },
         {
+          "id": "the-themes-the-guide-lists",
           "heading": "The themes the guide lists",
           "body": "- **Transparency:** tell people when they're interacting with AI or seeing AI-generated content; document what a system does and its limits. SynthID watermarking helps identify AI-generated media.\n- **Privacy:** minimise personal data. **Anonymisation** irreversibly removes identifiers. **Pseudonymisation** replaces identifiers with tokens that can be re-linked with a key, so it lowers risk but the data may still count as personal data.\n- **Data quality, bias and fairness:** skewed data produces skewed outcomes. Test performance across groups and fix data or processes. **Fairness** means outcomes don't systematically disadvantage people based on sensitive characteristics; check it before launch and keep monitoring after.\n- **Accountability:** a named human owner for each AI system and its decisions; clear escalation.\n- **Explainability:** being able to explain why a system produced an outcome, especially for decisions affecting people (credit, hiring)."
         }

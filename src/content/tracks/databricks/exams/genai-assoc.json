@@ -78,18 +78,22 @@
       "summary": "Turn a business request into concrete pipeline inputs, outputs, a model task and the chain components that connect them.",
       "sections": [
         {
+          "id": "start-from-the-decision-not-the-model",
           "heading": "Start from the decision, not the model",
           "body": "Exam scenarios usually begin with a business goal, such as \"cut support handle time\" or \"load supplier invoices into the ledger faster\". Before you pick a model, write down four things:\n\n1. **Consumer of the output.** Is it a person reading a chat reply, a dashboard, or a downstream job that parses fields?\n2. **Inputs available at request time.** For example the ticket text, the customer ID, documents in a Unity Catalog (UC) volume, or rows in a UC table.\n3. **Output contract.** Free text, a label from a fixed set, a JSON object with named fields, or an answer with citations.\n4. **Success measure.** For example accuracy against labeled examples, groundedness in source documents, latency or cost per request.\n\nIf the consumer is code, the output contract has to be machine-readable and validated. If the consumer is a person, the output still needs a defined shape, such as an answer plus cited sources."
         },
         {
+          "id": "selecting-the-model-task",
           "heading": "Selecting the model task",
           "body": "Map the goal to a task category, then pick the simplest pattern that delivers it:\n\n| Goal shape | Task | Typical Databricks pattern |\n|---|---|---|\n| Put each item into one of N known buckets | Classification | `ai_query` with a constrained label set, run in batch |\n| Pull named fields out of documents | Extraction | Information Extraction / `ai_extract` with a schema |\n| Answer questions from a document corpus | Retrieval-augmented generation (RAG) | Retriever over AI Search plus a generator |\n| Answer questions about governed tables | Natural language to SQL | Genie Agents (exam guide: Genie Spaces) |\n| Take actions across several systems | Agent with tools | Agent Bricks CLI agent or Supervisor Agent |\n\n**Batch versus interactive** is a key design choice. Scoring millions of existing rows is a batch job (AI Functions such as `ai_query`). A chatbot is an interactive serving workload. Do not build an agent when a single function call over a table meets the goal."
         },
         {
+          "id": "chain-components",
           "heading": "Chain components",
           "body": "A chain is an ordered set of components. Each component's output is the next component's input. A typical RAG chain looks like this:\n\n1. **Input handling:** normalize the user question and keep conversation history if the app needs follow-ups.\n2. **Retrieval:** query an AI Search index (exam guide: Vector Search). Hybrid search is the recommended starting point.\n3. **Prompt augmentation:** insert the retrieved chunks and instructions into a prompt template.\n4. **Generation:** call an LLM endpoint, for example through Foundation Model APIs.\n5. **Post-processing:** parse or validate the output, attach citations and apply guardrails.\n\nChoose components to fit the contract. If the answer must cite documents, keep chunk metadata (document and page) through retrieval so post-processing can show it. If the output feeds code, add a validation step that rejects malformed output instead of passing it downstream."
         },
         {
+          "id": "worked-translation",
           "heading": "Worked translation",
           "body": "*Goal:* \"Help claims adjusters answer policy questions faster.\"\n\n- **Inputs:** adjuster question and policy PDFs in a UC volume.\n- **Output:** short answer plus citations to the policy section.\n- **Task:** RAG question answering.\n- **Components:** parse and chunk PDFs, index them in AI Search, retrieve, augment, generate, then cite.\n- **Measure:** groundedness and correctness on an evaluation set built with adjusters.\n\nA fast way to build this without code was Knowledge Assistant, which is now legacy; its listed replacement is Genie Agents. See lesson d1-l3."
         }
@@ -143,18 +147,22 @@
       "summary": "Design prompts and request settings so an LLM returns output a program can rely on: fixed labels, JSON that follows a schema, or answers with citations.",
       "sections": [
         {
+          "id": "why-format-control-matters",
           "heading": "Why format control matters",
           "body": "Many GenAI pipelines fail at the boundary between the model and the next step, not inside the model. A downstream job that expects `{\"category\": ..., \"priority\": ...}` breaks if the model adds an explanation, renames a key or invents a category. Format control is therefore part of design, not a polish step."
         },
         {
+          "id": "prompt-techniques",
           "heading": "Prompt techniques",
           "body": "These techniques make the requested format explicit:\n\n- **State the exact output shape.** Name each field, its type and the allowed values. Say what to return when information is missing, for example `null`, rather than letting the model guess.\n- **Constrain labels.** List the allowed categories and require exactly one of them.\n- **Delimit the input.** Wrap user or document text in clear markers so instructions and data are not confused. This also reduces the chance that text inside a document is followed as an instruction.\n- **Give one or two examples (few-shot).** Show an input and the exact expected output.\n- **Keep instructions in a system prompt** and the variable data in the user message or a template variable.\n- **Prefer low randomness** (for example, a low temperature) for extraction and classification, where consistency matters more than variety.\n\nStore prompt templates centrally so they can be versioned and tested. On Databricks, the MLflow Prompt Registry (Beta) stores versioned prompts in UC."
         },
         {
+          "id": "platform-enforced-structure",
           "heading": "Platform-enforced structure",
           "body": "Prompt wording alone cannot guarantee a format. Where the platform can enforce structure, use it:\n\n- **`ai_query`** takes `returnType` and supports structured output through a response format, and `modelParameters` such as `max_tokens` and `temperature`. For large batch jobs, `failOnError => false` keeps one bad row from failing the whole query.\n- **`ai_extract`** (GA since Jun 2026), which powers Information Extraction, fills fields from a schema. You can define the schema in natural language, manually or as JSON. It can also return citations and confidence scores.\n- **Foundation Model APIs** can be called with the OpenAI client, which is the recommended client.\n\nEven with enforced structure, **validate** the result before writing it downstream, for example by checking value ranges, enum membership and required fields."
         },
         {
+          "id": "answers-people-read",
           "heading": "Answers people read",
           "body": "Formatting matters for human-facing output too. Ask for a short answer first, then supporting detail, and a citation for each claim that comes from retrieved context. Tell the model to say it does not know when the context lacks the answer. This reduces fabricated citations and makes groundedness easier to evaluate later."
         }
@@ -204,22 +212,27 @@
       "summary": "Define and order tools for multi-step agents, and decide when Knowledge Assistant, Supervisor Agent (exam guide: Multiagent Supervisor) or Information Extraction fits.",
       "sections": [
         {
+          "id": "agent-bricks-today",
           "heading": "Agent Bricks today",
           "body": "**Agent Bricks** is now Databricks' agent developer platform. The current code-first path is the **Agent Bricks CLI** (Beta): `agentbricks init` scaffolds a project from a template (for example LangGraph or the OpenAI Agents SDK), `agentbricks dev` runs it locally and `agentbricks deploy` deploys it to Agent Runtime, served by `DurableAgentServer`. MLflow tracing is on by default.\n\nThe exam guide (Mar 2026) still names three Agent Bricks building blocks. Two of them became legacy on 12 Oct 2026, but they remain testable:\n\n| Building block | Status | Replacement |\n|---|---|---|\n| Knowledge Assistant | Legacy | Genie Agents (low-code), Agent Bricks CLI (code) |\n| Supervisor Agent (exam guide: Multiagent Supervisor) | Legacy | Genie Agents or Agent Bricks CLI |\n| Information Extraction | Current (new version; old version is legacy) | — |"
         },
         {
+          "id": "knowledge-assistant",
           "heading": "Knowledge Assistant",
           "body": "A Q&A chatbot over documents that answers **with citations**.\n\n- Up to 10 sources per assistant: UC volume files (txt, pdf, md, ppt/pptx, doc/docx), UC tables or AI Search indexes. Index sources must use one of the supported embedding models.\n- Files over 100 MB or documents over 500 pages are skipped.\n- Subject-matter experts improve quality with example questions, guidelines and labeled data.\n- It deploys a serving endpoint with CAN MANAGE and CAN QUERY permissions.\n\n**Use it when** the goal is cited Q&A over a document corpus with little code."
         },
         {
+          "id": "supervisor-agent",
           "heading": "Supervisor Agent",
           "body": "Coordinates several subagents and tools: Genie Agents, agent endpoints, UC functions, MCP servers, custom agents and Knowledge Assistant endpoints.\n\n- Up to 50 subagents.\n- AI Search subagents must be **Delta Sync** indexes.\n- Built-in access control: the end user needs CAN QUERY on endpoints and SELECT on tables used by subagents.\n\n**Use it when** one question can need several specialists, for example structured sales data through a Genie Agent plus policy documents through a Knowledge Assistant. If you need routing logic the supervisor does not offer, build a custom orchestrator, for example with the Agent Bricks CLI."
         },
         {
+          "id": "information-extraction",
           "heading": "Information Extraction",
           "body": "Turns unstructured text, PDFs, images and tables into **structured fields** that follow a schema.\n\n- Input is a UC volume or a UC table (STRING or VARIANT column).\n- Runs on `ai_extract`. Options include Precision mode, citations and confidence scores.\n- Evaluate against a labeled ground-truth table to get per-field accuracy, precision, recall and F1.\n- Deploy through SQL, a scheduled Lakeflow pipeline or a REST endpoint.\n- Has a 128k-token context limit and requires serverless compute and UC.\n\n**Use it when** the output is a table of fields, not a conversation."
         },
         {
+          "id": "defining-and-ordering-tools",
           "heading": "Defining and ordering tools",
           "body": "Agent tools on Databricks include UC functions, MCP servers (managed, external or custom), Genie Agents and AI Search retrieval. Design them for multi-stage reasoning:\n\n- **One job per tool,** with a clear name, a description that says when to use it, and typed parameters. The model picks tools from these descriptions.\n- **Make dependencies explicit.** If `get_orders` needs a customer ID, provide a `lookup_customer` tool and describe the order in the descriptions or system prompt: resolve the entity first, then fetch details, then act.\n- **Read before write.** Put retrieval and lookup steps before any tool that changes state, and confirm high-impact actions.\n- **Return structured, compact results** and clear error messages so the next reasoning step can use them.\n- **Scope identity.** In the Agent Bricks CLI, tools run as the requesting user by default, or as the app service principal with `--auth app`."
         }
@@ -282,22 +295,27 @@
       "summary": "Turn PDFs, slides, HTML and scans into clean, structured text before you chunk, because every parsing mistake becomes a retrieval mistake.",
       "sections": [
         {
+          "id": "why-parsing-comes-first",
           "heading": "Why parsing comes first",
           "body": "A RAG pipeline is only as good as the text it indexes. Databricks' retrieval-quality guidance says it directly: poor parsing hurts retrieval. If a two-column PDF is read straight across both columns, or a table is flattened into a stream of numbers, no chunking strategy or reranker can recover the meaning.\n\nThe usual order is: **choose sources → extract → clean/filter → chunk → embed and index → evaluate**. Spend effort at the start of that chain."
         },
         {
+          "id": "choosing-source-documents",
           "heading": "Choosing source documents",
           "body": "Start with the documents that actually answer the questions your users ask. Good source selection means:\n\n- **Authoritative and current**: index the published policy, not every draft. If several versions must coexist, store an effective date or version column so you can filter.\n- **Relevant scope**: unrelated content adds noise and competes for the top-k slots.\n- **Permission-aware**: AI Search indexes do not support row- or column-level permissions, so do not mix audiences in one index if users must not see each other's content.\n- **Traceable**: keep the file path, URL, page and section for each piece so the app can cite it."
         },
         {
+          "id": "extracting-with-ai-parse-document",
           "heading": "Extracting with ai_parse_document",
           "body": "On Databricks, `ai_parse_document` reads binary files (for example PDFs and images) from a Unity Catalog volume and returns structured output: text, tables, layout elements and metadata. You call it from SQL or a notebook, typically over `read_files` on a volume path, and can pin the output format, for example with `map('version','2.0')`. Newer releases also extract chart values as JSON.\n\nBecause the output keeps layout and element types, you can later chunk by section or keep tables intact instead of splitting raw text blindly."
         },
         {
+          "id": "python-extraction-packages",
           "heading": "Python extraction packages",
           "body": "Outside the built-in function, the Python ecosystem has a package for each format. Pick by input type:\n\n| Input | Typical tool family | Watch out for |\n|---|---|---|\n| Digital PDF | PDF text/layout libraries | Reading order in multi-column pages; tables |\n| Scanned PDF / image | OCR engines | OCR errors; needs image preprocessing |\n| HTML | HTML parsers | Navigation, footers, scripts and cookie banners |\n| Office files (docx, pptx) | Format-specific readers | Speaker notes, embedded objects |\n| Mixed formats | General partitioning libraries that detect element types | Heavier dependencies |\n\nThe exam tests judgment: match the extractor to the document type (a plain text reader cannot read a scanned image; an OCR engine is wasted on clean HTML)."
         },
         {
+          "id": "filtering-extraneous-content",
           "heading": "Filtering extraneous content",
           "body": "Remove content that would otherwise be embedded and retrieved but never helps an answer:\n\n- Repeated page headers, footers, page numbers and legal boilerplate.\n- Website navigation, menus, related-links blocks and cookie notices.\n- Tables of contents and indexes, which match many queries but contain no answers.\n- Duplicates and near-duplicates (the same FAQ copied across pages).\n\nBoilerplate is dangerous because it is *similar to everything*: the same footer in every chunk pulls chunks toward each other in embedding space and crowds real answers out of the top-k."
         }
@@ -347,22 +365,27 @@
       "summary": "Choose chunk size, overlap and boundaries to fit the document structure, the embedding model's input limit and the questions users ask, then confirm the choice with retrieval evaluation.",
       "sections": [
         {
+          "id": "what-a-chunk-must-do",
           "heading": "What a chunk must do",
           "body": "A chunk is the unit you embed, retrieve and paste into the prompt. It must be:\n\n1. **Small enough** to fit within the embedding model's maximum input (text beyond the limit is typically truncated and never represented in the vector) and to leave room in the LLM context for several chunks plus instructions.\n2. **Large enough** to carry the context needed to answer, so a retrieved fact is not orphaned from what it refers to.\n3. **Coherent**: about one idea, so its embedding is not a blur of unrelated topics."
         },
         {
+          "id": "size-and-overlap",
           "heading": "Size and overlap",
           "body": "Databricks' retrieval-quality guidance suggests testing chunk sizes such as 256, 512 and 1024 tokens. **Smaller chunks** give precise, fact-level matches; **larger chunks** keep surrounding context. There is no universal best value; it depends on the documents and the questions.\n\n**Overlap** repeats a little text between neighbouring chunks so a sentence that straddles a boundary still appears whole in at least one chunk. More overlap means more rows and more duplicate text in results, so keep it modest."
         },
         {
+          "id": "strategies-from-simple-to-advanced",
           "heading": "Strategies from simple to advanced",
           "body": "| Strategy | How it splits | Good for |\n|---|---|---|\n| Fixed-size | Every N tokens/characters | Uniform text; quick baseline |\n| Recursive / separator-based | Paragraphs, then sentences, then words until under the limit | General prose |\n| Structure-aware | Headings, sections, list items, table boundaries | Manuals, policies, Markdown, HTML |\n| Semantic | Groups adjacent sentences by embedding similarity | Long prose with topic shifts |\n| Hierarchical / parent-child | Retrieve small chunks, return the larger parent section | Precision plus context |\n\nAdvanced tricks: prepend the document title and section heading to each chunk (contextual headers), keep tables whole, and store page numbers for citations."
         },
         {
+          "id": "built-in-help-ai-prep-search",
           "heading": "Built-in help: ai_prep_search",
           "body": "`ai_prep_search` (Beta) takes the output of `ai_parse_document` and splits it into semantic chunks enriched with titles, headers and page references, ready to write to a Delta table and index. It is a fast way to get structure-aware chunks without writing your own splitter."
         },
         {
+          "id": "choosing-a-strategy-with-evaluation",
           "heading": "Choosing a strategy with evaluation",
           "body": "Pick chunking by measurement, not taste:\n\n1. Build an evaluation set of realistic questions (with expected source documents or answers where possible).\n2. Produce a chunk table and index for each candidate configuration.\n3. Compare retrieval metrics (did the right chunk appear in the top-k?) and end-to-end answer quality with MLflow evaluation.\n4. Keep the configuration that wins on your data, then re-check when documents change."
         }
@@ -413,18 +436,22 @@
       "summary": "Store chunks in Unity Catalog Delta tables that AI Search can sync, measure retrieval with the right metrics and judges, and use hybrid search and re-ranking to lift the best chunks to the top.",
       "sections": [
         {
+          "id": "writing-chunks-to-delta-tables-in-unity-catalog",
           "heading": "Writing chunks to Delta tables in Unity Catalog",
           "body": "Write one row per chunk to a Delta table in Unity Catalog. A practical schema:\n\n| Column | Purpose |\n|---|---|\n| `chunk_id` | Primary key the index uses to track rows |\n| `chunk_text` | Text to embed and return |\n| `doc_uri`, `page`, `section` | Citations and filtering |\n| `doc_version` / `updated_at` | Freshness filters, re-processing |\n\nRequirements for a **Delta Sync** index (Databricks AI Search, exam guide: Mosaic AI Vector Search): a UC-enabled workspace, serverless compute, `CREATE TABLE` on the target schema, and, on a standard endpoint, **Change Data Feed** enabled on the source table (enabling row tracking turns it on automatically). Note that `_id` is a reserved column name.\n\nIndex options to know: Delta Sync with Databricks-computed embeddings, Delta Sync with self-managed embeddings (cannot later be converted to managed), and Direct Vector Access, which you update yourself through the REST API."
         },
         {
+          "id": "retrieval-metrics",
           "heading": "Retrieval metrics",
           "body": "Evaluate the retriever separately from the generator, so you know which half is failing:\n\n- **Recall@k**: did the relevant chunk(s) appear in the top k? Low recall means the answer never reaches the LLM.\n- **Precision@k**: what share of the top k is relevant? Low precision wastes context and invites distraction.\n- **Ranking metrics (MRR, NDCG)**: is the best chunk near the top?\n\nMLflow 3 built-in judges on Databricks cover retrieval too. `RetrievalRelevance` and `RetrievalGroundedness` need no ground truth; `RetrievalSufficiency` (did the retrieved context contain what the expected answer needs?) requires ground truth. Run them with `mlflow.genai.evaluate()`."
         },
         {
+          "id": "hybrid-search",
           "heading": "Hybrid search",
           "body": "AI Search defaults to approximate nearest neighbour (ANN) vector search. **Hybrid** search (`query_type='HYBRID'`) combines vector and keyword results with reciprocal rank fusion. Databricks recommends hybrid as a starting point and it is especially useful for exact tokens such as SKUs, error codes and IDs that embeddings handle poorly. Metadata filters can narrow results on any column."
         },
         {
+          "id": "re-ranking",
           "heading": "Re-ranking",
           "body": "A reranker is a second, more accurate model that re-scores candidates after the fast first-stage search. In AI Search the reranker re-scores the retrieved candidates and then returns `num_results`; `num_results` sets the final count and does not change how many results are reranked. You pass `columns_to_rerank` separately from the `columns` you want back. The reranker considers only the first 2,000 characters it finds in those columns, and the order you list them in matters, so put short, information-dense columns first. A finetuned reranker can be trained for your domain.\n\nUse re-ranking when the right chunk is *retrieved* (it appears within the candidate set) but not *ranked* high enough. If it is not in the candidates at all, fix parsing, chunking or the query type instead."
         }
@@ -479,18 +506,22 @@
       "summary": "Where orchestration libraries such as LangChain and LangGraph fit, and how the current Agent Bricks CLI scaffolds, runs and deploys an agent on Databricks.",
       "sections": [
         {
+          "id": "chains-versus-agents",
           "heading": "Chains versus agents",
           "body": "A **chain** is a fixed sequence of steps: build a prompt, maybe retrieve context, call a model, parse the output. The order never changes at run time.\n\nAn **agent** lets the model decide what happens next. It can call a tool, look at the result and decide whether to call another tool or answer. That loop is what makes multi-step reasoning possible, and also what makes agents harder to test.\n\nRule of thumb: if the steps are known in advance, write a chain. If the next step depends on what the model learns along the way, you need an agent loop."
         },
         {
+          "id": "langchain-langgraph-and-similar-tools",
           "heading": "LangChain, LangGraph and similar tools",
           "body": "- **LangChain** gives you building blocks for chains: prompt templates, model wrappers, retrievers, output parsers and tool definitions.\n- **LangGraph** models an application as a graph of nodes with shared state. Cycles in the graph are what let an agent loop through tool calls until it is done.\n- The **OpenAI Agents SDK** is another agent library. The Agent Bricks CLI has a template for it as well as for LangGraph.\n\nThe framework is a choice, not an exam answer in itself. What matters is that the agent is traced, evaluated and deployed in a governed way on Databricks."
         },
         {
+          "id": "the-current-authoring-path-agent-bricks-cli",
           "heading": "The current authoring path: Agent Bricks CLI",
           "body": "The **Agent Bricks CLI** (Beta) is now the main code-first path. Older docs and the exam guide call this area \"Mosaic AI Agent Framework\".\n\n- `agentbricks init` scaffolds a project. Templates include `langgraph` and `openai`. Use `--existing` to migrate an agent you already have.\n- `agentbricks dev` runs the agent locally.\n- `agentbricks deploy` deploys to **Agent Runtime**, where it is served by `DurableAgentServer`.\n- **MLflow tracing is on by default**, so every run records its inputs, outputs and intermediate steps.\n- Tools run **as the requesting user** by default. Use `--auth app` to run them as the app's service principal.\n- Generated projects include a chat UI."
         },
         {
+          "id": "the-older-path-you-may-still-see",
           "heading": "The older path you may still see",
           "body": "In the Agent Framework era an agent was wrapped in MLflow's **`ResponsesAgent`** interface.\n\n- On **Model Serving**, `ResponsesAgent` is class-based with `predict()` and `predict_stream()`.\n- On **Databricks Apps**, the MLflow **`AgentServer`** uses module-level `@invoke()` and `@stream()` functions and serves the OpenAI Responses API at `/responses`.\n\n`AgentServer`, `LongRunningAgentServer` and agents on Model Serving moved to the legacy section of the docs in October 2026. Recognise them, but prefer the CLI for new work.\n\nDeployed agents can be queried through the invocation API, the Responses API or SQL."
         }
@@ -545,14 +576,17 @@
       "summary": "How to add context, examples and instructions to a prompt, and how to change prompts safely using versioned templates and side-by-side evaluation.",
       "sections": [
         {
+          "id": "prompt-augmentation-what-goes-into-the-prompt",
           "heading": "Prompt augmentation: what goes into the prompt",
           "body": "**Augmentation** means adding information the model would not otherwise have.\n\n- **Retrieved context.** In RAG you insert the top retrieved chunks, ideally with a source id each so the answer can cite them.\n- **Instructions.** A system prompt sets the role, the scope and the rules, for example \"answer only from the provided context; if the answer is not there, say you do not know\".\n- **Few-shot examples.** One or two worked examples show the exact format and tone you want.\n- **Conversation state.** Earlier turns, or a summary of them, so follow-up questions make sense.\n\nEverything you add uses context window. More chunks are not always better: irrelevant chunks distract the model and add cost."
         },
         {
+          "id": "prompt-adjustment-changing-a-prompt-on-purpose",
           "heading": "Prompt adjustment: changing a prompt on purpose",
           "body": "**Adjustment** is the loop of changing the prompt to fix an observed problem.\n\n1. Find the failure in traces, for example answers that ignore the required JSON format.\n2. Make one targeted change, such as an explicit format instruction plus one example.\n3. Re-run the same evaluation dataset and compare scores with the previous version.\n4. Keep the change only if it helps without breaking other cases.\n\nChanging several things at once makes it impossible to know which change helped. Judging from two or three hand-picked answers is not evidence."
         },
         {
+          "id": "versioning-prompts-with-the-prompt-registry",
           "heading": "Versioning prompts with the Prompt Registry",
           "body": "The MLflow **Prompt Registry** (Beta) stores prompt templates in Unity Catalog with versions and aliases.\n\n- Register with `mlflow.genai.register_prompt`, load with `load_prompt`, and manage aliases with `set_prompt_alias` and `delete_prompt_alias`.\n- An alias URI looks like `prompts:/catalog.schema.name@alias`.\n- Templates use double braces, `{{var}}`. LangChain expects single braces, so call `to_single_brace_format()` before passing the template to LangChain.\n- You need `CREATE FUNCTION`, `EXECUTE` and `MANAGE` on the schema, and `mlflow[databricks]>=3.1.0`.\n\nBecause code loads a prompt by alias, you can change which version an application uses without redeploying the code."
         }
@@ -602,18 +636,22 @@
       "summary": "Layered guardrails from prompt rules to Unity Gateway service policies, and how to judge quality and safety with LLM judges and human feedback when there is no single right answer.",
       "sections": [
         {
+          "id": "guardrails-come-in-layers",
           "heading": "Guardrails come in layers",
           "body": "No single control is enough. Combine several:\n\n- **Prompt rules:** scope limits and refusal instructions in the system prompt. Cheap, but a determined user can talk around them.\n- **Gateway policies:** checks that run outside the model, on every request and response.\n- **Data controls:** Unity Catalog permissions, row filters and column masks so the agent can only reach data the user is allowed to see.\n- **Monitoring:** scorers on production traces to catch what slips through."
         },
         {
+          "id": "unity-gateway-service-policies",
           "heading": "Unity Gateway service policies",
           "body": "In current docs, guardrails are **service policies** in **Unity Gateway** (exam guide: AI Gateway).\n\n- Policies can be **built-in**, **custom** or **external partner** policies (external is Beta).\n- A policy runs at the **input phase** (before the model sees the request) or the **output phase** (before the response reaches the user).\n- The built-in **Sensitive Data Detection** policy can block PII such as US Social Security or credit card numbers, including in **MCP tool calls**.\n\nThe older **AI Gateway guardrails** on serving endpoints (Public Preview) offer safety filtering and PII block-or-mask. They are **not supported on custom model endpoints**, and detection is not guaranteed to be complete.\n\nNote: `ai_query` calls to `system.ai` models go through Unity Gateway for usage tracking, budgets and permission checks, but **guardrails do not apply** there."
         },
         {
+          "id": "qualitative-assessment-with-judges",
           "heading": "Qualitative assessment with judges",
           "body": "Many GenAI outputs have no single correct answer. Use **LLM judges** from MLflow 3:\n\n- **`Safety`** flags harmful content. No ground truth needed.\n- **`Guidelines`** checks responses against rules you write in plain language, such as \"never promise a refund\" or \"use a friendly, formal tone\". No ground truth needed.\n- **`RelevanceToQuery`** checks that the answer addresses the question.\n- **`Correctness`** compares against an expected answer, so it **needs ground truth**.\n\nJudges can be aligned with human feedback, and you can write custom judges or code scorers with `@scorer`."
         },
         {
+          "id": "humans-stay-in-the-loop",
           "heading": "Humans stay in the loop",
           "body": "Judges scale, but subject-matter experts define what \"good\" means. Collect expert labels and feedback on real traces, use them to build evaluation datasets, and check that judge verdicts agree with the experts before relying on them."
         }
@@ -668,22 +706,27 @@
       "summary": "How to pick a generation model, an embedding model and a serving mode from task needs, model documentation and experiment metrics, without chasing the biggest model.",
       "sections": [
         {
+          "id": "start-from-the-task-not-the-leaderboard",
           "heading": "Start from the task, not the leaderboard",
           "body": "Write down the constraints before you look at models:\n\n- **Task type:** summarisation, extraction, classification, open Q&A, tool use.\n- **Quality bar:** what scores must the application reach on your evaluation set?\n- **Latency:** an interactive chat needs fast first tokens; an overnight batch job does not.\n- **Cost:** tokens per request multiplied by expected volume.\n- **Context:** how much text (instructions, retrieved chunks, history) must fit in one request?\n- **Governance:** licence terms and data-handling needs.\n\nA smaller model that meets the quality bar is usually the better choice. The model line-up on Databricks changes often, so learn the criteria rather than a list of names."
         },
         {
+          "id": "model-hubs-and-model-cards",
           "heading": "Model hubs and model cards",
           "body": "A **model hub** is a catalogue of models you can browse and download. A **model card** is the document that comes with a model. Read it for:\n\n- intended use and known limitations\n- **licence** (can you use it commercially?)\n- **context length** (maximum input tokens)\n- languages and training-data notes\n- published evaluation results\n\nA model card tells you what a model was built for. Only your own evaluation tells you whether it works for your data."
         },
         {
+          "id": "context-length-for-llms-and-embedding-models",
           "heading": "Context length for LLMs and embedding models",
           "body": "- **LLM context window:** the system prompt, retrieved chunks, conversation history and the expected output must all fit. If they do not, reduce the number of chunks, summarise history or choose a model with a longer context.\n- **Embedding model input limit:** text beyond the limit is cut off before embedding, so content at the end of an oversized chunk is never searchable. Keep chunk size within the limit.\n- Use the **same embedding model** for documents and queries. Vectors from different models do not live in the same space.\n\nEmbedding models seen in Databricks docs include `databricks-gte-large-en`, `databricks-bge-large-en` and `databricks-qwen3-embedding-0-6b`. These are the three that a Knowledge Assistant (legacy) accepts for an attached AI Search index."
         },
         {
+          "id": "serving-modes-in-foundation-model-apis",
           "heading": "Serving modes in Foundation Model APIs",
           "body": "- **Pay-per-token:** quick to start, shared capacity. **Priority pay-per-token** is chosen per request with `service_tier`.\n- **Provisioned throughput:** on-demand or reserved for a 1- or 3-month term. Choose it for **performance guarantees**, **fine-tuned models** or **HIPAA** workloads.\n- **AI Functions** such as `ai_query` for batch work over tables.\n\nDatabricks recommends the OpenAI client for calling these endpoints."
         },
         {
+          "id": "choosing-from-experiment-metrics",
           "heading": "Choosing from experiment metrics",
           "body": "Run each candidate model through the **same** evaluation dataset with the **same** scorers using `mlflow.genai.evaluate()`. Traces also record **latency, tokens and cost**. Then pick the model that meets every hard constraint with the best quality, not simply the top quality score."
         }
@@ -739,22 +782,27 @@
       "summary": "How MLflow 3 traces agents, how offline evaluation differs from production monitoring, and which judges work at each stage of the lifecycle.",
       "sections": [
         {
+          "id": "tracing-is-the-foundation",
           "heading": "Tracing is the foundation",
           "body": "An MLflow **trace** records the inputs, outputs and **intermediate steps** of a request, including tool calls and retrieval, along with **latency, tokens and cost**. In MLflow 3 on Databricks, traces, evaluations and prompts are stored in Unity Catalog.\n\nWhen an agent gives a wrong answer, the trace shows where it went wrong: a bad retrieval, a wrong tool choice or a bad final generation."
         },
         {
+          "id": "the-quality-loop",
           "heading": "The quality loop",
           "body": "The documented loop runs:\n\n**trace → find an issue → collect feedback or build a dataset → write a scorer → fix → evaluate → monitor**\n\nEvaluation and monitoring are two stages of that loop, not two names for the same thing."
         },
         {
+          "id": "evaluation-before-you-ship",
           "heading": "Evaluation: before you ship",
           "body": "- Runs with `mlflow.genai.evaluate()` over a **fixed evaluation dataset**.\n- Used to compare versions (prompts, models, retrievers) **before** deployment.\n- Can use judges that need **ground truth**, such as `Correctness`, `RetrievalSufficiency` and `ToolCallCorrectness`, because the dataset can hold expected answers.\n- Scorers can also be run from the Traces UI."
         },
         {
+          "id": "monitoring-after-you-ship",
           "heading": "Monitoring: after you ship",
           "body": "Production monitoring (Beta) scores **live traces** continuously.\n\n- Register a scorer, then start it with a sampling rate, for example `Safety().register(name=...)` then `.start(sampling_config=ScorerSamplingConfig(sample_rate=...))`.\n- `filter_string` narrows which traces are scored.\n- Up to **20 active scorers** per experiment. Results take **15–20 minutes** to appear.\n- Custom scorers used in monitoring must be written with `@scorer`.\n- Live traffic has no expected answers, so use judges that need **no ground truth**: `Safety`, `Guidelines`, `RelevanceToQuery`, `RetrievalRelevance`, `RetrievalGroundedness`, `ToolCallEfficiency`.\n- Use lower sampling rates for expensive judges to control cost.\n\nMonitoring observes; it does not block a response. Blocking is the job of guardrails."
         },
         {
+          "id": "agent-specific-and-multi-turn-judges",
           "heading": "Agent-specific and multi-turn judges",
           "body": "- Tool use: `ToolCallCorrectness` (needs ground truth) and `ToolCallEfficiency` (does not).\n- Conversations: session judges such as ConversationCompleteness, UserFrustration, KnowledgeRetention and ConversationalSafety score a whole conversation rather than one turn."
         }
@@ -810,14 +858,17 @@
       "summary": "How Genie Agents answer data questions, how to call them from code with the Conversation API, and how to combine them with other agents in a multi-agent system.",
       "sections": [
         {
+          "id": "genie-agents",
           "heading": "Genie Agents",
           "body": "**Genie Agents** (exam guide: Genie Spaces) are natural-language-to-SQL chats over curated Unity Catalog data.\n\n- Authors improve them with **example SQL, instructions, metrics and verified answers**.\n- Each agent supports up to **50 tables, views or metric views** and **200,000 conversations**.\n- Volume files are in Public Preview and MCP connectors are in Beta.\n\nKeep each Genie Agent focused on one subject area. Too many loosely related tables make SQL generation less reliable."
         },
         {
+          "id": "the-genie-conversation-api",
           "heading": "The Genie Conversation API",
           "body": "The **Genie Conversation API** (GA) lets an application talk to a Genie Agent from code.\n\n- **Chat mode** uses message endpoints.\n- **Agent mode** uses response and item endpoints and streams with **server-sent events (SSE)**.\n- Pass the **`conversation_id`** to ask follow-up questions in the same conversation, so Genie keeps the earlier context."
         },
         {
+          "id": "putting-genie-into-a-multi-agent-system",
           "heading": "Putting Genie into a multi-agent system",
           "body": "A multi-agent system routes each request to the specialist that can answer it: a Genie Agent for numbers in tables, a document Q&A agent for policies, a tool for actions.\n\n- Genie Agents act as **subagents through the built-in Databricks MCP server**.\n- Build a **custom orchestrator on Databricks Apps** only when you need routing the supervisor UI cannot express.\n- The **Supervisor Agent** (exam guide: Multiagent Supervisor) coordinates Genie Agents, agent endpoints, UC functions, MCP servers, custom agents and Knowledge Assistant endpoints. It allows up to **50 subagents**, and AI Search subagents must be **Delta Sync** indexes.\n- The Supervisor Agent has built-in access control: end users need **CAN QUERY** on endpoints and **SELECT** on tables.\n\nThe Supervisor Agent and Knowledge Assistant became **legacy** in October 2026. Current docs point to Genie Agents for low-code work and the Agent Bricks CLI for code. The exam guide still names both, so know how they work."
         }
@@ -872,14 +923,17 @@
       "summary": "Wrap retrieval, prompting and post-processing in one MLflow pyfunc model, log every building block it needs to run, and register it under a three-level Unity Catalog name so serving and governance work.",
       "sections": [
         {
+          "id": "why-wrap-a-chain-in-pyfunc",
           "heading": "Why wrap a chain in pyfunc",
           "body": "A RAG application is more than a model call. It cleans the request, retrieves chunks, builds a prompt, calls an LLM and reshapes the answer. MLflow's **pyfunc** flavor lets you package all of this as one model with a single `predict()` interface. Model Serving, batch jobs and evaluation can then call it the same way.\n\nA custom pyfunc is a subclass of `mlflow.pyfunc.PythonModel`:\n\n- `load_context(self, context)` runs **once** when the model loads. Put expensive set-up here, such as building clients or reading files from `context.artifacts`.\n- `predict(self, context, model_input, ...)` runs on **every request**. Put pre-processing (validate, normalise and truncate input), the chain call and post-processing (strip markup, add citations, enforce an output schema) here.\n\nSet-up that sits inside `predict()` runs again on every request. That adds latency and cost."
         },
         {
+          "id": "the-rag-building-blocks-you-must-log",
           "heading": "The RAG building blocks you must log",
           "body": "When you call `mlflow.pyfunc.log_model(...)`, the logged model must hold everything it needs to rebuild the chain somewhere else:\n\n| Building block | How it travels with the model |\n|---|---|\n| **Flavor** | pyfunc (or a library flavor such as LangChain) decides how MLflow loads and calls the model |\n| **Embedding model** | Reference the *same* embedding endpoint that built the index. Query vectors and document vectors must come from the same model. |\n| **Retriever** | The AI Search index name and endpoint, plus `num_results`, filters and query type, set in config or code |\n| **Dependencies** | `pip_requirements` / `conda_env` pin library versions. `code_paths` ships local helper modules. |\n| **Input example** | `input_example` documents a valid request, and MLflow can infer the signature from it |\n| **Signature** | `signature` states the input and output schema. Databricks registration rejects a model without a valid signature. |\n\nLeave out dependencies or helper code and the model can work in your notebook but fail when the serving container builds or loads it."
         },
         {
+          "id": "registering-to-unity-catalog",
           "heading": "Registering to Unity Catalog",
           "body": "In MLflow 3 the default registry URI is `databricks-uc`, so models register to **Models in Unity Catalog**. Use a three-level name, `catalog.schema.model`. You can pass `registered_model_name=\"prod.genai.support_rag\"` to `log_model`, or call `mlflow.register_model` afterwards. Each registration creates a new **model version**.\n\nUse **aliases** such as `Champion` to mark deployment status. An alias is a mutable, named pointer to one version. Moving `Champion` from version 3 to version 4 changes which version production uses, and the consuming code does not change. Because the model is a UC object, it gets UC privileges, lineage and sharing across workspaces."
         }
@@ -929,18 +983,22 @@
       "summary": "Databricks AI Search (exam guide: Mosaic AI Vector Search) serves the retrieval step of RAG. Choose the endpoint type and index type for your scale, freshness, latency and cost needs, then query it with ANN, hybrid or full-text search plus filters and reranking.",
       "sections": [
         {
+          "id": "naming-and-core-concepts",
           "heading": "Naming and core concepts",
           "body": "Databricks renamed Mosaic AI Vector Search to **Databricks AI Search** in June 2026. The exam guide uses the old name. Some API paths and the SQL function `vector_search()` still use the old wording, and the Python package is now `databricks-ai-search` (`AISearchClient`).\n\nThe objects are:\n\n- An **endpoint**, the serverless compute that hosts indexes.\n- An **index**, the searchable copy of your chunks and their embeddings.\n- An optional **embedding model endpoint** that Databricks calls for you.\n\nAI Search needs a Unity Catalog-enabled workspace and serverless compute. It does **not** enforce row- or column-level permissions inside an index, so do not depend on row filters to hide chunks from some users."
         },
         {
+          "id": "endpoint-types-scale-latency-and-cost",
           "heading": "Endpoint types: scale, latency and cost",
           "body": "| | Standard | Storage-optimized |\n|---|---|---|\n| Scale | Hundreds of millions of vectors (about 320M at 768 dimensions) | Over a billion vectors |\n| Indexing | Baseline | Much faster indexing (docs cite 10–20x) |\n| Query latency | Lowest | Adds roughly a few hundred ms |\n| Cost at large scale | Higher | Lower |\n| Continuous sync | Supported | Not supported |\n\nChoose **standard** when you need low latency, high query rates or near-real-time freshness. Choose **storage-optimized** when the corpus is very large, refresh on a schedule is acceptable and cost matters more than a few hundred milliseconds. Limits change over time, so check the docs before you rely on exact numbers."
         },
         {
+          "id": "index-types-and-freshness",
           "heading": "Index types and freshness",
           "body": "- **Delta Sync, Databricks-computed embeddings.** Point it at a Delta table and a text column, and Databricks embeds the text and keeps the index in sync.\n- **Delta Sync, self-managed embeddings.** Your table already has a vector column. It cannot be converted into a managed-embedding index later.\n- **Direct Vector Access.** There is no source table. Your code writes and deletes vectors through the REST API or SDK.\n- **Full-text** (Beta). BM25 keyword search only, on storage-optimized endpoints, with triggered sync.\n\nThe source table of a Delta Sync index needs **Change Data Feed** enabled (row tracking turns it on), so only changed rows re-sync. Sync is `TRIGGERED` (you start it, for example from a job after ingestion) or `CONTINUOUS` (it streams changes, which keeps the index fresher but costs more). Continuous sync needs a standard endpoint."
         },
         {
+          "id": "querying-ann-hybrid-filters-and-reranking",
           "heading": "Querying: ANN, hybrid, filters and reranking",
           "body": "Similarity search uses HNSW approximate nearest neighbour with **L2 distance**. If you want cosine similarity, normalize your vectors. `query_type` can be:\n\n- `ANN`, the default and purely semantic.\n- `HYBRID`, which merges vector and keyword results with reciprocal rank fusion. It helps when queries contain exact tokens such as SKUs, error codes or IDs.\n- `FULL_TEXT`, keyword only.\n\nUse **filters** on any column to narrow results, for example by product line or date. The **reranker** re-scores the top 50 candidates before returning `num_results`. You pass `columns_to_rerank` separately from `columns`, and it reads only the first 2,000 characters of each column. Hybrid queries have a lower result cap than ANN queries (the docs list 200 versus 10,000), so check limits before relying on very large num_results values."
         }
@@ -991,14 +1049,17 @@
       "summary": "Model Serving hosts custom chains, Databricks-hosted foundation models and external models on serverless compute. Pick the right Foundation Model API mode, use ai_query() for batch inference in SQL, and control who can call which endpoint.",
       "sections": [
         {
+          "id": "model-serving-and-foundation-model-apis",
           "heading": "Model Serving and Foundation Model APIs",
           "body": "**Model Serving** runs on serverless compute and autoscales. One endpoint can serve:\n\n- A custom MLflow model, such as your registered pyfunc chain.\n- A Databricks-hosted foundation model through the **Foundation Model APIs**.\n- An external model.\n\nFoundation Model APIs come in several modes:\n\n- **Pay-per-token.** Shared capacity, billed per token, good for prototyping and spiky traffic. A per-request priority tier exists (`service_tier`).\n- **Provisioned throughput.** Dedicated capacity, either on-demand or reserved for a term. Use it when you need performance guarantees, fine-tuned models or compliance needs such as HIPAA.\n- **AI Functions / batch.** Large offline jobs through `ai_query()`.\n\nDatabricks recommends calling these endpoints with the OpenAI-compatible client. The model line-up changes often, so do not hard-code assumptions about which models exist."
         },
         {
+          "id": "batch-inference-with-ai-query",
           "heading": "Batch inference with ai_query()",
           "body": "`ai_query()` calls a serving endpoint from SQL or PySpark for every row:\n\n```sql\nSELECT ticket_id,\n  ai_query(\n    endpoint => 'my-llm-endpoint',\n    request => CONCAT('Classify this ticket: ', body),\n    returnType => 'STRING',\n    modelParameters => named_struct('max_tokens', 50, 'temperature', 0.0),\n    failOnError => false\n  ) AS label\nFROM main.support.tickets;\n```\n\nBatch guidance from the docs:\n\n- Prefer the `system.ai` batch-optimized models over provisioning throughput.\n- Submit the **whole dataset in one query** and do not loop over small batches.\n- Set `failOnError => false` on large jobs so that bad rows return an error value and the job keeps running.\n- Use a structured response format when you need JSON output.\n\n`ai_query()` needs a recent Databricks Runtime and does **not** run on Classic SQL warehouses. Calls to `system.ai` models route through Unity Gateway, so usage tracking, budgets and permission checks apply. Guardrails, inference tables, rate limits and fallbacks do **not**."
         },
         {
+          "id": "access-control-for-serving-endpoints-and-apps",
           "heading": "Access control for serving endpoints and apps",
           "body": "Serving endpoints have their own permissions. **CAN QUERY** lets a principal call the endpoint. **CAN MANAGE** lets a principal change or delete it. Give an application's identity CAN QUERY only.\n\nA **Databricks App** can call endpoints in two ways:\n\n- **App authorization.** Calls run as the app's own service principal. `DATABRICKS_CLIENT_ID` and `DATABRICKS_CLIENT_SECRET` are injected, and every user gets the same access.\n- **User authorization (on behalf of the user).** The app requests scopes such as `sql`, `model-serving` or `genie`. It reads the signed-in user's token from the `x-forwarded-access-token` header, so UC row filters and column masks apply to that user.\n\nUse user authorization when results must depend on who is asking. Never put long-lived personal tokens in app code or in the browser."
         }
@@ -1053,22 +1114,27 @@
       "summary": "Moving an agent to production means choosing memory for conversation state, connecting tools through MCP, versioning prompts in the Prompt Registry, automating index updates and tests in CI/CD, and putting the agent in front of users through Databricks Apps, Slack or Teams.",
       "sections": [
         {
+          "id": "memory-sessions-vs-long-term-memory",
           "heading": "Memory: sessions vs long-term memory",
           "body": "- **Agent sessions** (Beta) keep continuity *within one conversation*, such as earlier turns and tool results.\n- **Agent memory** (Beta) keeps continuity *across conversations*. It is backed by Lakebase. Entries are keyed by actor, session and path. It supports semantic search, and access is controlled at the memory-store level.\n- **Memory pipelines** (Beta) distil past sessions into long-term memory.\n\nThe older self-managed Lakebase memory and the managed memory stores are now legacy. Keep personal data in memory only when the use case needs it. Memory is shared state, so control who can read each store."
         },
         {
+          "id": "tools-through-mcp",
           "heading": "Tools through MCP",
           "body": "The Model Context Protocol gives an agent a standard way to discover and call tools. On Databricks, under Unity Gateway > MCPs, there are three kinds:\n\n- **Databricks-provided (managed):** for example Genie One (recommended for natural-language business questions), Databricks SQL, GitHub, Slack and an AI Search MCP server. You do not host anything.\n- **External:** a self-hosted or third-party server that you register through the MCPs UI and share with your team.\n- **Custom:** tools you build yourself, including turning an HTTP REST API into MCP tools, using Databricks Apps templates.\n\nProvided and registered MCPs use **Unity Catalog permissions**. Unity Gateway governs them with access control, credential management, rate limits and policies such as PII screening on tool calls."
         },
         {
+          "id": "prompt-registry-versioning",
           "heading": "Prompt Registry versioning",
           "body": "The MLflow **Prompt Registry** (Beta) stores prompts as Unity Catalog objects:\n\n- `mlflow.genai.register_prompt(name=\"main.genai.support_prompt\", template=...)` creates a new **version** each time.\n- Templates use double-brace variables such as `{{question}}`. Call `to_single_brace_format()` when a framework like LangChain expects single braces.\n- `set_prompt_alias` points an alias (for example `production`) at a version. The application loads `prompts:/main.genai.support_prompt@production` with `load_prompt`, so changing the prompt does not need a code change.\n- To register prompts you need `CREATE FUNCTION`, `EXECUTE` and `MANAGE` on the schema, and `mlflow[databricks]` 3.1.0 or later."
         },
         {
+          "id": "ci-cd-for-genai-components",
           "heading": "CI/CD for GenAI components",
           "body": "Treat every part of the application as a versioned artifact and test each one:\n\n- **Code and config**: define jobs, pipelines, endpoints and apps as code with Declarative Automation Bundles. Deploy the same definition to dev, staging and prod.\n- **Index updates**: after the ingestion job writes new chunks to Delta, start a sync of a triggered Delta Sync index. Use continuous sync only if freshness justifies the cost. For Direct Vector Access indexes, your pipeline must upsert and delete vectors itself.\n- **Component tests**: unit-test parsing, chunking and tool functions. Run `mlflow.genai.evaluate()` with scorers on a fixed evaluation dataset as a gate before you promote a new model version or prompt version.\n- **Promotion**: move a UC model alias or a prompt alias only after the gate passes. Rolling back means moving the alias back."
         },
         {
+          "id": "user-interfaces",
           "heading": "User interfaces",
           "body": "- **Databricks Apps** host Python or Node web apps, for example Streamlit, Gradio, Dash, Flask or React, inside the workspace with built-in authentication. Projects created with the Agent Bricks CLI include a chat UI.\n- **Slack and Microsoft Teams**: Genie apps bring governed data Q&A into chat tools. These integrations are in preview, so check their current status.\n- The OpenAI-compatible APIs of deployed agents let any front end call them, as long as the caller's identity has permission."
         }
@@ -1123,22 +1189,27 @@
       "summary": "How Databricks enforces guardrails on model and tool traffic (Unity Gateway service policies, legacy AI Gateway guardrails) and how Unity Catalog masking protects data an app reads.",
       "sections": [
         {
+          "id": "why-guardrails-sit-outside-the-prompt",
           "heading": "Why guardrails sit outside the prompt",
           "body": "A system prompt that says \"never reveal card numbers\" is a request, not a control. A determined user, or a retrieved document, can talk the model out of it. Governance on Databricks puts guardrails **in the request path**, where they run whether or not the model cooperates.\n\nThink in two phases:\n\n- **Input phase**: screen the request *before* it reaches the model or tool (malicious prompts, pasted PII).\n- **Output phase**: screen the response *before* it reaches the user (leaked PII, unsafe text)."
         },
         {
+          "id": "unity-gateway-service-policies",
           "heading": "Unity Gateway service policies",
           "body": "Unity Gateway (the current name for AI Gateway) implements guardrails as **service policies** on AI securables in Unity Catalog. Service policies are in **Beta**. A policy can be:\n\n- **Built-in**: Databricks-managed policies under the `system.ai` namespace. Examples are **Sensitive Data Detection**, which detects structured sensitive data such as credit card and US Social Security numbers and can block the interaction or redact the matched values, and **Jailbreak** screening.\n- **Custom**: a SQL user-defined function or an LLM-as-a-judge check against criteria you write.\n- **External**: enforces the verdict of a third-party guardrail vendor.\n\nPolicies attach at the input phase (ON CALL) or the output phase (ON RESULT). They govern **MCP services** as well as model services. On an MCP service, for example, the Jailbreak policy can screen the tool call and its arguments on input and the tool result on output."
         },
         {
+          "id": "legacy-ai-gateway-guardrails-on-serving-endpoints",
           "heading": "Legacy AI Gateway guardrails on serving endpoints",
           "body": "The older endpoint-level AI Gateway guardrails (Public Preview) give you **safety filtering** and **PII handling** where PII can be **blocked or masked**. Know the limits:\n\n- PII detection uses Presidio and targets **US** categories.\n- Detection is **not guaranteed** to catch every instance, so treat it as one layer.\n- These guardrails are **not supported on custom model endpoints**.\n\n**Mask vs block:** masking replaces the detected value so the request can still be answered; blocking rejects the whole request or response."
         },
         {
+          "id": "where-guardrails-do-not-apply",
           "heading": "Where guardrails do not apply",
           "body": "Not every path through Unity Gateway gets guardrails. Calls to `system.ai` models from `ai_query()` get usage tracking, budgets and permission checks, but **guardrails, inference tables, rate limits and fallbacks do not apply**. For batch jobs that touch sensitive text, clean or mask the data *before* the call."
         },
         {
+          "id": "masking-the-data-itself-with-unity-catalog",
           "heading": "Masking the data itself with Unity Catalog",
           "body": "Guardrails inspect traffic; **Unity Catalog column masks and row filters** control what data a query returns in the first place.\n\n- In Databricks Apps, UC row filters and column masks apply per user only when the app uses **user authorization** (on behalf of the user). With **app authorization**, every query runs as the app's service principal.\n- **Databricks AI Search does not support row- or column-level permissions.** Anything you index is retrievable by anyone who can query the index, so exclude or split sensitive content *before* indexing."
         }
@@ -1201,14 +1272,17 @@
       "summary": "Data-side governance for RAG and agents: confirm you may use a source, clean problematic text before it is indexed, and treat both user input and retrieved content as untrusted.",
       "sections": [
         {
+          "id": "legal-and-licensing-checks-come-first",
           "heading": "Legal and licensing checks come first",
           "body": "Before a document goes into a knowledge base, confirm you are **allowed** to use it that way. Check the license or terms of use, contracts and data-use agreements, and any privacy obligations for personal data in it.\n\nCommon traps:\n\n- \"It is public on the web\" does **not** mean it is licensed for reuse or redistribution.\n- Citing or attributing a source in the answer does **not** grant a license.\n- Masking PII handles privacy, not copyright or contract terms.\n\nKeep track of where each document came from and under what terms (Unity Catalog lineage and tags help), so you can remove it later if needed."
         },
         {
+          "id": "mitigating-problematic-text-in-source-data",
           "heading": "Mitigating problematic text in source data",
           "body": "A RAG app repeats what it retrieves. Toxic language, bias, outdated policy, or PII in the corpus will surface in answers. Fix it **at data preparation**, before chunking and indexing:\n\n- Filter or redact offensive text and PII.\n- Remove stale or duplicate documents.\n- Curate which sources are in scope.\n\nThen add an **output-phase guardrail** as a safety net. Do not rely on the system prompt alone to make the model ignore bad passages."
         },
         {
+          "id": "guardrails-against-malicious-inputs",
           "heading": "Guardrails against malicious inputs",
           "body": "Malicious input arrives two ways:\n\n- **Direct**: a user types a jailbreak or prompt-injection attempt.\n- **Indirect**: instructions are hidden in a document, web page or tool result that the agent retrieves.\n\nUse defense in depth:\n\n1. **Input-phase guardrails** (Unity Gateway service policies) that screen requests and MCP tool calls before they reach the model or tool.\n2. **Least privilege**: give agents only the tools and data they need, and use user authorization so actions run with the caller's permissions.\n3. **Treat retrieved content as data, not instructions.** Vet sources before indexing.\n4. **Output-phase checks** before anything reaches the user."
         }
@@ -1258,22 +1332,27 @@
       "summary": "How MLflow 3 traces, evaluation datasets, built-in LLM judges, custom scorers and expert feedback fit into one quality loop, and how to use the resulting metrics to choose a model.",
       "sections": [
         {
+          "id": "the-quality-loop",
           "heading": "The quality loop",
           "body": "MLflow 3 for GenAI stores **traces, evaluations and prompts in Unity Catalog**. The documented loop is:\n\n1. **Trace** the app so every request is recorded.\n2. **Find an issue** by reading traces or feedback.\n3. **Collect feedback or build a dataset** of representative inputs (and expected outputs where you have them).\n4. **Write or pick a scorer** that detects the issue.\n5. **Fix** the prompt, retriever, tools or model.\n6. **Evaluate** the new version offline against the dataset.\n7. **Monitor** in production with the same scorers.\n\nThe point to remember: the **same scorers** are used offline (development) and online (production monitoring). Evaluation answers *is this version good enough to ship?* Monitoring answers *is it still behaving well on real traffic?*"
         },
         {
+          "id": "tracing",
           "heading": "Tracing",
           "body": "A **trace** records the inputs, outputs and **intermediate steps** (retrieval, tool calls, LLM calls) of one request, with **latency, token counts and cost**. Tracing is how you find *which step* is slow, expensive or wrong, which an end-to-end latency number cannot tell you.\n\nAgents built with the Agent Bricks CLI have MLflow tracing on by default. You can also run scorers directly from the **Traces UI** to try them on real requests."
         },
         {
+          "id": "scorers-and-built-in-llm-judges",
           "heading": "Scorers and built-in LLM judges",
           "body": "Offline evaluation runs through `mlflow.genai.evaluate()` with a dataset and a list of scorers. A **scorer** is anything that grades a trace: a built-in **LLM judge**, a custom judge, or a code scorer written with the `@scorer` decorator.\n\nNot every judge needs labels. This is the most testable detail:\n\n| Needs ground truth (expected answers/facts) | No ground truth needed |\n|---|---|\n| `Correctness` | `RelevanceToQuery` |\n| `RetrievalSufficiency` | `RetrievalRelevance` |\n| `ToolCallCorrectness` | `RetrievalGroundedness` |\n| | `Safety`, `Guidelines`, `ToolCallEfficiency` |\n\n`ExpectationsGuidelines` needs per-row guidelines in the expectations, but not a ground-truth answer.\n\nTypical mapping from problem to judge:\n\n- Answer makes claims that are not in the retrieved context (hallucination) -> `RetrievalGroundedness`.\n- Retrieved chunks are off-topic -> `RetrievalRelevance`.\n- Retrieved chunks do not contain everything needed for the expected answer -> `RetrievalSufficiency` (needs ground truth).\n- Answer ignores the question -> `RelevanceToQuery`.\n- Answer is factually wrong versus a known answer -> `Correctness` (needs ground truth).\n- Business rules such as tone or \"never quote prices\" -> `Guidelines`.\n\nFor whole conversations there are **multi-turn (session) judges**, for example ConversationCompleteness, UserFrustration and KnowledgeRetention."
         },
         {
+          "id": "sme-feedback-and-judge-alignment",
           "heading": "SME feedback and judge alignment",
           "body": "Subject-matter experts usually cannot write scorers, but they can say whether an answer is right. The MLflow **human feedback** features (the Review App, trace labeling and, in Beta, review queues) let experts label traces and leave assessments without touching code. That feedback is used to:\n\n- build or extend the **evaluation dataset** (including expected answers that unlock ground-truth judges), and\n- **align LLM judges** with human judgement, so automated scores agree with the experts."
         },
         {
+          "id": "choosing-model-size-and-architecture-from-metrics",
           "heading": "Choosing model size and architecture from metrics",
           "body": "Pick models with evidence, not leaderboards. Run each candidate (a smaller model, a larger model, a RAG chain versus an agent with tools) against the **same evaluation dataset and scorers**, then compare quality scores alongside the **latency, tokens and cost** that traces record.\n\nA sound rule: choose the **smallest or cheapest option that meets the quality bar** on your own data. A larger model that scores the same costs more and is usually slower. If a smaller model fails only on one judge (for example groundedness), fix retrieval or the prompt before paying for a bigger model."
         }
@@ -1332,22 +1411,27 @@
       "summary": "How to keep watching a deployed GenAI app: production scorers with sampling, inference tables for request logs, Unity Gateway usage tracking, rate limits and budgets, and the main levers for LLM cost.",
       "sections": [
         {
+          "id": "naming-note",
           "heading": "Naming note",
           "body": "The exam guide says **AI Gateway**. The current docs call it **Unity Gateway** (the older per-endpoint experience is documented as legacy \"AI Gateway for serving endpoints\"). The concepts tested are the same: usage tracking, inference tables, rate limits and guardrails."
         },
         {
+          "id": "production-monitoring-with-scorers",
           "heading": "Production monitoring with scorers",
           "body": "Production monitoring (Beta) runs your scorers automatically on live traces. You **register** a scorer and then **start** it with a sampling configuration, for example:\n\n```python\nsafety = Safety().register(name=\"safety\")\nsafety.start(sampling_config=ScorerSamplingConfig(sample_rate=0.2))\n```\n\n- `sample_rate` controls what fraction of traces is scored. Lower it for expensive LLM judges on busy apps.\n- `filter_string` narrows which traces are scored.\n- Custom scorers must be plain `@scorer` functions (class-based scorers cannot be registered), defined and registered from a Databricks notebook.\n- An experiment can have at most 20 active monitoring scorers, and results take about 15-20 minutes to appear.\n- Traces stored in Unity Catalog need a SQL warehouse configured for monitoring.\n\nBecause production traffic has no expected answers, monitor with judges that need no ground truth (Safety, Guidelines, RetrievalGroundedness, RelevanceToQuery) and with multi-turn session judges such as UserFrustration, which production monitoring also supports."
         },
         {
+          "id": "inference-tables",
           "heading": "Inference tables",
           "body": "An **inference table** logs each request and response of a serving endpoint to a **Unity Catalog Delta table** that Databricks creates for you. Use it to audit payloads, debug errors, measure latency and build new evaluation datasets from real traffic.\n\n- Columns include `request_id`, `requester`, `latency_ms`, `time_to_first_byte_ms`, `status_code`, `request`, `response` and `logging_error_codes`.\n- Delivery is asynchronous: rows **can take up to an hour** to appear.\n- Very large payloads are not logged, and some error responses (such as 401, 403, 429, 500) may be missing, so it is not a complete error log.\n- Logging is billed per request.\n- Inference tables **do not apply to `ai_query`** batch calls on `system.ai` models."
         },
         {
+          "id": "usage-tracking-rate-limits-and-budgets",
           "heading": "Usage tracking, rate limits and budgets",
           "body": "Unity Gateway records **usage in system tables**, which is the basis for chargeback and spend dashboards. Legacy endpoints use `system.serving.endpoint_usage` and `system.serving.served_entities`.\n\nOther Unity Gateway controls:\n\n- **Rate limits** on model and MCP services, to stop one user or app from exhausting capacity or budget.\n- **Budgets** with hard caps.\n- **Fallbacks and traffic splitting** between models.\n- **Guardrails** as service policies (see the Governance domain).\n\nFor `ai_query` calls on `system.ai` models, usage tracking, budgets and permission checks apply, but guardrails, inference tables, rate limits and fallbacks do not."
         },
         {
+          "id": "controlling-llm-costs",
           "heading": "Controlling LLM costs",
           "body": "- **Right-size the model:** use evaluation results to pick the smallest model that meets the bar.\n- **Pick the right serving mode:** pay-per-token for variable or low traffic; provisioned throughput when you need guaranteed performance, run fine-tuned models or have steady high volume. Priority pay-per-token costs more for faster service, so use it only where latency matters.\n- **Batch offline work** with `ai_query` against batch-optimized `system.ai` models, submitting the whole dataset in one query.\n- **Cap usage** with rate limits and budgets.\n- **Sample expensive judges** in monitoring (low sample rates such as 0.05-0.2) and use `filter_string`.\n- **Trim tokens:** shorter prompts, fewer retrieved chunks, `max_tokens` limits."
         }

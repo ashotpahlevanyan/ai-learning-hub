@@ -77,22 +77,27 @@
       "summary": "Design event-driven systems with the right delivery guarantees, pick between Step Functions and Lambda durable functions, choose container and service-networking options, and isolate tenants.",
       "sections": [
         {
+          "id": "delivery-guarantees-ordering-and-idempotency",
           "heading": "Delivery guarantees, ordering and idempotency",
           "body": "- **SQS standard** queues deliver **at least once** and do not guarantee order. Consumers must be **idempotent**: record a unique idempotency key (for example an order ID) with a DynamoDB conditional write and skip work already done.\n- **SQS FIFO** orders messages **per message group ID**, not per queue. Throughput scales with the number of distinct group IDs, so use a high-cardinality key such as customer ID. High-throughput FIFO adds partitions automatically.\n- **Kinesis Data Streams** orders records **per shard**, and the **partition key** picks the shard. A low-cardinality key (for example a country code) creates hot shards.\n- **SNS** fans out to many subscribers. **EventBridge** routes events by content-based rules and can target an **event bus in another account or Region**, which is the standard way to centralize events across an organization."
         },
         {
+          "id": "durable-workflows-step-functions-vs-lambda-durable-functions",
           "heading": "Durable workflows: Step Functions vs Lambda durable functions",
           "body": "- **Step Functions Standard**: runs up to **1 year**, **exactly-once** execution, billed per state transition, supports `.sync` and `.waitForTaskToken` (human approval, callbacks) and Distributed Map. Use it for non-idempotent steps such as payments.\n- **Step Functions Express**: runs up to **5 minutes**, **at-least-once** (async) or **at-most-once** (sync), billed by executions, duration and memory. No `.waitForTaskToken` or `.sync`. Use it for high-volume, idempotent event processing.\n- The workflow type **cannot be changed** after creation.\n- **Lambda durable functions** keep multi-step logic in code inside Lambda for up to one year using **checkpoint/replay**: after an interruption the function reruns and skips completed steps. **Waits suspend execution without compute charges**, which suits human-in-the-loop steps. Choose Step Functions when you orchestrate many AWS services visually; choose durable functions for Lambda-centric code. Combining both is common."
         },
         {
+          "id": "containers-scaling-and-service-to-service-networking",
           "heading": "Containers, scaling and service-to-service networking",
           "body": "- **ECS** is the AWS-native orchestrator; **EKS** runs upstream Kubernetes; **Fargate** removes node management for both.\n- Scaling: Lambda scales with **concurrency** (reserved/provisioned); Kubernetes uses the **Horizontal Pod Autoscaler** for pods and the **Cluster Autoscaler** for nodes when pods are pending; ECS uses **service auto scaling** through Application Auto Scaling.\n- **ECS Service Connect** gives ECS services name-based discovery and traffic metrics inside a namespace.\n- **Amazon VPC Lattice** connects services **across VPCs and accounts** through a **service network** shared with AWS RAM. Targets include EC2, IPs, Lambda, ALB, ECS tasks and Kubernetes pods. **IAM auth policies** apply at the service network and service. It **supports overlapping CIDRs** and has no inter-AZ data transfer charges.\n- **ECR**: enable image scanning and **lifecycle policies** to expire untagged or old images."
         },
         {
+          "id": "ingress-edge-and-real-time-apis",
           "heading": "Ingress, edge and real-time APIs",
           "body": "- **ALB** routes HTTP/HTTPS by host and path; **NLB** handles TCP/UDP/TLS with static IPs per AZ; on EKS the **AWS Load Balancer Controller** provisions them from Ingress and Service objects.\n- **API Gateway** adds throttling, authorizers and usage plans. **WebSocket APIs** keep persistent connections; store connection IDs (for example in DynamoDB) and post messages back through the connections API.\n- **CloudFront Functions**: lightweight JavaScript on viewer request/response only, for header rewrites, redirects and cache-key normalization at very high scale. **Lambda@Edge**: also runs on origin request/response, can make network calls and read the body, for heavier logic."
         },
         {
+          "id": "multi-tenant-isolation",
           "heading": "Multi-tenant isolation",
           "body": "- **Silo**: dedicated resources per tenant (account, database or stack). Strongest isolation, highest cost.\n- **Pool**: shared resources with tenant context enforced on every request: put the tenant ID in **Cognito** token claims, propagate it, and enforce **row-level security** in the database or tenant-scoped IAM credentials.\n- **Tenant-specific encryption**: a KMS key per tenant lets you revoke or audit one tenant's data independently.\n- Mixed tiers are common: pool for standard tenants, silo for premium or regulated tenants.\n- Keep compute **stateless**: move session and state to DynamoDB, ElastiCache or S3 so any instance can serve any request."
         }
@@ -159,18 +164,22 @@
       "summary": "Use Amazon Bedrock, Knowledge Bases, AgentCore and SageMaker AI endpoints to build RAG, agents and inference into architectures that span accounts.",
       "sections": [
         {
+          "id": "amazon-bedrock-as-the-model-layer",
           "heading": "Amazon Bedrock as the model layer",
           "body": "- Bedrock gives API access to many foundation models from several providers through `bedrock-runtime`. Architect for model choice: don't hard-code a single model.\n- **Cross-Region inference profiles** spread load across Regions. A **geographic** profile (US, EU, APAC) keeps processing in that geography and fits residency rules; a **global** profile is cheaper (about 10%) but can route to any commercial Region. SCPs must allow the destination Regions.\n- In multi-account setups, keep model access, guardrails and invocation logging consistent per account and Region; invocation logging is off by default and writes to the same account and Region."
         },
         {
+          "id": "rag-with-knowledge-bases",
           "heading": "RAG with Knowledge Bases",
           "body": "- **Managed Knowledge Base** (recommended): built-in connectors for S3, SharePoint, Confluence, Google Drive, OneDrive and a web crawler, **document-level ACL filtering**, agentic multi-hop retrieval and AgentCore Gateway integration.\n- **Customer-managed** Knowledge Base: bring your own vector store such as OpenSearch Serverless, Aurora or Neptune.\n- Both return **citations** and support reranking. Structured data stores are also supported.\n- Ingestion chunks and embeds documents into the vector store; retrieval adds the relevant chunks to the prompt."
         },
         {
+          "id": "agents-with-bedrock-agentcore",
           "heading": "Agents with Bedrock AgentCore",
           "body": "AgentCore is modular and works with any framework or model:\n- **Runtime**: serverless hosting with session isolation (MCP/A2A).\n- **Memory**: short- and long-term memory across sessions.\n- **Gateway**: turns existing APIs and Lambda functions into **MCP tools**.\n- **Identity**: inbound JWT authorization and outbound credentials so agents act on behalf of users.\n- **Code Interpreter**, **Browser**, **Observability** (OTEL), **Evaluations**, and **Policy** (deterministic tool-call rules)."
         },
         {
+          "id": "sagemaker-ai-endpoints",
           "heading": "SageMaker AI endpoints",
           "body": "- **Real-time endpoints**: persistent, low-latency, auto scaling.\n- **Serverless inference**: intermittent traffic, scales to zero, tolerates cold starts.\n- **Asynchronous inference**: large payloads or long processing, requests queued, can scale to zero.\n- **Batch transform**: offline scoring of whole datasets.\n- Use SageMaker AI when you host your own or custom models; use Bedrock for managed foundation models. Model training and fine-tuning are out of scope for this exam."
         }
@@ -231,18 +240,22 @@
       "summary": "Build resilient Direct Connect and VPN designs with Transit Gateway, resolve DNS in both directions, move data with DataSync, Storage Gateway and Transfer Family, and place compute on Outposts, Local Zones or Anywhere.",
       "sections": [
         {
+          "id": "direct-connect-resiliency",
           "heading": "Direct Connect resiliency",
           "body": "- **Maximum resiliency**: separate connections on separate devices in **more than one location** (99.99% SLA).\n- **High resiliency**: one connection at each of multiple locations (99.9% SLA).\n- **Development/test**: separate devices in a single location; does not survive a location failure.\n- **Site-to-Site VPN** is a cheaper backup. With Transit Gateway, when the same prefix arrives over the DX gateway and VPN, **DX is preferred** and VPN is the backup.\n- Use one DX gateway for ECMP across transit VIFs. There is no ECMP between different attachment types. TGW **peering attachments use static routes only**."
         },
         {
+          "id": "hybrid-dns-with-route-53-resolver-endpoints-vpc-resolver",
           "heading": "Hybrid DNS with Route 53 Resolver endpoints (VPC Resolver)",
           "body": "- **Inbound endpoint**: on-premises DNS servers forward queries **into** AWS to resolve private hosted zones.\n- **Outbound endpoint + forwarding rules**: VPCs resolve **on-premises** domains through conditional forwarding.\n- Share forwarding rules across accounts with AWS RAM. Endpoints work over DX or VPN.\n- Split-horizon: the same name answers differently from a public and a private hosted zone."
         },
         {
+          "id": "data-movement-and-file-integration",
           "heading": "Data movement and file integration",
           "body": "- **DataSync**: online, scheduled, incremental transfer from NFS/SMB/HDFS/object storage into S3, EFS or FSx, with verification.\n- **Storage Gateway**: hybrid access. File Gateway gives NFS/SMB backed by S3 with a local cache; Volume and Tape Gateway serve block and backup use cases.\n- **Transfer Family**: managed SFTP/FTPS/FTP/AS2 endpoints in front of S3 or EFS, for partners who keep their file workflows.\n- **Legacy integration**: **Amazon MQ** for apps using JMS/AMQP/MQTT/STOMP brokers; API Gateway plus Lambda to transform legacy payloads.\n- For offline transfers, new customers use **Data Transfer Terminal** or partners; Snow devices are not available to new customers."
         },
         {
+          "id": "hybrid-and-edge-compute",
           "heading": "Hybrid and edge compute",
           "body": "- **Outposts**: AWS infrastructure and APIs in your own data center, for local data processing, residency or low latency to on-premises systems.\n- **Local Zones**: AWS-run infrastructure in metro areas for single-digit-millisecond latency to end users.\n- **EKS Anywhere / ECS Anywhere**: run containers on your own hardware with AWS-consistent tooling."
         }
@@ -303,18 +316,22 @@
       "summary": "Connect many VPCs, plan addressing with IPAM, inspect traffic with Network Firewall, WAF and GWLB, adopt IPv6, and route users globally with Route 53, Global Accelerator and Cloud WAN.",
       "sections": [
         {
+          "id": "multi-vpc-patterns",
           "heading": "Multi-VPC patterns",
           "body": "- **VPC peering**: one-to-one, **non-transitive**, no overlapping CIDRs.\n- **Transit Gateway**: Regional hub; route tables segment traffic.\n- **PrivateLink**: exposes one service behind an NLB through interface endpoints; one-way, works with overlapping CIDRs. Common for SaaS providers.\n- **Gateway endpoints**: S3 and DynamoDB only, free, same Region, via route-table prefix lists. They remove NAT gateway processing charges for that traffic.\n- **Cloud WAN**: managed global WAN defined by a **core network policy**. **Segments** are isolated routing domains; attachments map to segments by tag; network function groups steer traffic through firewalls."
         },
         {
+          "id": "addressing-and-ipv6",
           "heading": "Addressing and IPv6",
           "body": "- **VPC IPAM** manages organization-wide pools, allocates non-overlapping CIDRs by rule, and tracks usage and history.\n- **Dual-stack** VPCs add IPv6 alongside IPv4. Use an **egress-only internet gateway** for outbound-only IPv6 traffic (the IPv6 equivalent of a NAT gateway's one-way behavior)."
         },
         {
+          "id": "inspection-and-filtering",
           "heading": "Inspection and filtering",
           "body": "- **AWS Network Firewall**: managed stateful firewall. It can **attach natively to Transit Gateway** with appliance mode set automatically, which removes the need to run an inspection VPC.\n- **Gateway Load Balancer**: inserts **third-party appliances** transparently using GENEVE, scaling them behind one endpoint.\n- **AWS WAF**: layer-7 rules on CloudFront, ALB, API Gateway and others (SQL injection, rate limits, bot control).\n- **Security groups** are stateful and attach to ENIs; **NACLs** are stateless subnet rules. **VPC Flow Logs** record traffic metadata.\n- With TGW and stateful appliances, enable **appliance mode** so both directions of a flow use the same AZ."
         },
         {
+          "id": "global-routing",
           "heading": "Global routing",
           "body": "- **Route 53 policies**: latency (lowest-latency Region), geolocation (by user location, for content or legal rules), geoproximity (by distance with bias), weighted (split traffic), failover (with health checks), multivalue answer.\n- **Global Accelerator**: static **anycast IP addresses**, traffic enters the AWS network at the nearest edge, works for **TCP and UDP**, and fails over between endpoints quickly without DNS caching delays.\n- **CloudFront**: caching and edge compute for HTTP(S)."
         }
@@ -375,18 +392,22 @@
       "summary": "Build lakehouses with S3, Lake Formation and Iceberg, choose analytics and database services, design multi-Region data with Aurora Global Database and DynamoDB global tables, and add caching.",
       "sections": [
         {
+          "id": "lakehouse-and-analytics",
           "heading": "Lakehouse and analytics",
           "body": "- Store data in **S3**, catalog it in the **Glue Data Catalog**, and govern it with **Lake Formation** (fine-grained table, column and row permissions, cross-account sharing).\n- **Apache Iceberg** tables add ACID transactions, schema evolution and time travel on S3; Athena, EMR, Glue and Redshift can query them.\n- **Redshift Spectrum** queries S3 data from Redshift without loading it.\n- **EMR** runs Spark/Hadoop for large batch or streaming jobs; **MSK** is managed Apache Kafka for existing Kafka producers and consumers; **AppFlow** pulls data from SaaS applications.\n- **AWS Clean Rooms** lets partners analyze combined data **without sharing or copying raw data**, with analysis rules controlling what queries can run."
         },
         {
+          "id": "database-selection",
           "heading": "Database selection",
           "body": "- **RDS / Aurora**: relational, transactions, SQL joins.\n- **DynamoDB**: key-value at any scale with predictable single-digit-millisecond latency.\n- **Redshift**: data warehouse for analytical SQL.\n- Purpose-built: DocumentDB (documents), Neptune (graph), Keyspaces (Cassandra), Timestream (time series), MemoryDB (durable in-memory)."
         },
         {
+          "id": "high-availability-and-multi-region-data",
           "heading": "High availability and multi-Region data",
           "body": "- **RDS Multi-AZ**: synchronous standby for availability; **read replicas** scale reads.\n- **Aurora Global Database**: up to 5 secondary Regions, typical lag under 1 second, promote a secondary in under a minute. Fits **write-global** designs (one writer Region); write forwarding is available.\n- **DynamoDB global tables**: active-active, **write-local** in every Region, last writer wins on conflicts."
         },
         {
+          "id": "storage-and-caching",
           "heading": "Storage and caching",
           "body": "- **EBS**: block for one instance (or Multi-Attach for specific cases). **EFS**: shared NFS for Linux. **FSx**: Windows File Server (SMB, AD), Lustre (HPC, S3-linked), NetApp ONTAP, OpenZFS.\n- **ElastiCache** (Redis OSS/Valkey/Memcached): general caching and session store.\n- **DAX**: in-memory cache in front of DynamoDB with **microsecond** reads and no application caching logic beyond the DAX client."
         }
@@ -447,18 +468,22 @@
       "summary": "Pick the right identity plane for each caller: IAM Identity Center for the workforce, Cognito for app users, EKS Pod Identity or IRSA for pods, IAM Roles Anywhere for servers outside AWS, and Verified Access for VPN-less app access.",
       "sections": [
         {
+          "id": "workforce-federation-with-iam-identity-center",
           "heading": "Workforce federation with IAM Identity Center",
           "body": "In a multi-account organization, **IAM Identity Center** is the default answer for human access to AWS accounts.\n\n- Connect an external identity provider (Okta, Microsoft Entra ID and similar) over **SAML 2.0** for sign-in.\n- Turn on **SCIM** so users and groups are provisioned and deprovisioned automatically from the IdP. Without SCIM, someone has to create users by hand and leavers can linger.\n- Define **permission sets** once and assign them to *groups* on *accounts*. Identity Center creates the matching IAM roles in each account for you.\n- Users get short-lived credentials through the access portal or CLI. No IAM users, no long-term keys.\n\nThe anti-patterns the exam likes to offer: IAM users in every account, per-account SAML trusts maintained by hand, or Cognito used for employees."
         },
         {
+          "id": "customer-identity-with-amazon-cognito",
           "heading": "Customer identity with Amazon Cognito",
           "body": "- A **user pool** is a user directory and OIDC/OAuth 2.0 token issuer. It handles sign-up, sign-in, MFA and federation with social or enterprise IdPs, and issues ID and access tokens to your app.\n- An **identity pool** exchanges a token (from a user pool or another IdP) for **temporary AWS credentials** tied to an IAM role. Use it when the client must call AWS directly, for example uploading to S3 from a mobile app.\n- Scope per-user access with policy variables such as `${cognito-identity.amazonaws.com:sub}` in the role policy, so each user can only touch their own prefix.\n- For APIs, an API Gateway Cognito authorizer validates user pool tokens. Cognito tokens can also carry tenant context for multi-tenant apps."
         },
         {
+          "id": "pods-servers-and-non-aws-workloads",
           "heading": "Pods, servers and non-AWS workloads",
           "body": "**EKS Pod Identity** maps an IAM role to a Kubernetes service account *without an OIDC provider*. The role trusts the service principal `pods.eks.amazonaws.com`, so the same role can be reused across many clusters without editing its trust policy each time. It needs the Pod Identity Agent DaemonSet and is **not supported on Fargate, Windows nodes, Outposts or EKS Anywhere**. Use **IRSA** (IAM roles for service accounts, OIDC based) there.\n\n**IAM Roles Anywhere** gives workloads outside AWS (on-premises servers, other clouds) temporary credentials in exchange for an **X.509 certificate**:\n- A **trust anchor** points to AWS Private CA or your own external CA.\n- A **profile** lists the roles that can be assumed and can add a session policy.\n- No long-term access keys are stored on the server. The trust boundary is the account, and the resources are Regional."
         },
         {
+          "id": "vpn-less-application-access-with-verified-access",
           "heading": "VPN-less application access with Verified Access",
           "body": "**AWS Verified Access** gives users access to internal applications **without a VPN**. Every request is evaluated against **identity** (from your IdP) and **device trust** data, and every access attempt is logged. This is the zero-trust answer when a scenario says \"replace the VPN\", \"check device posture on every request\" or \"log each access attempt\". It is billed per application-hour plus data processed."
         }
@@ -520,18 +545,22 @@
       "summary": "Permissions boundaries, session policies, external IDs and ABAC keep delegated access tight; IAM Access Analyzer, VPC endpoint policies, SCPs and RCPs draw the perimeter around your data.",
       "sections": [
         {
+          "id": "policy-types-that-only-ever-reduce-permissions",
           "heading": "Policy types that only ever reduce permissions",
           "body": "Effective permissions are the **intersection** of every applicable limit. Only identity-based and resource-based policies grant access. These only cap it:\n\n- **Permissions boundary**: a managed policy attached to a user or role that sets the maximum it can ever have. Classic use: let developers create roles for their Lambda functions, but require (with the condition key `iam:PermissionsBoundary`) that every role they create carries the boundary. This prevents privilege escalation.\n- **Session policy**: passed inline or by ARN when calling `AssumeRole` (or in an IAM Roles Anywhere profile). The session gets the intersection of the role's policies and the session policy. A broker that assumes one role for many tenants can scope each session to one tenant prefix. A session policy **cannot add** permissions the role does not already have.\n- **SCPs and RCPs** (see the governance lesson) cap principals and resources across accounts."
         },
         {
+          "id": "cross-account-roles-and-the-confused-deputy",
           "heading": "Cross-account roles and the confused deputy",
           "body": "When a third party (a SaaS vendor, a monitoring tool) assumes a role in your account, put the vendor's account in the trust policy **and** require `sts:ExternalId` with a value unique to you. Without it, another customer of the same vendor could trick the vendor into using your role: the **confused deputy** problem."
         },
         {
+          "id": "attribute-based-access-control-abac",
           "heading": "Attribute-based access control (ABAC)",
           "body": "With ABAC you write a few policies that compare tags instead of one policy per project:\n\n```json\n\"Condition\": {\"StringEquals\": {\"aws:ResourceTag/project\": \"${aws:PrincipalTag/project}\"}}\n```\n\nPrincipal tags can come from IdP session tags through IAM Identity Center or SAML. New projects need new tags, not new policies, so ABAC scales with team growth. Protect the tags themselves: deny changing the `project` tag except through approved roles, for example with an SCP."
         },
         {
+          "id": "data-perimeter-tools",
           "heading": "Data perimeter tools",
           "body": "- **IAM Access Analyzer** – *external access* findings show resources shared outside your **zone of trust** (an account or the whole organization). *Unused access* findings flag unused roles, keys and permissions. Policy validation and custom policy checks catch problems before deployment.\n- **VPC endpoint policies** limit which principals and resources can be reached through an endpoint, for example only buckets in your organization.\n- **SCPs** stop *your* principals from acting outside the perimeter. **RCPs** stop *anyone*, including principals outside the org, from reaching your resources unless conditions such as `aws:PrincipalOrgID` match.\n- **Verified Access** brings the same idea to application access: identity and device checks per request."
         }
@@ -593,18 +622,22 @@
       "summary": "How KMS key types and rotation actually behave, when to use ACM, AWS Private CA or CloudHSM, and how to plan TLS 1.3 and post-quantum migration.",
       "sections": [
         {
+          "id": "kms-keys-and-rotation-rules",
           "heading": "KMS keys and rotation rules",
           "body": "Use **customer managed keys** when you need control over the key policy, rotation, grants or cross-account use. AWS managed keys rotate every year and you cannot change that.\n\nRotation rules worth memorizing:\n- **Automatic rotation** works only for **symmetric keys with KMS-generated material**. It is optional. The default period is 365 days and you can set a custom `RotationPeriodInDays`.\n- **On-demand rotation** also works for symmetric keys with **imported** (EXTERNAL) material.\n- **Asymmetric, HMAC and custom key store keys** can only be rotated **manually**: create a new key and repoint the alias.\n- For **multi-Region keys**, rotation is configured on the primary key.\n- Rotation **does not re-encrypt data**. KMS keeps earlier key material so old ciphertext still decrypts; new encryptions use the new material."
         },
         {
+          "id": "certificates-acm-and-aws-private-ca",
           "heading": "Certificates: ACM and AWS Private CA",
           "body": "- **ACM public certificates** are for publicly resolvable names and need domain validation. ACM renews them automatically for integrated services such as ELB, CloudFront and API Gateway.\n- **AWS Private CA** runs your own private certificate hierarchy for internal names, mutual TLS between services, and device or workload certificates. Private certificates issued through ACM can be renewed by ACM. Private CA can also be the trust anchor for IAM Roles Anywhere.\n- Prefer **TLS 1.3** security policies on load balancers, API Gateway and Transfer Family. These policies **do not upgrade on their own**, so set them explicitly in IaC."
         },
         {
+          "id": "cloudhsm-vs-kms",
           "heading": "CloudHSM vs KMS",
           "body": "**AWS CloudHSM** gives you **single-tenant HSMs** in your VPC that only you control, with standard interfaces such as PKCS#11, JCE and OpenSSL. Pick it when a requirement says the customer must have exclusive control of the HSM, or an application needs those cryptographic APIs directly. Otherwise KMS is simpler: it is fully managed, integrated with most AWS services and governed by IAM and key policies. KMS keys in a CloudHSM-backed custom key store can only be rotated manually."
         },
         {
+          "id": "post-quantum-readiness",
           "heading": "Post-quantum readiness",
           "body": "- The risk is **harvest now, decrypt later**: traffic recorded today could be decrypted by a future quantum computer. Start with data that must stay confidential for **10+ years**.\n- Post-quantum key exchange needs **TLS 1.3**. Set TLS policies explicitly in IaC for ELB, API Gateway and Transfer Family, restrict allowed policies with IAM condition keys, and verify the negotiated key exchange in CloudTrail `tlsDetails`.\n- KMS offers **ML-DSA** key specs (`ML_DSA_44/65/87`, FIPS 204) for **signing and verification**, and **ML-KEM** key specs (`ML_KEM_512/768/1024`, FIPS 203) with `Encapsulate`/`Decapsulate` for key establishment.\n- **SYMMETRIC_DEFAULT (AES-256-GCM)** is considered quantum resistant, so data at rest under symmetric KMS keys does not need a new key type."
         }
@@ -671,14 +704,17 @@
       "summary": "Structure accounts with Organizations and Control Tower, put preventive guardrails in SCPs and RCPs, and centralize detection with org CloudTrail, Config aggregation, GuardDuty, Inspector, Security Hub CSPM and Security Lake.",
       "sections": [
         {
+          "id": "account-structure-and-vending",
           "heading": "Account structure and vending",
           "body": "- **AWS Organizations** groups accounts into **OUs** and applies policies at the root, OU or account level. Many security services support a **delegated administrator** account so the management account stays nearly empty.\n- **AWS Control Tower** sets up a landing zone (log archive and audit accounts, baseline controls) and provides **Account Factory** to vend new accounts that are already enrolled and governed. Controls come in three behaviors: **preventive** (policies such as SCPs), **detective** (Config rules) and **proactive** (CloudFormation Hooks that check resources before provisioning).\n- **AWS RAM** shares resources such as Transit Gateways, subnets (VPC sharing), Route 53 Resolver rules and VPC Lattice service networks with accounts or OUs, so you avoid duplicating network infrastructure."
         },
         {
+          "id": "scps-vs-rcps",
           "heading": "SCPs vs RCPs",
           "body": "| | SCP | RCP |\n|---|---|---|\n| Limits | **Principals** in member accounts | **Resources** in member accounts, including access by principals **outside** the org |\n| Grants permissions? | No | No |\n| Management account | Not affected | Not affected |\n| Service-linked roles | Not restricted | Not restricted |\n\nMore RCP rules: they need **all features** enabled; they apply to delegated-admin accounts; they **do not apply to AWS managed KMS keys**; they cover a subset of services (including S3, STS, KMS, SQS, Secrets Manager, DynamoDB, ECR, CloudWatch Logs, Cognito, CloudFront, EventBridge, IAM Roles Anywhere, Transfer Family and WAF). **Bedrock is not on the RCP list.** Test RCPs on a test OU before attaching them at the root.\n\nTypical SCPs: deny leaving the organization, deny disabling CloudTrail or GuardDuty, deny Regions outside an approved list using `aws:RequestedRegion` (with exceptions for global services). Typical RCP: deny access to S3 or KMS resources unless `aws:PrincipalOrgID` is your organization (with exceptions for AWS service principals)."
         },
         {
+          "id": "centralized-logging-and-detection",
           "heading": "Centralized logging and detection",
           "body": "- **Organization trail** in CloudTrail: created in the management account or a delegated admin, logs every member account (including new ones) to a bucket in the log archive account. Member accounts can see it but cannot change or delete it.\n- **AWS Config aggregator** with organization scope (from a delegated admin) gives one compliance view; **Config rules** and conformance packs provide automated compliance checks.\n- **GuardDuty** with a delegated administrator and **auto-enable** for organization members. It is Regional, so enable it in every Region you use.\n- **Amazon Inspector** continuously scans EC2 instances, ECR images and Lambda functions for vulnerabilities, again with a delegated admin.\n- **Systems Manager Patch Manager** applies patch baselines through maintenance windows or patch policies across accounts and Regions.\n- **Security Hub CSPM** runs posture checks against security standards and aggregates findings. The new **Security Hub** (GA December 2025) correlates GuardDuty, Inspector, Security Hub CSPM and Macie signals into risk prioritization using OCSF.\n- **Amazon Security Lake** stores security data in **your account's S3** as **OCSF + Parquet**: CloudTrail management and data events, EKS audit logs, Route 53 resolver query logs, Security Hub CSPM findings, VPC Flow Logs, WAF logs and custom sources. **Rollup Regions** consolidate data, which helps with residency. **Subscribers** get data access or query access, which suits a SIEM."
         }
@@ -745,14 +781,17 @@
       "summary": "Turn compliance requirements into controls: Region restrictions and geographic inference profiles for residency, encryption and key control for protection, CloudTrail plus Bedrock invocation logs for audit, AWS Artifact for evidence, and threat modeling early in design.",
       "sections": [
         {
+          "id": "data-protection-and-residency",
           "heading": "Data protection and residency",
           "body": "- **Protection**: encrypt at rest with KMS customer managed keys where you need control, encrypt in transit with TLS, classify data, and limit who can use keys through key policies.\n- **Residency**: deploy only in approved Regions and **prevent** others with an SCP on `aws:RequestedRegion`. Check that backups, replicas, logs and AI processing stay inside the boundary too.\n- **Bedrock cross-Region inference**: a **geographic** profile (US, EU, APAC) keeps processing inside that geography and is the residency choice. A **global** profile is roughly 10% cheaper but can route to any commercial Region. SCPs must allow the destination Regions a profile uses. CloudTrail records the Region that served the request in `additionalEventData.inferenceRegion`.\n- **Security Lake rollup Regions** consolidate security data into a Region you choose."
         },
         {
+          "id": "audit-trails-including-ai-invocations",
           "heading": "Audit trails, including AI invocations",
           "body": "- **CloudTrail** records API calls: who called what, when and from where. It does **not** capture the full prompt and response of a model call.\n- **Bedrock model invocation logging** captures full request and response data plus metadata such as `identity.arn`, token counts and optional `requestMetadata` tags. It is **disabled by default**, must be turned on per Region, and writes to CloudWatch Logs and/or S3 in the **same account and Region only**. Bodies over 100 KB and binary data go to S3 only. It covers only calls through `bedrock-runtime`.\n- Centralize afterwards (for example by replicating the S3 logs or subscribing CloudWatch Logs) if auditors need one place to look."
         },
         {
+          "id": "evidence-and-threat-modeling",
           "heading": "Evidence and threat modeling",
           "body": "- **AWS Artifact** is the self-service portal for AWS compliance **reports** (such as SOC and ISO reports) and **agreements** (such as a HIPAA Business Associate Addendum). Auditors asking for AWS's own attestations get them here.\n- **Threat modeling** belongs early in design and repeats as the design changes: identify assets and trust boundaries, enumerate threats (STRIDE is a common framework), and prioritize mitigations. The AWS Well-Architected security pillar recommends identifying threats and prioritizing mitigations with a threat model. For AI workloads, include prompt injection, data leakage through responses and over-privileged agent tools."
         }
@@ -814,18 +853,22 @@
       "summary": "Filter model input and output with Bedrock Guardrails, enforce them across the organization, give agents scoped identities with AgentCore Identity, and pause risky actions for human approval with Step Functions.",
       "sections": [
         {
+          "id": "bedrock-guardrails-policies",
           "heading": "Bedrock Guardrails policies",
           "body": "- **Content filters**: Hate, Insults, Sexual, Violence, Misconduct and **Prompt Attack** (jailbreaks and prompt injection).\n- **Denied topics** and **word filters**.\n- **Sensitive information filters**: block or **mask** PII, plus custom regex patterns.\n- **Contextual grounding checks**: catch answers that are not grounded in the retrieved source or not relevant to the query, the classic RAG hallucination control.\n- **Automated Reasoning checks**: validate responses against formal rules.\n- The **`ApplyGuardrail` API** evaluates any text *without invoking a model*, so you can guard models hosted elsewhere (for example a SageMaker AI endpoint) or check intermediate agent steps."
         },
         {
+          "id": "enforcing-guardrails-across-accounts",
           "heading": "Enforcing guardrails across accounts",
           "body": "- **Organization level**: an **Amazon Bedrock policy** in AWS Organizations (`BEDROCK_POLICY`, a declarative policy) points to a guardrail created in the management account with a **numbered version** and a resource policy that grants `bedrock:ApplyGuardrail`.\n- **Account level**: `PutEnforcedGuardrailConfiguration`.\n- Org, account and request guardrails combine as a **union**, so the most restrictive control wins.\n- **Automated Reasoning checks are not supported in enforcements.** Guardrails are Regional, so create them in each Region you use. Enforcement can include or exclude specific models.\n- RCPs cannot do this job: Bedrock is not on the RCP list."
         },
         {
+          "id": "agent-identity-with-agentcore-identity",
           "heading": "Agent identity with AgentCore Identity",
           "body": "**Amazon Bedrock AgentCore Identity** gives agents workload identities.\n- **Inbound**: a JWT authorizer validates callers from any IdP (Cognito, Okta, Microsoft Entra ID, Auth0).\n- **Outbound**: credential providers (OAuth, API keys) let the agent call third-party tools **on behalf of the user**, with an audit trail.\n\nThis replaces anti-patterns such as shared service-account API keys in agent code or user refresh tokens in environment variables. AgentCore **Policy** adds deterministic, Cedar-compatible rules on which tool calls an agent may make."
         },
         {
+          "id": "human-approval-with-step-functions",
           "heading": "Human approval with Step Functions",
           "body": "For high-impact actions (refunds above a limit, production changes, outbound emails to customers), put a human in the loop:\n\n1. A **Standard** workflow reaches a task using the **`.waitForTaskToken`** integration pattern and sends the task token to an approver (for example through SNS, email or a ticketing system).\n2. The execution pauses, for as long as the workflow's limit of up to one year, until the approval app calls `SendTaskSuccess` or `SendTaskFailure` with the token.\n3. A Choice state continues or rejects. Add a timeout so stale requests do not wait forever.\n\n**Express workflows do not support `.waitForTaskToken`** and run for at most 5 minutes, so they are wrong for approvals. Lambda durable functions can also wait without paying for compute, when the logic lives in Lambda code."
         }
@@ -887,22 +930,27 @@
       "summary": "Match each workload to On-Demand, Reserved Instances, Savings Plans (including Database Savings Plans), Spot or Fargate Spot, and use architecture choices such as Graviton, Step Functions Express and Bedrock tiers, batching and caching to lower unit cost.",
       "sections": [
         {
+          "id": "rightsize-first-then-commit",
           "heading": "Rightsize first, then commit",
           "body": "Commitments lock in a spend level, so buy them **after** you remove waste.\n\n1. Use **AWS Compute Optimizer** to find over-provisioned EC2 instances, Auto Scaling groups, EBS volumes, Lambda functions and ECS services on Fargate. It also flags where a Graviton (Arm) instance type would fit.\n2. Use **scheduled scaling** for known patterns (for example, office hours) and **target tracking** for variable load, so the baseline you commit to is the true steady state.\n3. Cover the steady baseline with commitments, and leave peaks on On-Demand or Spot."
         },
         {
+          "id": "commitment-options",
           "heading": "Commitment options",
           "body": "| Option | What it covers | Flexibility |\n|---|---|---|\n| **Compute Savings Plans** | EC2, Fargate and Lambda | Any instance family, size, OS, tenancy or Region |\n| **EC2 Instance Savings Plans** | EC2 in one instance family in one Region | Size, OS and tenancy within that family |\n| **Standard Reserved Instances** | A specific instance configuration (also RDS, ElastiCache and others) | Least flexible, deepest discount |\n| **Convertible Reserved Instances** | EC2, exchangeable for other configurations | Exchanges allowed, smaller discount |\n| **Database Savings Plans** | Aurora, RDS, DynamoDB, ElastiCache, DocumentDB, Neptune, Keyspaces, Timestream and DMS | Engine, Region, and provisioned vs serverless |\n\n**Database Savings Plans** (launched December 2025) are a **1-year** $/hour commitment. The largest discount applies to serverless usage, with smaller discounts for provisioned instances and for DynamoDB and Keyspaces capacity. Choose them when a database estate is changing engines, Regions or deployment models and a per-instance reservation would be stranded."
         },
         {
+          "id": "interruptible-capacity",
           "heading": "Interruptible capacity",
           "body": "- **EC2 Spot** uses spare capacity at a steep discount and can be reclaimed with a two-minute notice. Use it for stateless, fault-tolerant, checkpointed or flexible work such as batch, CI, rendering and big data. Diversify across instance types and AZs, and use a capacity-optimized allocation strategy.\n- **Fargate Spot** does the same for ECS tasks on Fargate. Tasks get a two-minute warning (SIGTERM) before they stop. Use a **capacity provider strategy** with a base on regular Fargate and the rest weighted to Fargate Spot, so a minimum stays running if Spot capacity is reclaimed.\n- Never put a stateful single-instance database or a workload that cannot tolerate interruption on Spot."
         },
         {
+          "id": "architecture-choices-that-change-unit-cost",
           "heading": "Architecture choices that change unit cost",
           "body": "- **Graviton**: Arm-based EC2, Fargate, Lambda (arm64), RDS and ElastiCache options usually give better price performance. Interpreted and JVM workloads often move with little change.\n- **Step Functions**: **Standard** is billed per state transition, runs up to 1 year and is exactly-once. **Express** is billed by executions, duration and memory, runs up to 5 minutes and is at-least-once (async). High-volume, short, idempotent event processing is much cheaper on Express. The type cannot be changed after creation.\n- **Lambda**: right-size memory (CPU scales with it), and avoid functions that just wait. For long waits, use Step Functions or Lambda durable functions, whose waits do not incur compute charges."
         },
         {
+          "id": "ai-ml-cost-levers-bedrock-and-sagemaker-ai",
           "heading": "AI/ML cost levers (Bedrock and SageMaker AI)",
           "body": "- **Bedrock service tiers**: Standard, **Flex** (discounted, for work that can tolerate longer latency), **Priority** (premium, for latency-critical traffic) and Reserved. \n- **Batch inference**: about 50% cheaper than on-demand for supported models. Input is read from S3 and output written to S3. It is for jobs with no real-time need, and it is not supported for provisioned models.\n- **Prompt caching**: caches long, repeated prompt prefixes (system prompts, shared documents). Cache reads are cheaper than normal input tokens, cache writes may cost more, and the TTL is usually about 5 minutes and resets on each hit. It works with on-demand inference, **not** batch.\n- **Provisioned Throughput**: hourly per model unit, with no-commitment, 1-month or 6-month terms. Use it for steady high volume or when a custom model needs it, not for spiky or low traffic.\n- **Cross-Region inference**: a **global** profile is roughly 10% cheaper but may route to any commercial Region; a **geographic** profile (US, EU, APAC) keeps processing in that geography and is the choice when residency matters. There is no extra routing charge.\n- **SageMaker AI**: Serverless Inference for intermittent traffic (scales to zero), Asynchronous Inference for large payloads and long processing, Batch Transform for offline scoring, multi-model endpoints to share instances, and SageMaker Savings Plans for steady usage."
         }
@@ -973,18 +1021,22 @@
       "summary": "Cut the hidden network line items: NAT gateway processing, cross-AZ traffic, Transit Gateway and PrivateLink processing, inter-Region replication and origin egress, using endpoints, AZ-aware design and CloudFront.",
       "sections": [
         {
+          "id": "nat-gateways-and-vpc-endpoints",
           "heading": "NAT gateways and VPC endpoints",
           "body": "- A **NAT gateway** charges per hour and **per GB processed**. Traffic to AWS services that flows through NAT pays that processing charge.\n- **Gateway endpoints** exist only for **S3 and DynamoDB**. They are **free**, work through route table prefix lists, and are same-Region only. Adding them is often the single biggest network saving for data-heavy private subnets.\n- **Interface endpoints** (PrivateLink) charge per endpoint per AZ per hour plus per GB. They are usually cheaper than NAT for heavy service traffic, but not free. Centralizing interface endpoints in a shared services VPC reduces the hourly count but adds Transit Gateway processing for the traffic that reaches them."
         },
         {
+          "id": "az-aware-design",
           "heading": "AZ-aware design",
           "body": "- Data transfer between AZs in a Region is charged in both directions; within one AZ (private IPs) it is not.\n- Put one NAT gateway in **each** AZ and point each private subnet at the NAT in its own AZ. A single shared NAT saves the hourly fee but adds cross-AZ transfer and becomes a single point of failure.\n- Keep chatty tiers AZ-local where resilience allows (for example, load balancer cross-zone settings, AZ-affinity routing, read from the local replica).\n- **VPC Lattice** has no inter-AZ data transfer charges, which can matter for service-to-service traffic across many VPCs."
         },
         {
+          "id": "transit-gateway-peering-and-privatelink",
           "heading": "Transit Gateway, peering and PrivateLink",
           "body": "- **Transit Gateway** charges per attachment-hour and **per GB processed**. It is the right hub for many VPCs, but a pair of VPCs that exchange very large volumes can be connected directly with **VPC peering**, which has no per-GB processing charge (normal cross-AZ or inter-Region transfer still applies). VPC route tables send that pair's traffic over the peering connection while everything else uses the TGW.\n- **PrivateLink** suits publishing one service to many consumers (including overlapping CIDRs). The consumer pays endpoint-hours and per-GB.\n- Do not quote exact rates in designs; compare the dimensions (hourly vs per-GB) against the traffic profile."
         },
         {
+          "id": "edge-and-inter-region-traffic",
           "heading": "Edge and inter-Region traffic",
           "body": "- **CloudFront** offloads origin egress and serves cached content close to viewers. Data transfer from AWS origins to CloudFront is not charged.\n- **Origin Shield** is an extra caching layer in one Region in front of the origin. It raises cache hit ratio, collapses duplicate requests and reduces origin load and egress. Enable it in the Region with the lowest latency to the origin. It adds a per-request charge and helps little for dynamic or uncacheable content. It suits global audiences, on-premises origins with limited bandwidth, and multi-CDN setups.\n- **S3 Cross-Region Replication** costs inter-Region transfer, replication requests and storage in the destination (plus Replication Time Control if enabled). Use **filters (prefix or tag)** to replicate only what needs a second Region.\n- **DynamoDB global tables** charge replicated writes in every replica Region plus inter-Region transfer. Add replicas only in Regions that need local reads, writes or recovery.\n- **Bedrock cross-Region inference** adds no routing charge; a global profile is cheaper than a geographic one but does not keep processing in one geography."
         }
@@ -1050,22 +1102,27 @@
       "summary": "Attribute every dollar to an owner with tags, tag policies, Cost Categories and split cost allocation data, analyze it with Cost Explorer and CUR, and catch overruns with Budgets and Cost Anomaly Detection, including Bedrock token usage.",
       "sections": [
         {
+          "id": "tags-and-tag-governance",
           "heading": "Tags and tag governance",
           "body": "- **User-defined cost allocation tags** appear in billing tools only after they are **activated** in the Billing console of the management (payer) account.\n- **Tag policies** (Organizations) standardize tag keys, case and allowed values, and can **enforce** compliance for chosen resource types so non-compliant tagging operations fail.\n- **SCPs** with `aws:RequestTag` / `aws:TagKeys` conditions can deny creating resources without required tags. **AWS Config** rules (for example `required-tags`) detect untagged resources that already exist.\n- Use both: prevent at creation, detect and fix drift afterwards."
         },
         {
+          "id": "grouping-and-shared-costs",
           "heading": "Grouping and shared costs",
           "body": "- **Cost Categories** group costs by rules (for example by account, tag or service) into business-friendly buckets such as teams or products. They appear in Cost Explorer, Budgets and CUR, which makes them the usual basis for showback and chargeback.\n- **Split cost allocation data** adds per-ECS-task and per-EKS-pod cost to CUR, based on each task or pod's share of CPU and memory of the amortized instance cost. For EKS it also covers GPU and AWS accelerators and adds tags such as `aws:eks:namespace` and `aws:eks:workload-name`. Use it to charge back shared clusters."
         },
         {
+          "id": "analysis-tools",
           "heading": "Analysis tools",
           "body": "- **Cost Explorer**: interactive analysis, forecasts, and Savings Plans and RI recommendations and coverage reports.\n- **Cost and Usage Report (CUR)**: the most detailed line-item data, delivered to S3 and queried with Athena or visualized in QuickSight. Use it for custom chargeback, amortization and split cost allocation.\n- **Compute Optimizer**: rightsizing recommendations (see lesson 1)."
         },
         {
+          "id": "alerts-and-controls",
           "heading": "Alerts and controls",
           "body": "- **AWS Budgets** alerts on actual or forecasted cost, usage, or commitment coverage and utilization against a threshold you set. **Budget actions** can apply an IAM policy or SCP, or stop EC2 or RDS instances when a threshold is crossed.\n- **Cost Anomaly Detection** uses machine learning to learn normal spend and alerts on unusual spikes per service, account, Cost Category or tag, without fixed thresholds. Send alerts by email or SNS.\n- Use both: Budgets for known limits, Anomaly Detection for surprises."
         },
         {
+          "id": "generative-ai-cost-attribution",
           "heading": "Generative AI cost attribution",
           "body": "- **Bedrock model invocation logging** is off by default. When enabled, it records token counts, the caller (`identity.arn`) and optional `requestMetadata` tags to CloudWatch Logs or S3 in the same account and Region.\n- Pass a team, tenant or feature identifier in `requestMetadata` and aggregate tokens with **CloudWatch Logs Insights** to charge back shared Bedrock usage.\n- CloudTrail records that an API was called; it is not the tool for per-team token counts."
         }
@@ -1132,22 +1189,27 @@
       "summary": "Optimize S3 storage classes and lifecycle, EBS volume types, DynamoDB capacity modes, Aurora Serverless and I/O-Optimized, backup and snapshot lifecycle, and observability spend.",
       "sections": [
         {
+          "id": "amazon-s3-and-efs",
           "heading": "Amazon S3 and EFS",
           "body": "- **S3 Intelligent-Tiering**: moves objects between access tiers automatically based on access, with a small per-object monitoring fee and **no retrieval fees**. Best for unknown or changing access patterns. Small objects are not auto-tiered.\n- **Lifecycle rules**: transition by age to Standard-IA, One Zone-IA or Glacier classes, and expire old objects and noncurrent versions. Mind **minimum storage duration** and retrieval charges in the infrequent and archive classes, and avoid transitioning very small objects.\n- **Glacier classes**: Instant Retrieval (milliseconds, rarely accessed), Flexible Retrieval (minutes to hours) and Deep Archive (hours, lowest cost) for long retention.\n- **EFS lifecycle management** moves files that are not accessed to Infrequent Access or Archive storage classes."
         },
         {
+          "id": "amazon-ebs",
           "heading": "Amazon EBS",
           "body": "- **gp3** lets you set IOPS and throughput **independently of volume size**, with a baseline included, and generally costs less per GB than gp2. On **gp2**, IOPS scale with size, so teams often over-provision capacity just to get IOPS.\n- Migrate gp2 to gp3 in place with **Elastic Volumes** (no detach, no downtime).\n- Use **io2/io1 (Provisioned IOPS)** only for sustained high IOPS or low-latency needs that gp3 cannot meet.\n- Delete unattached volumes and old snapshots; archive rarely needed snapshots to the snapshot archive tier."
         },
         {
+          "id": "databases",
           "heading": "Databases",
           "body": "- **DynamoDB on-demand**: pay per request, no capacity planning. Best for new, spiky or unpredictable traffic. **Provisioned with auto scaling**: cheaper for steady or predictable traffic with good utilization, and can be combined with reserved capacity or Database Savings Plans.\n- **Aurora Serverless v2**: scales capacity in fine steps with load. Good for variable, intermittent or multi-tenant databases.\n- **Aurora I/O-Optimized**: no I/O charges, higher compute and storage price. Choose it when I/O is about **25% or more** of Aurora spend; below that, Aurora Standard is cheaper. You can switch to I/O-Optimized once every 30 days and back at any time.\n- **RDS Reserved Instances** or **Database Savings Plans** for steady database usage."
         },
         {
+          "id": "backups-and-snapshots",
           "heading": "Backups and snapshots",
           "body": "- **AWS Backup**: central, policy-driven backup plans across services and accounts, with lifecycle rules that move eligible recovery points to **cold storage** and expire them. Cold storage has a minimum retention period, so it fits long-term retention.\n- **Amazon Data Lifecycle Manager (DLM)**: automates creation, retention, copy and deletion of **EBS snapshots and EBS-backed AMIs** by tag, at no additional charge beyond the snapshots. It prevents unbounded snapshot growth.\n- Set retention to the real RPO and compliance need; old recovery points are a common hidden cost."
         },
         {
+          "id": "cost-effective-observability",
           "heading": "Cost-effective observability",
           "body": "- CloudWatch Logs log groups **never expire by default**. Set a **retention policy** on every log group, and export long-term logs to S3 with lifecycle to archive classes if needed.\n- Reduce ingestion at the source: lower log levels in production, filter or sample verbose logs, and do not log full payloads.\n- Aggregate metrics: avoid high-cardinality custom metrics (for example a dimension per user or request ID). Use the embedded metric format or metric filters with bounded dimensions.\n- Keep high-resolution metrics and detailed monitoring only where they drive decisions."
         }
@@ -1214,30 +1276,37 @@
       "summary": "Discovery and wave planning with AWS Transform, choosing among the 7 Rs, rehosting with AWS Transform MGN, moving databases with DMS and Schema Conversion, moving files with DataSync or Data Transfer Terminal, and modernizing incrementally with the strangler fig pattern.",
       "sections": [
         {
+          "id": "discovery-dependency-mapping-and-waves",
           "heading": "Discovery, dependency mapping, and waves",
           "body": "Large migrations succeed or fail on the portfolio work done before any server moves. You inventory servers and applications, map dependencies (who talks to whom, on which ports), group tightly coupled components into **move groups**, and sequence those groups into **waves**.\n\n**AWS Transform** is the current AWS service for this. It is an agentic AI migration service that covers discovery, wave planning, landing zone and network translation, rehost to EC2 (from VMware, Hyper-V, or bare metal), and containerization to ECS/EKS. Human-in-the-loop approvals are built in, and AWS Transform itself carries no additional charge.\n\n> **Changed recently:** AWS Migration Hub and AWS Application Discovery Service are **closed to new customers** and are not on the SAP-C03 in-scope list. For a new customer, answer with AWS Transform."
         },
         {
+          "id": "the-7-rs",
           "heading": "The 7 Rs",
           "body": "| Strategy | What it means | Typical example |\n|---|---|---|\n| **Retire** | Decommission | Zombie apps (under ~5% CPU/memory) and idle apps (roughly 5-20% over 90 days) |\n| **Retain** | Keep on premises for now | Recently upgraded or blocked by dependencies |\n| **Rehost** | Lift and shift | AWS Transform MGN, Cloud Migration Factory, VM Import/Export |\n| **Relocate** | Move a hypervisor-level platform | VMware workloads moved as-is |\n| **Repurchase** | Move to SaaS | Replace a self-hosted CRM |\n| **Replatform** | Lift, tinker, and shift | SQL Server to RDS for SQL Server, Graviton, App2Container |\n| **Refactor / re-architect** | Redesign cloud-native | Monolith to microservices or serverless |\n\nAWS prescriptive guidance for **large** migrations: favor rehost, replatform, relocate, or retire, and **modernize after migrating**. Refactor is the most complex and costly path and should not gate a datacenter exit."
         },
         {
+          "id": "rehost-with-aws-transform-mgn",
           "heading": "Rehost with AWS Transform MGN",
           "body": "**AWS Transform MGN** is the new name (June 2026) of AWS Application Migration Service. Only the name changed. It continuously replicates source servers at the block level into AWS, lets you launch test instances without disrupting the source, and then cut over with a short window. AWS Transform uses it as its replication engine."
         },
         {
+          "id": "databases-dms-and-schema-conversion",
           "heading": "Databases: DMS and Schema Conversion",
           "body": "- **AWS DMS** moves **data**: full load plus **change data capture (CDC)** to keep the target in sync until cutover, which keeps downtime low.\n- **DMS Schema Conversion** (managed, built on the AWS SCT engine) converts **schema and code objects, not data**. Gen-AI-assisted conversion is available for Oracle, SQL Server, Db2, and SAP ASE sources to PostgreSQL targets.\n- Heterogeneous migration pattern: convert schema first, then DMS full load + CDC, then cut over."
         },
         {
+          "id": "files-and-bulk-data",
           "heading": "Files and bulk data",
           "body": "- **AWS DataSync**: online, managed, incremental transfer from NFS/SMB/HDFS/object storage to S3, EFS, or FSx, with encryption and integrity validation. The default for online bulk copy.\n- **Data Transfer Terminal**: physical sites where you reserve a slot, bring your own storage devices, and upload to S3, EFS, or other endpoints. You keep custody of your devices. Use it when network bandwidth cannot meet the deadline.\n- **Snowball Edge is not available to new customers** and the Snow Family is not on the C03 in-scope list. Do not choose it for a new customer."
         },
         {
+          "id": "refactor-incrementally-strangler-fig",
           "heading": "Refactor incrementally: strangler fig",
           "body": "The **strangler fig** pattern places a routing facade (for example API Gateway or an ALB with path rules) in front of the monolith. You build new services one capability at a time and shift the matching routes to them, while the monolith keeps serving everything else. Eventually the monolith has nothing left and is retired. It avoids a risky big-bang rewrite and gives a rollback path per route."
         },
         {
+          "id": "mainframes",
           "heading": "Mainframes",
           "body": "Mainframe workloads (IBM z/OS, Fujitsu GS21) are not x86 servers, so block replication tools do not apply. **AWS Transform for mainframe** analyzes code and dependencies, and supports modernization (for example COBOL to Java) with human approvals. Data often moves separately through DMS or file transfer."
         }
@@ -1304,30 +1373,37 @@
       "summary": "Matching RTO and RPO to the four DR strategies, failing over with data-plane mechanisms, and using Elastic Disaster Recovery, Application Recovery Controller, Resilience Hub, Route 53, Global Accelerator, and multi-cluster container designs.",
       "sections": [
         {
+          "id": "rto-rpo-and-cost",
           "heading": "RTO, RPO, and cost",
           "body": "- **RPO** (recovery point objective): how much data loss is acceptable, measured backward from the disaster.\n- **RTO** (recovery time objective): how long the service may be down.\n\nLower RTO/RPO means more standing infrastructure and cost. Pick the cheapest strategy that meets both numbers."
         },
         {
+          "id": "the-four-strategies",
           "heading": "The four strategies",
           "body": "| Strategy | State in the DR Region | Traffic ready? |\n|---|---|---|\n| **Backup & restore** | Backups only; redeploy with IaC | No; slowest, cheapest |\n| **Pilot light** | Data replicated live; app tier switched off | **Cannot serve traffic without action** |\n| **Warm standby** | Full stack, scaled down | **Can serve traffic immediately** at reduced capacity |\n| **Multi-site active/active** (or hot standby) | Full capacity | Yes; near-zero RTO |\n\nNotes from the AWS DR whitepaper:\n- **AWS Backup has no scheduled or automatic restore.** Automate restores yourself (for example SNS/EventBridge triggering Lambda with the SDK).\n- Warm standby that depends on Auto Scaling to grow is a **control-plane** dependency during the event; hot standby is statically stable.\n- Active/active still has **RPO > 0 for data corruption**, because corruption replicates. Keep point-in-time backups.\n- AWS recommends one account per Region for DR isolation."
         },
         {
+          "id": "data-plane-vs-control-plane-failover",
           "heading": "Data plane vs control plane failover",
           "body": "During a regional event, control planes (create, update, configure APIs) are less available than data planes. Design failover to depend only on **data-plane** operations:\n\n- **Route 53 health checks** with failover records (health-check evaluation is data plane).\n- **ARC routing controls**: on/off switches backed by a highly available cluster, with safety rules.\n\nControl-plane actions to avoid on the critical path: editing weighted-record weights, changing **Global Accelerator traffic dials**, launching infrastructure with CloudFormation, or waiting for Auto Scaling.\n\nCloudFront origin failover works **per request** (fails over to the secondary origin on configured error codes)."
         },
         {
+          "id": "amazon-application-recovery-controller-arc",
           "heading": "Amazon Application Recovery Controller (ARC)",
           "body": "Formerly Route 53 ARC. Capabilities:\n- **Zonal shift**: you move traffic away from an impaired AZ for a load-balanced resource; it is temporary with an expiry (up to 3 days, extendable).\n- **Zonal autoshift**: AWS shifts traffic away from an AZ on your behalf when it detects an impairment.\n- **Region switch**: orchestrated multi-Region, multi-account recovery plans.\n- **Routing control**: data-plane DNS failover switches with safety rules.\n- **Readiness check**: monitors quotas, capacity, and routing configuration. **Not for the failover critical path.**"
         },
         {
+          "id": "aws-elastic-disaster-recovery-drs",
           "heading": "AWS Elastic Disaster Recovery (DRS)",
           "body": "Block-level continuous replication from on-premises or cloud servers into a low-cost **staging area subnet** (lightweight replication servers and cheap storage). Offers point-in-time recovery (useful against ransomware), non-disruptive drills, launch of recovery instances within minutes, and failback. For AWS-hosted sources it protects **EC2 instances, not RDS** databases; use RDS cross-Region replicas or Aurora Global Database for managed databases."
         },
         {
+          "id": "resilience-hub-route-53-global-accelerator",
           "heading": "Resilience Hub, Route 53, Global Accelerator",
           "body": "- **AWS Resilience Hub**: define RTO/RPO policies per application, assess the architecture against them, get recommendations (alarms, SOPs, FIS experiments), and track drift. Integrates with DRS, AWS Backup, and ARC. Use it for **DR testing and continuous validation**.\n- **Route 53**: health checks plus failover, latency, weighted, or geolocation routing. Clients cache DNS answers for the record TTL.\n- **Global Accelerator**: static anycast IP addresses at the AWS edge; endpoint health checks shift traffic between Regional endpoints without relying on client DNS caches.\n- **Aurora Global Database**: secondary Regions with typically sub-second lag; a secondary can be promoted in under a minute."
         },
         {
+          "id": "multi-cluster-eks-and-ecs",
           "heading": "Multi-cluster EKS and ECS",
           "body": "An EKS cluster or ECS cluster is a Regional construct. For Regional resilience, run **independent clusters in each Region** (deployed from the same pipeline and IaC), each spread across multiple AZs, and steer traffic with Route 53 health checks, ARC, or Global Accelerator. Keep state outside the cluster in replicated data stores. Multiple clusters per Region also reduce blast radius for upgrades and misconfiguration."
         }
@@ -1395,22 +1471,27 @@
       "summary": "Centralized cross-account AWS Backup, immutability with Backup Vault Lock, S3 Object Lock and EBS snapshot lock, and validating resilience with Fault Injection Service.",
       "sections": [
         {
+          "id": "centralized-cross-account-aws-backup",
           "heading": "Centralized, cross-account AWS Backup",
           "body": "- Define **backup policies in AWS Organizations** so every account in an OU gets the same plans, applied by tags.\n- Copy recovery points to a vault in a **separate, locked-down backup account** (and optionally another Region). A compromised workload account then cannot delete the copies.\n- Use a delegated administrator account for day-to-day backup administration instead of the management account.\n- Remember restores are not automatic. Script and test them."
         },
         {
+          "id": "aws-backup-vault-lock",
           "heading": "AWS Backup Vault Lock",
           "body": "- **Governance mode**: users with the right IAM permissions can remove the lock. Good for testing.\n- **Compliance mode**: after a **grace time of at least 3 days (72 hours)** the lock becomes immutable, even for AWS. Optional **minimum and maximum retention** make non-conforming backup jobs fail.\n- No extra charge.\n- Vault Lock does not block EC2-level `ModifySnapshotAttribute` (for example sharing a snapshot publicly), so deny that with an SCP or IAM policy."
         },
         {
+          "id": "s3-object-lock",
           "heading": "S3 Object Lock",
           "body": "- Requires **versioning**.\n- **Compliance mode**: nobody, including the root user, can delete a locked version or shorten its retention.\n- **Governance mode**: callers with `s3:BypassGovernanceRetention` who send the bypass header can override.\n- **Legal hold**: no expiry; stays until removed.\n- A simple DELETE without a version ID only adds a delete marker; locked versions remain."
         },
         {
+          "id": "ebs-snapshot-lock",
           "heading": "EBS snapshot lock",
           "body": "- Governance or compliance mode; lock duration from 1 to 36,500 days; no extra cost.\n- Compliance mode has an optional **cooling-off period of 1-72 hours**. During it, authorized users can still change or remove the lock; after it ends, the lock cannot be removed or shortened, only extended."
         },
         {
+          "id": "chaos-engineering-with-aws-fault-injection-service",
           "heading": "Chaos engineering with AWS Fault Injection Service",
           "body": "1. Define a **steady-state hypothesis** (for example: p99 latency under 300 ms and error rate under 0.1% while one AZ is impaired).\n2. Build an **experiment template**: **actions** (what fault), **targets** (which resources), and **stop conditions** (CloudWatch alarms that halt the experiment).\n3. Run in pre-production first, then in production with tight stop conditions.\n4. Use multi-account experiments for distributed systems. Resilience Hub can recommend and run FIS experiments.\n\nPair FIS with Route 53 health checks and ARC to prove failover actually works."
         }
@@ -1472,18 +1553,22 @@
       "summary": "Use CloudFormation and the CDK as the delivery mechanism, layer policy as code at synth, deploy and run time, roll out baselines with StackSets, and keep secrets out of templates.",
       "sections": [
         {
+          "id": "cloudformation-and-the-cdk",
           "heading": "CloudFormation and the CDK",
           "body": "**AWS CloudFormation** is the provisioning engine: a template declares resources, and a stack is one deployed instance of that template. The **AWS CDK** lets teams define infrastructure in a general-purpose language. It **synthesizes CloudFormation templates**, so everything that governs CloudFormation (Hooks, stack policies, StackSets, change sets) still applies to CDK apps.\n\nControls that protect stateful resources during updates:\n- **Change sets** preview what an update will do, including whether a resource will be **replaced**. Review them before you execute the update.\n- **Stack policies** deny update actions such as `Update:Replace` or `Update:Delete` on named logical resources, such as a production database.\n- **DeletionPolicy / UpdateReplacePolicy** (`Retain` or `Snapshot`) keep or snapshot data when a resource is deleted or replaced.\n- **Termination protection** only blocks deleting the whole stack.\n- **Drift detection** reports resources that someone changed outside CloudFormation. It detects drift but does not prevent it."
         },
         {
+          "id": "policy-as-code-in-layers",
           "heading": "Policy as code in layers",
           "body": "Task 5.1.2 lists four mechanisms. Each one runs at a different point and has a different bypass risk:\n\n| Layer | When it runs | Strength | Limit |\n|---|---|---|---|\n| **CDK aspects** | During `cdk synth`, visiting every construct in a scope | Fastest developer feedback; can also fix things automatically (add tags, set encryption) | Only for CDK apps that include the aspect; developers can skip it |\n| **CloudFormation Hooks** | Before provisioning, on resources, stacks, change sets and Cloud Control API calls | Enforced by the service, whatever tool produced the template; set to **fail** or **warn** | Only covers changes that go through CloudFormation or Cloud Control API |\n| **AWS Config rules** | After resources exist (detective) | Covers console and CLI changes too; can trigger remediation | Finds problems after deployment |\n| **SCPs** | At every API call in member accounts | Hard preventive guardrail that applies to all principals in the account | Coarse: works on API actions and condition keys, not whole template logic |\n\nHooks can be built from **Guard rules**, **Lambda functions**, custom hook code, or Control Tower **proactive controls**. A mature design uses aspects for quick feedback, Hooks as the server-side gate, Config rules to catch out-of-band changes, and SCPs for absolute prohibitions."
         },
         {
+          "id": "stacksets-for-multi-account-baselines",
           "heading": "StackSets for multi-account baselines",
           "body": "A **StackSet** deploys one template as stack instances across many accounts and Regions. The StackSet itself is a Regional resource.\n- **Self-managed permissions**: you create the administration and execution roles yourself. It works with any accounts, including accounts outside your organization.\n- **Service-managed permissions**: integrates with AWS Organizations. You run it from the management account or a **delegated administrator** account. With **automatic deployment**, accounts that join a target OU get the stack instances automatically, and you can choose to retain or delete stacks when an account leaves.\n- Rollout controls: **maximum concurrent accounts**, **failure tolerance** per Region, and **sequential or parallel** Region order. Use these to roll out gradually and stop the rollout if failures pile up."
         },
         {
+          "id": "secrets-manager-and-parameter-store",
           "heading": "Secrets Manager and Parameter Store",
           "body": "- **AWS Secrets Manager** stores secrets with **built-in rotation**: managed rotation for supported services such as RDS, or a rotation Lambda function for anything else. It supports **resource-based policies** for cross-account access and can **replicate secrets to other Regions**. To share a secret across accounts, encrypt it with a **customer managed KMS key**. The AWS managed key `aws/secretsmanager` cannot be used from another account.\n- **Systems Manager Parameter Store** holds hierarchical configuration as String, StringList or **SecureString** (KMS-encrypted) values, in a standard tier and an advanced tier. It has **no native rotation**, so it fits configuration and secrets that rarely change.\n- In templates, use **dynamic references** such as `{{resolve:secretsmanager:...}}` so the value is fetched when the stack is deployed and never sits in source control. For RDS and Aurora, `ManageMasterUserPassword` has the database service create and rotate the master password in Secrets Manager.\n- A `NoEcho` parameter only hides the value in console and API output. If you put a default value in the template, the secret is still in source control."
         }
@@ -1549,18 +1634,22 @@
       "summary": "Design CodePipeline-based delivery across accounts and Regions, add vulnerability scanning, signing and AI evaluation gates, and choose blue/green, canary, linear or rolling releases with automatic rollback.",
       "sections": [
         {
+          "id": "the-aws-developer-tools",
           "heading": "The AWS developer tools",
           "body": "- **CodeCommit**: managed Git repositories. It is back to **general availability and open to new customers** (since late 2025) and is in scope for this exam.\n- **CodeBuild**: managed build and test containers driven by a `buildspec`. Typical uses are unit tests, IaC linting, image builds, security scans and evaluation jobs.\n- **CodeDeploy**: deploys to EC2/on-premises (in-place or blue/green), **Lambda** (traffic shifting between alias versions) and **ECS** (blue/green with load balancer target groups). It can roll back automatically when **CloudWatch alarms** fire.\n- **CodePipeline**: orchestrates source, build, test, approval and deploy stages."
         },
         {
+          "id": "cross-account-and-cross-region-pipelines",
           "heading": "Cross-account and cross-Region pipelines",
           "body": "The usual pattern runs the pipeline in a central **tooling account** and deploys into separate dev, test and prod accounts:\n1. Encrypt the pipeline's artifact bucket with a **customer managed KMS key**. The key policy grants the target accounts' roles permission to decrypt. The default AWS managed key cannot be shared across accounts, which is a common reason cross-account deploys fail.\n2. Add a bucket policy that lets the target account roles read artifacts.\n3. In each target account, create a **cross-account role** that the pipeline assumes. The CloudFormation deploy action can also pass a deployment role that it uses inside the account.\n4. For cross-Region actions, CodePipeline needs an **artifact store in each Region** where actions run.\n\n**Promote artifacts. Don't rebuild them.** Build once, then move the same immutable artifact, such as a container image referenced by **digest**, through each environment. If you rebuild per environment, you test one binary and ship a different one."
         },
         {
+          "id": "devsecops-gates",
           "heading": "DevSecOps gates",
           "body": "- **Amazon ECR scanning**: *basic* scanning runs on push or manually. *Enhanced* scanning uses **Amazon Inspector**, scans continuously, and rescans images when new vulnerabilities are published. Inspector also covers EC2 and Lambda.\n- **Artifact signing**: sign container images (for example with AWS Signer and Notation) and Lambda code (code signing configurations). Verify signatures before you deploy or at admission time, so only artifacts your pipeline produced can run. Image tag immutability stops tags from being overwritten, but it does not prove where an image came from.\n- **Amazon Bedrock Evaluations** (skill 5.2.4): when a gen AI change ships (new model, prompt template or knowledge base), run an evaluation job against a curated prompt dataset. Jobs can score responses automatically or with human reviewers, and knowledge base (RAG) changes can be evaluated the same way. **Fail the pipeline stage when scores drop below a threshold**, just like a failing unit test."
         },
         {
+          "id": "choosing-a-deployment-strategy",
           "heading": "Choosing a deployment strategy",
           "body": "| Strategy | How it works | Use when |\n|---|---|---|\n| **All-at-once / in-place** | Replace everything at once | Dev/test; downtime is acceptable |\n| **Rolling** | Replace capacity in batches | Cost-sensitive; tolerates mixed versions during rollout |\n| **Canary** | Small slice first, then the rest (e.g. 10% then 100%) | Want early real-traffic signal with small blast radius |\n| **Linear** | Equal increments at fixed intervals | Gradual, predictable ramp |\n| **Blue/green** | Full parallel environment, then shift traffic | Fast rollback by switching back; needs double capacity briefly |\n\nTie every progressive deployment to **CloudWatch alarms** so it rolls back automatically. For ECS, the **deployment circuit breaker** rolls back failed rolling deployments. **ECS native blue/green** (no CodeDeploy needed) adds a **bake time** and **lifecycle hooks** (Lambda or pause) and shifts traffic through ALB, NLB, Service Connect or VPC Lattice. For Lambda, CodeDeploy shifts traffic with weighted aliases using canary, linear or all-at-once configurations."
         }
@@ -1627,18 +1716,22 @@
       "summary": "Combine CloudWatch, X-Ray and ADOT for metrics, logs and traces; centralize telemetry across accounts; monitor real and synthetic users; set SLOs with burn-rate alarms; and watch AI inference and model drift.",
       "sections": [
         {
+          "id": "metrics-logs-and-traces",
           "heading": "Metrics, logs and traces",
           "body": "- **CloudWatch metrics and alarms**: static thresholds, **anomaly detection** bands, and **composite alarms** that combine several alarms to reduce noise.\n- **CloudWatch Logs**: Logs Insights queries, metric filters, and the embedded metric format for emitting metrics from structured logs.\n- **AWS X-Ray**: distributed traces and service maps.\n- **AWS Distro for OpenTelemetry (ADOT)**: AWS's supported OpenTelemetry distribution. You instrument once with vendor-neutral OpenTelemetry APIs and export to X-Ray, CloudWatch or other backends. Choose it when portability matters.\n- **Container Insights** collects cluster, node, service/task and pod metrics and logs for ECS and EKS. On EKS, the CloudWatch Observability add-on enables the enhanced observability mode."
         },
         {
+          "id": "cross-account-telemetry-and-retention",
           "heading": "Cross-account telemetry and retention",
           "body": "- **CloudWatch cross-account observability**: one or more **monitoring accounts** link to **source accounts** (individually or across an organization). From the monitoring account you can search and query their metrics, logs and traces without copying data.\n- **Centralized log archive**: **subscription filters** stream log events to Kinesis Data Streams, Amazon Data Firehose or Lambda. Cross-account delivery goes to a destination in the central account, and **account-level subscription policies** cover every log group in an account. Firehose then writes to S3, where **lifecycle rules move data to archive storage classes** for long, cheap retention.\n- Set CloudWatch Logs retention to match how long you actually query the data, and archive older data in S3. Keeping everything forever in CloudWatch Logs is expensive."
         },
         {
+          "id": "users-synthetics-and-slos",
           "heading": "Users, synthetics and SLOs",
           "body": "- **CloudWatch Synthetics canaries** are scripted checks that run on a schedule against endpoints and user flows. They **catch failures even when no real users are active**, for example overnight.\n- **CloudWatch RUM** collects page load timings, JavaScript errors and sessions from real browsers, broken down by browser, device and location.\n- **Application Signals** collects **latency and availability** for instrumented services automatically, and any CloudWatch metric can serve as an SLI. **SLOs** are **period-based or request-based**, have an attainment goal over a rolling or calendar interval, and track an **error budget**. **Burn-rate alarms** fire when the budget is being used up too quickly, which is better than a static error-count threshold. Example: 99% over 30 days of 1-minute periods means 42,768 of 43,200 periods must be healthy.\n- **Alerting and response**: alarms publish to **SNS** for people and systems, and alarm state changes go to **EventBridge** to start **Systems Manager Automation** runbooks."
         },
         {
+          "id": "ai-and-agent-observability",
           "heading": "AI and agent observability",
           "body": "- **Amazon Bedrock** publishes CloudWatch runtime metrics for invocations, **invocation latency**, client and server errors, **throttles**, and **input/output token counts**. Use these for capacity alarms and latency SLOs.\n- **Model invocation logging is disabled by default.** When enabled, it captures full requests and responses with metadata (caller `identity.arn`, token counts, optional `requestMetadata` tags) and sends them to CloudWatch Logs and/or S3 in the **same account and Region**. CloudTrail records API calls, not prompt and response bodies.\n- **AgentCore Observability** emits OpenTelemetry traces for agent steps and tool calls, and **AgentCore Evaluations** adds quality signals.\n- **Model drift** on SageMaker AI endpoints: **SageMaker Model Monitor** compares captured inference data with a baseline built from the training data, on a schedule. It covers data quality, model quality, bias drift and feature-attribution drift, and its results feed CloudWatch alarms."
         }
@@ -1705,18 +1798,22 @@
       "summary": "Keep workloads within quotas, use backoff, circuit breakers, rate limits and bulkheads to contain failures, scale ahead of demand, and let health checks and runbooks repair systems automatically.",
       "sections": [
         {
+          "id": "quotas-and-event-driven-operations",
           "heading": "Quotas and event-driven operations",
           "body": "- **Service Quotas** shows applied and default quotas and handles increase requests. For quotas that publish usage metrics, create **CloudWatch alarms on utilization** so you hear about limits before you hit them. A **quota request template** in AWS Organizations automatically requests your standard increases when new accounts are created.\n- **EventBridge** rules react to alarms, AWS Health events, Config compliance changes and service events, then call **Systems Manager Automation**, Lambda or Step Functions."
         },
         {
+          "id": "failure-containment-patterns",
           "heading": "Failure containment patterns",
           "body": "- **Retries with exponential backoff and jitter**: wait longer after each failure and randomize the delay so clients don't retry in sync. Cap the number of attempts. AWS SDKs already include retry with backoff. Immediate retries with no limit turn a slowdown into a **retry storm**.\n- **Circuit breaker**: after repeated failures, stop calling the unhealthy dependency for a while and **fail fast** or serve a fallback. Then send probe requests to check whether it has recovered.\n- **Rate limiting and throttling**: API Gateway stage and method throttling and **usage plans** with per-client API keys, plus AWS WAF **rate-based rules**. These protect the backend from one noisy client.\n- **Bulkheads**: split resources so a failure in one part cannot drain the rest. Examples are separate queues or worker pools per workload, cell-based architectures, and Lambda **reserved concurrency** per function, which both guarantees and caps that function's share of account concurrency.\n- **Idempotency**: retries are only safe if repeating an operation has no extra side effects. Use idempotency keys."
         },
         {
+          "id": "scaling-ahead-of-demand",
           "heading": "Scaling ahead of demand",
           "body": "- **Target tracking** keeps a metric (for example average CPU or requests per target) near a target value and is the default choice.\n- **Step scaling** adds or removes capacity in steps based on how far an alarm is breached.\n- **Scheduled scaling** handles known calendar events, but someone has to keep the schedule up to date.\n- **Predictive scaling** uses machine learning on historical load to **forecast** daily and weekly patterns and **launches capacity before demand arrives**. It helps most when instances take a long time to initialize. Start in **forecast-only** mode to check the forecasts, and **combine it with target tracking** for anything the forecast misses.\n- **Application Auto Scaling** applies the same policy types to ECS services, DynamoDB, Aurora replicas, Lambda provisioned concurrency and others."
         },
         {
+          "id": "self-healing-and-automated-runbooks",
           "heading": "Self-healing and automated runbooks",
           "body": "- **Auto Scaling group health checks**: EC2 status checks by default. Turn on **ELB health checks** so the group replaces instances that fail application-level checks.\n- **ECS** service schedulers replace tasks that stop or fail container or load balancer health checks.\n- **Lambda asynchronous invocations** are retried twice by default. Configure **on-failure destinations** or a DLQ, and set the maximum event age, so failed events are kept instead of lost. Event source mappings have their own retry and partial-batch settings.\n- **Automated runbooks**: Systems Manager **Automation** runbooks fix problems (restart, resize, reconfigure). **Patch Manager** with patch baselines and **maintenance windows** handles patching. **Config rules with automatic remediation** run Automation documents when a resource falls out of compliance. **Alarm or EventBridge triggers** start runbooks without waiting for a person."
         }

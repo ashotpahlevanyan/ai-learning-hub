@@ -67,14 +67,17 @@
       "summary": "What the ML runtime gives you over the standard runtime, which access mode it requires, and where Photon and GPUs fit.",
       "sections": [
         {
+          "id": "what-the-ml-runtime-is",
           "heading": "What the ML runtime is",
           "body": "**Databricks Runtime for Machine Learning (DBR ML)** creates compute with machine learning and deep learning infrastructure already built in. Common ML and DL libraries come **preinstalled and tested together**, so you do not spend time installing and pinning packages before you can train.\n\n- Top-tier libraries are only added or removed with **major** runtime releases, which keeps environments stable across minor updates.\n- MLflow, the Feature Engineering client and (on the runtimes that include it) AutoML are part of the experience.\n- Because the library set is curated, a team that standardises on one ML runtime version gets reproducible environments across notebooks and jobs."
         },
         {
+          "id": "turning-it-on-the-machine-learning-checkbox",
           "heading": "Turning it on: the Machine learning checkbox",
           "body": "In the create-compute UI you tick **Machine learning**. That selects an ML runtime and sets the access mode to **Dedicated** (formerly called *single user*).\n\n| Access mode | Old name | ML notes |\n|---|---|---|\n| Dedicated | Single user | Required for Unity Catalog data access from the ML runtime; supports AutoML. Can be assigned to a user **or a group**. |\n| Standard | Shared | Does **not** support AutoML. |\n\nIf someone reports that AutoML or UC access fails on their ML cluster, check the access mode first."
         },
         {
+          "id": "photon-gpus-and-version-gates",
           "heading": "Photon, GPUs and version gates",
           "body": "- **Photon** is available on recent ML runtimes. It accelerates Spark SQL, DataFrames and feature engineering, but **not** single-node Python libraries such as XGBoost, PyTorch or TensorFlow training.\n- Some features need a minimum ML runtime (for example, fine-grained access control and querying pipeline tables need a recent LTS ML runtime). Treat exact version numbers as fast-changing; the exam tests the idea that capabilities are gated by runtime version.\n- For custom deep-learning GPU workloads Databricks now points to **AI Runtime**; DBR ML remains the classic-ML choice."
         }
@@ -112,18 +115,22 @@
       "summary": "What AutoML automates, which problem types and algorithms it covers, what it produces, and the compute and runtime constraints.",
       "sections": [
         {
+          "id": "what-automl-does",
           "heading": "What AutoML does",
           "body": "AutoML takes a dataset and a target column and then:\n\n1. **Prepares the data** for training.\n2. Runs **distributed training and hyperparameter tuning across several algorithms**.\n3. Logs **every trial as an MLflow run** with metrics and the model.\n4. Generates a **source notebook for each trial**.\n\nIt is a **glass box**: instead of a black-box model, you get editable code. That is its main value in model development: a fast, reproducible baseline that shows which algorithms and features work, which you then refine."
         },
         {
+          "id": "problem-types-and-algorithms",
           "heading": "Problem types and algorithms",
           "body": "| Problem type | Algorithms |\n|---|---|\n| Classification | Decision trees, random forests, logistic regression, XGBoost, LightGBM |\n| Regression | Decision trees, random forests, linear regression with SGD, XGBoost, LightGBM |\n| Forecasting | Prophet, Auto-ARIMA (serverless forecasting adds DeepAR) |\n\nYou can drive it from the **low-code UI** or the **Python API**."
         },
         {
+          "id": "what-you-get-back",
           "heading": "What you get back",
           "body": "- **Data exploration notebook**: profiles the input so you can spot skew, missing values and suspicious columns. It helps with **feature selection**.\n- **Best trial notebook**: the code that produced the best model, imported into the workspace automatically for classification and regression.\n- Other trial notebooks are stored as **MLflow artifacts** and can be imported from the UI or with `databricks.automl.import_notebook`. For forecasting, all trial notebooks are imported.\n- **SHAP** explainability code is included in trial notebooks but turned off by default; set `shap_enabled = True` to use it."
         },
         {
+          "id": "constraints-to-remember",
           "heading": "Constraints to remember",
           "body": "- Requires **Dedicated** access mode; Standard (shared) does not support AutoML.\n- On the newest ML runtimes AutoML is **no longer a built-in library**; it depends on the `databricks-automl-runtime` package.\n- Do not install extra libraries or change library versions on the cluster that runs AutoML, because that causes run failures."
         }
@@ -161,18 +168,22 @@
       "summary": "The deploy-code, deploy-models and hybrid patterns, when each is right, and how Unity Catalog catalogs map to environments.",
       "sections": [
         {
+          "id": "two-things-can-move-between-environments",
           "heading": "Two things can move between environments",
           "body": "An ML system has **code** (feature pipelines, training, inference, monitoring) and **models** (trained artifacts). MLOps on Databricks asks which one you promote through **dev, staging and prod**.\n\nTypically each environment corresponds to a **catalog in Unity Catalog** (for example `dev`, `staging`, `prod`), so access control follows the environment."
         },
         {
+          "id": "deploy-code-recommended-in-most-situations",
           "heading": "Deploy code (recommended in most situations)",
           "body": "Training **code** is developed in dev, reviewed and tested in staging (training on a subset of data), then deployed to prod, where the model is **retrained on full production data**.\n\n- **Pros:** retraining in prod is safe because the code was reviewed; **production data can stay in prod**; automated retraining is natural.\n- **Con:** data scientists face a steeper learning curve handing code to CI/CD."
         },
         {
+          "id": "deploy-models",
           "heading": "Deploy models",
           "body": "The model is **trained once in dev**, tested in staging and the artifact is deployed to prod. Prefer it when:\n\n- training is **very expensive or hard to reproduce** (for example, a one-off large training run);\n- all work happens in a **single workspace**;\n- there are **no external repos or CI/CD**.\n\n**Cons:** automated retraining is awkward; supporting code (feature, inference and monitoring pipelines) still has to reach prod separately; it is not viable if **dev cannot access prod data**.\n\nIn UC this is done with `copy_model_version` from a staging model to a prod model, then setting an alias."
         },
         {
+          "id": "hybrid-and-mlops-habits",
           "heading": "Hybrid and MLOps habits",
           "body": "**Hybrid:** deploy code to staging, train there, then deploy the resulting model to prod.\n\nGood habits regardless of pattern: version code in Git, track every training run in MLflow, register models in UC with signatures, use aliases for promotion, and automate tests between environments."
         }
@@ -210,18 +221,22 @@
       "summary": "How a UC feature table is defined, the FeatureEngineeringClient calls to create and write one, and how to convert an existing Delta table.",
       "sections": [
         {
+          "id": "a-feature-table-is-a-delta-table-with-a-primary-key",
           "heading": "A feature table is a Delta table with a primary key",
           "body": "In Unity Catalog, **any Delta table with a primary key constraint is a feature table**. That is the whole definition, and it is why UC feature tables get UC governance, lineage and discovery for free.\n\nRequirements: a UC-enabled workspace and a recent runtime. The `databricks-feature-engineering` client is included in DBR ML (13.3 LTS ML and above); elsewhere run `%pip install databricks-feature-engineering`."
         },
         {
+          "id": "create-with-the-client",
           "heading": "Create with the client",
           "body": "```python\nfrom databricks.feature_engineering import FeatureEngineeringClient\nfe = FeatureEngineeringClient()\n\nfe.create_table(\n    name=\"ml.features.customer_features\",   # catalog.schema.table\n    primary_keys=[\"customer_id\"],             # list for composite keys\n    df=features_df,                           # or schema=features_df.schema\n    timeseries_columns=\"snapshot_date\",       # optional\n    description=\"Customer aggregates\",\n)\n```\n\n- Passing `df` creates the table and writes the data; passing `schema` creates an empty table.\n- `timeseries_columns` marks a timestamp key so training can do **point-in-time** lookups."
         },
         {
+          "id": "convert-an-existing-table-with-sql",
           "heading": "Convert an existing table with SQL",
           "body": "```sql\nALTER TABLE ml.features.store_stats ALTER COLUMN store_id SET NOT NULL;\nALTER TABLE ml.features.store_stats ADD CONSTRAINT store_stats_pk PRIMARY KEY (store_id);\n-- time series: PRIMARY KEY (store_id, ts TIMESERIES)\n```\n\nPrimary key columns must be **NOT NULL** first. There is **no** `AS FEATURE STORE` clause. If you try to use a table without a key you get an error that feature tables must have a primary key."
         },
         {
+          "id": "write-and-delete",
           "heading": "Write and delete",
           "body": "```python\nfe.write_table(name=\"ml.features.customer_features\", df=updates_df, mode=\"merge\")\n```\n\n- `mode=\"merge\"` upserts by primary key. **Rows whose keys are not in `updates_df` stay unchanged.**\n- `fe.drop_table(name=...)` or `DROP TABLE` removes the feature table and the underlying Delta table."
         }
@@ -263,14 +278,17 @@
       "summary": "FeatureLookup and create_training_set for training, fe.log_model to package lookup metadata, and score_batch for inference.",
       "sections": [
         {
+          "id": "build-a-training-set",
           "heading": "Build a training set",
           "body": "Start from a DataFrame with **lookup keys and the label** only. Features are joined from feature tables:\n\n```python\nfrom databricks.feature_engineering import FeatureLookup\n\nlookups = [\n  FeatureLookup(table_name=\"ml.features.customer_features\",\n                feature_names=[\"tenure\", \"avg_spend\"],\n                lookup_key=\"customer_id\",\n                timestamp_lookup_key=\"event_ts\"),   # point-in-time\n]\ntraining_set = fe.create_training_set(df=labels_df, feature_lookups=lookups,\n                                      label=\"churned\", exclude_columns=[\"customer_id\"])\ntrain_df = training_set.load_df()\n```\n\n`timestamp_lookup_key` gives a **point-in-time join** against a time-series feature table, which avoids leaking future values into training."
         },
         {
+          "id": "log-the-model-with-the-feature-engineering-client",
           "heading": "Log the model with the Feature Engineering client",
           "body": "```python\nfe.log_model(model=model, artifact_path=\"model\", flavor=mlflow.sklearn,\n             training_set=training_set,\n             registered_model_name=\"ml.models.churn\")\n```\n\nYou **must** log with `FeatureEngineeringClient.log_model` for automatic lookup at inference. It packages the **feature lookup metadata** with the model. Logging with plain `mlflow.sklearn.log_model` loses that metadata."
         },
         {
+          "id": "score-in-batch",
           "heading": "Score in batch",
           "body": "```python\npreds = fe.score_batch(model_uri=\"models:/ml.models.churn@Champion\", df=keys_df)\n```\n\n- `keys_df` needs only the lookup keys; features are **looked up automatically**.\n- If `keys_df` already contains a feature column, **the provided value overrides the lookup**.\n- Missing features come back as NaN.\n- For real-time serving, Model Serving looks up features that were **published to an online store** automatically.\n\nLimit to know conceptually: a model can use a bounded number of feature tables and functions."
         }
@@ -308,18 +326,22 @@
       "summary": "Why UC feature tables beat the deprecated Workspace Feature Store, and how offline Delta tables relate to Lakebase-backed Online Feature Stores.",
       "sections": [
         {
+          "id": "account-level-uc-vs-workspace-level",
           "heading": "Account-level (UC) vs workspace-level",
           "body": "Feature tables in Unity Catalog live in the account-level metastore. Benefits over the workspace-scoped **Workspace Feature Store** (now **deprecated**, only for workspaces without UC):\n\n- **Sharing across workspaces** attached to the same metastore, with no copying.\n- **Centralised governance**: UC privileges on catalogs, schemas and tables.\n- **Lineage** from features to the models that use them.\n- **Discovery** of features in Catalog Explorer alongside other UC assets."
         },
         {
+          "id": "offline-tables",
           "heading": "Offline tables",
           "body": "The **offline** feature table is the UC Delta table. It is the **source of truth**, used for **training and batch scoring**, and can hold full history."
         },
         {
+          "id": "online-stores",
           "heading": "Online stores",
           "body": "An **online store** is a **low-latency copy** of feature values for **real-time serving**. On Databricks this is now **Databricks Online Feature Stores, powered by Lakebase**:\n\n```python\nfe.create_online_store(name=\"churn-online\", capacity=\"CU_1\")\nfe.publish_table(...)   # source UC feature table -> online store, publish_mode=\"TRIGGERED\"\n```\n\n- Publish modes: **TRIGGERED** (default), **CONTINUOUS**, **SNAPSHOT**.\n- Publishing needs a primary key with non-null columns, and **Change Data Feed** on the source for TRIGGERED and CONTINUOUS.\n- By default only the **latest value per key** is published.\n- Only UC feature tables can be published. The older \"online tables\" product is retired."
         },
         {
+          "id": "feature-views-current-recommendation",
           "heading": "Feature Views (current recommendation)",
           "body": "For new use cases Databricks now recommends **Feature Views**, declarative features whose pipelines Databricks manages. Feature tables remain supported. Exam objectives are written around feature tables, so know those first."
         }
@@ -361,18 +383,22 @@
       "summary": "Logging params, metrics, artifacts and models by hand, what the MLflow UI shows, searching runs with the Client API, and MLflow 3 changes.",
       "sections": [
         {
+          "id": "manual-logging-inside-a-run",
           "heading": "Manual logging inside a run",
           "body": "```python\nimport mlflow\nwith mlflow.start_run(run_name=\"rf-depth-8\"):\n    mlflow.log_params({\"max_depth\": 8, \"n_estimators\": 300})\n    mlflow.log_metric(\"val_auc\", auc)\n    mlflow.log_artifact(\"confusion_matrix.png\")   # any local file\n    mlflow.log_figure(fig, \"roc.png\")              # matplotlib figure\n    mlflow.log_dict(cfg, \"config.json\")\n    mlflow.set_tag(\"team\", \"growth\")\n    mlflow.sklearn.log_model(model, name=\"model\", input_example=X_val[:5])\n```\n\n- **Params** are inputs (hyperparameters). **Metrics** are numeric results and can be logged per step. **Artifacts** are files. **Tags** are free-form labels.\n- Passing `input_example` (or using autologging) records a **model signature**, which UC registration requires."
         },
         {
+          "id": "mlflow-3-changes-you-will-see",
           "heading": "MLflow 3 changes you will see",
           "body": "- `log_model(..., name=\"model\")` replaces `artifact_path=` (still accepted, deprecated).\n- Models are first-class **LoggedModel** entities with an ID, addressed as `models:/<model_id>`; a run is no longer strictly required to log a model.\n- The default registry URI is `databricks-uc`.\n- `mlflow.evaluate` is deprecated in favour of `mlflow.models.evaluate`; `run_uuid` is removed in favour of `run_id`."
         },
         {
+          "id": "finding-the-best-run",
           "heading": "Finding the best run",
           "body": "```python\nfrom mlflow import MlflowClient\nclient = MlflowClient()\nbest = client.search_runs(\n    experiment_ids=[exp_id],\n    filter_string=\"params.model_type = 'xgboost'\",\n    order_by=[\"metrics.val_mae ASC\"],\n    max_results=1,\n)[0]\nprint(best.info.run_id, best.data.metrics[\"val_mae\"])\n```\n\n- Order **ASC** for error metrics (lower is better), **DESC** for scores like AUC or F1.\n- `mlflow.search_runs(...)` takes similar arguments and returns a **pandas DataFrame**."
         },
         {
+          "id": "what-the-mlflow-ui-shows",
           "heading": "What the MLflow UI shows",
           "body": "For each run: **parameters, metrics (with charts), tags, artifacts** (including the logged model and its signature, and the notebook for AutoML trials), the **source notebook and revision**, start time, duration and user. You can **compare runs** side by side and see **parent and child runs** created by hyperparameter tuning."
         }
@@ -414,18 +440,22 @@
       "summary": "Registering models in UC, privileges, tags at model and version level, champion/challenger aliases, and why UC beats the legacy workspace registry.",
       "sections": [
         {
+          "id": "registering",
           "heading": "Registering",
           "body": "```python\nmlflow.set_registry_uri(\"databricks-uc\")   # default in MLflow 3\nmlflow.register_model(model_uri, \"ml.models.churn\")\n# or log_model(..., registered_model_name=\"ml.models.churn\")\n# or MlflowClient().create_registered_model / create_model_version\n```\n\n- Names are three-level: `<catalog>.<schema>.<model>`.\n- Privileges: **USE CATALOG**, **USE SCHEMA** and **CREATE MODEL** on the schema.\n- **New model versions in UC must have a model signature.**"
         },
         {
+          "id": "aliases-replace-stages",
           "heading": "Aliases replace stages",
           "body": "UC does **not support stages** (None/Staging/Production/Archived). Use **aliases**: mutable, named pointers to one version.\n\n```python\nclient.set_registered_model_alias(\"ml.models.churn\", \"Challenger\", 7)\nclient.get_model_version_by_alias(\"ml.models.churn\", \"Champion\")\nclient.delete_registered_model_alias(\"ml.models.churn\", \"Challenger\")\nmodel = mlflow.pyfunc.load_model(\"models:/ml.models.churn@Champion\")\n```\n\n- Only **one version holds a given alias** at a time; setting it on a new version moves it.\n- **Promoting challenger to champion** = set the `Champion` alias on the challenger's version number. Consumers loading `@Champion` pick up the new version without code changes."
         },
         {
+          "id": "tags",
           "heading": "Tags",
           "body": "| Scope | Set | Remove |\n|---|---|---|\n| Registered model | `set_registered_model_tag` | `delete_registered_model_tag` |\n| Model version | `set_model_version_tag` | `delete_model_version_tag` |\n\nSetting tags requires ownership or the `APPLY TAG` privilege. Use version tags for facts about one version (for example `validation_status=passed`)."
         },
         {
+          "id": "uc-registry-vs-workspace-registry",
           "heading": "UC registry vs workspace registry",
           "body": "Benefits of Models in UC:\n\n- **Centralised governance** and ACLs across workspaces.\n- Access from **any workspace on the same metastore**.\n- **Lineage** from models back to upstream tables.\n- Sharing across regions and accounts with Delta Sharing.\n- Environments as catalogs; cross-environment promotion with `copy_model_version`.\n\nThe **Workspace Model Registry** is legacy: it uses stages via `transition_model_version_stage`, and stage APIs such as `get_latest_versions` are deprecated in MLflow. Know the UC limits too: no registry webhooks, and deletion is irreversible."
         }
@@ -467,18 +497,22 @@
       "summary": "Profile a Spark DataFrame with describe(), summary() and dbutils.data.summarize, then pick the right chart or statistic to inspect one feature or compare two.",
       "sections": [
         {
+          "id": "why-profile-before-you-model",
           "heading": "Why profile before you model",
           "body": "Section 2 of the exam guide starts with exploratory analysis: compute summary statistics on a Spark DataFrame, visualise categorical and continuous features, and compare pairs of features. Profiling tells you which columns have **missing values**, **skew**, **outliers** or **very many categories**, and those findings drive every later choice in this domain (imputation strategy, outlier rule, encoding and log transforms)."
         },
         {
+          "id": "describe-vs-summary",
           "heading": "describe() vs summary()",
           "body": "Both are PySpark `DataFrame` methods that return a new DataFrame of statistics.\n\n| Method | Default statistics |\n|---|---|\n| `df.describe()` | count, mean, stddev, min, max |\n| `df.summary()` | count, mean, stddev, min, **25%, 50%, 75%**, max |\n\n`summary()` adds the quartiles, which is what you need for the IQR outlier rule. You can also ask for specific statistics, for example `df.summary(\"count\", \"min\", \"10%\", \"90%\", \"max\")`. The percentiles are **approximate**, computed with an approximate quantile algorithm, so do not treat them as exact on large data.\n\nBoth return string-typed result columns; use `.show()` or `display()` to view them. String columns get count, min and max but no mean."
         },
         {
+          "id": "dbutils-data-summarize",
           "heading": "dbutils.data.summarize",
           "body": "`dbutils.data.summarize(df, precise=False)` computes and **displays** summary statistics for a Spark or pandas DataFrame in a notebook, including histograms and per-column profiles. Key behaviour from the Databricks Utilities docs:\n\n- It scans the whole DataFrame.\n- By default (`precise=False`) results are **approximate**: distinct counts on high-cardinality columns can be off by about 5%, and histograms and percentiles by a very small amount.\n- `precise=True` makes everything exact **except** histograms and percentiles, which become far more accurate but are still approximate.\n\nThe notebook `display()` output also offers a **Data Profile** tab that shows the same kind of profile without code, and built-in chart types."
         },
         {
+          "id": "choosing-a-visual-or-statistic",
           "heading": "Choosing a visual or statistic",
           "body": "| What you are looking at | Good choice |\n|---|---|\n| One continuous feature | Histogram, density plot, box plot |\n| One categorical feature | Bar chart or count plot of category frequencies |\n| Two continuous features | Scatter plot; Pearson correlation (linear) or Spearman (monotonic, rank-based) |\n| Two categorical features | Contingency table (cross-tab), stacked bar chart, chi-square test of independence |\n| Continuous vs categorical | Grouped (side-by-side) box plots |\n\nIn Spark ML, `pyspark.ml.stat.Correlation.corr` computes Pearson or Spearman correlation matrices over a vector column, and `ChiSquareTest` tests independence between categorical features and a label. For quick checks, `df.stat.corr(col1, col2)` and `df.crosstab(col1, col2)` work on DataFrame columns."
         }
@@ -532,18 +566,22 @@
       "summary": "Filter outliers with the standard-deviation rule or the IQR rule using Spark aggregations and approxQuantile, and know when each rule fits the data.",
       "sections": [
         {
+          "id": "two-rules-the-exam-expects",
           "heading": "Two rules the exam expects",
           "body": "**Standard-deviation (z-score) rule.** Keep rows where the value lies within `mean ± k·stddev`. A common choice is k = 3. It assumes a roughly symmetric, bell-shaped distribution, and the outliers themselves inflate the mean and standard deviation, so extreme values can hide the very points you want to remove.\n\n**IQR rule.** Compute the first and third quartiles, Q1 and Q3, and IQR = Q3 − Q1. Keep rows inside `[Q1 − 1.5·IQR, Q3 + 1.5·IQR]`. Quartiles barely move when a few extreme values appear, so the IQR rule is **robust** and works better for skewed data. These are general statistics conventions rather than Databricks features."
         },
         {
+          "id": "standard-deviation-rule-in-pyspark",
           "heading": "Standard deviation rule in PySpark",
           "body": "```python\nfrom pyspark.sql import functions as F\nstats = df.select(F.mean(\"amount\").alias(\"mu\"), F.stddev(\"amount\").alias(\"sd\")).first()\nlo, hi = stats.mu - 3 * stats.sd, stats.mu + 3 * stats.sd\nclean = df.filter(F.col(\"amount\").between(lo, hi))\n```\n\nCompute the statistics once on the training data and reuse the same bounds on validation and scoring data, so the rule does not leak information from the evaluation set."
         },
         {
+          "id": "iqr-rule-in-pyspark",
           "heading": "IQR rule in PySpark",
           "body": "```python\nq1, q3 = df.approxQuantile(\"amount\", [0.25, 0.75], 0.01)\niqr = q3 - q1\nclean = df.filter(F.col(\"amount\").between(q1 - 1.5 * iqr, q3 + 1.5 * iqr))\n```\n\n`approxQuantile(col, probabilities, relativeError)` returns approximate quantiles; `relativeError = 0` computes exact quantiles but can be expensive on large data. In SQL, `percentile_approx(col, array(0.25, 0.75))` does the same job. `df.summary()` also shows the 25% and 75% values if you just want to inspect them."
         },
         {
+          "id": "remove-cap-or-keep",
           "heading": "Remove, cap or keep?",
           "body": "- **Remove** rows that are clearly data errors (negative ages, sensor glitches).\n- **Cap (winsorise)** to the bounds when the extreme values are real but you want to limit their influence on mean-based models.\n- **Keep** genuine extremes when they are the signal, for example in fraud or anomaly detection. Dropping them would delete the positive class.\n- Never remove outliers from the **label** of the test set just to make metrics look better.\n\nAlways check how many rows a rule drops before and after, with `df.count()` and `clean.count()`."
         }
@@ -589,14 +627,17 @@
       "summary": "Choose an imputation strategy from the column type and distribution, apply it with Spark ML Imputer inside a pipeline, and avoid leakage.",
       "sections": [
         {
+          "id": "pick-the-strategy-from-the-distribution",
           "heading": "Pick the strategy from the distribution",
           "body": "| Strategy | Use for | Watch out for |\n|---|---|---|\n| **Mean** | Continuous, roughly symmetric data without strong outliers | Pulled toward extreme values and skew |\n| **Median** | Continuous data that is **skewed** or has outliers | Ignores the shape of the tails |\n| **Mode** (most frequent) | **Categorical** or discrete data | Can over-represent the dominant category |\n\nNo imputer chooses for you: you must inspect the distribution (for example with `summary()` or a histogram) and pick a strategy. When missingness itself may be informative, add an **indicator column** such as `income_was_missing` before imputing."
         },
         {
+          "id": "spark-ml-imputer",
           "heading": "Spark ML Imputer",
           "body": "```python\nfrom pyspark.ml.feature import Imputer\nimp = Imputer(strategy=\"median\", inputCols=[\"income\", \"age\"], outputCols=[\"income_imp\", \"age_imp\"])\nmodel = imp.fit(train_df)      # Imputer is an Estimator\ntrain_out = model.transform(train_df)\ntest_out = model.transform(test_df)\n```\n\n- `strategy` accepts `\"mean\"` (default), `\"median\"` or `\"mode\"`.\n- It works on **numeric** columns. Null values and the configured `missingValue` (default NaN) are treated as missing.\n- The Spark docs warn that Imputer does not support categorical features and can create incorrect values for them. For string categoricals, fill with the most frequent value (for example `df.fillna({\"city\": top_city})`) or index them first.\n- Because `fit()` learns the fill value, put Imputer in a `Pipeline` and fit it on **training data only**, so test data does not leak into the statistic."
         },
         {
+          "id": "drop-or-impute",
           "heading": "Drop or impute?",
           "body": "Dropping rows (`df.na.drop()`) is acceptable when very few rows are affected and the data is missing at random. Dropping many rows shrinks the training set and can bias it. Dropping a whole column makes sense when most of its values are missing and it carries little signal.\n\nSome tree-based libraries can handle missing values natively, but for Spark ML linear models and most transformers you need to impute first, because NaN or null values break the vector assembly step or the training."
         }
@@ -645,14 +686,17 @@
       "summary": "Encode categorical features with StringIndexer and OneHotEncoder when the model needs it, know when not to one-hot encode, and use log transforms for skewed positive data.",
       "sections": [
         {
+          "id": "one-hot-encoding-in-spark-ml",
           "heading": "One-hot encoding in Spark ML",
           "body": "Spark ML needs numeric vectors, so string categories go through two stages:\n\n```python\nfrom pyspark.ml.feature import StringIndexer, OneHotEncoder, VectorAssembler\nidx = StringIndexer(inputCols=[\"plan\", \"region\"], outputCols=[\"plan_idx\", \"region_idx\"], handleInvalid=\"keep\")\nohe = OneHotEncoder(inputCols=[\"plan_idx\", \"region_idx\"], outputCols=[\"plan_ohe\", \"region_ohe\"])\nva  = VectorAssembler(inputCols=[\"plan_ohe\", \"region_ohe\", \"tenure\"], outputCol=\"features\")\n```\n\n- `StringIndexer` maps each label to an index, by default ordered by **frequency** (most frequent gets 0).\n- `OneHotEncoder` is an **Estimator** in current Spark: it learns the category sizes during `fit()`. It outputs **sparse vectors** and by default drops the last category (`dropLast=True`) so the columns are not perfectly collinear.\n- `handleInvalid` controls what happens to categories not seen during fitting (`\"error\"`, `\"keep\"` or `\"skip\"` depending on the stage)."
         },
         {
+          "id": "when-one-hot-encoding-fits-and-when-it-does-not",
           "heading": "When one-hot encoding fits, and when it does not",
           "body": "**Good fit:** nominal (unordered) categorical features with **low cardinality** feeding **linear models**, logistic regression or **distance-based** models, which would otherwise read an index as a meaningful number.\n\n**Poor fit:**\n\n- **High-cardinality** features (thousands of zip codes or product IDs): OHE creates a huge, sparse feature space. Consider grouping rare levels, target or frequency encoding, hashing, or embeddings.\n- **Tree-based models** (decision trees, random forests, gradient-boosted trees): they can split on indexed categories directly, and in Spark ML they can treat a StringIndexer output as categorical through column metadata. OHE spreads one feature across many sparse columns, so trees grow deeper and each split sees less signal.\n- **Ordinal** features (small < medium < large): an ordered index keeps the ordering that OHE throws away."
         },
         {
+          "id": "log-transforms",
           "heading": "Log transforms",
           "body": "Apply a log transform to **right-skewed, positive** values that span orders of magnitude, such as prices, incomes, counts or durations. It compresses the long tail, makes the distribution closer to symmetric, reduces the leverage of extreme values and often makes relationships more linear.\n\n- Use `F.log1p(col)` (log(1 + x)) when the column contains **zeros**; plain `log(0)` is undefined.\n- It is **undefined for negative values**, so shift or choose another transform for signed data.\n- If you transform the **target**, the model predicts in log space. Apply `exp` (or `expm1` after `log1p`) to predictions **before** computing RMSE or MAE in the original units or reporting results.\n- A log transform does nothing useful for categorical codes, roughly symmetric features or features already on a narrow range."
         }
@@ -702,14 +746,17 @@
       "summary": "How to map a business problem to a model family, why a simple baseline comes first, and the main ways to deal with a rare positive class without fooling yourself with accuracy.",
       "sections": [
         {
+          "id": "start-from-the-target-not-the-algorithm",
           "heading": "Start from the target, not the algorithm",
           "body": "Pick the problem type from the label first:\n\n- **Categorical label** (churn yes/no, fraud class, product category): **classification**.\n- **Continuous label** (revenue, duration, price): **regression**.\n- **Label indexed by time where you predict future values**: **forecasting**.\n- **No label at all** (group customers by behaviour): **unsupervised**, such as clustering.\n\nDatabricks AutoML mirrors this split: it supports classification, regression and forecasting, and for classification it tries decision trees, random forests, logistic regression, XGBoost and LightGBM. That list is a good mental shortlist for tabular data on the exam."
         },
         {
+          "id": "trade-offs-between-model-families",
           "heading": "Trade-offs between model families",
           "body": "- **Linear and logistic regression**: fast, interpretable coefficients, a strong baseline. They assume a roughly linear relationship, are sensitive to feature scale when regularised, and need categorical features encoded (for example one-hot).\n- **Decision trees**: interpretable rules and capture non-linearity, but a single deep tree overfits easily.\n- **Random forests** (bagging of trees): reduce variance compared with a single tree; robust default for tabular data; little scaling or encoding effort (Spark tree models can use indexed categoricals directly).\n- **Gradient-boosted trees** (GBT, XGBoost, LightGBM): often the most accurate on tabular data, but more hyperparameters and easier to overfit if not tuned.\n\nA sensible workflow: train a simple baseline, then a tree ensemble, and compare them on the **same validation data and metric**. Prefer the simpler model when the gain is negligible, especially when stakeholders need explanations."
         },
         {
+          "id": "class-imbalance",
           "heading": "Class imbalance",
           "body": "When one class is rare (for example 2% fraud), a model that always predicts the majority class scores 98% accuracy and is useless. Mitigations:\n\n- **Choose the right metric**: precision, recall, F1 or PR-AUC instead of accuracy.\n- **Weight the classes (cost-sensitive learning)**: Spark ML classifiers such as `LogisticRegression` accept a `weightCol`; scikit-learn models accept `class_weight`. Errors on the rare class then cost more during training.\n- **Resample the training data**: oversample the minority class, undersample the majority, or generate synthetic minority examples (SMOTE).\n- **Stratify splits** so validation data has the same class ratio as production.\n- **Tune the decision threshold** on validation data instead of using 0.5 blindly.\n\nResample **only the training split**. Oversampling before the split leaks duplicated rows into validation and inflates the score."
         }
@@ -759,14 +806,17 @@
       "summary": "The Spark ML abstractions the exam uses: what a Transformer and an Estimator are, how a Pipeline becomes a PipelineModel, and how to build a reusable training pipeline.",
       "sections": [
         {
+          "id": "transformer-vs-estimator",
           "heading": "Transformer vs Estimator",
           "body": "- A **Transformer** implements `transform()`: it takes a DataFrame and returns a new DataFrame, usually with appended columns. Examples: `VectorAssembler`, `Tokenizer`, and every fitted model.\n- An **Estimator** implements `fit()`: it learns from a DataFrame and returns a **Model**, which is itself a Transformer. Examples: `LogisticRegression` (fits to `LogisticRegressionModel`), `StringIndexer` (learns the label-to-index mapping), `StandardScaler` (learns means and standard deviations), `Imputer`.\n\nRule of thumb: if the step must **learn something from data** (a vocabulary, a statistic, weights), it is an Estimator. If it is a fixed, stateless operation, it is a Transformer."
         },
         {
+          "id": "pipelines",
           "heading": "Pipelines",
           "body": "A **Pipeline** chains stages in order and is itself an **Estimator**.\n\n```python\nfrom pyspark.ml import Pipeline\nfrom pyspark.ml.feature import StringIndexer, OneHotEncoder, VectorAssembler\nfrom pyspark.ml.classification import LogisticRegression\n\nidx = StringIndexer(inputCol=\"plan\", outputCol=\"plan_idx\")\nohe = OneHotEncoder(inputCols=[\"plan_idx\"], outputCols=[\"plan_ohe\"])\nvec = VectorAssembler(inputCols=[\"plan_ohe\", \"tenure\", \"spend\"], outputCol=\"features\")\nlr  = LogisticRegression(featuresCol=\"features\", labelCol=\"label\")\n\npipeline = Pipeline(stages=[idx, ohe, vec, lr])\nmodel = pipeline.fit(train_df)          # PipelineModel\npreds = model.transform(test_df)\n```\n\n- `pipeline.fit()` runs the stages in order: Transformers transform, Estimators are fit and their models then transform the data for the next stage.\n- The result is a **PipelineModel**, a Transformer with the same number of stages, all now transformers.\n- Each stage must be a **unique instance**; reusing the same object twice in one pipeline is not allowed."
         },
         {
+          "id": "why-pipelines-matter",
           "heading": "Why pipelines matter",
           "body": "- **No leakage**: statistics such as imputation values or scaling parameters are learned from training data only, then reused on test and production data.\n- **Consistency**: the exact same preprocessing runs at training and inference time, because you save and log one PipelineModel.\n- **Tuning**: a whole Pipeline can be passed as the `estimator` to `CrossValidator` or `TrainValidationSplit`, so preprocessing is refit inside each fold.\n- Parameters can be set with setters or passed in a `ParamMap`; values in a ParamMap override those set with setters."
         }
@@ -812,18 +862,22 @@
       "summary": "Grid, random and Bayesian search compared, then the Hyperopt API the exam still tests: fmin, search spaces, TPE vs random, and SparkTrials vs Trials for parallel tuning.",
       "sections": [
         {
+          "id": "grid-random-and-bayesian-search",
           "heading": "Grid, random and Bayesian search",
           "body": "- **Grid search** tries every combination in a discrete grid. Simple and reproducible, but the number of runs multiplies with each hyperparameter, and it wastes runs on unimportant dimensions.\n- **Random search** samples combinations from distributions. For the same budget it usually explores important hyperparameters better than a grid, especially in higher dimensions.\n- **Bayesian search** (for example **TPE**, Tree-structured Parzen Estimator) uses results of past trials to pick the next promising point. It typically reaches a good configuration in fewer trials than random search, but trials are partly sequential because each uses earlier results."
         },
         {
+          "id": "hyperopt-fmin",
           "heading": "Hyperopt fmin",
           "body": "```python\nfrom hyperopt import fmin, tpe, hp, SparkTrials, STATUS_OK\nimport mlflow\n\nspace = {\n  \"max_depth\": hp.quniform(\"max_depth\", 2, 12, 1),\n  \"learning_rate\": hp.loguniform(\"learning_rate\", -5, 0),\n}\n\ndef objective(params):\n    auc = train_and_score(params)           # your sklearn / xgboost code\n    return {\"loss\": -auc, \"status\": STATUS_OK}\n\nwith mlflow.start_run():\n    best = fmin(fn=objective, space=space, algo=tpe.suggest,\n                max_evals=64, trials=SparkTrials(parallelism=8))\n```\n\n- `fn` returns a value to **minimise** (a scalar or a dict with `loss`). To maximise AUC or F1, return its **negative**.\n- `algo`: `tpe.suggest` for Bayesian TPE, `rand.suggest` for random search.\n- `max_evals` is the total number of trials.\n- With MLflow, the `fmin` call is logged as a **parent run with one child run per trial**."
         },
         {
+          "id": "sparktrials-vs-trials",
           "heading": "SparkTrials vs Trials",
           "body": "- **SparkTrials** distributes trials of **single-machine** models (scikit-learn, single-node XGBoost) across the Spark workers: each trial runs as a task, so many models train at once. Its `parallelism` defaults to the number of executors and has a maximum of 128; a `timeout` can be set.\n- For algorithms that are **already distributed** (Spark MLlib, Horovod), do **not** use SparkTrials. Use the default **Trials** class, so trials run one after another on the driver while each training job uses the cluster.\n- Higher parallelism finishes faster but gives TPE less feedback between trials, so adaptive search becomes closer to random. Keep parallelism well below `max_evals`."
         },
         {
+          "id": "hyperopt-status-on-databricks",
           "heading": "Hyperopt status on Databricks",
           "body": "Databricks docs state that the open-source Hyperopt project is no longer maintained and that Hyperopt is **not included in Databricks Runtime ML after 16.4 LTS ML**. The exam guide still names Hyperopt `fmin`, so know its API, but for new work Databricks recommends **Optuna** or Ray Tune (next lesson)."
         }
@@ -873,14 +927,17 @@
       "summary": "The tuning approach Databricks now recommends (Optuna with MLflow and Spark), plus the Spark ML tuners: CrossValidator vs TrainValidationSplit and how to count the models a search trains.",
       "sections": [
         {
+          "id": "optuna-on-databricks",
           "heading": "Optuna on Databricks",
           "body": "- Databricks recommends **Optuna** (or Ray Tune) for single-node tuning now that Hyperopt is unmaintained.\n- The objective receives a `trial` and samples values with `trial.suggest_int`, `trial.suggest_float(..., log=True)` and `trial.suggest_categorical`, then returns the metric. A study can be set to minimise or maximise.\n- In Optuna itself, the default sampler is **TPESampler** (Bayesian) and the default pruner is **MedianPruner**, which stops unpromising trials early.\n- For parallel trials on Spark, Databricks provides `MlflowStorage` (MLflow tracking as the Optuna storage) and `MlflowSparkStudy(...).optimize(objective, n_trials=..., n_jobs=...)`, which runs trials on Spark executors. Optuna can also parallelise with Joblib."
         },
         {
+          "id": "crossvalidator-vs-trainvalidationsplit",
           "heading": "CrossValidator vs TrainValidationSplit",
           "body": "- **CrossValidator** splits data into **k folds**. For each parameter combination it trains k models (each on k−1 folds, evaluated on the held-out fold) and averages the metric. It then **refits the best combination on the entire dataset**.\n- **TrainValidationSplit** evaluates each combination **once** on a single split controlled by `trainRatio` (for example 0.75). It is about k times cheaper, but the estimate is noisier, especially on small datasets. It also refits the best combination on all the data.\n- Both take `estimator` (a model or a whole Pipeline), `estimatorParamMaps` (from `ParamGridBuilder`), an `evaluator`, and a `parallelism` setting to evaluate parameter sets in parallel; the Spark docs say a value up to 10 is sufficient for most clusters.\n\n| | CrossValidator | TrainValidationSplit |\n|---|---|---|\n| Fits per combination | k | 1 |\n| Cost | Higher | Lower |\n| Estimate reliability | Better, uses all data for validation | Depends on one split |\n| Good when | Data is small or medium | Data is large or training is expensive |"
         },
         {
+          "id": "counting-models-trained",
           "heading": "Counting models trained",
           "body": "- **Grid size** = product of the number of values for each hyperparameter. Example: 4 values × 3 values = 12 combinations.\n- **CrossValidator**: grid size × k. With 12 combinations and 3 folds that is **36** models during the search, plus **1** final refit on the full data = 37 if the question counts the refit.\n- **TrainValidationSplit**: grid size × 1 = **12**, plus 1 refit = 13.\n- Hyperopt or Optuna: the number of trials (`max_evals` / `n_trials`), each possibly multiplied by k if the objective itself cross-validates.\n\nAlways read whether a question asks for models trained **during** the search or **including** the final refit."
         }
@@ -934,18 +991,22 @@
       "summary": "What F1, log loss, ROC/AUC, PR-AUC, RMSE, MAE and R² measure, how they are configured in Spark evaluators, and how to pick the metric that matches the business cost.",
       "sections": [
         {
+          "id": "classification-metrics",
           "heading": "Classification metrics",
           "body": "- **Accuracy**: share of correct predictions. Misleading when classes are imbalanced.\n- **Precision**: of predicted positives, how many are real. Matters when false positives are costly.\n- **Recall**: of real positives, how many were found. Matters when false negatives are costly.\n- **F1**: harmonic mean of precision and recall. A single number that is low if either is low; good for imbalanced data at a chosen threshold.\n- **Log loss**: evaluates predicted **probabilities**; heavily penalises confident wrong predictions. Use when calibrated probabilities matter (pricing, risk scores).\n- **ROC AUC**: probability that a random positive is ranked above a random negative. **Threshold-independent**. Under heavy imbalance, **PR AUC** (area under precision-recall) is more informative because it focuses on the positive class."
         },
         {
+          "id": "regression-metrics",
           "heading": "Regression metrics",
           "body": "- **RMSE**: square root of mean squared error, in the target's units. Squaring makes it **penalise large errors** strongly.\n- **MAE**: mean absolute error, in target units. Every unit of error counts the same, so it is **more robust to outliers**.\n- **R²**: share of the target's variance explained by the model. 1 is perfect, 0 is no better than predicting the mean, and it can be negative on validation data for a very poor model. Unitless, so it is handy for comparing across targets but hides the size of errors."
         },
         {
+          "id": "spark-evaluators",
           "heading": "Spark evaluators",
           "body": "- `BinaryClassificationEvaluator`: default metric `areaUnderROC`; also `areaUnderPR`.\n- `MulticlassClassificationEvaluator`: metrics include `f1` (the default), `accuracy`, `weightedPrecision`, `weightedRecall` and `logLoss`.\n- `RegressionEvaluator`: default `rmse`; also `mse`, `mae` and `r2`.\n- Change the metric with `setMetricName` or the `metricName` parameter. Tuners such as CrossValidator use `evaluator.isLargerBetter()` to know whether to maximise (AUC, F1, R²) or minimise (RMSE, MAE, log loss)."
         },
         {
+          "id": "choosing-a-metric",
           "heading": "Choosing a metric",
           "body": "Match the metric to the cost of mistakes:\n\n- Missing a positive is expensive (fraud, disease) → **recall**, or F1/PR AUC with recall in mind.\n- False alarms are expensive (blocking a good customer) → **precision**.\n- Ranking customers for a campaign with a threshold chosen later → **ROC AUC** (or PR AUC if positives are rare).\n- Probabilities feed a downstream calculation → **log loss**.\n- Large errors are disproportionately bad (under-stocking) → **RMSE**; occasional extreme values should not dominate → **MAE**.\n- Explaining \"how much variation we capture\" to stakeholders → **R²**, alongside an error metric."
         }
@@ -1003,14 +1064,17 @@
       "summary": "Why predictions from a model trained on log(target) must be exponentiated before computing RMSE or MAE, and how to diagnose underfitting vs overfitting from training and validation error.",
       "sections": [
         {
+          "id": "training-on-a-log-transformed-label",
           "heading": "Training on a log-transformed label",
           "body": "A right-skewed, positive target (incomes, sale amounts, claim sizes) is often modelled as `log(y)` (or `log1p(y)` if zeros occur). The model then predicts in **log space**.\n\nBefore evaluating or reporting:\n\n1. Convert predictions back with `exp` (or `expm1` if you used `log1p`).\n2. Compute RMSE, MAE or R² against the **original-scale** label.\n\nAn RMSE computed on log-scale predictions is in \"log units\". It cannot be compared with a model trained on the raw label, and it understates how wrong the model is in currency terms. In Spark, add a column such as `F.exp(\"prediction\")` and point `RegressionEvaluator` at it and at the original label column."
         },
         {
+          "id": "bias-and-variance",
           "heading": "Bias and variance",
           "body": "- **High bias (underfitting)**: the model is too simple. **Training error is high and validation error is similarly high.** Fixes: a more expressive model, more or better features, less regularisation, deeper trees.\n- **High variance (overfitting)**: the model memorises noise. **Training error is low but validation error is much higher.** Fixes: simplify (shallower trees, fewer features), stronger regularisation, more training data, early stopping, ensembling by bagging.\n- As model complexity grows, training error keeps falling while validation error falls and then rises. The sweet spot is the complexity with the lowest validation error."
         },
         {
+          "id": "complexity-knobs-you-can-name",
           "heading": "Complexity knobs you can name",
           "body": "- Trees: `maxDepth`, minimum instances per node, number of trees (more bagged trees reduce variance; more boosting rounds can increase it).\n- Linear models: `regParam` and `elasticNetParam` in Spark ML (L2 / L1 regularisation).\n- Tuning these with cross-validation is how you choose the trade-off empirically rather than by guesswork."
         }
@@ -1056,18 +1120,22 @@
       "summary": "How to pick batch, streaming or real-time serving, and how to run batch inference with pandas, Spark UDFs, feature tables and ai_query, and streaming inference inside a Lakeflow pipeline (formerly DLT).",
       "sections": [
         {
+          "id": "three-serving-modes-and-how-to-choose",
           "heading": "Three serving modes and how to choose",
           "body": "The exam asks you to match a requirement to a serving mode. Decide on **latency** first, then on **how the data arrives**:\n\n| Mode | Latency | Typical shape | Databricks tool |\n|---|---|---|---|\n| **Batch** | Minutes to hours | Score a whole table on a schedule | Job running `spark_udf`, `fe.score_batch` or `ai_query` |\n| **Streaming** | Seconds to minutes | Records arrive continuously; results land in a table | Structured Streaming or a Lakeflow pipeline |\n| **Real-time** | Milliseconds per request | An application asks for one prediction and waits | Model Serving REST endpoint |\n\nRules of thumb:\n\n- If nobody waits on the answer and a schedule is acceptable, choose **batch**. It is the cheapest and simplest.\n- If events never stop and the result is consumed from a table or dashboard, choose **streaming**.\n- If a user or system blocks until the prediction returns (a page load, a payment authorisation), choose **real-time**.\n- Fraud can be either: blocking a card payment before approval is real-time; flagging suspicious events for analysts a minute later is streaming."
         },
         {
+          "id": "batch-inference-with-pandas",
           "heading": "Batch inference with pandas",
           "body": "Every MLflow model can be loaded through the generic **pyfunc** flavour, and the MLflow docs state that all PyFunc models support a `pandas.DataFrame` as input. This is the simplest batch pattern for data that fits in memory on one machine:\n\n```python\nimport mlflow\nmodel = mlflow.pyfunc.load_model(\"models:/main.ml.claims_risk@Champion\")\npreds = model.predict(pdf)   # pdf is a pandas DataFrame\n```\n\nNotes:\n\n- Models in Unity Catalog are addressed as `models:/<catalog>.<schema>.<model>@<alias>` or `.../<version>`. Stage URIs such as `models:/name/Production` do not work, because UC does not support stages.\n- This runs on the **driver only**. Calling `toPandas()` on a very large Spark DataFrame to use this pattern can exhaust driver memory."
         },
         {
+          "id": "batch-inference-at-spark-scale",
           "heading": "Batch inference at Spark scale",
           "body": "For tables too large for one machine, wrap the model as a Spark UDF so that executors score partitions in parallel:\n\n```python\npredict = mlflow.pyfunc.spark_udf(spark, \"models:/main.ml.claims_risk@Champion\", result_type=\"double\")\nscored = df.withColumn(\"risk\", predict(*feature_cols))\nscored.write.mode(\"overwrite\").saveAsTable(\"main.ml.claims_scored\")\n```\n\nOther batch options you should recognise:\n\n- **`fe.score_batch(model_uri=..., df=...)`** for a model logged with `FeatureEngineeringClient.log_model`. You pass only the lookup keys (plus any request-time columns); the client looks up the remaining features from the feature tables. Values supplied in `df` override the lookup.\n- **`ai_query`** in SQL calls a serving endpoint for every row of a query. Databricks' model inference docs now recommend AI Functions for batch inference against serving endpoints."
         },
         {
+          "id": "streaming-inference-in-a-lakeflow-pipeline",
           "heading": "Streaming inference in a Lakeflow pipeline",
           "body": "Delta Live Tables (DLT) is now called **Lakeflow pipelines**, built on Spark Declarative Pipelines. The exam guide still says \"DLT\"; treat the names as the same thing. To score a stream, load the model as a Spark UDF and apply it inside a **streaming table** definition:\n\n```python\nfrom pyspark import pipelines as dp\nimport mlflow\n\nscore = mlflow.pyfunc.spark_udf(spark, \"models:/main.ml.sensor_anomaly@Champion\")\n\n@dp.table(comment=\"Sensor readings with anomaly scores\")\ndef scored_readings():\n    return (spark.readStream.table(\"main.iot.readings\")\n            .withColumn(\"anomaly\", score(\"temp\", \"vibration\", \"rpm\")))\n```\n\nWhy a pipeline rather than a hand-written job: the pipeline manages checkpoints, dependencies and **enhanced autoscaling** for you.\n\nSyntax to know:\n\n- `@dp.table` defines a streaming table, `@dp.materialized_view` a materialized view, and `@dp.temporary_view` a view that is not published.\n- Existing code that uses `import dlt` and `@dlt.table` keeps working. No migration is required."
         }
@@ -1126,22 +1194,27 @@
       "summary": "Deploying a custom MLflow model from Unity Catalog to a Model Serving endpoint, querying it over REST, SQL and the MLflow deployments client, and splitting traffic between a champion and a challenger.",
       "sections": [
         {
+          "id": "what-model-serving-does",
           "heading": "What Model Serving does",
           "body": "Model Serving exposes each served model as a **REST API** on serverless, autoscaling compute. It serves three kinds of model:\n\n- **Custom models**: MLflow-format Python models registered in Unity Catalog (or the legacy workspace registry). Agents are also served as custom models.\n- **Foundation Model APIs**: pay-per-token or provisioned throughput.\n- **External models**: models hosted by other providers, governed centrally.\n\nThe exam focuses on custom models. One endpoint cannot mix model types, so a custom model and an external model cannot share an endpoint."
         },
         {
+          "id": "packaging-and-deploying-a-custom-model",
           "heading": "Packaging and deploying a custom model",
           "body": "A custom model is often a `mlflow.pyfunc.PythonModel` subclass. Use it when you need preprocessing or postprocessing around the estimator:\n\n```python\nclass RiskModel(mlflow.pyfunc.PythonModel):\n    def load_context(self, context):\n        ...  # load artifacts once\n    def predict(self, context, model_input):\n        ...  # return predictions for a pandas DataFrame\n\nmlflow.pyfunc.log_model(name=\"risk\", python_model=RiskModel(),\n                        input_example=sample_pdf,\n                        registered_model_name=\"main.ml.claims_risk\")\n```\n\nThe deployment steps are:\n\n1. Log the model with a **signature**. New model versions in Unity Catalog must have one, and an `input_example` lets MLflow infer it.\n2. Register it in UC as `catalog.schema.model`.\n3. Create an endpoint (UI, or `POST /api/2.0/serving-endpoints`) whose **served entity** names the UC model and a specific version.\n\n```json\n{\"name\": \"claims-risk\",\n \"config\": {\"served_entities\": [\n   {\"name\": \"champion\", \"entity_name\": \"main.ml.claims_risk\",\n    \"entity_version\": \"3\", \"workload_size\": \"Small\",\n    \"scale_to_zero_enabled\": true}]}}\n```"
         },
         {
+          "id": "querying-an-endpoint",
           "heading": "Querying an endpoint",
           "body": "Send `POST https://<workspace-url>/serving-endpoints/<endpoint-name>/invocations` with a bearer token. Databricks recommends **OAuth machine-to-machine** (a service principal) for production, and route-optimised endpoints accept only OAuth.\n\nInput formats for custom models:\n\n- `dataframe_split`: columns plus data. **Recommended**, and preserves column order.\n- `dataframe_records`: a list of row objects. Column order is not guaranteed.\n- `instances`: tensor input, row-based.\n- `inputs`: tensor input, columnar.\n\n```json\n{\"dataframe_split\": {\"columns\": [\"age\", \"claims_3y\"], \"data\": [[42, 1], [29, 0]]}}\n```\n\nThe response wraps the output in a `predictions` key. Other ways to query:\n\n- `mlflow.deployments.get_deploy_client(\"databricks\").predict(endpoint=\"claims-risk\", inputs={...})` from Python.\n- `ai_query('claims-risk', ...)` from SQL.\n- **Query endpoint** in the Serving UI."
         },
         {
+          "id": "splitting-traffic-between-models",
           "heading": "Splitting traffic between models",
           "body": "One endpoint can serve several entities, for example the current champion version and a challenger version. The `traffic_config` decides how requests are shared:\n\n```json\n\"traffic_config\": {\"routes\": [\n  {\"served_model_name\": \"champion\",   \"traffic_percentage\": 90},\n  {\"served_model_name\": \"challenger\", \"traffic_percentage\": 10}]}\n```\n\n- Clients keep calling the same `/invocations` URL; the endpoint routes each request by the percentages.\n- Change the split with `PUT /api/2.0/serving-endpoints/{name}/config` or with **Edit configuration** in the UI. Shift traffic gradually (90/10, 50/50, 0/100) as the challenger proves itself.\n- To test one model on its own, call `/serving-endpoints/{endpoint}/served-models/{served-model}/invocations`. This **bypasses** the traffic split.\n- Registry stages play no part. In Unity Catalog, aliases such as `Champion` label versions, but the endpoint serves the versions named in its configuration."
         },
         {
+          "id": "features-at-serving-time",
           "heading": "Features at serving time",
           "body": "If the model was trained with feature tables and logged with `fe.log_model`, the endpoint can look features up for each request. Publish the feature table to a **Databricks Online Feature Store** (a low-latency copy powered by Lakebase) with `fe.publish_table`. Model Serving then looks up the published features automatically, and the client sends only the lookup keys. The offline Delta feature table remains the source of truth for training and batch scoring. Legacy \"online tables\" are retired."
         }

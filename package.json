@@ -10,6 +10,8 @@
     "test": "vitest run",
     "typecheck": "tsc -b",
     "check:links": "node scripts/check-links.mjs",
+    "content:normalize": "node scripts/normalize-content.mjs",
+    "content:export": "vite-node scripts/export-content.ts",
     "test:e2e": "node e2e/smoke.mjs"
   },
   "dependencies": {

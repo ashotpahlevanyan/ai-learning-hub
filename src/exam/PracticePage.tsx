@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useExam } from './ExamLayout';
 import { getState, recordAnswer, update, useProgress } from '../lib/store';
@@ -7,6 +7,7 @@ import QuestionView from '../components/QuestionView';
 import Md from '../components/Md';
 import Sources from '../components/Sources';
 import { Bar, pct } from '../components/ui';
+import ActionBar from '../components/ActionBar';
 
 interface Session { items: PracticeItem[]; i: number; finished: boolean }
 
@@ -67,7 +68,10 @@ export default function PracticePage() {
           {error && <p className="error" role="alert">{error}</p>}
           <div className="actions"><button className="btn primary" onClick={() => start(domains, mode, count)}>Start practice</button></div>
         </div>
-        <p className="muted small">Keyboard: <kbd>1</kbd>–<kbd>4</kbd> choose · <kbd>Enter</kbd> check or next.</p>
+        <p className="muted small hide-touch">Keyboard: <kbd>1</kbd>–<kbd>4</kbd> choose · <kbd>Enter</kbd> check or next.</p>
+        <ActionBar>
+          <button className="ab-btn wide primary" onClick={() => start(domains, mode, count)}>Start {count} questions</button>
+        </ActionBar>
       </>
     );
   }
@@ -101,6 +105,10 @@ export default function PracticePage() {
           <button className="btn primary" onClick={() => { setSession(null); setParams({}); }}>New session</button>
           <Link className="btn" to={base}>Dashboard</Link>
         </div>
+        <ActionBar>
+          <Link className="ab-btn wide" to={base}>Dashboard</Link>
+          <button className="ab-btn wide primary" onClick={() => { setSession(null); setParams({}); }}>New session</button>
+        </ActionBar>
       </>
     );
   }
@@ -132,6 +140,11 @@ function PracticeQuestion({ session: s, setSession: set }: { session: Session; s
   const next = () => set({ ...s, i: s.i + 1, finished: s.i + 1 >= s.items.length });
   const quit = () => set({ ...s, items: s.items.slice(0, s.i + (item.done ? 1 : 0)), finished: true });
 
+  // A new question starts at the top; an answer brings its feedback into view (on a phone it is below the options).
+  const feedback = useRef<HTMLDivElement>(null);
+  useEffect(() => { window.scrollTo({ top: 0 }); }, [s.i]);
+  useEffect(() => { if (item.done) feedback.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, [item.done]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const n = Number(e.key);
@@ -151,13 +164,20 @@ function PracticeQuestion({ session: s, setSession: set }: { session: Session; s
       <Bar value={s.i / s.items.length} tone="accent" />
       <div className="card q-card">
         <QuestionView q={q} order={item.order} picked={item.picked} reveal={item.done} onPick={pick} />
-        {item.done && <div className={`feedback ${right ? 'good' : 'bad'}`} role="status"><strong>{right ? 'Correct.' : 'Not quite.'}</strong> <Md>{q.explanation}</Md><Sources list={q.sources} /></div>}
-        <div className="spread">
+        {item.done && <div ref={feedback} className={`feedback ${right ? 'good' : 'bad'}`} role="status"><strong>{right ? 'Correct.' : 'Not quite.'}</strong> <Md>{q.explanation}</Md><Sources list={q.sources} /></div>}
+        <div className="spread q-actions">
           <span className="muted small">Difficulty {'●'.repeat(q.difficulty ?? 2)}{'○'.repeat(3 - (q.difficulty ?? 2))}</span>
           {item.done ? <button className="btn primary" onClick={next}>{s.i + 1 < s.items.length ? 'Next →' : 'See results'}</button>
             : multi ? <button className="btn primary" disabled={item.picked.length !== q.answer.length} onClick={() => check()}>Check answer</button> : null}
         </div>
       </div>
+      <ActionBar progress={(s.i + (item.done ? 1 : 0)) / s.items.length}>
+        <button className="ab-btn" onClick={quit} aria-label="End session">✕</button>
+        <span className="ab-status">{s.i + 1}/{s.items.length}<span className="muted"> · {s.items.filter(x => x.done && x.ok).length} correct</span></span>
+        {item.done ? <button className="ab-btn wide primary" onClick={next}>{s.i + 1 < s.items.length ? 'Next →' : 'See results'}</button>
+          : multi ? <button className="ab-btn wide primary" disabled={item.picked.length !== q.answer.length} onClick={() => check()}>Check {item.picked.length}/{q.answer.length}</button>
+          : <span className="ab-hint muted">Tap an answer</span>}
+      </ActionBar>
     </>
   );
 }

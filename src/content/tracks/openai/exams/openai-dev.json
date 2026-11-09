@@ -79,22 +79,27 @@
       "summary": "How to pick a model from the GPT-6 family by capability, latency and cost, how reasoning effort and max_output_tokens interact, and why you pin snapshots and let evals decide.",
       "sections": [
         {
+          "id": "the-current-lineup",
           "heading": "The current lineup",
           "body": "OpenAI's Models page (November 2026) lists the **GPT-6 family**:\n\n| Model | Role in the docs |\n|---|---|\n| GPT-6 Astra (`gpt-6-astra`) | Flagship for complex reasoning and coding; the docs' \"if you're not sure where to start\" pick |\n| GPT-6.1 Sol (`gpt-6.1-sol`) | Balances intelligence and cost |\n| GPT-6.1 Terra (`gpt-6.1-terra`) | Cheaper again; supports `none` effort |\n| GPT-6 Luna (`gpt-6-luna`) | Cost-sensitive, high-volume work |\n\nOlder GPT-5.x models and GPT-4.1 are still listed, and voice work uses separate realtime / GPT-Live models. Prices differ by roughly two orders of magnitude between the top and bottom of the family, so model choice is the biggest cost lever you have.\n\nModel names, prices and limits change often. **Check the Models and Compare models pages** rather than relying on memory."
         },
         {
+          "id": "how-to-choose",
           "heading": "How to choose",
           "body": "Use the same triangle as with any provider:\n\n- **Capability:** hard reasoning, long agentic tasks and coding → the flagship.\n- **Latency:** chat UIs → a smaller model, or lower reasoning effort.\n- **Cost:** high-volume classification or extraction → the cheapest model that passes your evals (for example Luna or Terra).\n\nStart with a capable model to find the quality ceiling, build an eval set, then try cheaper models and lower effort until quality drops below your bar."
         },
         {
+          "id": "reasoning-effort",
           "heading": "Reasoning effort",
           "body": "GPT reasoning models take `reasoning.effort` on the Responses API:\n\n```python\nresp = client.responses.create(\n    model=\"gpt-6.1-terra\",\n    reasoning={\"effort\": \"low\"},\n    input=\"Classify this ticket: ...\",\n)\nprint(resp.usage.output_tokens_details.reasoning_tokens)\n```\n\n- Allowed values **depend on the model** and can include `none`, `minimal`, `low`, `medium`, `high`, `xhigh` and `max`.\n- GPT-6 Astra and GPT-6.1 Sol do **not** accept `none` (Astra returns HTTP 400); Terra and Luna do. `minimal` is not offered on GPT-6 models.\n- Several current models (including GPT-6.1 Sol) **default to `medium`**.\n- Higher effort thinks longer: better on hard problems, slower and more expensive.\n\nThe prompting guide's advice: treat effort as a **tuning knob, not the primary way to recover quality**. Clear task, constraints, output format and a definition of \"done\" come first."
         },
         {
+          "id": "reasoning-tokens-and-max-output-tokens",
           "heading": "Reasoning tokens and max_output_tokens",
           "body": "Reasoning tokens are not shown to you, but they are **billed as output tokens** and take up context. Read the count from `usage.output_tokens_details.reasoning_tokens`.\n\n`max_output_tokens` caps **reasoning plus visible output together**. If the model hits the cap, the response comes back with `status: \"incomplete\"` and reason `max_output_tokens` — possibly with **no visible text at all**, because the budget was spent thinking. The docs suggest reserving a generous budget (on the order of tens of thousands of tokens) while experimenting, and your code should always check `status`."
         },
         {
+          "id": "pin-snapshots-in-production",
           "heading": "Pin snapshots in production",
           "body": "Aliases can move to newer versions. For production, **pin a dated snapshot** (the docs' example is `gpt-5.5-2026-04-23`) and keep the model ID in configuration, so an upgrade is one change plus an eval run."
         }
@@ -144,22 +149,27 @@
       "summary": "The recommended OpenAI API surface: instructions vs input, roles, output items, output_text, usage, typed streaming events, and how Chat Completions and the sunset Assistants API relate.",
       "sections": [
         {
+          "id": "a-first-request",
           "heading": "A first request",
           "body": "```python\nfrom openai import OpenAI\nclient = OpenAI()  # reads OPENAI_API_KEY from the environment\n\nresp = client.responses.create(\n    model=\"gpt-6-astra\",\n    instructions=\"You are a concise support assistant for Acme.\",\n    input=\"Where is my order 1234?\",\n)\nprint(resp.output_text)\nprint(resp.usage)\n```\n\n```typescript\nimport OpenAI from \"openai\";\nconst client = new OpenAI();\nconst resp = await client.responses.create({\n  model: \"gpt-6-astra\",\n  instructions: \"You are a concise support assistant for Acme.\",\n  input: \"Where is my order 1234?\",\n});\nconsole.log(resp.output_text);\n```"
         },
         {
+          "id": "instructions-and-roles",
           "heading": "Instructions and roles",
           "body": "- `instructions` is a top-level field for system-level guidance and **takes priority over `input`**.\n- It applies **only to the current request**. When you chain with `previous_response_id`, earlier `instructions` are **not** carried forward — send them again on every call.\n- Inside `input`, a `developer` message outranks a `user` message, and `assistant` messages hold model output. This is the model spec's chain of command.\n\nNever place untrusted text (web pages, user uploads) in `instructions` or developer messages; pass it as user content."
         },
         {
+          "id": "output-is-a-list-of-items",
           "heading": "Output is a list of items",
           "body": "A response's `output` is an **array of typed items**, not one string: messages, reasoning items, function calls, hosted tool calls and more. The docs warn that \"it is not safe to assume that the model's text output is present at `output[0].content[0].text`\" — a reasoning item or tool call may come first.\n\n`output_text` is an SDK helper that aggregates the text from message items. Token counts are in `usage`. When you build agents you iterate the items: a `function_call` item means the model wants you to run a tool."
         },
         {
+          "id": "streaming",
           "heading": "Streaming",
           "body": "Pass `stream=True` to receive **server-sent events** with typed, semantic event names:\n\n| Event | Meaning |\n|---|---|\n| `response.created` | The response started |\n| `response.output_text.delta` | A chunk of visible text |\n| `response.refusal.delta` | A chunk of a refusal |\n| `response.completed` | Done; final response and usage |\n| `error` | Something failed |\n\nFunction-call arguments also stream as delta events. Render on `response.output_text.delta` and finalize on `response.completed`.\n\nStreaming improves **perceived** latency (time to first token); total work and cost are about the same. It also makes moderation harder, because partial output is hard to evaluate."
         },
         {
+          "id": "chat-completions-and-assistants",
           "heading": "Chat Completions and Assistants",
           "body": "- **Chat Completions is still supported**, but the docs say \"Responses is recommended for all new projects.\" Chat Completions takes a `messages` array; Responses uses typed **Items**. Function definitions differ in shape (Responses is internally tagged, Chat Completions externally tagged), Chat Completions function schemas are non-strict by default, and Responses showed better cache utilization in OpenAI's internal tests.\n- **Assistants API: sunset on 2026-08-26 and no longer available.** The migration guide maps the concepts:\n\n| Assistants | Responses-era equivalent |\n|---|---|\n| Assistants | Prompts (now: prompts kept in your code) |\n| Threads | Conversations |\n| Runs | Responses |\n| Run steps | Items |"
         }
@@ -213,18 +223,22 @@
       "summary": "Manual history, previous_response_id, the Conversations API, the store setting, retention, and compaction for long conversations.",
       "sections": [
         {
+          "id": "four-options",
           "heading": "Four options",
           "body": "1. **Manual history:** resend the conversation in `input`, appending the model's output items each turn. Full control; you store everything yourself.\n2. **`previous_response_id`:** chain a new turn to a stored response. You do not resend old turns, **but all previous input tokens in the chain are still billed as input**.\n3. **Conversations API:** a durable conversation object with its own ID that holds messages, tool calls and tool outputs. Pass the conversation ID on later Responses calls. Good for state shared across sessions, devices or jobs.\n4. **`store`:** responses are stored by default; set `store=False` when they must not be kept server-side (then manage history yourself, because `previous_response_id` chaining relies on stored responses)."
         },
         {
+          "id": "chaining-example",
           "heading": "Chaining example",
           "body": "```python\nfirst = client.responses.create(model=\"gpt-6-astra\", input=\"Tell me a joke\")\nsecond = client.responses.create(\n    model=\"gpt-6-astra\",\n    previous_response_id=first.id,\n    input=[{\"role\": \"user\", \"content\": \"Explain why it is funny.\"}],\n)\n```"
         },
         {
+          "id": "retention",
           "heading": "Retention",
           "body": "Per the docs, \"Response objects are saved for 30 days by default\"; `store: false` disables storage. \"Conversation objects and items in them are not subject to the 30 day TTL.\" Check data-retention terms (and any zero-data-retention agreement) before storing sensitive data.\n\nFor reasoning models with manual history, replay the **full `output` array**, including reasoning items, so the model keeps its context. Reasoning items now carry `encrypted_content` by default, which is what makes stateless (`store=false` or ZDR) replay work."
         },
         {
+          "id": "long-conversations-and-compaction",
           "heading": "Long conversations and compaction",
           "body": "Input, output and reasoning tokens all count toward the context window, so long chats eventually need trimming. Two server-side options:\n\n- **Automatic compaction** on `/responses` via `context_management` with a `compact_threshold`. It works with `store=false`, so it is ZDR-friendly.\n- The standalone, stateless **`/responses/compact`** endpoint returns an **encrypted, opaque compaction item**. Pass it back as-is; do not edit or prune it.\n\nCompaction reduces what you resend; it is the answer to \"previous_response_id did not make my long chat cheap\"."
         }
@@ -274,18 +288,22 @@
       "summary": "Define function tools, run the call → output loop, return errors the model can act on, and handle parallel calls.",
       "sections": [
         {
+          "id": "define-a-tool",
           "heading": "Define a tool",
           "body": "```python\ntools = [{\n    \"type\": \"function\",\n    \"name\": \"get_order\",\n    \"description\": \"Look up an order by its ID. Use when the user asks about order status or delivery.\",\n    \"parameters\": {\n        \"type\": \"object\",\n        \"properties\": {\"order_id\": {\"type\": \"string\", \"description\": \"e.g. A-1234\"}},\n        \"required\": [\"order_id\"],\n        \"additionalProperties\": False,\n    },\n    \"strict\": True,\n}]\n```\n\nThe **description** is the main thing the model uses to decide when to call the tool. `strict: true` makes the arguments follow your schema. Strict mode needs `additionalProperties: false` on every object and every property listed in `required`; express an optional field as a union with `null`.\n\nThe model replies with `function_call` items that carry a `call_id`, the `name` and `arguments`. **`arguments` is a JSON string**, so parse it (`json.loads`) before use."
         },
         {
+          "id": "the-loop",
           "heading": "The loop",
           "body": "```python\ninput_items = [{\"role\": \"user\", \"content\": \"Where is order A-1234?\"}]\nwhile True:\n    resp = client.responses.create(model=MODEL, tools=tools, input=input_items)\n    calls = [i for i in resp.output if i.type == \"function_call\"]\n    if not calls:\n        print(resp.output_text)\n        break\n    input_items += resp.output          # keep the model's items (incl. reasoning)\n    for call in calls:\n        try:\n            result = run_tool(call.name, json.loads(call.arguments))\n        except ToolError as e:\n            result = {\"error\": str(e), \"hint\": \"Ask the user to confirm the order ID.\"}\n        input_items.append({\"type\": \"function_call_output\", \"call_id\": call.call_id,\n                            \"output\": json.dumps(result)})\n```\n\nThe loop ends when the model stops calling tools. Add a maximum number of turns as a **safety net**, not as the main signal.\n\nThe output is usually a string. If a tool has nothing to report (for example, a write that just worked), still return something such as `\"success\"` so the call is answered."
         },
         {
+          "id": "parallel-calls-and-tool-choice",
           "heading": "Parallel calls and tool_choice",
           "body": "- A response can hold **zero, one or several** `function_call` items. Run them (in parallel if safe) and return an output for **each** `call_id`.\n- `parallel_tool_calls: false` limits the model to **zero or one** tool call per turn. Use it when steps must run in order.\n- `tool_choice` controls whether and which tools are called:\n  - `\"auto\"` (default): zero or more calls.\n  - `\"required\"`: one or more calls.\n  - A forced function: `{\"type\": \"function\", \"name\": \"get_order\"}`.\n  - `allowed_tools`: limit calls to a **subset** of the tools list without changing the list itself, which keeps the prompt cache intact.\n  - `\"none\"`: behaves as if no tools were passed."
         },
         {
+          "id": "good-tool-design",
           "heading": "Good tool design",
           "body": "- Few, distinct tools with clear names; avoid near-duplicates. The docs give a soft guideline: aim for **fewer than 20 functions** available at the start of a turn.\n- Tool definitions take up context and are **billed as input tokens**. For a large or rarely used tool set, use **tool search** to load definitions only when needed (supported on newer models only).\n- Tight schemas: enums, required fields, `additionalProperties: false`. Handle values you already know in code instead of asking the model for them.\n- Return concise, readable results, not huge raw dumps.\n- Return errors as data with a next step; don't crash the loop or return an empty string.\n- Enforce business rules (refund limits, permissions) **in your code**, not only in the prompt.\n- When the input is free text in a fixed format (a query language, a DSL), a **custom tool** (`type: \"custom\"`) can constrain it with a Lark or regex grammar. Its calls arrive as `custom_tool_call` items with an `input` field."
         }
@@ -337,18 +355,22 @@
       "summary": "The built-in tools OpenAI offers, connecting remote MCP servers with approvals, and when to use hosted tools, MCP or your own function tools.",
       "sections": [
         {
+          "id": "hosted-tools",
           "heading": "Hosted tools",
           "body": "The Responses API offers **built-in tools**. For most of them (web search, file search, Code Interpreter, image generation, remote MCP) OpenAI runs the tool, so you don't write the call → output loop. The tools guide also lists **computer use**, **shell**, **skills**, **tool search** and more. Computer use is different: the model asks for actions and *your* harness carries them out (see the next lesson).\n\n```python\nresp = client.responses.create(\n    model=MODEL,\n    tools=[{\"type\": \"web_search\"}],\n    input=\"Summarise this week's changes to the EU AI Act, with sources.\",\n)\n```\n\nCheck each tool's guide for exact type names, pricing and options."
         },
         {
+          "id": "file-search",
           "heading": "File search",
           "body": "Upload documents to a **vector store**, then attach the file search tool with the store ID. The model retrieves relevant chunks and cites them. Good for \"chat with our docs\" without running your own retrieval stack. The next lesson covers options and output items."
         },
         {
+          "id": "remote-mcp-servers",
           "heading": "Remote MCP servers",
           "body": "Connect a **remote MCP server** as a tool so the model can call its tools directly:\n\n```python\ntools = [{\n    \"type\": \"mcp\",\n    \"server_label\": \"crm\",\n    \"server_url\": \"https://mcp.example.com/mcp\",\n    \"allowed_tools\": [\"search_contacts\", \"create_note\"],\n    \"require_approval\": \"always\",\n    \"authorization\": crm_oauth_token,   # not stored: send it on every request\n}]\n```\n\nHow it runs:\n1. The API first returns an **`mcp_list_tools`** item with the server's tools. Keep it in context so the list isn't fetched again every turn.\n2. Approval is required **by default**. When the model wants a tool, you get an **`mcp_approval_request`**. Reply in a new request with an **`mcp_approval_response`** that names the request ID and sets approve to true or false. Each approval covers **one** call.\n3. `require_approval` accepts `\"always\"`, `\"never\"`, or an object naming tools that can skip approval.\n\nYou pay only for tokens; there is no extra fee per MCP tool call. Older connectors that use `connector_id` are legacy, and `connector_id` is deprecated for newer models.\n\nSafety: connect only servers you trust (prefer official, provider-hosted ones), use `allowed_tools` for least privilege, and require approval for anything that writes or spends money. Tool output can carry prompt injection that tries to leak data, for example through URLs. Log what you send to servers."
         },
         {
+          "id": "hosted-vs-your-own-tools",
           "heading": "Hosted vs your own tools",
           "body": "- **Built-in tool:** fastest to build, runs on OpenAI's side, less control over internals.\n- **Function tool:** you run the code; needed for your private systems and business rules.\n- **Remote MCP:** reuse a capability shared across apps or vendors; OpenAI calls the server for you.\n\nMany apps mix all three. In the Agents SDK, hosted tools need the Responses model class (`OpenAIResponsesModel`)."
         }
@@ -406,18 +428,22 @@
       "summary": "Options, output items and citations for web search, file search, Code Interpreter and computer use.",
       "sections": [
         {
+          "id": "web-search",
           "heading": "Web search",
           "body": "Use `{\"type\": \"web_search\"}`. The older `web_search_preview` is legacy and lacks filters.\n\n```python\ntools=[{\n    \"type\": \"web_search\",\n    \"filters\": {\"allowed_domains\": [\"europa.eu\", \"gov.uk\"]},  # no https:// prefix\n    \"user_location\": {\"type\": \"approximate\", \"country\": \"GB\"},\n    \"search_context_size\": \"medium\",\n}]\n```\n\n- Output: a `web_search_call` item (action `search`, `open_page` or `find_in_page`), then a message whose text has `url_citation` annotations.\n- You must show citations as **prominent, clickable links**.\n- `filters` takes `allowed_domains` or `blocked_domains` (subdomains are included). Domain filtering works only in the Responses API.\n- `external_web_access: false` gives a cache-only mode. Add `include: [\"web_search_call.action.sources\"]` to get the full list of sources consulted."
         },
         {
+          "id": "file-search",
           "heading": "File search",
           "body": "```python\ntools=[{\"type\": \"file_search\", \"vector_store_ids\": [vs_id], \"max_num_results\": 5}]\ninclude=[\"file_search_call.results\"]\n```\n\n- Attach one or more **vector stores**; optionally cap `max_num_results` and filter on file metadata.\n- Output: a `file_search_call` item. Its `results` are **null** unless you ask for them with `include: [\"file_search_call.results\"]`.\n- The answer cites chunks with `file_citation` annotations."
         },
         {
+          "id": "code-interpreter",
           "heading": "Code Interpreter",
           "body": "- `{\"type\": \"code_interpreter\", \"container\": {\"type\": \"auto\"}}` runs Python in a sandboxed **container**. The model knows it as the \"python tool\".\n- Use `auto`, or create a container yourself through the containers endpoint and pass its ID. Containers come in memory tiers (1 GB by default, up to much larger).\n- **A container expires after about 20 minutes idle and cannot be revived.** Download the files you need and create a new container (re-uploading inputs) when one has expired.\n- Files it generates are cited as `container_file_citation` annotations."
         },
         {
+          "id": "computer-use",
           "heading": "Computer use",
           "body": "- Tool type `{\"type\": \"computer\"}` (the older `computer-use-preview` has a migration guide).\n- The model returns a `computer_call` with an ordered `actions` array: click, double_click, drag, move, scroll, keypress, type, wait, screenshot.\n- **Your harness** performs the actions, then replies with a `computer_call_output` that has the same `call_id` and a `computer_screenshot`. Repeat until the task is done.\n- Run it in an **isolated browser or VM** with an allow-list, treat everything on screen as **untrusted** input, and have a person confirm consequential actions."
         }
@@ -475,18 +501,22 @@
       "summary": "Make responses follow a JSON Schema with strict mode, parse into typed objects and still validate.",
       "sections": [
         {
+          "id": "json-schema-output",
           "heading": "JSON Schema output",
           "body": "Structured Outputs make the model's response follow a JSON Schema you supply. In the Responses API the schema goes under `text.format`:\n\n```json\n\"text\": {\n  \"format\": {\n    \"type\": \"json_schema\",\n    \"name\": \"invoice\",\n    \"strict\": true,\n    \"schema\": { \"type\": \"object\", \"properties\": { ... }, \"required\": [...], \"additionalProperties\": false }\n  }\n}\n```\n\nChat Completions uses `response_format: {type: \"json_schema\", ...}` instead. With the Python SDK you can pass a Pydantic model and let the SDK build the strict schema:\n\n```python\nfrom pydantic import BaseModel\n\nclass Invoice(BaseModel):\n    vendor: str\n    total: float\n    currency: str\n    due_date: str | None   # allow null instead of guessing\n\nresp = client.responses.parse(\n    model=MODEL,\n    input=[{\"role\": \"user\", \"content\": invoice_text}],\n    text_format=Invoice,\n)\ninvoice = resp.output_parsed\n```\n\nIn TypeScript the SDK offers a Zod helper. The output follows the **key order of your schema**. The first request with a new schema has extra latency while it is processed; later requests with the same schema do not."
         },
         {
+          "id": "strict-mode-rules",
           "heading": "Strict mode rules",
           "body": "With `strict: true` the schema must use the supported subset of JSON Schema:\n\n- The **root must be an object** and must not be an `anyOf`.\n- **Every property is listed in `required`.** Make a field optional by allowing `null`, e.g. `\"type\": [\"string\", \"null\"]`.\n- `additionalProperties: false` on **every** object.\n- Supported: string, number, boolean, integer, object, array, enum, `anyOf`, plus `$defs`/`$ref` and recursion.\n- Supported constraints include string `pattern` and `format`, number minimum/maximum/multipleOf, and array minItems/maxItems.\n- **Not supported:** `allOf`, `not`, `if`/`then`/`else`, `dependentRequired`, `dependentSchemas`. Using them with `strict: true` returns an error rather than being silently ignored.\n- There are size limits (nesting depth, total properties, total enum values and string length). Check the docs for current numbers; very large enums are a sign the value belongs in a lookup in code.\n\nStructured Outputs guarantees the **shape**, not the **truth** of the values."
         },
         {
+          "id": "still-validate",
           "heading": "Still validate",
           "body": "- Check business rules in code (totals add up, dates are real, enums map to your system).\n- Handle **refusals**: a safety refusal does not follow your schema. In Responses it appears as a `refusal` content item instead of `output_text`, and the SDK surfaces it separately from the parsed object.\n- Check `status`: a response can be `incomplete` (for example the reason is `max_output_tokens` or `content_filter`), in which case the JSON may be cut off.\n- For bulk extraction, keep source quotes or page numbers as evidence fields and route low-confidence records to human review."
         },
         {
+          "id": "json-mode-vs-structured-outputs",
           "heading": "JSON mode vs Structured Outputs",
           "body": "**JSON mode** is `text.format: {type: \"json_object\"}`. It guarantees syntactically valid JSON but **not** adherence to any schema: fields can be missing, renamed or the wrong type. **Structured Outputs** (`type: \"json_schema\"` with `strict: true`) enforce your schema. The docs recommend Structured Outputs over JSON mode wherever the model supports them."
         }
@@ -533,22 +563,27 @@
       "summary": "Clear instructions, structure, examples, where untrusted data goes, reasoning effort as a tuning knob, and versioning prompts in code.",
       "sections": [
         {
+          "id": "what-works",
           "heading": "What works",
           "body": "- **Be specific:** state the task, constraints, output format, and what \"done\" means and how to verify it.\n- **Separate parts** with Markdown headings or XML-style tags: instructions, context, examples, the input.\n- **Few-shot examples** for format and edge cases; keep them compact (a YAML-style or bulleted block) and varied.\n- **Say what to do**, not just what not to do, and give the reason behind rules.\n- For reasoning models you usually **don't** need \"think step by step\": they reason internally."
         },
         {
+          "id": "reasoning-effort-is-a-tuning-knob",
           "heading": "Reasoning effort is a tuning knob",
           "body": "OpenAI's prompting guidance says to treat `reasoning.effort` as **a tuning knob, not the primary way to recover quality**. When output quality drops, first fix the prompt: a clearer task, explicit constraints and format, and a definition of done. Then tune effort for the cost/latency/quality trade-off and confirm with evals."
         },
         {
+          "id": "instructions-vs-input",
           "heading": "Instructions vs input",
           "body": "Put stable role, tone and rules in `instructions` (or a developer message) and per-request task details and data in user `input`. `developer` messages outrank `user` messages, so:\n\n- **Never put untrusted data** (web pages, emails, documents, tool output) in developer messages or instructions. Pass it in user messages, where it cannot claim developer authority.\n- `instructions` apply only to the current request; with `previous_response_id` they are not carried forward, so send them again.\n- Keep stable content **first and identical** across requests so prompt caching can reuse it."
         },
         {
+          "id": "versioning-prompts-in-code",
           "heading": "Versioning prompts in code",
           "body": "Treat prompts as application code: versioned modules, typed parameters, and tests and evals in CI. The docs now say to **store production prompts in your application code** and version them with git, PR review, release tags and feature flags.\n\nReusable dashboard **prompt objects** (`v1/prompts`) are a deprecated legacy feature: prompt creation was de-emphasized and the endpoint is scheduled to shut down (2026-11-30). Do not build new workflows on them; migrate existing ones into code."
         },
         {
+          "id": "re-test-after-model-upgrades",
           "heading": "Re-test after model upgrades",
           "body": "Behaviour such as output length and instruction-following changes between model generations. Read the current model's prompting guidance, pin production to a model snapshot, and re-run your eval set before switching."
         }
@@ -607,18 +642,22 @@
       "summary": "Responses API vs Agents SDK vs Agents API, what the Agents API beta offers, and when an agent is the wrong tool.",
       "sections": [
         {
+          "id": "three-ways-to-build-an-agent",
           "heading": "Three ways to build an agent",
           "body": "OpenAI's agents guide describes three options:\n\n| Option | What you get | Effort |\n|---|---|---|\n| **Responses API** | Call models directly; you write the loop, state and tools | Highest effort, full control |\n| **Agents SDK** | A runner that manages the loop and handoffs inside **your** app; you control deployment, storage and approvals | Medium |\n| **Agents API** | OpenAI runs a **managed Codex harness** and stores session state: automatic context compaction, multi-agent orchestration, programmatic tool calling and MCP | Lowest |\n\nThe SDK runs in your application; the Agents API runs in OpenAI's service. **ChatKit** is a separate option for embedding a chat UI."
         },
         {
+          "id": "the-agents-api-public-beta",
           "heading": "The Agents API (public beta)",
           "body": "The Agents API entered **public beta in September 2026**. Key ideas:\n\n- You create a **session** (in Python, `client.beta.agents.sessions.create`) with a model, tools, an environment and input. OpenAI keeps the session state.\n- The harness runs in an **OpenAI-hosted sandbox**, **self-hosted** (including inside your own VPC), or with a sandbox partner.\n- Context is **compacted automatically** as it nears the limit, which suits long-running tasks.\n- **Subagents can run in parallel** (`multi_agent.enabled`, `max_concurrent_subagents`).\n- Tools: MCP, custom functions, built-in tools, tool search and skills.\n- **No extra fee** for the harness: you pay for tokens and tools. The harness itself is open source.\n\nBeta features change quickly; check the docs for current parameter names before you build."
         },
         {
+          "id": "decision-rules",
           "heading": "Decision rules",
           "body": "- Want OpenAI to manage the agent and its state for long-running tasks → **Agents API**.\n- Need custom tools, your own storage, approvals and deployment → **Agents SDK**.\n- Simple single-call features or a fully custom loop → **Responses API**.\n- Embedding a chat UI quickly → **ChatKit**.\n\n**Agent Builder (AgentKit) is deprecated** and scheduled to shut down at the end of November 2026. Do not start new work on it; build in code with the SDK or the Agents API instead. ChatKit remains available."
         },
         {
+          "id": "do-you-need-an-agent-at-all",
           "heading": "Do you need an agent at all?",
           "body": "Many features are a single call or a fixed workflow (classify → route → answer). Agents are for open-ended tasks where the steps can't be predicted. They cost more, are harder to test and need guardrails. **Use the simplest design that meets the requirement**, and add autonomy only when evals show it helps."
         }
@@ -672,26 +711,32 @@
       "summary": "Agent, Runner, function and hosted tools, handoffs, agents as tools and the run loop in the open-source SDK.",
       "sections": [
         {
+          "id": "hello-agent",
           "heading": "Hello agent",
           "body": "```bash\npip install openai-agents\n```\n\n```python\nfrom agents import Agent, Runner, function_tool\n\n@function_tool\ndef get_order(order_id: str) -> str:\n    \"\"\"Look up an order's status by ID.\"\"\"\n    return db.status(order_id)\n\nagent = Agent(\n    name=\"Support\",\n    instructions=\"Help customers with orders. Be brief.\",\n    tools=[get_order],\n)\nresult = Runner.run_sync(agent, \"Where is order A-1234?\")\nprint(result.final_output)\n```\n\n`@function_tool` takes the tool name from the function name, the description from the docstring, and builds the JSON schema from the arguments."
         },
         {
+          "id": "agent-configuration",
           "heading": "Agent configuration",
           "body": "An `Agent` needs a `name`; most also set `instructions` (a string or a function that builds them dynamically), `model`, `model_settings`, `tools`, `handoffs`, `output_type` (for a structured final output) and input/output guardrails.\n\n`tool_use_behavior` controls what happens after a tool runs:\n\n- `\"run_llm_again\"` (default): feed the tool result back to the model.\n- `\"stop_on_first_tool\"`: the first tool's output becomes the final output.\n- `StopAtTools([...])`: stop when one of the named tools is called.\n- A custom function.\n\n`reset_tool_choice` is `True` by default so a forced tool choice does not cause an endless tool loop. A **context** object is a dependency container passed to your tools and hooks."
         },
         {
+          "id": "the-run-loop",
           "heading": "The run loop",
           "body": "The **Runner** (`Runner.run` async, `Runner.run_sync`, `Runner.run_streamed`) loops: call the model; if it hands off, switch agents; if it calls tools, run them and loop; stop at a **final output** (output of the desired type with no tool calls).\n\n- `max_turns` defaults to **10**. Exceeding it raises `MaxTurnsExceeded`. You can raise it, or pass `None` to remove the limit (rarely wise in production).\n- Carry state between runs with **one** of: `result.to_input_list()`, a `session`, `conversation_id` or `previous_response_id`. `conversation_id` and `previous_response_id` are mutually exclusive, and a session cannot be combined with server-managed state.\n- Errors derive from `AgentsException` (for example `ModelBehaviorError`, `UserError`, `MaxTurnsExceeded`)."
         },
         {
+          "id": "tools",
           "heading": "Tools",
           "body": "- **Function tools** run your code. If one raises, by default the error is reported to the model so it can recover; set `failure_error_function=None` to re-raise instead.\n- **Hosted tools** run on OpenAI's side and require `OpenAIResponsesModel`: `WebSearchTool`, `FileSearchTool`, `CodeInterpreterTool`, `HostedMCPTool`, `ImageGenerationTool`, `ToolSearchTool`.\n- **Local runtime tools**: `ComputerTool`, `ShellTool`, `ApplyPatchTool`."
         },
         {
+          "id": "multiple-agents",
           "heading": "Multiple agents",
           "body": "- **Handoffs:** one agent transfers the conversation to another (triage → billing). The model sees each handoff as a tool named `transfer_to_<agent_name>`, and the receiving agent takes over.\n- **Agents as tools:** `agent.as_tool()` lets a manager call a specialist and get its result back, keeping control.\n\nCustomise a handoff with `handoff()`: `tool_name_override`, `tool_description_override`, `on_handoff` (a callback, for example to prefetch data), `input_type` (structured data the model passes), `input_filter` (edit the history the next agent sees, e.g. `handoff_filters.remove_all_tools`) and `is_enabled`. Input filters are not supported with server-managed conversations. Put `RECOMMENDED_PROMPT_PREFIX` in agent instructions so the model understands handoffs."
         },
         {
+          "id": "provider-agnostic",
           "heading": "Provider-agnostic",
           "body": "The SDK works with the Responses and Chat Completions APIs and, per its README, with many other LLM providers. Remember that hosted tools need the Responses model. It also offers realtime and voice agents, MCP support, and **sandbox agents** that work inside a container for long-running tasks."
         }
@@ -741,18 +786,22 @@
       "summary": "The SDK features that make agents safe to run in production, and their exact scope.",
       "sections": [
         {
+          "id": "guardrails",
           "heading": "Guardrails",
           "body": "A guardrail function returns `GuardrailFunctionOutput`; if `tripwire_triggered` is true, the run stops with an exception.\n\n| Kind | Where it runs | Exception |\n|---|---|---|\n| Input | Only on the **first** agent in a run. Runs **in parallel** with the agent by default; `run_in_parallel=False` makes the agent wait for it | `InputGuardrailTripwireTriggered` |\n| Output | Only on the **last** agent, after it produces its final output | `OutputGuardrailTripwireTriggered` |\n| Tool | Wraps **function tools** (not handoffs or hosted tools) | `ToolInputGuardrailTripwireTriggered` / `ToolOutputGuardrailTripwireTriggered` |\n\nA typical input guardrail uses a fast, cheap model to detect off-topic or abusive requests. Guardrails are \"not foolproof\": they complement, but do not replace, permission checks inside your tools."
         },
         {
+          "id": "human-in-the-loop",
           "heading": "Human in the loop",
           "body": "Mark a tool with `needs_approval=True` (or a callable that decides per call). When the model calls it, the run pauses:\n\n```python\nresult = await Runner.run(agent, \"Refund order A-1234\")\nif result.interruptions:\n    state = result.to_state()\n    for item in result.interruptions:\n        state.approve(item)   # or state.reject(item)\n    result = await Runner.run(agent, state)\n```\n\n- `RunState` serialises with `to_json` / `from_json`, but **deserialising does not authenticate** the snapshot. Store it server-side and load only snapshots you trust.\n- Approval does **not** guarantee exactly-once execution, so use **idempotency keys** for payments and other consequential actions.\n- For hosted MCP tools use `require_approval` in the tool config with an `on_approval_request` handler.\n\nUse approvals for irreversible or high-impact actions: payments, deletions, external emails, production changes."
         },
         {
+          "id": "sessions",
           "heading": "Sessions",
           "body": "**Sessions** store conversation history automatically across runs, so you don't manage the input list yourself. Backends include `SQLiteSession`, `RedisSession`, `SQLAlchemySession`, `OpenAIConversationsSession`, `EncryptedSession` and `OpenAIResponsesCompactionSession` (do not wrap a Conversations session with the compaction session).\n\n- A **session ID is not authentication**: map it to the signed-in user yourself.\n- Don't pass a session together with `conversation_id` or `previous_response_id`."
         },
         {
+          "id": "tracing",
           "heading": "Tracing",
           "body": "Tracing is **on by default**. A **trace** is one end-to-end workflow (default name \"Agent workflow\"); **spans** are its parts: model calls, tool calls, handoffs, guardrails.\n\n- Disable with `OPENAI_AGENTS_DISABLE_TRACING=1`, `set_tracing_disabled(True)` or `RunConfig.tracing_disabled`.\n- `trace_include_sensitive_data` defaults to **True**, so inputs and outputs are captured unless you turn it off.\n- Tracing is **unavailable for Zero Data Retention (ZDR) organisations**.\n- `add_trace_processor` adds an extra destination; `set_trace_processors` replaces the defaults.\n\nReview traces when an agent misbehaves before changing prompts."
         }
@@ -806,22 +855,27 @@
       "summary": "Prompt caching, the Batch API, flex processing, background mode, rate limits and retries.",
       "sections": [
         {
+          "id": "prompt-caching",
           "heading": "Prompt caching",
           "body": "Prompt caching is **automatic and on by default**. It reuses a repeated prompt **prefix** once the prompt passes a minimum length (1,024 tokens on current models). Cached input tokens are billed at a small fraction of the normal input rate and come back faster. Caching never changes the output.\n\nTo get cache hits:\n\n- put stable content (instructions, tool definitions, reference documents) **first**;\n- keep it byte-for-byte identical, including the tool list and its order;\n- put per-request data (user message, timestamps, user names) **last**;\n- to limit which tools may be called, use `allowed_tools` or `tool_choice` instead of removing tools from the list, which would change the prefix.\n\nCheck `usage.input_tokens_details.cached_tokens` to see how many input tokens hit the cache. On newer models, writing to the cache costs a little more than normal input, and you can choose a longer TTL at a higher write price. Check the prompt caching guide for current multipliers. Cached tokens **still count toward TPM** rate limits."
         },
         {
+          "id": "batch-api",
           "heading": "Batch API",
           "body": "For work nobody is waiting on (back-fills, nightly extraction, bulk classification, offline eval runs), submit a **batch**. Batch gives a **50% discount** with a **24-hour completion window** and uses a separate rate-limit pool.\n\n- Input is a JSONL file. Each line has a `custom_id`, `method`, `url` and `body`, and each file targets one model.\n- **Results can come back in a different order**, so join them to inputs by `custom_id`, never by line number.\n- If a batch expires, completed results are kept (and billed), and unfinished requests get a `batch_expired` error. Resubmit only those.\n\nNever use Batch for interactive features."
         },
         {
+          "id": "flex-processing",
           "heading": "Flex processing",
           "body": "`service_tier: \"flex\"` runs ordinary synchronous requests at Batch rates in exchange for slower responses and occasional unavailability. It is in beta. A flex 429 \"Resource Unavailable\" is not charged: retry with backoff or fall back to the default tier (`auto`). Use flex for non-urgent jobs that are easier to run synchronously than as a batch file. A priority tier also exists for lower latency at a premium price."
         },
         {
+          "id": "background-mode",
           "heading": "Background mode",
           "body": "Long-running reasoning or agent tasks can run in **background mode**. Set `background: true`, get back a response ID immediately, and **poll** while the status is `queued` or `in_progress`. You don't hold an HTTP connection open.\n\n- Cancel with `POST /v1/responses/{id}/cancel`, which is idempotent.\n- If you also set `stream: true`, you can reconnect after a dropped connection and resume from the last `sequence_number` you saw.\n- Time to first token is higher than for a normal request, so don't use it for snappy chat."
         },
         {
+          "id": "rate-limits-and-retries",
           "heading": "Rate limits and retries",
           "body": "Limits are measured in requests and tokens per minute and per day (RPM, RPD, TPM, TPD; IPM for images). They apply at the **organization and project** level, and the first limit you hit is the one that applies. Response headers (`x-ratelimit-remaining-requests`, `x-ratelimit-remaining-tokens`, and the matching reset headers) show where you stand.\n\n- On **429** or **5xx**, retry with **exponential backoff and jitter**. If there is a `Retry-After` header, wait **at least** that long.\n- The official SDKs **already auto-retry** 429 and 503. Don't wrap them in a second aggressive retry loop that multiplies traffic.\n- **Failed requests still count** toward your limits, so tight retry loops make things worse.\n- Don't retry **quota or billing** errors, or 400-type errors, unchanged. Fix the cause.\n- The TPM estimate for a request uses the larger of `max_output_tokens` and the estimated output, so a needlessly large `max_output_tokens` uses up headroom. Keep it tight, shorten prompts, lower reasoning effort, and move offline work to Batch."
         }
@@ -883,18 +937,22 @@
       "summary": "Build eval sets, choose graders, run regressions on every change, and understand where fine-tuning fits now that OpenAI is winding it down.",
       "sections": [
         {
+          "id": "evals-first",
           "heading": "Evals first",
           "body": "An **eval set** is a list of representative and edge-case inputs with expected outcomes. Treat it like a test suite for your AI feature and run it:\n\n- before choosing or switching a model;\n- on every prompt, tool or model change (regression testing, ideally in CI next to your versioned prompts);\n- regularly on sampled production traffic.\n\nEvals are a **practice, not a product**. Keep the dataset and the graders in your own repository so you can run them with whatever tool you choose."
         },
         {
+          "id": "platform-status",
           "heading": "Platform status",
           "body": "OpenAI's hosted **Evals platform is deprecated**. Existing evals became read-only on 2026-10-31, and the platform shuts down on 2026-11-30. The hosted **graders** are deprecated with it. OpenAI's deprecations page points to **Promptfoo** as the replacement (with a migration cookbook), and the Evals guide points new users to **Datasets**.\n\nIf you have evals in the hosted platform, export the datasets and grading logic and move them to the replacement or your own test harness. Don't build new work on the hosted Evals API."
         },
         {
+          "id": "graders",
           "heading": "Graders",
           "body": "Grader *types* still apply whatever tool runs them:\n\n- **Code checks** (exact or pattern string match, schema validation, a Python function that returns a score): cheapest and most reliable when the answer can be checked.\n- **Similarity metrics** (fuzzy match, BLEU, ROUGE, cosine): when there is a reference answer but wording can vary.\n- **Model graders (LLM-as-judge):** for open-ended quality. Give the judge a clear rubric and a pass threshold, and **calibrate it against human labels**.\n- **Human review:** the gold standard for nuanced tasks. It is expensive, so use samples.\n\nFor agents, you can also grade parts of a **trace** (whether the right tool was called with the right arguments), not just the final answer."
         },
         {
+          "id": "fine-tuning",
           "heading": "Fine-tuning",
           "body": "Fine-tuning adapts a model with your examples. **It is winding down**: it closed to new organizations on 2026-05-07, inactive orgs lost the ability to create jobs from 2026-07-02, and active existing customers can create new jobs until 2027-01-06. Inference on existing fine-tuned models continues until the base model is deprecated. Remaining methods are supervised fine-tuning and preference tuning (DPO) on the gpt-4.1 family, plus vision fine-tuning on one older gpt-4o snapshot.\n\nIn principle, fine-tuning helps when you have more good examples than fit in a prompt, want shorter prompts, or want a smaller and cheaper model to match a larger one on a stable, narrow task. Even then, try **prompting, examples and retrieval first**, and fine-tune only when an eval shows prompting has plateaued. It is never the way to add frequently changing facts; use retrieval or tools for those. For most new projects today, assume fine-tuning is not available."
         }
@@ -951,22 +1009,27 @@
       "summary": "Prompt injection, moderation, API keys, data retention and the basics of agent risk.",
       "sections": [
         {
+          "id": "prompt-injection",
           "heading": "Prompt injection",
           "body": "Prompt injection is untrusted text or data that tries to override your instructions, usually to **exfiltrate data** or trigger **misaligned actions**.\n\n- **Direct:** the user tries to override your instructions.\n- **Indirect:** instructions hidden in web pages, files, emails or MCP/tool results that the model reads.\n\nMitigations from OpenAI's agent safety guidance:\n\n- **Never put untrusted data in developer messages.** Developer messages carry more authority, so pass untrusted content in user messages.\n- **Use structured outputs between steps** (enums, fixed schemas) so an injected instruction has no freeform channel to travel through.\n- **Keep tool approvals on** for consequential actions.\n- **Use guardrails**, but remember they are not foolproof.\n- **Run evals and trace graders** to catch failures you did not anticipate.\n\nNo single prompt line makes an agent injection-proof. Defend in layers."
         },
         {
+          "id": "tools-mcp-and-exfiltration",
           "heading": "Tools, MCP and exfiltration",
           "body": "Remote MCP servers and tool outputs are a common injection path.\n\n- Connect only **trusted** servers; prefer official, provider-hosted ones.\n- Use `allowed_tools` to expose only the tools the task needs, and `require_approval` for anything sensitive.\n- Be wary of **URLs in tool output**: an injected instruction can ask the model to put private data into a link or request.\n- **Split** public research (web search) and private-data calls into separate requests so injected web content never sits next to private data.\n- **Log** what is sent to third-party servers. Data can leak to a connected MCP server even without an attacker, simply because the model passes it along."
         },
         {
+          "id": "moderation",
           "heading": "Moderation",
           "body": "The moderation endpoint uses `omni-moderation-latest`, which is **free** and classifies **text and images** (not audio).\n\nThe result includes:\n\n- `flagged`: whether any category was triggered\n- `categories`: per-category booleans (harassment, hate, illicit, self-harm, sexual, violence and subcategories)\n- `category_scores`: confidence values from 0 to 1\n- `category_applied_input_types`: which input types (text, image) each category applied to\n\nScreen user input and model output against your own policy. Streaming makes output moderation harder because partial completions are hard to evaluate."
         },
         {
+          "id": "keys-and-data",
           "heading": "Keys and data",
           "body": "- Keep API keys **server-side**, in environment variables or a secrets manager. Never ship them in a browser or mobile app.\n- Use separate keys or projects per environment, restrict permissions, rotate keys and set usage limits.\n- Response objects are **stored for 30 days by default**. Set `store: false` when data must not persist (Conversation objects are not subject to that 30-day TTL).\n- Zero Data Retention (ZDR) organizations run stateless, with encrypted reasoning items carried between turns.\n- Send a **safety identifier** (a hashed per-user ID) so abuse can be traced to one end user without sending personal data.\n- Minimise personal data, constrain input length and output tokens, and give users a way to report problems."
         },
         {
+          "id": "agent-specific-risks",
           "heading": "Agent-specific risks",
           "body": "Computer use, shell and code tools can take real actions. Run them in **sandboxes**, restrict network and file access, keep the tool set small, and keep a human in the loop for anything irreversible. The next lesson covers approvals, least privilege and sandboxing in detail."
         }
@@ -1021,18 +1084,22 @@
       "summary": "How to keep action-taking agents safe: human approvals, a minimal tool surface, sandboxes, trusted state and careful tracing.",
       "sections": [
         {
+          "id": "human-approvals",
           "heading": "Human approvals",
           "body": "- **Agents SDK:** set `needs_approval=True` (or a callable) on a tool. The run pauses and exposes `result.interruptions`. Call `result.to_state()`, then `state.approve(...)` or `state.reject(...)`, and resume with `Runner.run(agent, state)`.\n- **Remote MCP in the Responses API:** approval is required by default. The model emits an `mcp_approval_request`; you reply in a new request with an `mcp_approval_response` that approves or denies it. Each approval covers **one** call.\n- `require_approval` accepts `\"always\"`, `\"never\"`, or an object naming tools that may skip approval. Only skip approval for read-only, trusted tools."
         },
         {
+          "id": "least-privilege",
           "heading": "Least privilege",
           "body": "Give the agent the **smallest tool set** that does the job.\n\n- Use MCP `allowed_tools` to expose only the needed tools from a server.\n- Scope credentials narrowly (read-only where possible, no production secrets in test environments).\n- Use tool guardrails on function tools to validate arguments and outputs. Note they do not cover handoffs or hosted tools.\n- Enforce hard limits in code and infrastructure, not in the prompt."
         },
         {
+          "id": "sandboxing",
           "heading": "Sandboxing",
           "body": "- **Computer use:** run in an isolated browser or VM with an allow-list, treat everything on screen as untrusted, and confirm consequential actions.\n- **Code and shell:** run in sandboxed containers with restricted network and file access.\n- Cap turns and spend so a looping or hijacked agent cannot run indefinitely."
         },
         {
+          "id": "state-retries-and-tracing",
           "heading": "State, retries and tracing",
           "body": "- `RunState` can be serialized with `to_json` and restored with `from_json`, but **deserializing does not authenticate**. Load snapshots only from trusted storage.\n- A session ID does not authenticate a user either; do your own authorization.\n- Approval **does not guarantee exactly-once execution**, so use **idempotency keys** for payments, emails and other consequential actions.\n- Agents SDK tracing is on by default and `trace_include_sensitive_data` defaults to True, so traces may contain inputs and outputs. Turn it off or filter when handling sensitive data. Tracing is unavailable for ZDR organizations."
         }

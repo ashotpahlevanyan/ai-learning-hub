@@ -73,18 +73,22 @@
       "summary": "How to pick a model family and the right Foundry building block (prompt agent, hosted agent, direct Responses API call, Foundry Tools) for a workload.",
       "sections": [
         {
+          "id": "the-microsoft-foundry-landscape",
           "heading": "The Microsoft Foundry landscape",
           "body": "Microsoft Foundry (formerly Azure AI Studio / Azure AI Foundry) is the platform for building AI apps and agents on Azure. Azure AI services are now branded **Foundry Tools** (for example Azure Language, Azure Speech, Azure Translator and Azure Content Understanding *in Foundry Tools*).\n\nThe current resource model is a **single Foundry resource with one or more projects**, replacing the older hub + Azure OpenAI + AI Services combination. Hub-based projects live on in the **Foundry (classic)** portal, but new investment goes to Foundry projects. An existing Azure OpenAI resource can be **upgraded** to a Foundry resource while keeping its endpoint and keys.\n\nYou build through the portal, SDKs (Python, C#, JavaScript, Java), the Azure Developer CLI (`azd`), the VS Code extension, or coding agents."
         },
         {
+          "id": "choosing-a-model",
           "heading": "Choosing a model",
           "body": "The **Foundry Models** catalog holds thousands of models from Microsoft, OpenAI, Anthropic, Meta and others. Choose by task rather than by \"biggest available\":\n\n- **Large language models (LLMs)**: broad reasoning, multistep agent work, complex generation.\n- **Small language models (SLMs)**: narrow, high-volume or latency-sensitive tasks where a smaller model is good enough and cheaper.\n- **Multimodal models**: when inputs or outputs include images, audio or video.\n- **Foundry Tools**: purpose-built services (speech, translation, PII detection, document extraction) when a specialised, predictable API beats prompting a general model.\n\nModel names and versions change frequently, so plan around capabilities and evaluate candidates with your own data instead of hard-coding a \"latest\" model."
         },
         {
+          "id": "choosing-an-agent-shape",
           "heading": "Choosing an agent shape",
           "body": "Foundry Agent Service offers a spectrum:\n\n| Option | When to use |\n|---|---|\n| **Prompt agent** | Declarative instructions + tools, fully managed by Foundry |\n| **Voice-based prompt agent** (preview) | Real-time voice through Voice Live |\n| **Hosted agent** | You bring code or a container (Microsoft Agent Framework, LangGraph, OpenAI Agents SDK); Foundry manages the endpoint, scaling and Entra identity |\n| **Ephemeral agent** | App code calls the Responses API directly with no stored agent |\n\nThe agent API is now the **Responses API (Agents v2)** with conversations, items, responses and agent versions, replacing the Assistants-style threads/messages/runs."
         },
         {
+          "id": "orchestration-choices",
           "heading": "Orchestration choices",
           "body": "Foundry **workflows** (preview) offered sequential, group chat and human-in-the-loop patterns in a visual designer, but **Foundry is retiring workflows on December 1, 2026**. For new multi-agent orchestration, plan on **Microsoft Agent Framework** deployed as a hosted agent; use Azure Logic Apps if you need a visual designer, or A2A for simple agent-to-agent handoff."
         }
@@ -134,18 +138,22 @@
       "summary": "Designing grounding: classic versus agentic retrieval in Azure AI Search, when vectors are needed, Foundry IQ knowledge bases, and memory versus knowledge versus file search.",
       "sections": [
         {
+          "id": "classic-search-versus-agentic-retrieval",
           "heading": "Classic search versus agentic retrieval",
           "body": "Azure AI Search supports two retrieval styles:\n\n- **Classic search**: one index, one request, predictable low latency. Good for search boxes, lookups and simple RAG.\n- **Agentic retrieval**: a **knowledge base** over one or more **knowledge sources**. An LLM plans the query, runs subqueries in parallel, applies semantic reranking and merges results with citations. Better for complex, multi-part questions across sources, at the cost of extra latency and model calls (and it is region-restricted).\n\nMicrosoft notes that \"LLMs and agents don't require vectors. Only use them if you need similarity search.\""
         },
         {
+          "id": "query-types-and-ranking",
           "heading": "Query types and ranking",
           "body": "Azure AI Search indexes JSON documents and supports full-text (BM25), vector, **hybrid** and multimodal queries. A hybrid query sends `search` and `vectorQueries` in one request; both run in parallel and results merge with **Reciprocal Rank Fusion (RRF)**. The **semantic ranker** reranks the top results. Keyword search still matters for product codes, jargon, dates and names, which is why hybrid plus semantic ranking is a strong default for natural-language RAG.\n\nIngestion is **push** (upload JSON yourself) or **pull** (indexers from Blob, Cosmos DB, SharePoint, OneLake and more), optionally with skillsets for chunking and embedding."
         },
         {
+          "id": "foundry-iq",
           "heading": "Foundry IQ",
           "body": "**Foundry IQ** is a managed knowledge layer built on Azure AI Search. A knowledge base groups knowledge sources (Blob, SharePoint, OneLake, web; indexed or remote) and has a retrieval reasoning effort of minimal, low or medium. It is permission-aware (ACL sync, Purview labels, the caller's Entra identity), can be shared by many agents, and returns citations."
         },
         {
+          "id": "memory-versus-knowledge-versus-files",
           "heading": "Memory versus knowledge versus files",
           "body": "Pick the right store for each kind of context:\n\n| Need | Use |\n|---|---|\n| User-specific facts learned over time (preferences, history) | **Memory** (preview) |\n| Curated organisational content shared by everyone | **Foundry IQ knowledge base** |\n| A document the user hands over during this session | **File search tool** |\n\nManaged memory extracts, consolidates and retrieves memories (user profile, chat summary, procedural). It needs chat and embedding deployments, and currently has **no VNet support**. Guard it against memory poisoning through prompt injection."
         }
@@ -199,18 +207,22 @@
       "summary": "Choosing Global, Data Zone or regional deployments, standard versus provisioned versus batch, and managing Foundry projects and agents through repeatable delivery.",
       "sections": [
         {
+          "id": "deployment-categories",
           "heading": "Deployment categories",
           "body": "Foundry Models deployments come in three categories:\n\n- **Standard** (pay per token).\n- **Provisioned** (reserved throughput units, PTU) for low latency variance and predictable throughput.\n- **Batch** (asynchronous, about **50% cheaper**, 24-hour target, with its own enqueued-token quota).\n\nA **Developer** type exists only for evaluating fine-tuned models (short lifetime, no SLA). Models on **managed compute** (open-source and custom models) do not use these deployment types.\n\nMicrosoft's guidance: \"For most workloads, start with Global Standard.\" It gets new models first, has the lowest price, the broadest regions and the highest default quota."
         },
         {
+          "id": "data-processing-location",
           "heading": "Data processing location",
           "body": "| Scope | Where inference can run |\n|---|---|\n| **Global** (GlobalStandard, GlobalProvisionedManaged, GlobalBatch) | Any Azure region |\n| **Data Zone** (DataZoneStandard, DataZoneProvisionedManaged, DataZoneBatch) | Within the US, EU (EU Data Boundary) or APAC zone |\n| **Standard / Regional Provisioned** | Within the chosen Azure geography |\n\nData at rest always stays in the resource's geography. Use **Azure Policy** to block deployment SKUs that violate residency rules."
         },
         {
+          "id": "infrastructure-design",
           "heading": "Infrastructure design",
           "body": "A Foundry deployment typically combines the Foundry resource and projects, model deployments, and optional bring-your-own resources: storage, **Azure AI Search**, and **Azure Cosmos DB for conversation state**. Prompt agents can use private networking, while hosted agents use a bring-your-own VNet. Each agent can have a dedicated **Entra agent identity**."
         },
         {
+          "id": "agent-versions-and-delivery",
           "heading": "Agent versions and delivery",
           "body": "Agent versions are snapshotted automatically so you can roll back. **Publishing** gives an agent a stable, versioned endpoint and can target Microsoft Teams, Microsoft 365 Copilot, the Entra Agent Registry or the A2A protocol. The agent lifecycle is Create, Test, Trace, Evaluate, Optimize, Publish, Monitor.\n\nFor CI/CD, treat the project like any other workload: define infrastructure and deployments as code (for example with `azd`), run evaluations as a quality gate before publishing a new agent version, and promote tested versions rather than editing production agents by hand."
         }
@@ -260,18 +272,22 @@
       "summary": "Handling TPM quota and rate limits, controlling cost, and monitoring performance, drift, safety events, grounding quality and index health.",
       "sections": [
         {
+          "id": "quota-and-rate-limits",
           "heading": "Quota and rate limits",
           "body": "Standard deployments are limited by **tokens per minute (TPM)** quota. When you hit the limit, request a quota increase or deploy in another region. Global Standard has the highest default quota. Batch uses a separate enqueued-token quota so offline jobs do not consume your online TPM. Someone who only needs to *view* quota can be given **Cognitive Services Usages Reader** at subscription scope."
         },
         {
+          "id": "cost-levers",
           "heading": "Cost levers",
           "body": "- Use **Batch** for offline, non-urgent work (about 50% cheaper).\n- Global Standard also supports **Flex processing** (cheaper, tolerates delay) and **Priority processing**.\n- Choose **Provisioned** when steady, high utilisation makes reserved capacity worthwhile.\n- Pick smaller models where they meet the quality bar.\n- Remember that playground evaluations are on by default and billed by consumption.\n\nExact prices and limits change, so check current pricing pages rather than memorising numbers."
         },
         {
+          "id": "the-three-observability-pillars",
           "heading": "The three observability pillars",
           "body": "Foundry observability has three pillars:\n\n1. **Evaluation**: quality and safety scores from built-in or custom evaluators.\n2. **Monitoring**: Azure Monitor **Application Insights** dashboards for tokens, latency, errors and quality scores, with alerts.\n3. **Tracing**: OpenTelemetry-based traces of each step (supports LangChain, LangGraph, OpenAI Agents SDK, Microsoft Agent Framework).\n\nIn production, add **continuous evaluation** on sampled live traffic, **scheduled evaluation to detect drift**, scheduled red teaming, and Azure Monitor alerts."
         },
         {
+          "id": "grounding-quality-and-index-health",
           "heading": "Grounding quality and index health",
           "body": "For RAG, monitor both ends of the pipeline. On the retrieval side, watch data ingestion (indexer or push failures, document counts) and relevance using the **Retrieval** and **Document Retrieval** evaluators. On the answer side, watch **Groundedness** and **Relevance** scores. A drop in groundedness with stable model settings often points to stale or missing index content rather than to the model."
         }
@@ -317,18 +333,22 @@
       "summary": "Keyless authentication with Entra ID and managed identities, the Foundry RBAC roles, least-privilege agent access and private networking.",
       "sections": [
         {
+          "id": "keyless-first",
           "heading": "Keyless first",
           "body": "RBAC applies only with **Entra ID authentication**. Microsoft warns: \"If you use key-based authentication instead, the key grants full access without role restrictions.\" Use Entra ID (keyless) with **managed identities** for apps running in Azure, and disable or avoid keys where possible."
         },
         {
+          "id": "foundry-roles",
           "heading": "Foundry roles",
           "body": "The Foundry roles were renamed from the Azure AI roles (role IDs unchanged):\n\n| Role | Purpose |\n|---|---|\n| **Foundry User** | Build and use in projects (data plane). Minimum for the user principal **and** for the project's managed identity |\n| **Foundry Project Manager** | Manage projects; minimum role to **publish agents** |\n| **Foundry Account Owner** | Create accounts and projects and manage models; no data actions (cannot build) |\n| **Foundry Owner** | Both control plane and data plane (for example fine-tune *and* deploy) |\n| **Foundry Agent Consumer** | Least privilege: call agent endpoints only; can be scoped to a project or a single agent |\n\nDo not use **Azure AI Developer** (it targets ML workspaces/hubs) or other Cognitive Services roles for Foundry. **Cognitive Services Usages Reader** at subscription scope lets someone view quota. The Azure portal assigns Agent Consumer only at account scope; use the CLI for project or agent scope."
         },
         {
+          "id": "managed-identities-and-data-access",
           "heading": "Managed identities and data access",
           "body": "To let Foundry read your data, grant the Foundry managed identity **Storage Blob Data Reader** on the storage account. Each agent can have its own **Entra agent identity**. MCP and other tools can authenticate with keys, Entra (agent or project managed identity), **OAuth identity passthrough (On-Behalf-Of)**, or no authentication."
         },
         {
+          "id": "private-networking-and-data-control",
           "heading": "Private networking and data control",
           "body": "Prompt agents support private networking; hosted agents use **bring-your-own VNet**, and hosted agents can also use network egress controls (preview). You can bring your own storage, Azure AI Search and **Azure Cosmos DB for conversation state** to keep data in resources you control. Check feature limits: managed memory currently has no VNet support."
         }
@@ -374,18 +394,22 @@
       "summary": "Configuring guardrails and controls, running quality and safety evaluations and red teaming, and keeping humans in control of agent tool use.",
       "sections": [
         {
+          "id": "guardrails-and-controls",
           "heading": "Guardrails and controls",
           "body": "A **guardrail** is a named collection of **controls**; it replaces the older \"content filter\" configuration and uses Azure AI Content Safety classifiers. Each control names a **risk**, the **intervention points** and an **action**.\n\n- **Intervention points**: User input, Tool call (preview, agents), Tool response (preview, agents), Output.\n- **Risks**: Hate, Sexual, Self-harm, Violence, User prompt attacks (jailbreak), Indirect attacks (XPIA), Spotlighting (preview), Protected material, Groundedness (preview), PII (preview), Task adherence (preview).\n- **Actions**: Annotate (models only) or Annotate and block.\n\nThe default guardrail is **Microsoft.DefaultV2**."
         },
         {
+          "id": "severity-thresholds-and-inheritance",
           "heading": "Severity thresholds and inheritance",
           "body": "For harm categories the blocking level is the *threshold*:\n\n| Setting | Blocks |\n|---|---|\n| Low | High only |\n| Medium | Medium and high |\n| High | Low, medium and high (strictest) |\n\nOnly approved customers (via the modified guardrails form) can turn output filtering off. An agent with no custom guardrail inherits its model deployment's guardrail, but **an agent's own guardrail fully overrides the model's guardrail**, so it must include every control you still need."
         },
         {
+          "id": "evaluations-and-red-teaming",
           "heading": "Evaluations and red teaming",
           "body": "Built-in evaluators cover quality (Coherence, Fluency), RAG (Retrieval, Groundedness, Relevance), risk and safety (Hate and Unfairness, Violence, Indirect Attack, Protected Materials, Code Vulnerability, Sensitive Data Leakage and others), and agents (Task Adherence, Intent Resolution, **Tool Call Accuracy**, Tool Selection and others). Recommended combinations: RAG = Retrieval + Groundedness + Relevance + safety; agents = Output Quality + Tool Use Quality + Rubric + safety.\n\nThe **AI red teaming agent** uses Microsoft's **PyRIT** framework to probe for unsafe behaviour, and can run on a schedule after release."
         },
         {
+          "id": "tracing-provenance-and-agent-oversight",
           "heading": "Tracing, provenance and agent oversight",
           "body": "OpenTelemetry **tracing** records every model call and tool call, giving you the provenance trail of how an answer was produced. For oversight of tool use:\n\n- On an **MCP tool**, set `allowed_tools` to the specific tools the agent may use (an empty list `[]` allows **all** tools) and set `require_approval` (for example `\"always\"`) for tools that write data or change resources. The client receives an `mcp_approval_request` and replies with an `mcp_approval_response`.\n- Treat server-supplied tool descriptions as untrusted, and log approvals.\n- A **toolbox** centralises a versioned tool set behind one MCP-compatible endpoint with central authentication and toolbox-level guardrails."
         }
@@ -439,18 +463,22 @@
       "summary": "Pick the right model and deployment type, connect an app to a Foundry project with keyless auth, and manage conversation state with the Responses API.",
       "sections": [
         {
+          "id": "choosing-the-model",
           "heading": "Choosing the model",
           "body": "The Foundry Models catalog holds models from Microsoft, OpenAI, Anthropic, Meta and others. Match the model to the job:\n\n- **Large language models** for open-ended reasoning, synthesis and agent planning.\n- **Small models** when the task is narrow (classification, routing, short extraction) and latency or cost matters more than depth.\n- **Code models** for generation, review and refactoring of source code.\n- **Multimodal models** when inputs include images or audio alongside text.\n- **Reasoning models** when a task benefits from internal multistep thinking; they trade latency and output tokens for quality.\n\nModel names change often. On the exam, reason from the *requirement* (latency, cost, modality, depth) rather than a specific model version."
         },
         {
+          "id": "deployment-types",
           "heading": "Deployment types",
           "body": "Deployments fall into three billing categories: **standard** (pay per token), **provisioned** (reserved throughput units) and **batch** (asynchronous, about half the cost of standard, 24-hour target, separate enqueued-token quota).\n\nData processing location is part of the SKU name:\n\n| Prefix | Where inference may run |\n|---|---|\n| Global | Any Azure region |\n| DataZone | Inside the US, EU or APAC data zone |\n| Standard / Regional Provisioned | The chosen Azure geography |\n\nMicrosoft's guidance: **for most workloads, start with Global Standard** (new models first, broadest regions, highest default quota). Move to Provisioned for predictable throughput and low latency variance. The Developer type is only for evaluating fine-tuned models."
         },
         {
+          "id": "connecting-an-application-to-a-foundry-project",
           "heading": "Connecting an application to a Foundry project",
           "body": "The current SDK pattern is a single unified project client (`azure-ai-projects` 2.x) pointed at the **project endpoint** (`https://<resource>.services.ai.azure.com/api/projects/<project>`), authenticated with **Microsoft Entra ID** through `DefaultAzureCredential` or a similar credential. From that client you obtain an OpenAI-compatible client (`get_openai_client()`) for Responses, agents, and evaluations.\n\n- Use keyless (Entra) auth. RBAC only applies with Entra; an API key grants full access without role restrictions.\n- Give the calling identity **Foundry User** on the Foundry resource. The project's managed identity needs it too.\n- The v1 routes (`/openai/v1/`) replace the old monthly `api-version` pattern."
         },
         {
+          "id": "conversation-state-with-the-responses-api",
           "heading": "Conversation state with the Responses API",
           "body": "The Responses API replaces the Assistants API vocabulary: threads, messages, runs and assistants become **conversations, items, responses and agent versions**.\n\nWays to carry state across turns:\n\n1. **`previous_response_id`** chaining: send only the new user message and pass the prior response ID.\n2. **Conversations**: attach turns to a durable conversation object.\n3. **Stateless input arrays** (`store=false`): your app appends output items and resends the history each turn.\n\nStored response data is kept for a limited retention period by default (30 days at the time of writing) and can be deleted by ID."
         }
@@ -504,18 +532,22 @@
       "summary": "Ground model answers in your data with classic RAG (hybrid search plus semantic ranker) or agentic retrieval through Foundry IQ knowledge bases.",
       "sections": [
         {
+          "id": "why-rag",
           "heading": "Why RAG",
           "body": "Models only know their training data and accept a limited number of input tokens. RAG retrieves the most relevant chunks for each question and puts them in the prompt as **grounding data**. The retrieval system must return concise, highly relevant results, not document dumps: extra tokens cost money and degrade quality."
         },
         {
+          "id": "classic-rag-on-azure-ai-search",
           "heading": "Classic RAG on Azure AI Search",
           "body": "The proven pattern, best when you need GA features and predictable low latency against one index:\n\n- **Ingestion**: push JSON documents, or pull with indexers (Blob, Cosmos DB, SharePoint, OneLake and more). Skillsets handle chunking, embedding, OCR and LLM enrichment; integrated vectorization embeds at index and query time.\n- **Hybrid search**: one request with both a text query and vector queries; results are merged with **Reciprocal Rank Fusion (RRF)**.\n- **Semantic ranker**: reranks the top results by meaning and returns a reranker score.\n\nKeyword matching still wins for product codes, names, dates and jargon, which is why hybrid beats pure vector for most enterprise content. \"LLMs and agents don't require vectors\": use vectors when you need similarity search."
         },
         {
+          "id": "agentic-retrieval-and-foundry-iq",
           "heading": "Agentic retrieval and Foundry IQ",
           "body": "**Agentic retrieval** uses an LLM to plan the query, splits complex questions into subqueries that run in parallel, reranks semantically, and returns merged results with citations.\n\n**Foundry IQ** is the managed knowledge layer built on it. A **knowledge base** groups **knowledge sources** (Blob, SharePoint, OneLake, web; indexed or remote), has a retrieval reasoning effort (minimal, low or medium), is **permission-aware** (ACL sync, Purview labels, the caller's Entra identity), and can be shared by many agents.\n\nAzure AI Search recommends starting **new** RAG implementations with agentic retrieval, especially for agents, complex or multi-part questions and several sources. Choose classic RAG when you need GA-only features, when simplicity and speed (one request, no LLM query planning) matter most, or when you want to keep existing orchestration code. Note that LLM-based query planning is still marked preview."
         },
         {
+          "id": "knowledge-memory-or-files",
           "heading": "Knowledge, memory or files?",
           "body": "| Need | Use |\n|---|---|\n| Curated organizational content shared across users | Foundry IQ knowledge base / Azure AI Search tool |\n| A document a user provides during this session | File search tool |\n| Facts about a user learned over time | Memory (memory search tool) |\n\nIn the prompt, tell the model to answer only from the supplied sources and to **cite them inline**; citations make fabrications easier to spot and less likely."
         }
@@ -568,18 +600,22 @@
       "summary": "Use Foundry built-in evaluators to measure fabrication, relevance, quality and safety, from single turns to whole agent conversations.",
       "sections": [
         {
+          "id": "evaluator-families",
           "heading": "Evaluator families",
           "body": "- **General purpose**: Coherence, Fluency.\n- **Textual similarity** (needs ground truth): Similarity, F1, BLEU, GLEU, ROUGE, METEOR.\n- **RAG**: Retrieval, Document Retrieval, **Groundedness** (LLM judge, 1-5), **Groundedness Pro** (preview; Content Safety-based pass/fail, no model deployment needed), Relevance, Response Completeness.\n- **Risk and safety**: Hate and Unfairness, Sexual, Violence, Self-Harm, Protected Materials, **Indirect Attack (XPIA)**, Code Vulnerability, Ungrounded Attributes, Prohibited Actions, Sensitive Data Leakage.\n- **Agent**: Task Adherence, Task Completion, Intent Resolution, Task Navigation Efficiency, **Tool Call Accuracy**, Tool Selection, Tool Input Accuracy, Tool Output Utilization, Tool Call Success, plus batched graders (Quality Grader, Output Quality, Tool Use Quality).\n- **Custom**: Rubric evaluator (weighted criteria), Azure OpenAI graders, and your own code or prompt evaluators."
         },
         {
+          "id": "detecting-fabrication",
           "heading": "Detecting fabrication",
           "body": "\"Fabrication\" maps to **groundedness**: is every claim supported by the retrieved context? Pair it with **Relevance** (does the answer address the question?) and **Retrieval** (did search return the right chunks?). Low groundedness with good retrieval points at the prompt or model; low retrieval points at the index or query."
         },
         {
+          "id": "recommended-combinations",
           "heading": "Recommended combinations",
           "body": "| Scenario | Evaluators |\n|---|---|\n| RAG | Retrieval + Groundedness + Relevance + safety |\n| Agents | Output Quality + Tool Use Quality + Rubric + safety |\n| Translation | BLEU + METEOR + Fluency + Coherence |\n\nEvaluations run at **turn** level (default) or **conversation** level; conversation level needs data in the `messages` format."
         },
         {
+          "id": "from-development-to-production",
           "heading": "From development to production",
           "body": "Foundry observability has three pillars: **evaluation**, **monitoring** (Application Insights dashboards for tokens, latency, errors and quality scores, with alerts) and **tracing**. After launch, run **continuous evaluation** on sampled live traffic, **scheduled evaluation** to detect drift, and scheduled red teaming with the **AI red teaming agent** (built on PyRIT)."
         }
@@ -621,18 +657,22 @@
       "summary": "Design a Foundry agent with clear instructions, the right conversation-tracking approach, strict tool schemas, client-side function calling and managed memory.",
       "sections": [
         {
+          "id": "agent-types",
           "heading": "Agent types",
           "body": "- **Prompt agent**: declarative and fully managed (model + instructions + tools).\n- **Voice-based prompt agent** (preview): built on Voice Live.\n- **Hosted agent**: your own code or container (Microsoft Agent Framework, LangGraph, OpenAI Agents SDK); Foundry manages the endpoint, scaling and Entra identity.\n- **Ephemeral agent**: app code calls the Responses API directly.\n\nLifecycle: Create, Test (playground), Trace, Evaluate, Optimize, Publish (stable, versioned endpoint), Monitor. Versions are snapshotted automatically so you can roll back."
         },
         {
+          "id": "roles-goals-and-conversation-tracking",
           "heading": "Roles, goals and conversation tracking",
           "body": "Instructions should state the agent's **role**, its **goal**, what it must not do, when to use each tool, and how to respond when it lacks information. Keep instructions specific and testable; the agent optimizer (preview) can later rewrite instructions and tool descriptions against evaluation results.\n\nConversation tracking: use a **conversation** for durable multi-turn sessions, `previous_response_id` for simple chaining, or your own state with `store=false`. You can bring your own Azure Cosmos DB for conversation state."
         },
         {
+          "id": "tool-schemas-and-function-calling",
           "heading": "Tool schemas and function calling",
           "body": "A function tool has a **name**, **description** and JSON Schema **parameters**. Good descriptions tell the model *when* to call the tool; tight schemas (enums, required fields, `additionalProperties: false`) stop malformed calls.\n\nFunction calling is **client-side execution**:\n\n1. The model returns a function call item with a `call_id` and arguments.\n2. **Your app** runs the function.\n3. Your app sends a `function_call_output` with the same `call_id` in the same conversation.\n4. The agent continues with the result.\n\nSubmit outputs promptly; pending runs expire (the docs state 10 minutes after creation). Where supported, set `strict: true` (with all fields required and `additionalProperties: false`) so arguments match the schema. Azure OpenAI structured outputs do not support parallel function calls, so set `parallel_tool_calls` to false. Prompt agents that use the Copilot harness reject `strict: true`."
         },
         {
+          "id": "memory-preview",
           "heading": "Memory (preview)",
           "body": "Managed long-term memory runs **extraction, consolidation** (an LLM merges duplicates and resolves conflicts) and **retrieval**. Memory types: **user profile** (retrieve at conversation start), **chat summary** (retrieve each turn) and **procedural** (reusable routines).\n\nAttach the **memory search tool** to a prompt agent (scope resolves with `{{$userId}}`) or use the Memory Store APIs. It needs chat **and embedding** deployments and has no VNet support. Guard against **memory poisoning** via prompt injection with prompt shields and adversarial testing."
         }
@@ -686,18 +726,22 @@
       "summary": "Connect agents to APIs, knowledge, search, Content Understanding and MCP servers, share tools through toolboxes, and put humans in the loop for risky actions.",
       "sections": [
         {
+          "id": "the-tool-catalog",
           "heading": "The tool catalog",
           "body": "Built-in and custom tools include MCP, Web search, Azure AI Search, Code interpreter, File search, **OpenAPI**, Agent-to-agent (A2A), Browser automation, Fabric IQ, Work IQ, Tool search, Skills, **Function calling**, Grounding with Bing, Computer use, Image generation, SharePoint, Fabric data agent, Azure Functions and Memory search.\n\nFor document-heavy tasks, call **Azure Content Understanding** (analyzers that return structured fields, Markdown and confidence/grounding) through a custom function or framework integration, then hand the agent structured JSON instead of raw OCR."
         },
         {
+          "id": "toolboxes-and-tool-search",
           "heading": "Toolboxes and tool search",
           "body": "A **toolbox** is a curated, versioned set of tools exposed through **one managed MCP-compatible endpoint**, with centralized authentication (Entra ID, OAuth passthrough), toolbox-level guardrails, and promote-to-default versioning so agents pick up changes **without redeployment**.\n\n**Tool search** hides a large tool set behind two meta-tools, `tool_search` and `call_tool`, which cuts token cost and improves tool selection.\n\nSome tools are **direct-only** (not available in a toolbox): function calling, Grounding with Bing, computer use, image generation, SharePoint, Fabric data agent and Azure Functions."
         },
         {
+          "id": "mcp-tool-configuration",
           "heading": "MCP tool configuration",
           "body": "Configure `server_label`, `server_url` (or `project_connection_id`), `allowed_tools`, and `require_approval`.\n\n- **`allowed_tools: []` allows every tool, not none.** List tools explicitly.\n- With `require_approval: \"always\"`, the agent emits an `mcp_approval_request` item. Your client sends an `mcp_approval_response` with the `approval_request_id` and approve or deny, in the same conversation.\n- Require approval for tools that write data or change resources, treat server-supplied tool descriptions as untrusted, and log approvals.\n- Tool auth options: key-based, Entra (agent identity or project managed identity), OAuth identity passthrough, or unauthenticated."
         },
         {
+          "id": "safeguards-for-autonomous-and-semiautonomous-agents",
           "heading": "Safeguards for autonomous and semiautonomous agents",
           "body": "Layer the controls:\n\n- **Approval gates** on MCP tools, or human-in-the-loop steps in an orchestration.\n- **Guardrails** with agent intervention points: user input, **tool call** and **tool response** (preview), and output. Indirect attack (XPIA) detection on tool responses catches instructions hidden in retrieved content.\n- **Least privilege**: a dedicated Entra agent identity per agent and narrow tool scopes.\n- **Deterministic limits in code** (amount thresholds, allow lists) for actions where the rules are known."
         }
@@ -751,18 +795,22 @@
       "summary": "Orchestrate several agents with Microsoft Agent Framework or Foundry workflows, publish versioned agents, and use traces and agent evaluators for error analysis.",
       "sections": [
         {
+          "id": "orchestration-options",
           "heading": "Orchestration options",
           "body": "**Foundry workflows** (preview) offer a visual designer plus YAML with three patterns: **Sequential**, **Group chat** (dynamic handoff and escalation) and **Human in the loop** (approvals or clarifying questions). Nodes include Agent, Logic (if/else, go to, for each), Data transformation and Basic chat.\n\n**Foundry is retiring workflows on December 1, 2026.** The recommended replacement is **Microsoft Agent Framework** (declarative YAML or code) deployed as a **hosted agent**. Use Azure Logic Apps when you need a visual designer, and the **A2A** protocol for simple agent-to-agent handoff."
         },
         {
+          "id": "microsoft-agent-framework",
           "heading": "Microsoft Agent Framework",
           "body": "Agent Framework combines **agents** (LLM + tools + MCP), a **harness agent** for long multistep tasks (planning, context compaction, memory, tool approval), **workflows** (functional and graph-based, with explicit execution paths between agents and functions) and **integrations**. Building blocks include model clients, agent sessions for state, context providers for memory, **middleware** to intercept agent actions, and MCP clients.\n\nExplicit graph workflows are the natural home for hybrid designs where some steps are deterministic functions and others are LLM agents."
         },
         {
+          "id": "publishing-and-versions",
           "heading": "Publishing and versions",
           "body": "Publishing creates a stable, versioned endpoint and can target Microsoft Teams, Microsoft 365 Copilot, the Entra Agent Registry and A2A. Versions are snapshotted automatically, so a bad change can be rolled back. Publishing requires at least **Foundry Project Manager**; callers that only invoke the agent need **Foundry Agent Consumer**."
         },
         {
+          "id": "monitoring-and-error-analysis",
           "heading": "Monitoring and error analysis",
           "body": "Connect **Application Insights** to the project and Foundry records **server-side traces** for prompt agents, hosted agents and workflows with no code changes. Traces capture latency, exceptions, prompt content, tool calls and retrieval operations, using OpenTelemetry semantic conventions.\n\nError analysis loop:\n\n1. Filter traces for failures or low quality scores.\n2. Open the span tree to find the failing step (retrieval miss, wrong tool, bad arguments, tool error, timeout).\n3. Score at scale with agent evaluators (Tool Call Accuracy, Tool Call Success, Task Adherence, Intent Resolution).\n4. Fix instructions, tool descriptions or schemas, re-evaluate, publish a new version."
         }
@@ -812,22 +860,27 @@
       "summary": "Tune generation with prompt techniques and parameters, add self-critique loops, measure tokens and latency with tracing, and combine models with deterministic rules.",
       "sections": [
         {
+          "id": "prompt-engineering",
           "heading": "Prompt engineering",
           "body": "- **System (or developer) message**: role, rules, output format.\n- **Few-shot examples**: in chat APIs, add example user and assistant turns after the system message. Examples condition only the current inference; nothing is permanently learned.\n- **Grounding data**: the most effective way to get reliable answers for non-creative tasks.\n- **Citations**: asking for inline citations reduces fabrication more than \"don't make things up\".\n- **Order matters** (recency bias): content at the end can dominate, so repeating key instructions at the end can help.\n- **Output structure**: specify it, or enforce it with structured outputs.\n\nChain-of-thought prompting applies to **non-reasoning models only**. Reasoning models think internally; do not try to extract raw reasoning (use the reasoning summary parameter)."
         },
         {
+          "id": "model-parameters",
           "heading": "Model parameters",
           "body": "| Parameter | Effect |\n|---|---|\n| `temperature` (0-2) | Higher = more varied; lower = focused. Low for legal or factual output. |\n| `top_p` | Also controls randomness, differently. Change temperature **or** top_p, not both. |\n| `max_output_tokens` / `max_completion_tokens` | Caps total generated tokens. For reasoning models this includes reasoning tokens. |\n| `reasoning_effort` | How long a reasoning model thinks; supported values vary by model. |\n\nReasoning tokens are billed as output tokens, so higher effort costs more even when the visible answer is short."
         },
         {
+          "id": "reflection-chain-of-thought-evaluation-and-self-critique",
           "heading": "Reflection, chain-of-thought evaluation and self-critique",
           "body": "A self-critique loop is a pattern you build:\n\n1. **Generate** a draft.\n2. **Critique** it against explicit criteria: an evaluator (Groundedness, Relevance, a Rubric evaluator) or a second model call with a scoring rubric.\n3. **Revise** using the critique as feedback.\n4. **Stop** when the score passes a threshold or after a fixed number of iterations.\n\nChain-of-thought evaluation means grading the *process* as well as the answer: did the agent take sensible steps, call the right tools with the right inputs, and avoid unnecessary steps (Task Navigation Efficiency, Tool Call Accuracy). Always bound loops; unbounded reflection multiplies cost and latency."
         },
         {
+          "id": "observability-traces-tokens-latency-safety-signals",
           "heading": "Observability: traces, tokens, latency, safety signals",
           "body": "Server-side tracing (connect Application Insights) covers Foundry-hosted agents with no code changes. Add **client-side** OpenTelemetry instrumentation (`azure-core-tracing-opentelemetry` with the projects SDK) to trace your own code around agent calls. Querying telemetry needs the **Log Analytics Reader** role on the Application Insights resource.\n\nMonitoring dashboards show **token usage, latency, errors and quality scores**, with Azure Monitor alerts. Span-level latency breakdowns reveal whether time goes to retrieval, tool calls or generation. Guardrail annotations and safety evaluator results are the safety signals."
         },
         {
+          "id": "orchestrating-multiple-models-and-hybrid-llm-rules-engines",
           "heading": "Orchestrating multiple models and hybrid LLM/rules engines",
           "body": "- **Route by difficulty**: a small, fast model for classification or routing, a larger or reasoning model only for hard cases.\n- **LLM for language, rules for decisions**: have the model extract structured fields (structured outputs with a strict schema), then let deterministic code apply policy thresholds, eligibility rules or compliance checks. The model can explain the outcome, but it does not make the regulated decision.\n- **Explicit execution paths**: Agent Framework graph workflows connect agents and plain functions, so deterministic steps stay deterministic and auditable."
         }
@@ -882,18 +935,22 @@
       "summary": "Use gpt-image models for text-to-image and mask-based edits, and Sora 2 (preview) for asynchronous text, image and video-to-video generation with remix edits.",
       "sections": [
         {
+          "id": "image-models-and-the-two-image-apis",
           "heading": "Image models and the two image APIs",
           "body": "DALL-E 3 (`dall-e-3`) was **retired on March 4, 2026**; existing deployments no longer work. New work uses the **gpt-image** series of models in Foundry Models (some generally available, some limited-access preview). Check the model page for current names rather than hard-coding one.\n\nThere are two operations:\n\n- **`images/generations`**: a JSON request that turns a text prompt into one or more images.\n- **`images/edits`**: a multipart request that takes one or more input images (PNG or JPG, up to a documented count and size), plus an optional mask, and returns an edited image.\n\nThe gpt-image-1 series and gpt-image-2 models **return base64** image data only (no URL option), so plan to decode and store the output yourself."
         },
         {
+          "id": "inpainting-with-a-mask",
           "heading": "Inpainting with a mask",
           "body": "To change only part of an image, send a **mask** with the edit request:\n\n- The mask is a **PNG with exactly the same dimensions** as the input image.\n- **Fully transparent pixels (alpha 0)** mark the area the model may repaint. The rest of the image is meant to stay as it is, although the docs do not promise pixel-perfect preservation.\n\nA black-and-white JPG or a mask at a different resolution is a common mistake. Describe in the prompt what should appear in the transparent area."
         },
         {
+          "id": "generation-controls",
           "heading": "Generation controls",
           "body": "| Control | What it does |\n|---|---|\n| `n` | Number of images per request (a small range, 1–10) |\n| `quality` | low / medium / high (newer models add levels); trades cost and latency for detail |\n| `size` | Output dimensions; newer models support larger and flexible aspect ratios |\n| `output_format` | **PNG (default) or JPEG**. WEBP is not supported |\n| `background: transparent` | Requires **PNG** output |\n| `output_compression` | 0–100 compression level, used with JPEG output |\n| `input_fidelity` | `high` makes the model match the style and features (especially faces) of input images more closely, for subtle edits (not supported on gpt-image-1-mini) |\n| Streaming with `partial_images` | Returns progressive previews while the final image renders |\n\nIf the prompt is blocked by the deployment guardrail, the call fails with `content_policy_violation`."
         },
         {
+          "id": "video-generation-and-editing-with-sora-2",
           "heading": "Video generation and editing with Sora 2",
           "body": "Sora 2 (preview) supports three modes: **text → video**, **image → video** (the reference image anchors the first frame and **must match the output size exactly**), and **video → video**. It also generates audio.\n\nVideo jobs are **asynchronous**: create the job, **poll its status** (for example queued → in progress → completed or failed; the exact status names depend on the API version), then download the result. Typical jobs take minutes, so never hold a user request open waiting for one.\n\nTo change a finished clip, use **remix** (reference the completed video's ID, `remix_video_id`) for a targeted edit rather than generating from scratch. Size and duration come from a short fixed set of values, and billing is per second of output.\n\nSora rejects content not suitable for under-18 audiences, copyrighted characters and music, real people and public figures, and **input images that contain human faces**."
         }
@@ -945,18 +1002,22 @@
       "summary": "Extract captions, alt text, categories and structured visual fields from images and video with Content Understanding analyzers, and choose between single-task (standard) and pro-mode pipelines.",
       "sections": [
         {
+          "id": "where-visual-understanding-happens",
           "heading": "Where visual understanding happens",
           "body": "The study guide asks you to implement visual understanding by configuring **Azure Content Understanding in Foundry Tools**. It runs on the Foundry resource and accepts **documents, images, video and audio**.\n\nFor quick, conversational tasks (visual Q&A about one screenshot, a one-off caption) you can send an image to a multimodal chat model. When you need **repeatable, schema-shaped output at scale** (alt text, tags, categories, scene summaries) that downstream systems consume, define a Content Understanding **analyzer**."
         },
         {
+          "id": "analyzers-and-field-methods",
           "heading": "Analyzers and field methods",
           "body": "An **analyzer** bundles content extraction settings, a **field schema**, and the **model deployments** it uses. Each field uses one method:\n\n- **extract**: pull a value that literally appears in the content. **Documents only.**\n- **classify**: choose from a fixed list of values (for example a product category).\n- **generate**: have the model produce a value, such as a caption, alt text or a description of visual characteristics.\n\nIn **document analyzers**, turn on **confidence and grounding** (`estimateFieldSourceAndConfidence`) to get a 0–1 confidence score and the source region of each value, so you can route low-confidence results to human review.\n\nClassification across content types lives inside the analyzer as **`contentCategories`** (up to 200). The separate classifier API is deprecated. **Segmentation** (`enableSegment`) splits input by document type or **video scene**."
         },
         {
+          "id": "prebuilt-analyzers-for-images-and-video",
           "heading": "Prebuilt analyzers for images and video",
           "body": "Start from a prebuilt analyzer when it fits:\n\n- `prebuilt-imageSearch`: image descriptions for search and RAG.\n- `prebuilt-videoSearch`: transcripts plus **segment summaries with scene detection**, so you can search a video library by scene.\n- Document and audio counterparts (`prebuilt-documentSearch`, `prebuilt-audioSearch`) and layout analyzers such as `prebuilt-layoutWithFigures`.\n\nSince the GA API (`2025-11-01`) you must **bring your own Foundry model deployments** (an LLM plus embeddings) for analyzers that generate or classify; the managed preview capacity is retired. Read and Layout need no LLM."
         },
         {
+          "id": "single-task-versus-pro-mode-pipelines",
           "heading": "Single-task versus pro-mode pipelines",
           "body": "The study guide names two pipeline styles:\n\n- **Single-task (standard mode)**: one analyzer, one input, one schema. Use it for most extraction and description jobs.\n- **Pro mode** (introduced in the `2025-05-01-preview` API): adds **reasoning across multiple input files** and an **external knowledge base** for linking, enrichment and validation (for example, checking an item against reference data). It was document-focused.\n\nThe classic Foundry standard/pro task UI is retired, and newer preview API versions cover similar multi-step ground with **agentic mode**. For the exam, know when the scenario calls for single-input extraction versus cross-file reasoning against reference data."
         }
@@ -1004,18 +1065,22 @@
       "summary": "Apply guardrails, Content Safety image analysis, Prompt Shields and custom categories to block unsafe images, defend against text-in-image prompt injection, and enforce watermark and brand policy.",
       "sections": [
         {
+          "id": "guardrails-on-image-models-and-agents",
           "heading": "Guardrails on image models and agents",
           "body": "A **guardrail** is a named set of **controls**; each control names a risk, the **intervention points** (user input, output, and for agents tool call and tool response) and an action (annotate, or annotate-and-block). Guardrails replace the older \"content filter\" configuration and use Azure AI Content Safety classifiers. The default is **Microsoft.DefaultV2**.\n\nHarm-category blocking levels: **Low blocks only high severity, Medium blocks medium and high, High blocks low, medium and high** (strictest). An agent without its own guardrail inherits its model deployment's guardrail, but **an agent's own guardrail fully replaces** the model's. Image generation blocked by a guardrail returns `content_policy_violation`.\n\nContent Understanding inherits the guardrail of the **model deployment** it uses; detections arrive as warnings or errors, and field generation can be withheld while extracted content is kept."
         },
         {
+          "id": "detecting-unsafe-or-off-brand-images",
           "heading": "Detecting unsafe or off-brand images",
           "body": "- **Analyze image** in Azure AI Content Safety scores **hate, sexual, violence and self-harm** with severity levels. Use it to screen user uploads or generated images before display.\n- **Custom categories (rapid)** (preview) let you define an incident from text and **image** samples, such as prohibited symbols or a misused logo, and include it in an image analysis request to flag policy violations. The standard variant works on text only and retired on September 1, 2026; the rapid variant retires on April 30, 2027, so plan a migration path.\n- Content Safety also lists a **content provenance detection** API, which relates to watermark and provenance policy for AI-generated media."
         },
         {
+          "id": "indirect-prompt-injection-through-text-in-images",
           "heading": "Indirect prompt injection through text in images",
           "body": "A multimodal model reads text that appears inside an image, such as a sign, a screenshot or a scanned page. An attacker can hide instructions there (\"ignore previous instructions and...\"). This is an **indirect attack** (XPIA), because the instructions come from content rather than from the user.\n\nDefences:\n\n- Turn on the **indirect attacks** control in the guardrail; **Prompt Shields** detects both user prompt attacks and document (indirect) attacks.\n- Use **Spotlighting** (preview; models only, not agents) to mark untrusted content so the model treats it as data.\n- Treat model output derived from images as untrusted: limit agent tool access and require approval for high-impact actions."
         },
         {
+          "id": "policy-enforcement-pipeline",
           "heading": "Policy enforcement pipeline",
           "body": "A typical visual policy pipeline:\n\n1. Screen the prompt or upload (guardrail user-input controls, Prompt Shields).\n2. Generate or analyze (gpt-image, Sora 2, Content Understanding).\n3. Screen the output (guardrail output controls, Analyze image, custom categories (rapid) for symbols and brand rules).\n4. Apply provenance or watermark marking according to your policy, and log decisions for audit."
         }
@@ -1067,22 +1132,27 @@
       "summary": "How to extract entities, topics, summaries and structured JSON, and how to detect sentiment, tone and sensitive content, choosing between generative prompting and Azure Language in Foundry Tools.",
       "sections": [
         {
+          "id": "two-toolkits-for-the-same-job",
           "heading": "Two toolkits for the same job",
           "body": "The AI-103 study guide asks you to extract entities, topics, summaries and structured JSON \"by using generative prompting **and** Foundry Tools\". Expect questions that make you choose:\n\n- **Generative prompting** with a Foundry model: flexible, handles new entity types, tone and free-form summaries without training, and can return JSON that matches a schema. Output depends on the prompt and model version.\n- **Azure Language in Foundry Tools**: task-specific APIs with a predictable response shape, confidence scores and no prompt to maintain.\n\nA good rule: use Azure Language when a prebuilt or custom task exactly fits and you need consistent, auditable output (for example PII redaction). Use an LLM when the schema is bespoke, the task needs reasoning, or the categories change often."
         },
         {
+          "id": "core-versus-legacy-azure-language-features",
           "heading": "Core versus legacy Azure Language features",
           "body": "Azure Language now splits its features into two groups:\n\n| Group | Features |\n|---|---|\n| **Core** (recommended for new work) | PII detection (text, conversations, native documents), language detection, prebuilt NER, custom NER, text analytics for health |\n| **Legacy** (supported for existing workloads) | sentiment analysis and opinion mining, key phrase extraction, entity linking, summarization (extractive and abstractive), CLU, custom text classification, question answering, orchestration workflow |\n\nSo for a **new** solution that needs sentiment, tone, key topics or summaries, the current direction is generative prompting with a Foundry model. Existing workloads on the legacy APIs keep working. Azure Language also offers an MCP server (remote in the Foundry Tool Catalog, or local), so an agent can call Language tasks as tools."
         },
         {
+          "id": "structured-json-from-an-llm",
           "heading": "Structured JSON from an LLM",
           "body": "When downstream code parses the output, do not rely on \"please answer in JSON\" in the prompt. Use **structured outputs**: supply a JSON schema and set `strict: true`, so the model is constrained to return output that matches the schema. The older JSON mode guarantees valid JSON but not adherence to your schema. Keep the schema small, list every field as required (use a null union for optional values), set `additionalProperties: false`, and use enums for fixed label sets (for example `sentiment: positive | neutral | negative`).\n\nPrompting tips that the exam likes:\n\n- Give the label set and definitions in the system message.\n- Ask for evidence spans (quotes) next to each extracted value, so a reviewer can check them.\n- Use a low temperature for extraction.\n- Evaluate the prompt on a labelled sample before going live."
         },
         {
+          "id": "sensitive-content",
           "heading": "Sensitive content",
           "body": "Two different concerns are often mixed up:\n\n- **PII in the text you process** (names, phone numbers, account numbers). Use Azure Language **PII detection**, which returns categories and a redacted version of the text. Synthetic-replacement anonymization is in preview. Foundry guardrails also list a PII risk (preview) at the model level.\n- **Harmful content** (hate, sexual, violence, self-harm) and prompt attacks. That is the job of **Azure AI Content Safety** and Foundry **guardrails**, not Azure Language.\n\nChoose PII detection when the requirement is \"remove personal data before storing or indexing\"; choose guardrails when the requirement is \"block unsafe model input or output\"."
         },
         {
+          "id": "domain-customisation",
           "heading": "Domain customisation",
           "body": "When prebuilt results miss domain terms:\n\n- **Custom NER** (core) trains entity extraction on your labelled documents.\n- For an LLM, add few-shot examples and a glossary to the prompt, or ground it with retrieval over your domain documents, before you consider fine-tuning.\n- **Text analytics for health** is the prebuilt choice for clinical entities and relations."
         }
@@ -1136,18 +1206,22 @@
       "summary": "Text and document translation, LLM selection in Translator, adaptive custom translation versus Custom Translator, and how to evaluate translation quality.",
       "sections": [
         {
+          "id": "text-translation",
           "heading": "Text translation",
           "body": "Azure Translator in Foundry Tools offers two text translation generations:\n\n- **Text translation v3 (GA)**: neural machine translation with a **dynamic dictionary** (force a specific translation of a term) and a way to **prevent translation** of chosen text such as product names or code.\n- **Text translation `2026-06-06` (GA)**: can **select specified LLMs** to translate and supports **adaptive custom translation**.\n\nYou can also translate by prompting a Foundry model directly. That gives control over tone and style, but you own the prompt, the glossary handling and the evaluation."
         },
         {
+          "id": "document-translation",
           "heading": "Document translation",
           "body": "Two modes:\n\n| Mode | When | Storage |\n|---|---|---|\n| **Asynchronous batch** | Many files, large files, whole folders | Needs Azure Blob Storage containers for source and target |\n| **Synchronous single-file** | One file, immediate response | No Blob storage; optional glossary |\n\nDocument translation keeps the original file format and layout, which plain text translation does not."
         },
         {
+          "id": "domain-customisation",
           "heading": "Domain customisation",
           "body": "- **Adaptive custom translation**: upload a small set of pre-aligned segment pairs (from 5 up to 10,000, each up to about 500 characters). Translator builds a bilingual index in minutes and uses it to adapt an LLM translation to your terminology and style. No model training run.\n- **Custom Translator**: trains a custom neural translation model (and dictionaries) on your parallel data. Takes longer and needs more data, but gives a dedicated domain model.\n- **Dynamic dictionary / glossary**: fix a few terms without any training.\n\nPick the lightest option that meets the requirement: a glossary for a few terms, adaptive custom translation for quick style and terminology adaptation, Custom Translator for a fully trained domain model."
         },
         {
+          "id": "evaluating-translation",
           "heading": "Evaluating translation",
           "body": "Foundry lists a recommended evaluator set for translation: **BLEU + METEOR** (overlap with reference translations) plus **Fluency + Coherence** (LLM-judged readability). Build a reference set from human translations of real content, and rerun it whenever you change the model, prompt or adaptation data."
         }
@@ -1189,22 +1263,27 @@
       "summary": "Choosing speech-to-text modes, custom speech, text to speech with SSML, Voice Live and voice-based prompt agents, speech translation, and reasoning over audio.",
       "sections": [
         {
+          "id": "speech-to-text-modes",
           "heading": "Speech to text modes",
           "body": "Azure Speech in Foundry Tools offers three ways to transcribe:\n\n| Mode | Use when |\n|---|---|\n| **Real-time** | Live microphone or call audio, captions, voice agents (includes MAI-Transcribe Streaming) |\n| **Fast transcription** | A pre-recorded file you want back quickly and synchronously. **Azure LLM Speech** enhanced mode supports `transcribe` and `translate` tasks with prompt tuning |\n| **Batch transcription** | Large volumes of stored recordings processed asynchronously through REST |\n\nPick by latency need and volume, not by audio quality."
         },
         {
+          "id": "custom-speech",
           "heading": "Custom speech",
           "body": "When the base model mishears your audio, **custom speech** lets you adapt it with your own data: language (text) data for domain vocabulary and jargon, acoustic (audio plus transcript) data for noisy environments or specific microphones, and pronunciation data for unusual words. For a few product names in a live session, a phrase list may be enough; custom speech is for sustained accuracy problems."
         },
         {
+          "id": "text-to-speech",
           "heading": "Text to speech",
           "body": "- **Neural voices** (and MAI-Voice) for natural output.\n- **SSML** controls pitch, rate, volume, pauses and pronunciation, so you can make an agent read an order number digit by digit or slow down for instructions.\n- **Custom voice** creates a brand voice and is **limited access** (you apply for it, with responsible AI requirements).\n- A **text-to-speech avatar** adds a talking visual."
         },
         {
+          "id": "speech-as-an-agent-modality",
           "heading": "Speech as an agent modality",
           "body": "The **Voice Live** API gives real-time, two-way voice between a person and an agent. **Voice-based prompt agents** (preview) come in two designs:\n\n- **Native speech-to-speech** realtime model: lowest latency, fewest moving parts.\n- **Cascaded** STT → text model → TTS: broader model and voice choice, phrase lists and turn detection, but higher latency.\n\nTelephony connects through Teams Phone extensibility or Twilio. Note that Foundry **guardrails do not apply to prompts and completions handled by audio transcription models**, so apply checks to the transcribed text and to the agent output where you need them."
         },
         {
+          "id": "speech-translation-and-reasoning-over-audio",
           "heading": "Speech translation and reasoning over audio",
           "body": "- **Speech translation** turns speech in one language into text or synthesized speech in another (speech-to-text and speech-to-speech), with language identification for unknown input languages. Fast transcription in LLM Speech mode also has a `translate` task.\n- **Reasoning over audio** (\"enable multimodal reasoning from audio inputs\"): either send audio to an audio-capable model, or transcribe first and reason over text. **Content Understanding** analyzers accept audio; the `prebuilt-audioSearch` RAG analyzer produces speaker-separated (diarized) transcripts and a summary, `prebuilt-callCenter` adds agent/customer role detection, sentiment and topics, and custom analyzers can generate or classify fields such as call outcome or sentiment."
         }
@@ -1266,18 +1345,22 @@
       "summary": "How documents, images, audio and video get into an Azure AI Search index: push versus pull, indexers, skillsets with OCR, chunking and embedding, and Content Understanding as an enrichment step for RAG.",
       "sections": [
         {
+          "id": "the-index-only-holds-json",
           "heading": "The index only holds JSON",
           "body": "Azure AI Search indexes **JSON documents** only. Whatever your source format (PDF, scanned image, Office file, audio transcript, video segment), something has to turn it into JSON fields before it is searchable.\n\nThere are two ingestion models:\n\n- **Push**: your code uploads JSON documents through the API or SDK. Use it when the source is not supported by an indexer, or when you need **real-time** synchronization driven by your own app events.\n- **Pull**: an **indexer** crawls a supported data source (for example Azure Blob Storage, Azure Cosmos DB, SharePoint, OneLake) on demand or on a schedule and maps the content into index fields."
         },
         {
+          "id": "ai-enrichment-with-skillsets",
           "heading": "AI enrichment with skillsets",
           "body": "An indexer can run a **skillset**: an ordered set of built-in or custom skills applied to each document during ingestion. Typical RAG ingestion uses skills for:\n\n- **OCR** to pull text out of scanned pages and embedded images\n- **Chunking** (text split) so long documents become passage-sized units\n- **Embedding** so each chunk gets a vector for similarity search\n- **LLM transformations** or custom skills (for example a web API) for anything the built-ins do not cover\n\n**Integrated vectorization** lets Azure AI Search do the chunking and embedding inside the pipeline instead of in your own code, and vectorize query text at query time with the same model."
         },
         {
+          "id": "content-understanding-as-an-enrichment-step",
           "heading": "Content Understanding as an enrichment step",
           "body": "Azure Content Understanding in Foundry Tools can sit in front of, or inside, the indexing pipeline. Its RAG analyzers (`prebuilt-documentSearch`, `prebuilt-imageSearch`, `prebuilt-videoSearch`, `prebuilt-audioSearch`) produce clean, grounded representations of each modality: Markdown for documents, descriptions for images, transcripts plus segment summaries for video, and diarized transcripts for audio.\n\nA preview **Azure Content Understanding skill** in Azure AI Search adds figure and image descriptions and semantic chunking directly in a skillset. Because it is preview, treat the exact API version as fast-changing and check the docs before relying on it."
         },
         {
+          "id": "choosing-an-ingestion-design",
           "heading": "Choosing an ingestion design",
           "body": "| Situation | Typical choice |\n|---|---|\n| Files land in Blob or SharePoint and change in batches | Pull with an indexer on a schedule |\n| Source has no indexer, or updates must appear immediately | Push from your app |\n| Scanned PDFs or images with text | Skillset with OCR (or a Content Understanding analyzer) |\n| You want vectors without writing embedding code | Integrated vectorization |\n| Video or audio libraries | Content Understanding video/audio search analyzers, then index the output |"
         }
@@ -1327,22 +1410,27 @@
       "summary": "Full-text, vector, hybrid and semantic ranking in Azure AI Search; security trimming; classic search versus agentic retrieval with Foundry IQ knowledge bases; and how agents pick the right retrieval tool.",
       "sections": [
         {
+          "id": "query-types",
           "heading": "Query types",
           "body": "- **Full-text** search uses BM25 keyword scoring.\n- **Vector** search finds nearest neighbours with HNSW (approximate) or exhaustive KNN.\n- **Hybrid** search sends **one request** containing both `search` (text) and `vectorQueries`. Both run in parallel and the result sets are merged with **Reciprocal Rank Fusion (RRF)**.\n- **Multimodal** search covers images and text together.\n\nKeyword matching still wins for **product codes, jargon, dates and names**, which embeddings handle poorly. That is the main reason hybrid beats vector-only for many enterprise corpora."
         },
         {
+          "id": "semantic-ranker",
           "heading": "Semantic ranker",
           "body": "The **semantic ranker** reranks the top results using machine reading comprehension. Enable it per query with `queryType=semantic` plus a `semanticConfiguration` that names the title, content and keyword fields. Reranked results carry `@search.rerankerScore`.\n\nPractical rules from the docs:\n\n- When combining with vectors, set `k` to **50** so the reranker has enough candidates.\n- `vectorFilterMode` chooses **pre-filtering** or **post-filtering** of vector results.\n- Adding `orderby` **overrides relevance ranking**, so sorting by date discards the semantic order.\n\nMicrosoft states that hybrid retrieval with semantic ranker offers significant relevance benefits."
         },
         {
+          "id": "security-trimming",
           "heading": "Security trimming",
           "body": "Grounded answers must not leak documents the caller cannot see. Azure AI Search supports **Entra ID** and **Private Link**, **document-level access control with ACL inheritance** for SharePoint, Blob and ADLS Gen2 sources, and **security-filter trimming** (store principal or group IDs in a filterable field and filter on them) for everything else. Telling the model in a system prompt to \"ignore restricted content\" is not access control."
         },
         {
+          "id": "classic-search-versus-agentic-retrieval-foundry-iq",
           "heading": "Classic search versus agentic retrieval (Foundry IQ)",
           "body": "**Classic search** is one index and one request with predictable low latency.\n\n**Agentic retrieval** runs over a **knowledge base** that groups one or more **knowledge sources** (Blob, SharePoint, OneLake, web; indexed or remote). An LLM plans the query, runs **subqueries in parallel**, reranks semantically and returns merged results with **citations**. Retrieval reasoning effort is **minimal, low or medium**. It is region-restricted.\n\n**Foundry IQ** is the managed knowledge layer built on this. A knowledge base is permission-aware (ACL sync, Purview labels, caller's Entra identity), can be shared by many agents, and plugs into Foundry Agent Service, Microsoft Agent Framework or Copilot Studio. Note the docs' advice: LLMs and agents do not require vectors; only use them if you need similarity search."
         },
         {
+          "id": "connecting-retrieval-to-agent-tools",
           "heading": "Connecting retrieval to agent tools",
           "body": "Foundry Agent Service exposes retrieval through tools such as **Azure AI Search** and **File search**, and through Foundry IQ knowledge bases. Pick by content ownership:\n\n- **Knowledge base (Foundry IQ)**: curated organizational content shared across agents.\n- **File search**: documents a user supplies during the session.\n- **Memory**: user-specific context learned over time, not a document store."
         }
@@ -1405,22 +1493,27 @@
       "summary": "Azure Content Understanding in Foundry Tools: analyzers, OCR and layout extraction, Markdown versus structured JSON output, field methods, confidence and grounding, prebuilt analyzers, and the GA model-deployment requirement.",
       "sections": [
         {
+          "id": "analyzers-are-the-unit-of-work",
           "heading": "Analyzers are the unit of work",
           "body": "Content Understanding is a Foundry Tool on the Foundry resource. It accepts **documents, images, video and audio**. Every request runs an **analyzer**, which bundles content-extraction settings, an optional **field schema**, and the model deployments it uses.\n\nPrebuilt analyzers include `prebuilt-read`, `prebuilt-layout`, `prebuilt-layoutWithFigures`, `prebuilt-idDocument`, domain analyzers (for example invoices, tax, procurement, mortgage), and the RAG analyzers `prebuilt-documentSearch`, `prebuilt-imageSearch`, `prebuilt-videoSearch` and `prebuilt-audioSearch`. You can also build custom analyzers."
         },
         {
+          "id": "content-extraction-ocr-and-layout",
           "heading": "Content extraction (OCR and layout)",
           "body": "Extraction covers OCR, selection marks, barcodes, formulas, layout (paragraphs, sections, tables), hyperlinks and annotations. **Tables that span pages come back as one object** in HTML or Markdown, and **figures** can be returned as chart.js or mermaid.js with descriptions.\n\n`extractionMode` chooses between **layout-aware** extraction for structured documents and faster **text-only** extraction when you just need clean Markdown for RAG.\n\nLarge PDF and TIFF files are processed asynchronously and page ranges are supported; synchronous calls are limited to a few pages. Page limits have changed recently, so check the docs rather than memorizing a number."
         },
         {
+          "id": "two-output-shapes",
           "heading": "Two output shapes",
           "body": "- **Markdown** is the grounded representation for search and RAG: headings, tables and figure descriptions an LLM can read. A preview SDK helper (`to_llm_input()`) formats results as Markdown with YAML frontmatter.\n- **Structured JSON** matching your field schema is for automation: downstream systems read named fields instead of parsing text.\n\nMany solutions use both: Markdown into the index, JSON fields into a business system."
         },
         {
+          "id": "fields-confidence-and-grounding",
           "heading": "Fields, confidence and grounding",
           "body": "Each field in a schema uses one method:\n\n- **extract**: pull a value that appears in the content (documents only)\n- **classify**: choose from a fixed set of categories\n- **generate**: produce a value, such as a summary, from the content\n\nTurn on `estimateFieldSourceAndConfidence` (or `estimateSourceAndConfidence`) to get **confidence scores (0 to 1)** and **grounding** (where in the source the value came from). This is how you route low-confidence values to human review.\n\nFor mixed files, **segmentation** (`enableSegment`) splits content by document type or video scene, and **`contentCategories`** inside the analyzer classifies segments (up to 200 categories). The separate classifier API is deprecated."
         },
         {
+          "id": "ga-changes-standard-versus-pro-agentic-mode",
           "heading": "GA changes, standard versus pro, agentic mode",
           "body": "Since the GA API (`2025-11-01`) you must **bring your own Foundry model deployments** (an LLM plus embeddings); the managed preview capacity is retired. Read and Layout need no LLM.\n\nThe study guide names **single-task (standard)** and **pro-mode** pipelines. Pro mode was introduced in a 2025 preview and added reasoning, multiple input documents and an external knowledge base for linking, enrichment and validation, limited to documents. Newer preview API versions cover similar ground with **agentic mode** (`config.workflow: \"agentic\"`, one file per request).\n\nResponsible AI: Content Understanding inherits the **guardrail of the Foundry model deployment** it uses. Detections come back as warnings or errors, and generated fields can be withheld while extracted content is kept."
         }

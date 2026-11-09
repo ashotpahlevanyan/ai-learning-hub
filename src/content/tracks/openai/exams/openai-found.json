@@ -79,18 +79,22 @@
       "summary": "A large language model predicts likely next words from patterns in its training data. That single fact explains most of its strengths and failures.",
       "sections": [
         {
+          "id": "prediction-not-lookup",
           "heading": "Prediction, not lookup",
           "body": "A large language model (LLM) such as the GPT models behind ChatGPT is trained on huge amounts of text to predict what text should come next. It doesn't look facts up in a database by default; it generates text that **fits the patterns** it learned.\n\nThat's why it is excellent at drafting, rephrasing, summarising and explaining, and why it can produce fluent text that is wrong."
         },
         {
+          "id": "tokens-and-the-context-window",
           "heading": "Tokens and the context window",
           "body": "Models read and write in **tokens** (chunks of words). Everything the model can \"see\" in a conversation (your messages, uploaded files, its own replies, instructions) has to fit in its **context window**.\n\n- Very long chats or huge files can push early details out of view or dilute attention.\n- When a long conversation starts drifting, start a fresh chat with a short summary of what matters."
         },
         {
+          "id": "knowledge-cutoff-and-tools",
           "heading": "Knowledge cutoff and tools",
           "body": "A model's built-in knowledge stops at its **training cutoff**. Without tools, answers draw only on that training data. For anything recent (prices, news, policies, product versions) use ChatGPT's **search** or **deep research**, connect a relevant **app**, or give it the source document yourself.\n\nWhen ChatGPT uses search, it shows sources. Open them: a citation shows where a claim came from, not that the claim is right."
         },
         {
+          "id": "same-prompt-different-answers",
           "heading": "Same prompt, different answers",
           "body": "Generation involves **sampling**: at each step the model picks from several likely next tokens rather than always the single top one. So the same prompt can give different wording, a different structure or even a different conclusion.\n\n- Variation is expected behaviour, not a fault, and it doesn't mean either answer is a hallucination.\n- Treat the first answer as a draft. For decisions, regenerate or ask again in a fresh chat, compare the runs, and ask for reasoning, alternatives and sources.\n- Points that recur across runs are more stable; points that appear once deserve extra checking. Agreement between runs is still **not** proof: verify facts against a source.\n- When you need consistent output (for example a recurring report), reduce the freedom: give a fixed format, an example and the source material."
         }
@@ -131,22 +135,27 @@
       "summary": "Know the ways ChatGPT goes wrong so you can catch them before they reach a customer or a decision.",
       "sections": [
         {
+          "id": "hallucination",
           "heading": "Hallucination",
           "body": "A **hallucination** is confident, plausible content that is false: an invented statistic, a quote nobody said, a court case that doesn't exist, a wrong product feature.\n\nRisk is highest for **specific details**: names, numbers, dates, citations, legal or medical specifics, and niche topics with little training data."
         },
         {
+          "id": "confidence-isn-t-reliability",
           "heading": "Confidence isn't reliability",
           "body": "OpenAI's own help center warns that ChatGPT can be wrong while sounding certain, and that **confidence isn't reliability**. Hallucinations include fabricated quotes, studies, citations and references to sources that don't exist.\n\n- Use ChatGPT as a **first draft, not a final source**.\n- Always verify quotes, data, technical information and references to external documents.\n- Even when an answer includes citations, **open the links yourself** and check they say what is claimed.\n- Asking the model \"Are you sure?\" is not verification: it can confirm its own error just as fluently."
         },
         {
+          "id": "other-common-failures",
           "heading": "Other common failures",
           "body": "- **Sycophancy:** agreeing with you because you sounded sure. Ask it to argue the other side.\n- **Over-generalising:** turning one example into a rule.\n- **Missing context:** it can't know your company's policies, numbers or customers unless you provide them.\n- **Arithmetic and counting slips** in plain text: ask it to use data analysis (it runs code) for calculations.\n- **Bias** inherited from training data, in wording, examples or assumptions about people."
         },
         {
+          "id": "reducing-the-risk",
           "heading": "Reducing the risk",
           "body": "- Give it the source material and tell it to answer **only from the provided documents**, saying \"not in the source\" when something is missing.\n- Ask for **quotes or page references** for key claims.\n- For numbers, upload the data and have it compute with data analysis rather than estimate.\n- Allow uncertainty: \"If you are not sure, say so.\""
         },
         {
+          "id": "things-it-can-t-reliably-do",
           "heading": "Things it can't reliably do",
           "body": "- **Detect AI-written text.** ChatGPT cannot reliably tell whether a piece of text was written by AI, so don't use it to judge a student's essay or a job applicant's cover letter.\n- **Know your private context.** It doesn't know internal data, policies or customers unless you provide or connect them.\n- **Know recent events** without search or a source you supply."
         }
@@ -189,22 +198,27 @@
       "summary": "Most weak output comes from weak briefs. Brief ChatGPT like a smart new colleague who knows nothing about your situation: say what you want, what it needs to know, what the result should look like and what must not change.",
       "sections": [
         {
+          "id": "the-four-parts-plus-optional-extras",
           "heading": "The four parts (plus optional extras)",
           "body": "OpenAI's current prompting guide names four parts of a work prompt:\n\n1. **Goal:** what you want done. Start with the result you want rather than a list of steps.\n2. **Context:** the information or sources that help: background, audience, what already exists, files to use.\n3. **Output:** the format, length and level of detail: a table, 150 words, three bullets, headings.\n4. **Boundaries:** what must stay unchanged or what needs your approval first. Focus on the one or two boundaries that matter most.\n\nTwo optional extras often help as well:\n\n- **Role or perspective:** \"Review this as a skeptical CFO would.\"\n- **Examples:** a sample of the style or format you want (see the next lesson).\n\nYou don't need every part every time. A short prompt is often enough; for larger or more important tasks, include the parts that matter."
         },
         {
+          "id": "boundaries-what-must-not-change",
           "heading": "Boundaries: what must not change",
           "body": "Boundaries are the part people most often forget. They tell ChatGPT where it must not go:\n\n- \"Don't change the figures in the table, only the commentary.\"\n- \"Keep the legal disclaimer word for word.\"\n- \"Suggest edits, but check with me before rewriting the conclusion.\"\n\nPick the one or two that really matter. A long list of minor rules dilutes the ones that protect you."
         },
         {
+          "id": "before-and-after",
           "heading": "Before and after",
           "body": "Weak:\n\n```\nWrite an email about the new expense policy.\n```\n\nStrong:\n\n```\nYou're writing to 40 field sales reps who submit expenses from their phones.\nGoal: get them to use the new expense app from 1 March; old forms will be rejected.\nWrite a friendly email under 150 words with: a one-line summary, 3 bullet steps\nto get started, the deadline in bold, and who to contact (finance-help@).\nAvoid jargon and don't mention the old vendor.\n```"
         },
         {
+          "id": "structure-long-prompts",
           "heading": "Structure long prompts",
           "body": "For longer briefs, separate parts with headings or tags so instructions don't blur into source material:\n\n```\n## Instructions\nSummarise the customer interviews below for the product team.\n## Output\nTop 5 themes, each with a supporting quote and how many interviews mentioned it.\n## Interviews\n[paste here]\n```"
         },
         {
+          "id": "say-what-to-do-not-only-what-not-to-do",
           "heading": "Say what to do, not only what not to do",
           "body": "\"Write in short, plain sentences for a general audience\" works better than a list of prohibitions. Positive instructions give the model a target."
         }
@@ -260,26 +274,32 @@
       "summary": "Show what you want, iterate in small steps, and split big jobs into stages you can check.",
       "sections": [
         {
+          "id": "show-don-t-only-tell",
           "heading": "Show, don’t only tell",
           "body": "Paste one or two **examples** of the style or format you want (\"Here are two past newsletters we liked\"). Models imitate examples closely, so pick good ones and vary them if you don't want everything to look identical."
         },
         {
+          "id": "iterate-like-an-editor",
           "heading": "Iterate like an editor",
           "body": "The first prompt doesn't need to be perfect. **Iterate rather than restart:** review the result, then\n\n- ask for the specific change: \"Keep sections 1 and 3, rewrite 2 for a non-technical reader.\"\n- add a missing source: \"Here is the Q3 forecast; update the numbers paragraph to use it.\"\n- correct the direction: \"This should persuade, not inform. Lead with the cost saving.\"\n- ask for another option: \"Give me three alternative subject lines, more urgent.\"\n\nIf a chat goes badly off track after many turns, start a new chat with a clean, complete brief that includes your corrections."
         },
         {
+          "id": "decompose-big-tasks",
           "heading": "Decompose big tasks",
           "body": "For a large deliverable, go in stages and check each one:\n\n1. Outline → you approve.\n2. Draft each section → you review.\n3. Tighten and format.\n\nStages catch wrong directions early and keep each request focused."
         },
         {
+          "id": "ask-it-to-ask-you",
           "heading": "Ask it to ask you",
           "body": "When you're not sure what context matters: \"Before you start, ask me up to five questions you need answered to do this well.\""
         },
         {
+          "id": "finish-with-a-check",
           "heading": "Finish with a check",
           "body": "For important work, ask ChatGPT for a **final check** (\"Check this against the brief and list anything missing or inconsistent\"), then **review the result yourself** before you use or share it. The model's check helps; it doesn't replace yours."
         },
         {
+          "id": "refine-recurring-prompts-before-you-automate-them",
           "heading": "Refine recurring prompts before you automate them",
           "body": "If a prompt will run every week (a status summary, a news digest), get it right in a **normal chat** first. Run it, fix what's wrong, and only then schedule it (for example as a Scheduled Task). Automating an untested prompt just repeats its flaws on a timer."
         }
@@ -331,22 +351,27 @@
       "summary": "Reusable patterns for summarising, drafting in your voice, analysing, brainstorming and preparing for meetings, the everyday tasks OpenAI's AI Foundations course applies prompting to.",
       "sections": [
         {
+          "id": "summarise-for-a-purpose",
           "heading": "Summarise for a purpose",
           "body": "```\nSummarise this 30-page vendor proposal for our COO, who has 2 minutes.\nGive: price and term, the 3 biggest risks to us, anything that differs from\nour RFP requirements, and a one-line recommendation. Quote clause numbers.\n```"
         },
         {
+          "id": "draft-in-your-voice",
           "heading": "Draft in your voice",
           "body": "Paste two or three of your own past messages and say \"Match the tone and sentence length of these.\" Add what the draft must say and who it's for, because examples set style, not facts.\n\nFor a voice you use every day, save tone preferences in **custom instructions** (which apply to all chats) or in a **project's instructions** (which apply only inside that project). Then read the draft as yourself: would you actually send it?"
         },
         {
+          "id": "analyse-and-decide",
           "heading": "Analyse and decide",
           "body": "Ask for **options with trade-offs**, not one answer: \"Give three ways to reduce onboarding time, each with cost, effort, risk and what we'd need to believe for it to work.\""
         },
         {
+          "id": "brainstorm-widely-then-narrow",
           "heading": "Brainstorm widely, then narrow",
           "body": "Ask for many ideas fast (\"20 webinar titles\"), then a second step to score them against your criteria. Separating generation from judgment gives better variety."
         },
         {
+          "id": "meeting-prep",
           "heading": "Meeting prep",
           "body": "Give it the inputs you'd read yourself and ask for what you need walking in:\n\n```\nHere are the agenda and last meeting's notes. List the decisions we need,\nlikely objections from finance, and three questions I should ask.\nKeep it to one page.\n```\n\nAfterwards, paste your notes and ask for a summary of decisions, owners and deadlines. Check names, dates and commitments against what was actually said."
         }
@@ -393,18 +418,22 @@
       "summary": "A practical routine for checking ChatGPT output before you use it, scaled to the stakes.",
       "sections": [
         {
+          "id": "scale-checking-to-the-stakes",
           "heading": "Scale checking to the stakes",
           "body": "- **Low stakes** (brainstorm, internal first draft): skim for sense.\n- **Medium** (internal decisions, team docs): check key facts and numbers.\n- **High** (customers, executives, legal, medical, financial, public): verify every claim against a **primary source** and have a qualified person review."
         },
         {
+          "id": "the-checking-routine",
           "heading": "The checking routine",
           "body": "1. **Highlight checkable claims:** numbers, names, dates, quotes, \"studies show\".\n2. **Open the sources** ChatGPT cites. Confirm the source exists, is credible and actually says that.\n3. **Recompute numbers** from the data, or have data analysis show its working, then spot-check.\n4. **Check against your own knowledge** and internal systems of record.\n5. **Look for what's missing:** risks, counterarguments, affected groups."
         },
         {
+          "id": "ask-for-evidence-up-front",
           "heading": "Ask for evidence up front",
           "body": "\"For each claim, give the source and a direct quote.\" \"Separate what the document says from your own inferences.\" These make checking faster and expose weak claims."
         },
         {
+          "id": "first-draft-not-final-source",
           "heading": "First draft, not final source",
           "body": "OpenAI's help center advises using ChatGPT \"as a first draft, not a final source\" and to always verify quotes, data, technical information and references. A confident tone tells you nothing: **confidence isn't reliability**. Even when an answer has citations, open the links yourself."
         }
@@ -451,18 +480,22 @@
       "summary": "Use ChatGPT as an editor and reviewer, with clear criteria, while keeping your own judgment in charge.",
       "sections": [
         {
+          "id": "review-against-criteria",
           "heading": "Review against criteria",
           "body": "Give explicit criteria: \"Review this proposal as a skeptical procurement lead. Score clarity, evidence, risks addressed and call to action from 1–5, explain each score, then list the three changes that would raise the scores most.\""
         },
         {
+          "id": "fresh-eyes-beat-self-review",
           "heading": "Fresh eyes beat self-review",
           "body": "A model asked to review what it just wrote, in the same chat, tends to defend it: the conversation already frames the draft as its answer. For a more honest critique, paste the draft into a **new chat** (or give it to a colleague) together with the review criteria. This is common course guidance rather than a documented product rule, so treat it as a habit, not a guarantee."
         },
         {
+          "id": "check-for-bias-and-gaps",
           "heading": "Check for bias and gaps",
           "body": "Ask: \"Who might be left out or treated unfairly by this text? What assumptions does it make about the reader?\" Review job ads, policies and customer messages for exclusionary wording."
         },
         {
+          "id": "know-when-to-stop",
           "heading": "Know when to stop",
           "body": "Endless polishing has diminishing returns. Decide upfront what \"good enough\" means for this use (the audience, the must-haves, the risks that must be covered), check the draft against that bar, and ship. If each new round only swaps synonyms or reshuffles sentences, you are past the bar. If a round keeps surfacing *new factual problems*, stop prompting and go back to the sources."
         }
@@ -499,22 +532,27 @@
       "summary": "Turn checking from an afterthought into planned steps: a final check you then review yourself, verifiable research, checked numbers and human checkpoints in repeatable work.",
       "sections": [
         {
+          "id": "ask-for-a-final-check-then-review-it-yourself",
           "heading": "Ask for a final check, then review it yourself",
           "body": "OpenAI's prompting guide says that for important work you should **ask for a final check, then review the result yourself** before using or sharing it. The model's check is a useful first pass: it can catch inconsistencies, missing sections or claims that don't match an attached file. It does not replace your review, because you are accountable for what you send.\n\nA useful final-check prompt names what to look for: \"Check this against the brief: list any requirement not met, any number that doesn't match the attached data, and any claim with no source.\""
         },
         {
+          "id": "make-research-verifiable-from-the-start",
           "heading": "Make research verifiable from the start",
           "body": "Deep research produces cited, structured reports. You can **edit the research plan** before it starts, watch progress and interrupt it, and **limit research to specific sites or trusted apps**. Use those controls so the sources are ones you would accept, then still open the citations that support the claims you rely on. Citations make checking faster; they don't do it for you."
         },
         {
+          "id": "check-numbers-where-they-are-made",
           "heading": "Check numbers where they are made",
           "body": "When data analysis computes figures from a spreadsheet, ask it to show the steps or code it ran and the rows it included. Then spot-check a few figures by hand or in your own spreadsheet, and confirm totals reconcile with your system of record. Watch for silently dropped rows, wrong date ranges and mixed units."
         },
         {
+          "id": "put-checkpoints-into-repeatable-work",
           "heading": "Put checkpoints into repeatable work",
           "body": "OpenAI Academy's Applied AI Foundations course has learners plan workflows in terms of **inputs, models, tools, checkpoints and human review**. Decide where a person must look before work moves on: before anything goes to a customer, before a number reaches a decision, before an action can't be undone. Refine a recurring prompt in normal chat, checking its output, before you schedule it."
         },
         {
+          "id": "what-chatgpt-can-t-check-for-you",
           "heading": "What ChatGPT can't check for you",
           "body": "ChatGPT cannot reliably tell whether text was written by AI, so don't use it as an AI-text detector. It also can't confirm facts it has no access to, such as internal decisions or data you haven't shared. Those checks need people and systems of record."
         }
@@ -560,18 +598,22 @@
       "summary": "ChatGPT is a set of tools: Chat for quick help, Work for longer multi-step deliverables, plus search, deep research, data analysis and images. Pick the tool and the reasoning level to fit the task.",
       "sections": [
         {
+          "id": "the-toolkit-names-and-plan-availability-change-check-the-cur",
           "heading": "The toolkit (names and plan availability change: check the current help center)",
           "body": "- **Chat:** fast, conversational help for everyday questions, drafting, rewriting and brainstorming. Longer writing and code now happen directly in the chat as writing blocks and code blocks.\n- **Search:** recent or real-time information with cited sources.\n- **Deep research:** multi-step research across many sources that returns a structured, cited report. It takes longer than a quick search. You can edit the research plan before it starts, watch and interrupt progress, and limit it to specific sites or trusted apps.\n- **File uploads and data analysis:** read documents; analyse spreadsheets and CSVs by running code; produce charts and files.\n- **Image input and generation:** describe or analyse uploaded images, and generate or edit visuals such as mock-ups and diagrams.\n- **Voice:** talk through ideas hands-free.\n- **ChatGPT Work:** an agent for longer, multi-step work and finished deliverables (research, analysis, documents, spreadsheets, presentations, reports). It gathers information across your files and connected apps and checks in for approval before important actions."
         },
         {
+          "id": "what-changed-recently",
           "heading": "What changed recently",
           "body": "ChatGPT changes quickly, so learn the job each tool does rather than its name.\n\n- The older **ChatGPT agent** (agent mode) is no longer available; longer multi-step tasks now go to **ChatGPT Work**.\n- **Canvas** was removed from current models; writing and code happen in chat through writing and code blocks.\n- **Codex** sits alongside Chat and Work and is aimed at software development."
         },
         {
+          "id": "match-the-task",
           "heading": "Match the task",
           "body": "| Task | Best fit |\n|---|---|\n| Draft a reply or rewrite a paragraph | Chat |\n| What changed in a regulation this year | Search, or deep research for a full cited report |\n| Analyse six months of sales data and chart it | Data analysis on the uploaded file |\n| Make a mock-up image for a slide | Image generation |\n| Pull data from several files and apps into a finished report or deck | ChatGPT Work |\n| Compare 15 vendors' public pricing pages | Deep research or Work, then review the result |"
         },
         {
+          "id": "models-and-reasoning",
           "heading": "Models and reasoning",
           "body": "The model picker offers a fast option (**Instant**) and higher **reasoning levels** that spend more time working through a problem before answering. Use the fast option for simple, everyday tasks such as rewording, short drafts and quick questions. Use a higher reasoning level for complex analysis, multi-step planning, maths and tricky trade-offs where accuracy matters more than speed. More reasoning is slower and isn't automatically better for simple tasks, and it never removes the need to check the result. Model names and which levels each plan gets change often, so learn the trade-off rather than the names."
         }
@@ -626,22 +668,27 @@
       "summary": "Stop re-explaining context: organise recurring work with custom instructions, memory, projects, and plugins that connect ChatGPT to your tools.",
       "sections": [
         {
+          "id": "custom-instructions-and-memory",
           "heading": "Custom instructions and memory",
           "body": "**Custom instructions** tell ChatGPT about you and how you like answers (role, tone, format) and apply to all your chats. **Memory** lets ChatGPT use useful details across chats. In Settings > Personalization you can review and delete what it remembers, control whether it references saved memories and chat history, or turn memory off. Deleting a chat doesn't necessarily delete a memory saved from it, so remove the memory itself if needed.\n\nA **temporary chat** doesn't create or update memories and doesn't appear in your history. Use it when you don't want a conversation to shape future answers."
         },
         {
+          "id": "projects",
           "heading": "Projects",
           "body": "A **project** groups related chats, files and instructions in one place: a client, a product launch, a recurring report. **Project instructions apply only inside that project and override your global custom instructions.** Projects can use **project-only memory** so context from one piece of work doesn't leak into unrelated chats; shared projects always use project-only memory. Projects can be shared with collaborators (check current plan availability and file limits)."
         },
         {
+          "id": "plugins-and-apps",
           "heading": "Plugins and apps",
           "body": "An **app** connects ChatGPT to an external service such as email, a calendar, a drive or a work system, so it can search and use that data. A **plugin** packages capabilities into a workflow and can include apps, skills or both; you find them in the Plugin Directory. (Apps used to be called connectors.) Access follows your permissions in those tools, and each app has a permission setting, from always asking before an action to allowing all actions. Workspace admins control which apps and plugins are available."
         },
         {
+          "id": "custom-gpts-are-being-replaced",
           "heading": "Custom GPTs are being replaced",
           "body": "**Custom GPTs are being retired and migrated to plugins.** In the migration, a GPT's instructions become a skill, its knowledge files become reference files and its connected apps carry over. Some settings, such as custom actions, model selection and sharing settings, don't migrate, so recheck them. Don't start new repeatable workflows as custom GPTs; check the help center for current dates."
         },
         {
+          "id": "choosing-between-them",
           "heading": "Choosing between them",
           "body": "- A preference that applies everywhere → custom instructions.\n- An ongoing piece of work with files and its own rules → project (with project-only memory if it must stay separate).\n- A repeatable workflow with skills and connected tools → plugin.\n- Needs live company data → an app connection, if your admin allows it.\n- A one-off sensitive conversation that shouldn't be remembered → temporary chat."
         }
@@ -700,18 +747,22 @@
       "summary": "An agent such as ChatGPT Work plans and carries out multi-step tasks across apps and files. Delegate well-defined work, set boundaries, and keep humans at the checkpoints that matter.",
       "sections": [
         {
+          "id": "what-an-agent-is",
           "heading": "What an agent is",
           "body": "An **agent** is an AI system that works toward a goal over several steps, deciding what to do next and using **tools** (search, files, connected apps, code) along the way.\n\nIn ChatGPT today, **Chat** is for fast, conversational help, while **ChatGPT Work** is the agent for longer, multi-step work and finished deliverables such as research, analysis, documents, spreadsheets and presentations. Work gathers information across apps and files and pauses for approval on important actions. **Deep research** is a narrower agent-style feature that runs multi-step research and returns a cited report.\n\n> The older ChatGPT agent (\"agent mode\") is no longer available; the help center points to ChatGPT Work instead. Product names change often, so learn the concept rather than the label."
         },
         {
+          "id": "good-tasks-to-delegate",
           "heading": "Good tasks to delegate",
           "body": "- **Clear goal and finish line:** \"Compile a table of the 10 largest competitors' public pricing, with links.\"\n- **Reviewable output:** a draft-quality result you will check before using.\n- **Tolerable risk:** low impact if a step goes wrong, or an approval before anything consequential.\n- **Multi-step:** gathering, combining and formatting across several sources. A one-line question belongs in Chat.\n\nPoor fits: vague goals (\"improve our marketing\"), high-stakes or irreversible actions with no review, and decisions about people (hiring, credit, medical, legal) that need human judgment."
         },
         {
+          "id": "briefing-an-agent",
           "heading": "Briefing an agent",
           "body": "Give an agent the same parts you would give a capable colleague:\n\n- **Goal:** what to produce and what \"done\" looks like.\n- **Context:** the sources, files or apps to use, and any to avoid.\n- **Output:** format, length and level of detail.\n- **Boundaries:** what must not change, and what needs your approval first.\n\nFocus on the one or two boundaries that matter most rather than a long list of rules."
         },
         {
+          "id": "human-checkpoints-and-accountability",
           "heading": "Human checkpoints and accountability",
           "body": "Decide where a person approves: before purchases, before messages go to customers, before records change, before anything is published. ChatGPT Work lets you decide what it can access, when it checks in and when it needs approval, and it pauses for approval on important actions. Approvals happen through on-screen controls, not by voice.\n\nSafeguards reduce risk but don't eliminate it; content the agent reads on the web or in files can try to steer it (prompt injection). **You remain accountable** for what an agent does on your behalf, and OpenAI's usage policies prohibit automating high-stakes decisions in sensitive areas without human review."
         }
@@ -761,18 +812,22 @@
       "summary": "Turn a prompt that works into a workflow with defined inputs, tools, checkpoints and human review, then automate it with Scheduled Tasks once it is reliable.",
       "sections": [
         {
+          "id": "why-workflows-not-one-off-prompts",
           "heading": "Why workflows, not one-off prompts",
           "body": "A good prompt you retype every week is fragile: the inputs drift, steps get skipped and nobody checks the same things twice. A **workflow** makes the work repeatable: the same inputs go through the same steps, with the same checks, to a predictable output."
         },
         {
+          "id": "the-workflow-plan",
           "heading": "The workflow plan",
           "body": "OpenAI Academy's Applied AI Foundations course has learners write a workflow plan that covers:\n\n1. **Inputs:** what goes in (files, data, apps, a form) and where it comes from.\n2. **Models:** what level of reasoning each step needs. Fast for simple steps, more reasoning for complex or high-stakes analysis.\n3. **Tools:** search, data analysis, connected apps, files.\n4. **Checkpoints:** where the output is checked before moving on.\n5. **Human review:** who approves, and before which actions.\n\nWeigh **quality, speed and cost** together. The cheapest, fastest setup isn't the right one if errors reach customers."
         },
         {
+          "id": "refine-first-then-automate",
           "heading": "Refine first, then automate",
           "body": "Refine a recurring prompt in a normal chat until it reliably produces what you want, and only then schedule it. Automating an unproven prompt just repeats its mistakes on a timer.\n\nA sensible path: single prompt, then a reusable setup (for example a **project** with instructions and files, or a **plugin** that packages a workflow), then an agent or scheduled workflow. Measure time saved and error rate at each step before scaling. (Custom GPTs are being retired and replaced by plugins, so don't build new workflows around them.)"
         },
         {
+          "id": "scheduled-tasks",
           "heading": "Scheduled Tasks",
           "body": "In ChatGPT Work, **Scheduled Tasks** can run **once**, **on a schedule**, **on an event** (for example a webhook from email, chat or code tools) or to **monitor for changes**. When you share a task, each recipient gets their own copy; your chat history, local files and memories don't transfer with it.\n\nAutomation doesn't remove checkpoints. A scheduled task that drafts a weekly summary can still stop for approval before anything is sent outside the team."
         }
@@ -819,22 +874,27 @@
       "summary": "Know what you can share, which ChatGPT plan your company approved, and the controls that protect data.",
       "sections": [
         {
+          "id": "follow-your-company-policy-first",
           "heading": "Follow your company policy first",
           "body": "Use the ChatGPT workspace your organisation approved (for example a Business, Enterprise or Edu workspace) for work data, not a personal account. Your company's data classification rules decide what can go in. When in doubt, leave it out or ask."
         },
         {
+          "id": "what-workspace-plans-add-check-current-terms",
           "heading": "What workspace plans add (check current terms)",
           "body": "Workspace plans (Business, Enterprise, Edu and the healthcare and teacher variants) are designed for organisational use. OpenAI's enterprise privacy page states:\n\n- **No training by default:** \"We do not train our models on your data by default.\" Information reached through apps in Business, Enterprise and Edu is also not used for training by default.\n- **Ownership:** you own your inputs and outputs (where allowed by law).\n- **Security:** encryption at rest and in transit, SOC 2 Type 2 audits, and SAML single sign-on.\n- **Admin controls:** which apps are enabled, data retention (Enterprise and Edu), and audit logs through the Compliance API (Enterprise, Edu and Healthcare).\n\nPlan line-ups and features change often, so check current plans before quoting specifics."
         },
         {
+          "id": "personal-accounts-know-the-defaults",
           "heading": "Personal accounts: know the defaults",
           "body": "On personal plans (Free, Go, Plus, Pro) your content can be used to improve models **by default**. You can switch off **\"Improve the model for everyone\"** in Data Controls; it applies to the whole account, and archiving a chat does not change it.\n\n**Temporary Chat** is not used for training, does not appear in your history and does not create memories, though it may be kept for a limited period for safety review. It reduces footprint; it does not make a personal account an approved place for company data."
         },
         {
+          "id": "minimise-sensitive-data",
           "heading": "Minimise sensitive data",
           "body": "- Don't paste passwords, API keys or secrets, ever.\n- Remove or mask personal data (names, IDs, health or financial details) unless your policy allows it and it's necessary.\n- Prefer summaries or anonymised samples over full customer records."
         },
         {
+          "id": "accountability-and-disclosure",
           "heading": "Accountability and disclosure",
           "body": "You are responsible for anything you send, publish or decide using ChatGPT. \"The AI wrote it\" is not a defence for an error in a client email or report.\n\n- Treat output as a first draft, not a final source: verify before it leaves your hands.\n- A named person owns each deliverable and approves it.\n- Follow your organisation's rules on disclosing AI assistance, and be transparent where it matters (customers, academic work, regulated content).\n- Don't let readers believe a human expert or credentialed professional produced something they did not."
         }
@@ -885,18 +945,22 @@
       "summary": "Use ChatGPT in ways that are fair to people and respectful of others’ work, and keep human judgment where it belongs.",
       "sections": [
         {
+          "id": "bias-and-fairness",
           "heading": "Bias and fairness",
           "body": "Models can reflect biases in their training data. Be most careful when output affects people: hiring, performance reviews, lending, customer treatment. Don't use ChatGPT as the decision-maker in those areas. Review wording for stereotypes and test with varied examples."
         },
         {
+          "id": "intellectual-property-and-confidentiality",
           "heading": "Intellectual property and confidentiality",
           "body": "Respect copyright, licences and confidentiality when you upload or reuse content. Check your company's rules before using generated images or text commercially, and don't present others' work as your own."
         },
         {
+          "id": "over-reliance",
           "heading": "Over-reliance",
           "body": "OpenAI's own guidance: \"Use ChatGPT as a first draft, not a final source.\" Keep your own expertise sharp. Use ChatGPT to speed up work you understand, and be extra careful where you can't judge whether the answer is right: get an expert to review. Confident wording is not evidence of correctness."
         },
         {
+          "id": "usage-policy-basics",
           "heading": "Usage policy basics",
           "body": "OpenAI's usage policies say responsible use is shared, and that the policies are no substitute for legal requirements, professional duties or ethical obligations. Prohibited uses include:\n\n- **Automating high-stakes decisions without human review** in sensitive areas such as employment, credit, insurance, legal, medical and essential government services.\n- **Tailored advice that requires a licence** (for example legal or medical) without a licensed professional involved, or implying the AI holds professional credentials.\n- Deceptive or fraudulent use.\n- **Circumventing safeguards.**\n- Building facial-recognition databases without consent, and inferring emotions in the workplace (limited exceptions).\n\nBreaking the rules may mean losing access; enforcement decisions can be appealed. Your company may add stricter rules. When ChatGPT declines a request, rephrase only if your purpose is legitimate, and never try to trick it around safety rules. The policy is updated from time to time, so check the current version."
         }

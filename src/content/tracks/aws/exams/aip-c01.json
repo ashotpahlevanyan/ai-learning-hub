@@ -73,18 +73,22 @@
       "summary": "Turn business requirements into a model choice, prove it with a small proof of concept, and integrate it through Amazon Bedrock or Amazon SageMaker AI without locking your code to one model.",
       "sections": [
         {
+          "id": "start-from-requirements-not-from-a-model-name",
           "heading": "Start from requirements, not from a model name",
           "body": "Task 1.1 of the exam guide is about analysing requirements and designing the solution before any model is picked. Capture:\n\n- **Quality bar**: what a good answer looks like, and how you will measure it (a small golden dataset).\n- **Latency and volume**: interactive chat, background jobs, or both.\n- **Data constraints**: residency, PII, who may see which documents.\n- **Cost envelope**: on-demand, batch, or reserved capacity.\n\nRun a **proof of concept** against those criteria, and review the design with the **AWS Well-Architected Tool** using the **Generative AI Lens**, which is the official checklist for gen AI workloads.\n\nModel names and versions change quickly, so reason in terms of model *traits*: a larger reasoning model, a smaller lower-cost model in the same family, an embeddings model, a multimodal model."
         },
         {
+          "id": "amazon-bedrock-one-api-many-models",
           "heading": "Amazon Bedrock: one API, many models",
           "body": "Amazon Bedrock is a managed service that exposes 100+ foundation models from Amazon (Nova, Titan) and third-party providers behind the `bedrock-runtime` endpoint.\n\n- **Converse / ConverseStream** give one request shape across models, so swapping a model is mostly a change of model ID. This is the usual answer when a scenario asks to compare or switch models with minimal code change.\n- **InvokeModel / InvokeModelWithResponseStream** take the provider-specific body.\n- OpenAI-compatible Responses and Chat Completions APIs are also available on `bedrock-runtime`.\n\nBedrock is serverless: there are no instances to size for on-demand use. Capacity choices (cross-Region inference, Provisioned Throughput, service tiers, batch) are covered in the next lesson."
         },
         {
+          "id": "routing-between-models",
           "heading": "Routing between models",
           "body": "**Intelligent Prompt Routing** puts one serverless endpoint in front of models from the **same family** and sends each request to the model predicted to give the best response quality for the cost.\n\n- Use a default router, or configure one with exactly two models, a fallback model and a response-quality-difference criterion.\n- It is optimised for **English** prompts and **cannot learn from your app-specific performance data**. If a scenario needs routing across providers, by business rules, or tuned on your own feedback, build the routing logic yourself."
         },
         {
+          "id": "when-amazon-sagemaker-ai-is-the-better-fit",
           "heading": "When Amazon SageMaker AI is the better fit",
           "body": "Choose SageMaker AI when you need control that a managed API does not give you:\n\n- Deploying an open-weight model from **SageMaker JumpStart** to an endpoint whose instance type and scaling you own.\n- **Customising** a model with parameter-efficient methods such as **LoRA adapters**, then tracking each version in **SageMaker Model Registry** with approval status so you can promote or **roll back** a version.\n- Using SageMaker Clarify, Model Monitor or Neo as part of the lifecycle.\n\nModel training itself is out of scope for this exam; what matters is choosing the right hosting and lifecycle path and knowing which service holds the version history."
         }
@@ -135,18 +139,22 @@
       "summary": "How Bedrock spreads on-demand traffic across Regions with inference profiles, how that interacts with residency rules and SCPs, and when to buy dedicated capacity instead.",
       "sections": [
         {
+          "id": "inference-profiles-geographic-and-global",
           "heading": "Inference profiles: Geographic and Global",
           "body": "Cross-Region inference (CRIS) works through **inference profiles**. You call the profile ID instead of a model ID and Bedrock routes the request to a Region with capacity.\n\n| Profile | Where requests can run | Choose it when |\n|---|---|---|\n| **Geographic** (for example US, EU, APAC) | Regions inside that geography only | Data-residency rules apply |\n| **Global** | Any supported commercial Region | Cost and throughput matter more than location; about 10% savings over standard pricing |\n\nFacts that show up in scenarios:\n\n- There is no extra routing charge; pricing is based on the **source Region**.\n- Requests can run in Regions you have not manually enabled. Traffic stays on the AWS network and is encrypted in transit.\n- **CloudTrail** records the call in the **source Region**; `additionalEventData.inferenceRegion` shows where it actually ran."
         },
         {
+          "id": "scps-that-silently-break-cris",
           "heading": "SCPs that silently break CRIS",
           "body": "Organisations often restrict Regions with a service control policy on `aws:RequestedRegion`.\n\n- **Geographic profile**: the SCP must allow **every destination Region** in the profile, not just the Region you call.\n- **Global profile**: the SCP must allow `\"aws:RequestedRegion\": \"unspecified\"`.\n\nIf CRIS calls fail with access denied while direct model calls in the home Region succeed, check the SCP first."
         },
         {
+          "id": "provisioned-throughput",
           "heading": "Provisioned Throughput",
           "body": "**Provisioned Throughput (PT)** buys dedicated capacity for one model in one Region.\n\n- Purchased in **Model Units (MUs)**; each MU gives a fixed number of input and output tokens per minute.\n- Billed **hourly**. Terms: **no commitment**, **1 month** or **6 months**; longer terms cost less per hour.\n- Billing continues **until you delete the PT**, whether or not you send traffic.\n- **Inference profiles do not support PT**, and **batch inference does not run on provisioned models**.\n\nCustom models have historically needed PT for inference, but the documentation currently describes on-demand options for some custom models too, so check the current docs before treating that as absolute."
         },
         {
+          "id": "choosing-a-capacity-option",
           "heading": "Choosing a capacity option",
           "body": "- Spiky interactive traffic, residency rules: **Geographic CRIS**.\n- Spiky traffic, cost focus, no residency rule: **Global CRIS**.\n- Steady, predictable, high-volume traffic that must not be throttled: **Provisioned Throughput** (or a Reserved service tier, which is a separate TPM-based reservation arranged through the account team).\n- Large offline jobs where latency does not matter: **batch inference** (S3 in, S3 out, EventBridge for job status)."
         }
@@ -197,14 +205,17 @@
       "summary": "Pick the right Bedrock Knowledge Base type and vector store, and know the store-specific constraints that cause failed ingestion or failed queries.",
       "sections": [
         {
+          "id": "two-kinds-of-knowledge-base",
           "heading": "Two kinds of Knowledge Base",
           "body": "- **Managed Knowledge Base** (recommended): Bedrock runs ingestion, indexing, storage and retrieval. It has connectors for **S3, SharePoint, Confluence, Google Drive, OneDrive and Web Crawler**, **document-level ACL filtering** (for every connector except Web Crawler), **Smart Parsing**, and **Agentic Retrieval** for multi-hop questions.\n- **Customer-managed Knowledge Base**: you bring and operate the vector store.\n\nOther variants: **structured data stores**, an **Amazon Kendra GenAI index**, and **Amazon Neptune Analytics graphs** for GraphRAG when answers depend on relationships between entities.\n\nCommon features: **citations**, **multimodal** retrieval (image retrieval and image-as-query with multimodal embeddings), and **reranking** models."
         },
         {
+          "id": "vector-store-options-and-their-constraints",
           "heading": "Vector store options and their constraints",
           "body": "Supported stores for customer-managed KBs: OpenSearch Serverless, OpenSearch Service managed clusters, **Amazon S3 Vectors**, Aurora PostgreSQL (pgvector), Neptune Analytics, Pinecone, Redis Enterprise Cloud and MongoDB Atlas. Credentials for third-party stores live in **AWS Secrets Manager**.\n\n| Store | Constraints worth remembering |\n|---|---|\n| OpenSearch (Serverless or managed) | Only stores that support **binary embeddings**. Must use the **faiss** engine (nmslib is not supported). Managed domains must use **public access**; VPC-only domains are not supported for KBs. Custom metadata fields used in filters need a **keyword** mapping. |\n| S3 Vectors | Low cost, sub-second queries, best for **infrequent** queries. **Float** embeddings only (cosine or Euclidean). Per-vector metadata limit of **1 KB and 35 keys**, so hierarchical chunking is not recommended. |\n| Aurora PostgreSQL | **HNSW** index on the embedding column, **GIN** index on the text column (hybrid search) and on custom_metadata. Cluster in the **same account**; credentials in Secrets Manager. Use pgvector **0.8.0+ iterative scans** with selective metadata filters. |"
         },
         {
+          "id": "embeddings",
           "heading": "Embeddings",
           "body": "The embeddings model fixes the vector dimension of the index:\n\n- Titan Text Embeddings V2: **1,024, 512 or 256** dimensions (smaller vectors mean less storage and faster search, at some cost to accuracy).\n- Titan Embeddings G1: 1,536. Cohere Embed: 1,024.\n\nChanging the embeddings model or dimension means **re-embedding the corpus**; vectors from different models are not comparable."
         }
@@ -252,18 +263,22 @@
       "summary": "Retrieval quality is decided mostly at ingestion and query time: chunking strategy, parsing, metadata filters and reranking.",
       "sections": [
         {
+          "id": "chunking-strategies-in-bedrock-knowledge-bases",
           "heading": "Chunking strategies in Bedrock Knowledge Bases",
           "body": "| Strategy | How it works | Watch out for |\n|---|---|---|\n| **Default** | About 300 tokens, keeps sentence boundaries | Good starting point |\n| **Fixed-size** | Max tokens plus overlap percentage | Can split ideas mid-thought without overlap |\n| **Hierarchical** | Parent and child sizes plus overlap tokens; child chunks are matched, then replaced by their parents | Can return **fewer results than requested** because several children share a parent |\n| **Semantic** | Splits on meaning using max tokens, buffer size and a breakpoint percentile threshold | Costs extra because it uses a foundation model |\n| **No chunking** | Each document is one chunk | No page-number citations |\n\nFor anything else, add a **custom transformation Lambda** during ingestion."
         },
         {
+          "id": "parsing-tables-figures-and-media",
           "heading": "Parsing tables, figures and media",
           "body": "- **Smart Parsing** (Managed KB) and the **Bedrock Data Automation (BDA) parser** turn complex documents and media into text before chunking.\n- For tables and figures, retrieval can return the **whole page or table** (up to about 10,000 characters) as context, which keeps rows together.\n- With Nova multimodal embeddings, audio and video are chunked into 1–30 second segments (default 5 seconds)."
         },
         {
+          "id": "metadata-filtering",
           "heading": "Metadata filtering",
           "body": "Attach metadata to each document (for S3 sources, a sidecar `<file>.metadata.json` file) and pass a **filter** on the Retrieve or RetrieveAndGenerate call, for example `tenant_id = \"acme\"` or `year >= 2024`.\n\nFilters restrict which chunks can be returned at retrieval time, so out-of-scope content never reaches the model. This improves precision and is the standard way to isolate tenants or departments in a shared index. Store-specific issues:\n\n- OpenSearch: a custom field must be mapped as **keyword**, otherwise filtering fails with a \"Rewrite first\" error.\n- Aurora: very selective filters can return too few hits; enable pgvector **iterative scans** (0.8.0+).\n- S3 Vectors: keep metadata within 1 KB and 35 keys or ingestion fails.\n\nManaged KBs can also filter by **document-level ACLs** from the source system."
         },
         {
+          "id": "hybrid-search-reranking-and-multi-hop-retrieval",
           "heading": "Hybrid search, reranking and multi-hop retrieval",
           "body": "- **Hybrid search** combines keyword and semantic matching, which helps with product codes, IDs and exact terms that embeddings blur.\n- A **reranking model** rescores the retrieved candidates against the query so the most relevant chunks reach the prompt first. Use it when the right chunk is retrieved but ranked too low.\n- **Agentic Retrieval** (Managed KB) breaks multi-hop questions into steps; **GraphRAG** with Neptune Analytics helps when the answer depends on relationships between entities."
         }
@@ -315,14 +330,17 @@
       "summary": "Validate and clean data before it reaches a model or index, keep personal data out of places it should not be, and prove where data went.",
       "sections": [
         {
+          "id": "validate-and-process-data-before-ingestion",
           "heading": "Validate and process data before ingestion",
           "body": "Task 1.3 covers data validation and processing pipelines. The exam guide names Glue Data Quality, Data Wrangler, Transcribe and Comprehend for this task; Textract is a related in-scope service for scanned documents:\n\n- **AWS Glue Data Quality**: rules that check completeness, freshness and format before data moves on.\n- **SageMaker Data Wrangler**: explore and transform data visually.\n- **Amazon Transcribe**: turn audio (for example call recordings) into text.\n- **Amazon Comprehend**: detect entities, language and **PII** in text.\n- **Amazon Textract**: extract text, forms and tables from scanned documents.\n\nGarbage in a vector index becomes confident garbage in answers, so validation belongs **before** embedding."
         },
         {
+          "id": "handling-pii",
           "heading": "Handling PII",
           "body": "Layer the controls:\n\n1. **Discover**: **Amazon Macie** finds sensitive data in S3 buckets.\n2. **Redact before indexing**: use **Comprehend** PII detection in the ingestion pipeline (or a KB custom transformation Lambda) so personal data never lands in the vector store.\n3. **Protect at runtime**: **Bedrock Guardrails sensitive information filters** block or mask PII entities and custom regex patterns in prompts and responses (covered in depth in domain 3).\n4. **Restrict access**: **AWS Lake Formation** fine-grained permissions on the data lake, document-level ACLs in Managed KBs, metadata filters per tenant.\n\nRedaction at runtime alone is not enough if raw PII is already embedded and retrievable."
         },
         {
+          "id": "residency-lineage-and-audit",
           "heading": "Residency, lineage and audit",
           "body": "- **Residency**: keep data stores, logs and inference in approved Regions. For inference, use a **Geographic** cross-Region inference profile rather than Global.\n- **Lineage**: record where each dataset came from and how it was transformed; the exam guide names the **AWS Glue Data Catalog** for this, and SageMaker AI **model cards** for documenting models.\n- **Encryption**: AWS KMS keys for S3 sources, vector stores and logs; credentials for stores in Secrets Manager.\n- **Audit**: CloudTrail records API calls. **Model invocation logging is disabled by default**; when enabled it writes prompts, responses, token counts, `identity.arn` and caller `requestMetadata` to CloudWatch Logs and/or S3 **in the same account and Region**. Bodies over 100 KB and binary data go to S3 only. Calls on the `bedrock-mantle` endpoint are **not** captured.\n\nBedrock's data-protection documentation states that prompts and completions are not used to train AWS models or shared with third-party model providers, which is often the first compliance question a business asks."
         }
@@ -374,14 +392,17 @@
       "summary": "Treat prompts as versioned, reviewed artifacts: write them well, store them centrally, and roll them out and back safely.",
       "sections": [
         {
+          "id": "prompt-engineering-basics-the-exam-expects",
           "heading": "Prompt engineering basics the exam expects",
           "body": "- Put stable instructions, role and output format in the **system prompt**; put per-request data in the user turn.\n- Give **examples** (few-shot) and ask for a **structured output** such as JSON when another program reads the result.\n- For RAG, tell the model to answer **only from the retrieved context** and to say when the context does not contain the answer; ask for citations.\n- Use **variables** for the parts that change instead of string concatenation scattered through code."
         },
         {
+          "id": "amazon-bedrock-prompt-management",
           "heading": "Amazon Bedrock Prompt Management",
           "body": "Prompt Management stores prompts with **variables**, lets you compare **variants** side by side, and publishes immutable **versions**. A prompt can target a model, an inference profile or an agent, can enable a **prompt caching** option, and can be used directly in inference or in a **Flows** prompt node. **Prompt optimization** can rewrite a prompt for a chosen model.\n\nGovernance pattern: the application references a **specific prompt version**, changes go through review into a new version, and rollback means pointing back at the previous version."
         },
         {
+          "id": "amazon-bedrock-flows-and-guardrails",
           "heading": "Amazon Bedrock Flows and guardrails",
           "body": "**Amazon Bedrock Flows** (called \"Prompt Flows\" in the exam guide) links prompts, models, knowledge bases and Lambda in a visual workflow. Lifecycle: working draft, prepare, test, publish an immutable **version**, then an **alias** that points to a version. Applications call `InvokeFlow` on the alias, so a rollback is just repointing the alias.\n\nAttach **Bedrock Guardrails** (versioned the same way: working draft, then immutable versions) to enforce safety and PII policies consistently rather than relying on prompt wording."
         }
@@ -427,18 +448,22 @@
       "summary": "AgentCore is the recommended place to build and run new agents. Know what each service does and why Bedrock Agents (now Agents Classic) is not the answer for a greenfield build.",
       "sections": [
         {
+          "id": "why-agentcore-and-what-happened-to-bedrock-agents",
           "heading": "Why AgentCore, and what happened to Bedrock Agents",
           "body": "Amazon Bedrock AgentCore is a set of modular services for building, running and operating agents. It works with **any framework** (for example Strands Agents, LangGraph, CrewAI, LlamaIndex, Google ADK or the OpenAI Agents SDK) and **any model**, whether it is hosted in Amazon Bedrock or not. Pricing is consumption-based with no upfront commitment.\n\nThe original Amazon Bedrock Agents service is now called **Agents Classic** and is in maintenance mode:\n\n- It closed to new customers on July 30, 2026. Accounts with no Agents activity in the previous 12 months get `AccessDeniedException` on `CreateAgent` and `InvokeInlineAgent`.\n- Existing agents keep working, and there is no end-of-life date.\n- Its model catalog is frozen and no new features are planned.\n- AWS recommends AgentCore: **Harness** for a config-based agent (the closest analog to a Classic agent) or code-defined agents on **AgentCore Runtime**. The AgentCore CLI can import Agents Classic configurations.\n\nExam habit: when a scenario describes a **new** agent build, the best answer points to AgentCore, not to creating a new Bedrock Agent."
         },
         {
+          "id": "the-agentcore-services",
           "heading": "The AgentCore services",
           "body": "| Service | What it gives you |\n|---|---|\n| **Runtime** | Serverless hosting for agent code with session isolation, fast cold starts, long-running async agents, and the MCP and A2A protocols |\n| **Harness** | A managed agent loop from one API call: model, system prompt and tools are declared inline; each session runs in its own microVM |\n| **Memory** | Short-term memory (multi-turn within a session) and long-term memory (across sessions), with configurable strategies |\n| **Gateway** | Turns APIs, Lambda functions and OpenAPI specs into MCP tools, and connects existing MCP servers |\n| **Identity** | Agent identity and authentication, working with identity providers such as Amazon Cognito, Okta, Microsoft Entra ID and Auth0 |\n| **Code Interpreter** | A sandbox for running Python, JavaScript and TypeScript |\n| **Browser** | A managed cloud browser (Playwright, BrowserUse) |\n| **Observability** | OpenTelemetry-compatible traces, viewable in CloudWatch |\n| **Evaluations** | Quality scoring of agents and tools over sessions, traces and spans |\n| **Policy** | Deterministic rules enforced at the Gateway on every tool call, written in natural language or a Cedar-compatible language |\n\nThe service list keeps growing (for example Optimization, Registry and Payments). Learn the core ones above well rather than chasing every new name."
         },
         {
+          "id": "picking-the-right-service-from-a-scenario",
           "heading": "Picking the right service from a scenario",
           "body": "Read the requirement words and map them:\n\n- *\"host our LangGraph/Strands agent, isolate sessions, run for a long time\"* → **Runtime**.\n- *\"declare model + prompt + tools, no orchestration code\"* → **Harness**.\n- *\"remember the user's preferences next week\"* → **Memory** (long-term).\n- *\"expose our existing REST APIs / Lambda functions as tools\"* → **Gateway**.\n- *\"the agent must never call tool X with argument Y\"* → **Policy** at the Gateway (deterministic), not a prompt instruction.\n- *\"act on behalf of the signed-in user against a SaaS API\"* → **Identity**.\n- *\"run model-written code safely\"* → **Code Interpreter**.\n- *\"read JavaScript-heavy web pages\"* → **Browser**.\n- *\"see each model step and tool call\"* → **Observability**; *\"score tool selection quality\"* → **Evaluations**."
         },
         {
+          "id": "migrating-from-agents-classic",
           "heading": "Migrating from Agents Classic",
           "body": "AWS documents a concept mapping from Classic to AgentCore:\n\n| Agents Classic | AgentCore |\n|---|---|\n| Action groups (OpenAPI or function schema + Lambda) | Gateway MCP tools |\n| Knowledge base association | Gateway-fronted knowledge base or a retrieval tool |\n| Return of control / `AMAZON.UserInput` | Inline function tools |\n| `AMAZON.CodeInterpreter` | AgentCore Code Interpreter |\n| Session memory | AgentCore Memory |\n| Guardrails | Bedrock guardrail plus Gateway policy |\n| Supervisor multi-agent collaboration | Agent-as-tool, or a custom framework on Runtime |\n\nClassic concepts you may still see: agent **versions and aliases**, the `TSTALIASID` test alias, **trace**, and advanced prompt templates (pre-processing, orchestration, KB response generation, post-processing). The API namespace (`bedrock-agent`, `InvokeAgent`) is unchanged."
         }
@@ -497,18 +522,22 @@
       "summary": "How models call tools, how MCP standardises tool access, where to host MCP servers, and how to keep tool use safe and observable.",
       "sections": [
         {
+          "id": "how-tool-use-works",
           "heading": "How tool use works",
           "body": "Tool use (function calling) is a loop:\n\n1. You send the model a request plus **tool definitions** (name, description, input JSON schema).\n2. The model decides whether to answer or to request a tool call, returning the tool name and arguments.\n3. **Your code** (or the agent runtime) runs the tool and sends the result back.\n4. The model continues, possibly calling more tools, until it produces a final answer.\n\nThe model never runs the tool itself. That is why tool code must validate its inputs, use least-privilege credentials, and treat model-chosen arguments as untrusted. The Converse API gives one tool-use format across the models that support tools, so the same loop works when you switch models."
         },
         {
+          "id": "model-context-protocol-mcp",
           "heading": "Model Context Protocol (MCP)",
           "body": "MCP is an open protocol for exposing tools (and other context) to agents in a standard way, so one tool server can serve many agents and frameworks.\n\nOn AWS:\n\n- **AgentCore Gateway** converts existing APIs, Lambda functions and OpenAPI specs into MCP tools, and connects existing MCP servers. This is the low-effort way to make an existing estate of APIs available to agents.\n- **AgentCore Runtime** supports the MCP and A2A (agent-to-agent) protocols, so you can host MCP servers and agents there.\n- The exam guide's hosting guidance for your own MCP servers: **AWS Lambda for lightweight, stateless MCP servers**, and **Amazon ECS for more complex ones** (for example servers that keep state or long-lived connections)."
         },
         {
+          "id": "frameworks-and-multi-agent-designs",
           "heading": "Frameworks and multi-agent designs",
           "body": "The exam guide names **Strands Agents** (an open-source, model-driven agent SDK from AWS) and **AWS Agent Squad** (a framework for routing between and coordinating multiple agents). AgentCore runs agents built with these and other frameworks.\n\nCommon patterns:\n\n- **Single agent with tools**: start here. Add agents only when one agent's tool list or instructions become unmanageable.\n- **Supervisor / agent-as-tool**: a coordinating agent calls specialist agents as if they were tools. This is the AgentCore replacement for Classic supervisor collaboration.\n- **Router**: a classifier sends each request to one specialist agent.\n- **Human-in-the-loop**: pause before a high-impact action (payment, deletion, external email) and resume after approval. In Classic this was return of control; in AgentCore it is an inline function tool, or a workflow step such as a Step Functions callback."
         },
         {
+          "id": "keeping-tool-use-safe",
           "heading": "Keeping tool use safe",
           "body": "- **Deterministic limits** belong in AgentCore **Policy** at the Gateway, which evaluates every tool call. Prompt instructions alone can be bypassed by prompt injection or model error.\n- **Per-user access**: use AgentCore **Identity** so the agent acts with the user's own delegated access, not one shared admin key.\n- **Untrusted code**: run model-generated code in **Code Interpreter**, not in the agent's host process.\n- **Visibility**: AgentCore **Observability** traces each model step and tool call; **Evaluations** scores tool selection and agent quality."
         }
@@ -558,18 +587,22 @@
       "summary": "Choose between Amazon Bedrock Flows, AWS Step Functions, Lambda and event-driven services, and manage flow versions and aliases safely.",
       "sections": [
         {
+          "id": "amazon-bedrock-flows",
           "heading": "Amazon Bedrock Flows",
           "body": "Amazon Bedrock Flows (the exam guide still calls it **Prompt Flows**) is a visual builder that links prompts, foundation models, knowledge bases, Lambda functions and other services into a workflow.\n\nLifecycle:\n\n1. Edit the **working draft**.\n2. **Prepare** it and **test** it.\n3. Publish an immutable **version** (a snapshot).\n4. Point an **alias** at that version. Applications call `InvokeFlow` on the alias.\n5. To roll back, **repoint the alias** to an earlier version. No application change is needed.\n\nFlows also support guardrails inside the flow, asynchronous flow executions, multi-turn conversations with a flow, and cross-account Lambda functions. You pay for the resources the flow uses (for example model invocations)."
         },
         {
+          "id": "aws-step-functions-for-genai",
           "heading": "AWS Step Functions for GenAI",
           "body": "Step Functions is the general-purpose orchestrator when a GenAI step is one part of a larger business process.\n\n- It has service integrations, including Amazon Bedrock, so a state can call a model without a wrapper Lambda.\n- Built-in **retries with backoff**, **catch** blocks, **parallel** and **map** states give you error handling and fan-out.\n- **Human approval**: a task can wait for a callback with a task token until a person approves, then resume.\n- **Standard** workflows suit long-running, auditable processes (they can run for up to a year). **Express** workflows suit high-volume, short-lived work (up to five minutes).\n- The exam guide mentions Step Functions for **ReAct-style** patterns: reason, call a tool, observe, repeat, with the state machine controlling the loop and its limits."
         },
         {
+          "id": "event-driven-and-asynchronous-patterns",
           "heading": "Event-driven and asynchronous patterns",
           "body": "- **Amazon EventBridge** reacts to events (an object uploaded, a batch job finished) and routes them to targets such as Step Functions or Lambda. Bedrock batch inference jobs emit state-change events you can route this way.\n- **Amazon SQS** buffers bursts. Put a queue between the event source and the consumer that calls the model, and control consumer concurrency so you stay under your model quotas instead of getting throttled.\n- **Amazon SNS** fans out notifications.\n- **AWS Lambda** is good for short glue code, but a single function has a maximum run time (15 minutes), so do not use it to wait for humans or long jobs.\n\n**Batch inference** is the asynchronous option for large offline jobs: put input files (InvokeModel or Converse format) in S3, get results in S3, and watch for completion with EventBridge. It is not supported on provisioned models, and if records need **tool calling**, use the InvokeModel invocation type because the Converse type does not support it in batch."
         },
         {
+          "id": "choosing-the-orchestrator",
           "heading": "Choosing the orchestrator",
           "body": "| Need | Good fit |\n|---|---|\n| Chain of prompts, a KB lookup and a Lambda, built and versioned by a small team, called as one API | **Bedrock Flows** |\n| Business process with approvals that may wait hours or days, retries, branching and an audit trail | **Step Functions Standard** |\n| Very high volume, short, stateless enrichment calls | **Step Functions Express** or Lambda |\n| Autonomous, open-ended tool use where the model chooses the steps | **An agent on AgentCore** |\n| Millions of records, not latency-sensitive | **Batch inference** + EventBridge |\n\nA useful rule: if you can draw the steps in advance, use a workflow. If the model must decide the steps, use an agent, and consider putting the agent inside a workflow step for guardrails around it."
         }
@@ -624,14 +657,17 @@
       "summary": "Use Amazon Bedrock Prompt Management for templates, variants and immutable versions, and promote prompts through a tested release process.",
       "sections": [
         {
+          "id": "prompt-management-basics",
           "heading": "Prompt Management basics",
           "body": "Amazon Bedrock Prompt Management stores prompts as managed resources instead of strings buried in code. A prompt can have:\n\n- **Variables** (placeholders filled at run time).\n- **Variants**, which you can compare side by side with different wording or models.\n- **Versions**: immutable snapshots of a prompt.\n- **Prompt optimization**, which proposes an improved rewrite.\n- A chosen **model, inference profile or agent**, and a prompt caching option.\n\nYou can use a managed prompt directly in inference, or in a **prompt node** of a Bedrock Flow."
         },
         {
+          "id": "a-safe-release-process",
           "heading": "A safe release process",
           "body": "Treat prompts like code:\n\n1. Edit the draft and compare variants against a fixed evaluation set.\n2. Create an immutable **version** when the variant passes.\n3. Make production reference that **version**, never the editable draft.\n4. Automate the gate in CI/CD (for example AWS CodePipeline and CodeBuild running the evaluation set) so a prompt cannot reach production without passing.\n5. Roll back by pointing the application (or the flow) back to the earlier version.\n\nNote: the official exam guide places prompt engineering and governance in Domain 1 (Task 1.6) and FM API integration in Domain 2, so expect prompt questions in both."
         },
         {
+          "id": "prompt-design-points-that-affect-integration",
           "heading": "Prompt design points that affect integration",
           "body": "- Put stable content (system instructions, tool definitions, long reference text) **first** and variable content last. This makes prompt caching effective, because caching works on a prefix.\n- Keep variables typed and validated before they are substituted, so user input cannot rewrite your instructions.\n- Record the prompt version alongside each response (for example in request metadata) so you can trace a bad answer to the prompt that produced it."
         }
@@ -673,22 +709,27 @@
       "summary": "Choose between the Bedrock inference APIs, stream responses, handle throttling, and front Bedrock with a secure GenAI gateway.",
       "sections": [
         {
+          "id": "the-inference-apis",
           "heading": "The inference APIs",
           "body": "AWS recommends the `bedrock-runtime` endpoint for new applications. Its APIs:\n\n- **Converse / ConverseStream**: one message format, tool-use format and parameter set across supported models. Switching models is usually just a model ID change.\n- **InvokeModel / InvokeModelWithResponseStream**: send the provider's own native request body. Use it when you need a model-specific feature or format.\n- **OpenAI-compatible APIs** (Responses and Chat Completions) and an **Anthropic Messages API** path, so apps built on those SDKs can move to Bedrock with little change.\n\nThere is also a separate `bedrock-mantle` endpoint. **Model invocation logging does not capture calls made through `bedrock-mantle`**, so if you need invocation logs, call through `bedrock-runtime`.\n\nBedrock offers 100+ models from many providers. Model IDs change quickly, so keep them in configuration, not code."
         },
         {
+          "id": "streaming",
           "heading": "Streaming",
           "body": "Without streaming, the user waits until the whole answer is generated. With **ConverseStream** or **InvokeModelWithResponseStream**, tokens arrive as they are produced, which cuts the time to first token the user sees. Total generation time does not change.\n\nTo get the stream to a browser or mobile client, relay it from your backend over a protocol that supports incremental delivery (for example WebSockets, or GraphQL subscriptions with AWS AppSync).\n\nCaveat: some output checks need the whole response. For example, a guardrail's contextual grounding relevance check may flag an irrelevant response only after it has fully streamed, so design the UI to retract or replace content if a late block arrives."
         },
         {
+          "id": "resilience-throttling-and-retries",
           "heading": "Resilience: throttling and retries",
           "body": "Bedrock quotas are measured in tokens per minute (TPM), tokens per day and requests per minute. At the start of a request, the input tokens **plus `max_tokens`** are reserved against TPM, so an unrealistically high `max_tokens` reduces how many requests can run at once.\n\nWhen you see throttling:\n\n- Retry with **exponential backoff and jitter** (AWS SDKs do this; tune the retry mode and attempts).\n- Set `max_tokens` close to what responses actually need.\n- Smooth bursts with a queue (SQS).\n- Use cross-Region inference profiles to spread load, or a different service tier or capacity option (covered in Domain 4)."
         },
         {
+          "id": "the-genai-gateway-pattern",
           "heading": "The GenAI gateway pattern",
           "body": "Larger organisations put a **GenAI gateway** in front of Bedrock instead of letting every team or client call it directly:\n\n- **Amazon API Gateway** (or AppSync) as the single entry point, with **Amazon Cognito** or another identity provider for authentication.\n- Lambda or container code that applies per-team quotas, chooses models, attaches guardrails, and adds request metadata for cost attribution.\n- Central logging and metrics.\n\nNever ship long-term AWS credentials in a browser or mobile app. Clients call your backend, and the backend calls Bedrock with an IAM role."
         },
         {
+          "id": "routing-and-developer-tools",
           "heading": "Routing and developer tools",
           "body": "- **Intelligent Prompt Routing** gives one serverless endpoint that routes each request between models **in the same family** based on predicted response quality, to save cost. Use a default router or configure one with exactly two models, a fallback model and a response-quality-difference setting. It is optimized for **English** prompts and does not learn from your application's own performance data.\n- **Amazon Bedrock Data Automation** extracts structured data from documents, images, audio and video, and can serve as a parser for knowledge bases.\n- **Amazon Q Developer** and **Kiro** are in-scope AI coding tools; **AWS Amplify** helps build front ends that call your GenAI backend."
         }
@@ -744,18 +785,22 @@
       "summary": "What each Guardrails safeguard catches, how to attach a guardrail to inference or call it standalone, and how versions keep production stable.",
       "sections": [
         {
+          "id": "why-guardrails-sit-outside-the-prompt",
           "heading": "Why guardrails sit outside the prompt",
           "body": "A system prompt is a request to the model; a guardrail is a separate policy layer that evaluates inputs and outputs and can block or mask them no matter what the model does. On this exam, an answer that relies on \"tell the model not to do X\" is usually the weak option when a configurable control exists.\n\nAmazon Bedrock Guardrails is configured once and reused across models and applications."
         },
         {
+          "id": "the-six-safeguards",
           "heading": "The six safeguards",
           "body": "| Safeguard | What it does | Typical use |\n|---|---|---|\n| **Content filters** | Detects Hate, Insults, Sexual, Violence, Misconduct and **Prompt Attack** in text and images, with configurable strength | Toxicity and jailbreak defense |\n| **Denied topics** | Blocks subjects you describe in natural language (definition plus sample phrases) | \"No investment advice\", \"no legal opinions\" |\n| **Word filters** | Exact custom words plus a managed profanity list | Competitor names, banned terms |\n| **Sensitive information filters** | PII entity types set to **block** or **mask**, plus custom regex | Redact emails, phone numbers, internal account IDs |\n| **Contextual grounding checks** | Scores responses for grounding (supported by the source) and relevance (answers the query) | RAG hallucination control |\n| **Automated Reasoning checks** | Validates content against logical rules and suggests corrections | Policy and eligibility rules |\n\nPick the safeguard that matches the *kind* of risk: a topic is semantic (denied topic), a literal string is lexical (word filter), a pattern is structural (regex in the sensitive information filter)."
         },
         {
+          "id": "two-ways-to-apply-a-guardrail",
           "heading": "Two ways to apply a guardrail",
           "body": "1. **With inference**: pass the guardrail ID and version on the model call. The guardrail checks the input before the model and the output after it.\n2. **Standalone**: the **ApplyGuardrail** API evaluates any text without invoking a model. Use it for models hosted outside Bedrock (for example a SageMaker AI endpoint or a third-party API), for retrieved documents, or for checks at a custom point in a pipeline.\n\n**Input tagging** (the `guardContent` block or tag suffix) lets you evaluate only part of a prompt, such as the user turn, and leave your own system instructions alone. It is set through the SDK, not the console."
         },
         {
+          "id": "drafts-and-versions",
           "heading": "Drafts and versions",
           "body": "A guardrail has a **working draft** and immutable numbered **versions**. Production should reference a numeric version so that an edit to the draft cannot change live behavior. Promote changes by creating a new version, testing it, then switching the version the application references.\n\nGuardrails do **not** evaluate reasoning content blocks from reasoning models, so do not show raw reasoning to end users unless you check it another way."
         }
@@ -806,14 +851,17 @@
       "summary": "How contextual grounding scores work, the Classic vs Standard tiers, and how to enforce a baseline guardrail across an AWS organization.",
       "sections": [
         {
+          "id": "contextual-grounding-checks",
           "heading": "Contextual grounding checks",
           "body": "The check produces two scores for a model response:\n\n- **Grounding**: is the response factually supported by the source you supply?\n- **Relevance**: does it answer the user's query?\n\nYou set a threshold for each (0 to 0.99); responses scoring below it are blocked. The check needs a **grounding source**, the **query** and the **content to guard**, and it runs on **output only**. The action can be BLOCK or NONE (detect only), which is useful while you calibrate thresholds against real traffic.\n\nWith streaming, an irrelevant response may be flagged only after it has fully streamed, so a user may already have seen it. Where that matters, buffer or use a non-streaming path."
         },
         {
+          "id": "classic-vs-standard-tier",
           "heading": "Classic vs Standard tier",
           "body": "| | Classic | Standard |\n|---|---|---|\n| Languages | English, French, Spanish | Broad language support |\n| Denied topic definition length | Up to 200 characters | Up to 1,000 characters |\n| Prompt attack detection | Baseline | More robust, plus prompt leakage detection |\n| Harmful content in code elements | No | Yes |\n| Contextual grounding | Strict; no conversational use cases | Supports conversational use cases |\n| Cross-Region | Not used | **Requires guardrail cross-Region inference** (a guardrail profile) |\n\nThe tier is set with `tierConfig`. If you call UpdateGuardrail without `tierConfig`, the tier resets to **Classic**, a quiet way to lose Standard-tier features in an automation script."
         },
         {
+          "id": "enforcing-a-guardrail-everywhere",
           "heading": "Enforcing a guardrail everywhere",
           "body": "Relying on every developer to pass a guardrail ID does not scale. Two enforcement levels exist:\n\n- **Organization**: an AWS Organizations **Amazon Bedrock policy** (`BEDROCK_POLICY`, a declarative policy type) attached to the org, OUs or accounts.\n- **Account**: `PutEnforcedGuardrailConfiguration`, set per Region.\n\nRequirements: a **numeric** guardrail version and a resource-based policy on the guardrail that grants `bedrock:ApplyGuardrail`. Automated Reasoning checks are not supported in enforced guardrails, and a guardrail in use for enforcement cannot be deleted.\n\nOrganization, account and request guardrails combine as a **union**: the most restrictive control wins, so an application cannot relax the baseline. Multiple org policy attachments resolve to one effective policy, which you can check with DescribeEffectivePolicy."
         }
@@ -864,18 +912,22 @@
       "summary": "Layered defenses for direct and indirect prompt injection, and the IAM, VPC endpoint and KMS controls that keep data and model access private.",
       "sections": [
         {
+          "id": "direct-and-indirect-prompt-injection",
           "heading": "Direct and indirect prompt injection",
           "body": "- **Direct**: the user types instructions that try to override yours (\"ignore previous instructions...\").\n- **Indirect**: the instructions arrive inside content the model reads, such as a retrieved document, a web page, an email or a tool result.\n\nNo single control stops injection. The layers are:\n\n1. **Detect**: the Guardrails Prompt Attack content filter (Standard tier adds prompt leakage detection). Use input tagging so your own system prompt is not scanned as an attack.\n2. **Separate**: keep trusted instructions apart from untrusted content and treat everything retrieved as data, not instructions.\n3. **Limit blast radius**: give the agent's role and tools only the permissions the task needs. An injected instruction can only do what the credentials allow.\n4. **Verify actions**: validate tool parameters in code (allow-lists for recipients, destinations, amounts) and require human approval for high-impact actions.\n5. **Filter output**: sensitive information filters mask PII before it leaves."
         },
         {
+          "id": "least-privilege-iam-for-gen-ai",
           "heading": "Least-privilege IAM for gen AI",
           "body": "- Scope `bedrock:InvokeModel` (and related actions) to the specific model or inference profile ARNs a workload uses, not `*`.\n- Give each agent or tool its own role; avoid a shared broad role.\n- Use conditions such as `aws:SourceVpce` so calls are only accepted through your VPC endpoint.\n- When using cross-Region inference, SCPs must allow the destination Regions (or `aws:RequestedRegion` = `unspecified` for Global profiles)."
         },
         {
+          "id": "private-connectivity-with-vpc-endpoints",
           "heading": "Private connectivity with VPC endpoints",
           "body": "Workloads in private subnets reach Bedrock through **interface VPC endpoints (AWS PrivateLink)**, so traffic does not traverse the public internet and no NAT gateway is needed. Only S3 and DynamoDB offer *gateway* endpoints; Bedrock uses interface endpoints.\n\nAttach a **VPC endpoint policy** to limit which principals and which model resources can be reached through the endpoint. Combined with an IAM `aws:SourceVpce` condition, this gives you two independent checks against exfiltration through an unapproved path or model."
         },
         {
+          "id": "encryption-and-data-handling",
           "heading": "Encryption and data handling",
           "body": "- Data is encrypted in transit with TLS and at rest. When compliance needs customer control of keys (rotation, key policy, ability to revoke), use **customer managed AWS KMS keys** for supported resources such as invocation log destinations, knowledge base data sources and vector stores, and custom models.\n- Store third-party vector store credentials in **AWS Secrets Manager**.\n- Amazon Bedrock does not use your prompts and completions to train AWS models or share them with third-party model providers."
         }
@@ -926,14 +978,17 @@
       "summary": "What CloudTrail and model invocation logging each record, how to keep evaluation evidence, and the AWS services behind responsible-AI controls.",
       "sections": [
         {
+          "id": "cloudtrail-vs-model-invocation-logging",
           "heading": "CloudTrail vs model invocation logging",
           "body": "| Question | Source |\n|---|---|\n| Who called which Bedrock API, when, from where? | **AWS CloudTrail** |\n| What were the prompt and the response? How many tokens? | **Model invocation logging** |\n\nModel invocation logging is **disabled by default**. Turn it on per account and Region with CloudWatch Logs and/or S3 as destinations (same account and Region). Each entry includes `identity.arn`, token counts and any caller-supplied `requestMetadata`.\n\nWhat to remember:\n\n- It covers Converse, ConverseStream, InvokeModel, InvokeModelWithResponseStream and the OpenAI-compatible APIs on `bedrock-runtime`. Calls on the `bedrock-mantle` endpoint are **not** captured.\n- Bodies over 100 KB, and binary data, are delivered to **S3 only**.\n- You choose which modalities to log (text, image, embedding, video).\n- With cross-Region inference, CloudTrail records the call in the source Region and `additionalEventData.inferenceRegion` shows where it ran.\n\nLogs contain prompts and responses, which may include PII, so encrypt them with KMS and restrict access."
         },
         {
+          "id": "evaluation-records-as-governance-evidence",
           "heading": "Evaluation records as governance evidence",
           "body": "Governance needs evidence that a model was tested before it was approved. Amazon Bedrock evaluations provide automatic (programmatic) jobs, human-based jobs, model-as-a-judge (LLM-as-a-judge) jobs that score and explain each response, and RAG evaluations. Keep each job's configuration, dataset and results as the record for an approval decision.\n\nFor fairness, build a prompt dataset with paired prompts that differ only in a demographic attribute and use LLM-as-a-judge or human review to compare responses. SageMaker Clarify and SageMaker Model Monitor cover bias detection and bias drift for models you host on SageMaker AI. **Amazon Augmented AI (A2I)** adds human review workflows for low-confidence or sensitive outputs."
         },
         {
+          "id": "documentation-lineage-and-data-governance",
           "heading": "Documentation, lineage and data governance",
           "body": "- **SageMaker AI model cards** record intended use, risk rating, training details and evaluation results in one place for review boards.\n- **SageMaker Model Registry** tracks versions and approval status.\n- **AWS Glue Data Catalog** holds metadata and lineage for source data; **AWS Lake Formation** adds fine-grained (table, column, row) access control on the data lake.\n- **Amazon Macie** discovers sensitive data in S3 buckets; **Amazon Comprehend** detects and redacts PII in text inside a processing pipeline, for example before documents are ingested into a knowledge base.\n- **Agent tracing** (Bedrock agent traces or AgentCore Observability) shows the reasoning steps and tool calls behind an agent's answer, which supports explainability and incident review."
         }
@@ -984,18 +1039,22 @@
       "summary": "Pick the right inference option for each workload: model choice and routing, prompt caching, batch inference, service tiers, Provisioned Throughput, cross-Region inference and distillation.",
       "sections": [
         {
+          "id": "start-with-the-model-not-the-infrastructure",
           "heading": "Start with the model, not the infrastructure",
           "body": "The biggest cost and latency lever is usually **which model** answers the request. A smaller, lower-cost model in the same family is often good enough for classification, extraction or routing steps, while a larger reasoning model is kept for the hard cases.\n\n- **Intelligent Prompt Routing** gives one serverless endpoint that routes each request between models **in the same family** based on predicted response quality. A configured router uses exactly two models, a fallback model and a *response quality difference* criterion. It is optimized for English prompts and does not learn from your app-specific performance data.\n- **Model distillation** uses a large *teacher* model to generate synthetic responses that fine-tune a smaller *student* model. Inputs can be your prompts as JSONL (optionally with labeled pairs) or your **model invocation logs**, filtered by `requestMetadata`. Data synthesis can grow the set to a capped number of pairs, teacher inference is billed on demand, and the distilled model is private to your account.\n- Inference parameters matter too: shorter prompts and shorter outputs reduce both cost and time to last token, and a realistic `max_tokens` avoids reserving token quota the response never uses. Temperature, top-k and top-p shape output variability rather than cost."
         },
         {
+          "id": "prompt-caching",
           "heading": "Prompt caching",
           "body": "Prompt caching reuses an already processed prompt **prefix** (for example a long system prompt, tool definitions or a reference document) across requests.\n\n- **Implicit** caching is automatic and best effort. **Explicit** caching uses cache checkpoints: a `cachePoint` block in the Converse API or `cache_control` in InvokeModel.\n- Each checkpoint needs a **model-specific minimum** number of tokens, counted cumulatively in the order tools, then system, then messages. Put stable content first and variable content (the user turn) last.\n- The default TTL is short (minutes) and resets on every cache hit; some models offer a longer TTL. Claude models allow a limited number of checkpoints.\n- Cache **writes** can cost more than normal input tokens; cache **reads** are discounted. Check `cacheReadInputTokens` and `cacheWriteInputTokens` in the response to confirm hits.\n- Caching applies to **on-demand** inference and is **not supported with batch inference**. It works with cross-Region inference, though routing across Regions can increase cache writes."
         },
         {
+          "id": "batch-service-tiers-and-provisioned-throughput",
           "heading": "Batch, service tiers and Provisioned Throughput",
           "body": "| Option | Use it when | Watch out for |\n|---|---|---|\n| **Batch inference** | Large volumes with no real-time need (nightly summaries, back-fills) | Input and output are files in S3; asynchronous; not supported for provisioned models; tool calling needs the InvokeModel record format, not Converse. Use EventBridge for job state changes. |\n| **Flex tier** | Latency-tolerant online work such as evaluations or agentic background jobs | Discounted, but not for user-facing latency targets |\n| **Priority tier** | User-facing paths that need the fastest responses | Premium price |\n| **Standard tier** | Default on-demand | Shares the on-demand quota with Priority and Flex |\n| **Reserved tier** | Steady, high TPM you can commit to (1 or 3 months via the account team) | TPM-based reservation; overflow goes to Standard |\n| **Provisioned Throughput** | Guaranteed capacity in **model units** (MUs), billed hourly; terms of no commitment, 1 month or 6 months | Billing continues until you delete it; inference profiles (cross-Region) do not support PT |\n\nSelect the tier per request with the `service_tier` parameter (`reserved | priority | default | flex`)."
         },
         {
+          "id": "cross-region-inference-and-caching-outside-the-model",
           "heading": "Cross-Region inference and caching outside the model",
           "body": "- **Global cross-Region inference** profiles route to any supported commercial Region and are documented as roughly 10% cheaper than standard pricing. SCPs must allow `aws:RequestedRegion` = `unspecified`.\n- **Geographic** profiles (US, EU, APAC) keep data in a geography, so choose them when data residency rules apply.\n- Price is based on the source Region and there is no extra routing charge.\n- Beyond the model: **semantic caching** (for example, embedding the question and looking up similar past answers in Amazon ElastiCache or a vector store) avoids repeat model calls entirely, and **edge caching** with Amazon CloudFront serves static or repeatable responses close to users. **Streaming** (ConverseStream) does not reduce total generation time but cuts *perceived* latency by returning the first tokens early."
         }
@@ -1055,14 +1114,17 @@
       "summary": "Instrument Bedrock workloads with CloudWatch metrics and model invocation logging, attribute cost, and diagnose throttling using how token quotas burn down.",
       "sections": [
         {
+          "id": "cloudwatch-metrics",
           "heading": "CloudWatch metrics",
           "body": "Amazon Bedrock publishes runtime metrics to CloudWatch in the `AWS/Bedrock` namespace, including invocation counts, latency, client and server errors, throttles and token counts (`InputTokenCount`, `OutputTokenCount`, plus cache token counts). CloudWatch also provides an automatic dashboard that includes **Token Counts by Model**.\n\nWhen you use inference service tiers, the `ServiceTier` and `ResolvedServiceTier` dimensions show which tier you asked for and which tier actually served the request (for example, Reserved overflow served by Standard).\n\nSet CloudWatch alarms on throttles, error rate and latency percentiles, and use **AWS Cost Explorer** and **AWS Cost Anomaly Detection** for spend. **Amazon Managed Grafana** and **AWS X-Ray** (traces across Lambda, API Gateway and model calls) round out observability; AgentCore Observability emits OpenTelemetry-compatible traces to CloudWatch for agent and tool calls."
         },
         {
+          "id": "model-invocation-logging",
           "heading": "Model invocation logging",
           "body": "- **Disabled by default.** Turn it on per account and Region, choosing CloudWatch Logs and/or Amazon S3 in the **same account and Region**, and the modalities to log (text, image, embedding, video).\n- Captures Converse, ConverseStream, InvokeModel, InvokeModelWithResponseStream and the OpenAI-compatible APIs on the `bedrock-runtime` endpoint. Calls on the `bedrock-mantle` endpoint are **not** captured.\n- Request or response bodies larger than 100 KB, and binary data, are delivered to **S3 only**.\n- Each entry carries `identity.arn`, token counts and any caller-supplied `requestMetadata`, so CloudWatch Logs Insights can break down token usage (and therefore cost) by principal, tenant or feature tag.\n- The same logs can later feed **model distillation** as training input."
         },
         {
+          "id": "quotas-and-token-burndown",
           "heading": "Quotas and token burndown",
           "body": "On-demand quotas are expressed as tokens per minute (TPM), tokens per day (TPD) and requests per minute (RPM).\n\n1. **At request start**, Bedrock reserves input tokens **plus `max_tokens`** against the quota.\n2. **At the end**, it settles to InputTokenCount + CacheWriteInputTokenCount + OutputTokenCount x the model's **burndown rate**. Cache reads do not count.\n3. Burndown rates vary by model (1:1 by default, higher for output tokens on some models). Billing is still on actual tokens.\n\nConsequence: an oversized `max_tokens` reserves quota the response never uses, so concurrency hits the TPM limit early. Fixes, in rough order: lower `max_tokens` to realistic values, use prompt caching (reads don't burn quota), spread load with cross-Region inference, retry with exponential backoff and jitter, and request a quota increase or move to Reserved tier or Provisioned Throughput for steady high volume."
         }
@@ -1114,18 +1176,22 @@
       "summary": "Pick the right Amazon Bedrock evaluation job type (programmatic, human, model-as-a-judge, RAG) and validate deployments before and after release.",
       "sections": [
         {
+          "id": "why-evaluation-is-its-own-discipline",
           "heading": "Why evaluation is its own discipline",
           "body": "Generative output is non-deterministic and often has no single right answer, so unit tests alone cannot tell you whether a model, prompt or retrieval change made things better. Task 5.1 of the exam guide expects you to build **evaluation systems**: repeatable jobs over a fixed dataset, scored by metrics, a judge model or humans, run before a change ships and again after it is deployed."
         },
         {
+          "id": "amazon-bedrock-evaluation-job-types",
           "heading": "Amazon Bedrock evaluation job types",
           "body": "Amazon Bedrock evaluations offers four job types:\n\n- **Programmatic (automatic) model evaluation** using a built-in or your own custom prompt dataset. Cheap and repeatable; good for regression checks.\n- **Human-based evaluation** using your own work team or subject-matter experts. Use it when the criteria are subjective or need domain expertise (brand voice, clinical accuracy).\n- **Model-as-a-judge (LLM-as-a-judge)**: a second LLM scores each response and **explains each score**. Scales like automatic evaluation but handles open-ended quality criteria.\n- **RAG evaluations with LLMs** against a Bedrock knowledge base or an external RAG source. The dataset needs **ground-truth retrieved texts and responses** so both retrieval and generation can be judged.\n\nTargets include foundation models, Bedrock Marketplace models, customized and imported models, prompt routers and Provisioned Throughput models; sources outside Bedrock can also be evaluated."
         },
         {
+          "id": "choosing-between-them",
           "heading": "Choosing between them",
           "body": "| Need | Job type |\n|---|---|\n| Fast regression check on a known dataset | Programmatic |\n| Open-ended quality at scale with reasons | Model-as-a-judge |\n| Subjective or expert judgment | Human-based |\n| Is the KB retrieving the right passages and is the answer grounded? | RAG evaluation |\n\nA common pattern is to combine them: LLM-as-a-judge for breadth, a human review sample to calibrate the judge."
         },
         {
+          "id": "agents-and-deployment-validation",
           "heading": "Agents and deployment validation",
           "body": "Agent quality (tool selection, multi-step success) is evaluated on **sessions, traces and spans**; Amazon Bedrock AgentCore Evaluations provides this for agents. Before a prompt, model or flow change reaches all users, validate it against a **golden dataset**, then release gradually (canary or A/B) and watch metrics. Bedrock Flows and Prompt Management give you immutable **versions**, and Flows aliases let you shift and roll back traffic by repointing the alias. Synthetic workflows (for example CloudWatch Synthetics canaries) can exercise the deployed path continuously."
         }
@@ -1172,18 +1238,22 @@
       "summary": "Diagnose throttling, guardrail blocks, grounding failures, retrieval problems, context overflow and prompt regressions using logs, traces and configuration.",
       "sections": [
         {
+          "id": "throttling",
           "heading": "Throttling",
           "body": "Bedrock on-demand quotas are measured in tokens per minute (TPM), tokens per day and requests per minute. At request start Bedrock deducts **input tokens + `max_tokens`** from the quota; at the end it settles actual usage, with output tokens multiplied by a model-specific **burndown rate** (billing is still for actual tokens). So a very high `max_tokens` can throttle concurrency early even when real usage is low: **lower `max_tokens`** first.\n\nOther levers: **cross-Region inference** profiles (Geographic keeps data in a geography; Global can route to any supported commercial Region at about 10% lower cost), **service tiers** (Priority, Standard, Flex share the on-demand quota; Reserved is a TPM reservation), Provisioned Throughput, and client retries with backoff. The automatic CloudWatch dashboard \"Token Counts by Model\" helps confirm token pressure."
         },
         {
+          "id": "guardrail-blocks-and-grounding-failures",
           "heading": "Guardrail blocks and grounding failures",
           "body": "When a guardrail intervenes, inspect the **guardrail trace / assessment** returned with the response and the CloudWatch Guardrails metrics to see which policy fired (content filter, denied topic, word filter, sensitive information, contextual grounding). Tune that one policy instead of disabling the guardrail.\n\nContextual grounding checks score **grounding** and **relevance** against a threshold (0 to 0.99); responses below it are blocked. The **Classic** tier is strict and does not support conversational use cases; the **Standard** tier does (0.7 is a suggested starting threshold) and requires guardrail cross-Region inference. Note that `UpdateGuardrail` without `tierConfig` resets the tier to Classic. Contextual grounding runs on output only, and with streaming an irrelevant response may be flagged only after it has streamed."
         },
         {
+          "id": "retrieval-failures",
           "heading": "Retrieval failures",
           "body": "- **Wrong or missing passages**: revisit chunking (default about 300 tokens; fixed-size, hierarchical, semantic, none), embeddings and metadata filters; add reranking.\n- **Fewer results than requested** with hierarchical chunking is expected: child chunks are replaced by their parents.\n- **OpenSearch metadata filter errors**: custom filter fields must be mapped as a keyword type.\n- **Aurora pgvector with selective filters**: use pgvector 0.8.0+ iterative scans.\n- **S3 Vectors ingestion failures**: per-vector metadata is limited (1 KB, 35 keys), so hierarchical chunking is not recommended there.\n\nUse a RAG evaluation to tell retrieval problems apart from generation problems."
         },
         {
+          "id": "hallucination-context-overflow-and-prompt-regressions",
           "heading": "Hallucination, context overflow and prompt regressions",
           "body": "Hallucination in RAG: ground the prompt in retrieved context, require citations, add a contextual grounding check, and measure with RAG evaluation. **Context window overflow** shows up as failed or truncated requests on long conversations or large retrieved context: trim or summarize history, retrieve fewer, better chunks, or choose a model with a larger context window.\n\nFor prompt problems, **model invocation logging** (disabled by default; to CloudWatch Logs and/or S3) captures prompts, responses, token counts, `identity.arn` and `requestMetadata` for calls on `bedrock-runtime`; calls on the `bedrock-mantle` endpoint are not captured. AWS X-Ray traces the request path across services. Keep prompts versioned in Prompt Management so a regression can be tied to a version and rolled back."
         }

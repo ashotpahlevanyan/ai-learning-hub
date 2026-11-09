@@ -80,6 +80,26 @@ The stages are Research (check facts against the sources) → Coverage (gap anal
 
 Run it from Claude Code with args `{ "root": "<path to web>", "spec": "<path to spec>", "date": "YYYY-MM-DD" }`. Assemble stamps a `review` record on the bundle, and the exam dashboard shows it. Read the report and the diff before committing.
 
+## Moving content to a database
+
+Content ships as JSON and TypeScript in `src/content`, so the site needs no server. Everything is shaped to move into Postgres (Supabase, Neon, RDS and others) without changing ids, URLs or saved progress:
+
+- **Stable ids everywhere.** Exams are keyed `<track>/<exam>` (the same key progress uses). Lessons, questions and flashcards have ids unique within their exam, and every lesson section has a slug id unique within its lesson (enforced by the content tests; `npm run content:normalize` adds any that are missing after regenerating a bundle). Roadmap tasks keep their `w<week>-<index>` ids.
+- **Schema:** `supabase/content.sql` creates 16 tables (tracks, exams, domains, lessons, lesson sections, questions, options, flashcards, sources, the library and the roadmap) with foreign keys, `position` columns for display order, and row-level security that lets anyone read and only the service role write.
+- **Export:** `npm run content:export` writes `export/json/<table>.json` (one array of rows per table) and `export/sql/NN-<table>.sql` (inserts in dependency order). It checks duplicate keys and unknown domains first and stops on any problem.
+
+To load into Supabase:
+
+1. Run `supabase/content.sql` in the SQL editor (once).
+2. `npm run content:export`
+3. Load the files in order with `psql` and the connection string from Project Settings → Database (the larger files are 1–2 MB, more than the SQL editor handles comfortably):
+   ```bash
+   for f in export/sql/*.sql; do psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q -f "$f"; done
+   ```
+   `00-clear.sql` empties the content tables first, so the same command reloads after any content change. It never touches `public.progress`.
+
+The site still reads the bundled files; switching it to read from the database is a later step (each exam loads through one `load()` function in its `track.ts`, which is the place to swap in a query).
+
 ## Disclaimer
 
 Independent study resource, not affiliated with or endorsed by Anthropic. Practice items are original, not real exam questions. Exam facts come from third-party summaries of the official guides; confirm them with the provider.

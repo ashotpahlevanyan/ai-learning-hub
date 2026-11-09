@@ -85,26 +85,32 @@
       "summary": "Claude does its best work when you treat it like a brilliant new colleague who has zero context. Give it the goal, the audience, the background, the constraints, and what 'good' looks like.",
       "sections": [
         {
+          "id": "the-new-colleague-mental-model",
           "heading": "The 'new colleague' mental model",
           "body": "Claude can't see your inbox, your company's history, or the meeting you just left, unless you give it that information or connect a tool that can. Anthropic's own test: **show your prompt to a colleague with minimal context on the task. If they'd be confused, Claude will be too.**\n\nMost weak outputs come from weak inputs. A vague request like \"write an email about the delay\" makes Claude guess the audience, tone, length, cause, and next steps."
         },
         {
+          "id": "the-building-blocks",
           "heading": "The building blocks",
           "body": "A strong prompt usually includes:\n\n- **Task**: what to produce, stated directly (\"Draft a 150-word email...\").\n- **Context**: background, why it matters, who it's for.\n- **Role or perspective** (optional): \"You are reviewing this as a skeptical CFO.\"\n- **Inputs**: the documents, data, or notes to work from, clearly separated from your instructions.\n- **Constraints**: length, format, tone, things to avoid, deadline-driven priorities.\n- **Success criteria**: how you'll judge the result (\"A non-technical customer should understand it in one read\").\n- **Examples** (optional but powerful): a few varied samples of the style or format you want."
         },
         {
+          "id": "role-and-success-criteria",
           "heading": "Role and success criteria",
           "body": "A **role** focuses Claude's behavior and tone. Even a single sentence such as \"You are reviewing this as a skeptical CFO\" makes a difference. Put it at the start of the prompt, or in Project instructions if you want it every time.\n\n**Success criteria** come before polishing the prompt. Decide what a good result looks like and how you'll check it (\"under 200 words, every number traceable to the attached report, readable by a non-specialist\"). Without criteria you can't tell whether a prompt change helped."
         },
         {
+          "id": "structure-with-tags-and-headings",
           "heading": "Structure with tags and headings",
           "body": "When a prompt mixes instructions with long material, separate them so Claude doesn't confuse the two. XML-style tags work well:\n\n```\nSummarize the customer feedback below for our product team.\nGroup it into themes, count mentions per theme, and quote one example for each.\n\n<feedback>\n...paste survey responses here...\n</feedback>\n```\n\nTags like `<document>`, `<notes>`, or `<example>` aren't magic keywords. They're clear labels. Markdown headings work too. What matters is that the boundaries are unambiguous."
         },
         {
+          "id": "examples-few-shot-prompting",
           "heading": "Examples (few-shot prompting)",
           "body": "Showing beats telling. If you want a particular voice or format, paste examples and say what to copy (tone, length, structure) and what **not** to copy (the specific facts). Anthropic's prompting guidance suggests **3–5 examples** for best results, wrapped in tags such as `<example>`, and **varied** enough that Claude learns the pattern instead of cloning one sample. You can even ask Claude whether your examples are diverse enough."
         },
         {
+          "id": "ask-for-what-you-want-positively",
           "heading": "Ask for what you want, positively",
           "body": "\"Write in plain, flowing paragraphs\" works better than \"Don't use bullet points.\" Say why a constraint exists (\"this will be read aloud, so avoid lists and symbols\"). The reason helps Claude handle cases your rule didn't anticipate."
         }
@@ -151,18 +157,22 @@
       "summary": "Big, fuzzy tasks give generic results. Break the work into stages, review each stage, and refine in the same conversation instead of starting over.",
       "sections": [
         {
+          "id": "why-decompose",
           "heading": "Why decompose?",
           "body": "A prompt like \"Write our Q3 strategy deck\" bundles research, analysis, structure, and writing into one step. Splitting it gives you a checkpoint after each stage:\n\n- **Step 1:** \"Here are our Q3 numbers and goals. List the 5 most important findings, with the data behind each.\"\n- **Step 2:** \"Using findings 1, 2, and 4, propose a 7-slide outline.\"\n- **Step 3:** \"Draft speaker notes for slides 1–3.\"\n\nEach step is easier to check, and an error caught early doesn't spread into the final product. This is called **prompt chaining**."
         },
         {
+          "id": "iterate-don-t-restart",
           "heading": "Iterate, don't restart",
           "body": "First drafts are a starting point. Give specific feedback: \"Shorter. Lead with the customer benefit. Cut the second paragraph. Keep the call to action.\" Specific feedback converges faster than \"make it better.\"\n\nWhen a conversation has gone badly wrong (built on a wrong assumption, or cluttered with dead ends), it can be better to start a fresh chat with a **corrected, consolidated prompt**."
         },
         {
+          "id": "let-claude-think-first",
           "heading": "Let Claude think first",
           "body": "For analysis, comparisons, and tricky judgment calls, ask Claude to reason before answering: \"Before recommending, compare the options against cost, risk, and time to value, then give your recommendation.\" The Claude apps also let you give the model **more room to think** on hard problems (via thinking and effort settings, which vary by model). More thinking takes more time and usage, so save it for tasks that need it."
         },
         {
+          "id": "ask-claude-to-ask-you",
           "heading": "Ask Claude to ask you",
           "body": "If you're unsure what context matters, say: \"Before you start, ask me up to 5 questions you need answered to do this well.\" It's a quick way to surface missing assumptions."
         }
@@ -204,22 +214,27 @@
       "summary": "Anthropic's AI Fluency course organizes good human–AI collaboration into four competencies: Delegation, Description, Discernment, and Diligence. The 4Ds aren't a named exam objective, but they are a useful lens for scenario questions, and their vocabulary (such as 'diligence') shows up in official material.",
       "sections": [
         {
+          "id": "delegation-deciding-what-to-hand-off",
           "heading": "Delegation: deciding what to hand off",
           "body": "Delegation means deciding **whether, what, and how much** of a task to give to AI, based on your goals, the task, and what the AI can and can't do. Good delegation keeps the parts that need your judgment, relationships, or accountability with you.\n\nExample: let Claude draft the first version of a policy FAQ, but you decide which policy positions to take."
         },
         {
+          "id": "description-communicating-clearly",
           "heading": "Description: communicating clearly",
           "body": "Description means telling the AI what you want: the product (what the output is), the process (how to approach it), and the performance (how Claude should behave, such as being a critical reviewer). It's the prompting skill from Lesson 1, seen as a communication skill."
         },
         {
+          "id": "discernment-evaluating-what-comes-back",
           "heading": "Discernment: evaluating what comes back",
           "body": "Discernment means judging the output, the reasoning behind it, and the interaction itself. Is it accurate? Is it complete? Is it appropriate for the audience? Does the reasoning hold up? This links directly to the Output Evaluation domain, the heaviest on the exam."
         },
         {
+          "id": "diligence-owning-the-result-responsibly",
           "heading": "Diligence: owning the result responsibly",
           "body": "Diligence means taking responsibility for what you create and share with AI help: choosing tools thoughtfully, being transparent about AI involvement where it matters, and verifying before you deploy. **You** are accountable for the final work, not the AI."
         },
         {
+          "id": "description-discernment-loop",
           "heading": "Description ↔ Discernment loop",
           "body": "In practice you cycle: describe, get output, discern problems, describe more precisely, and repeat. Fluency means running that loop quickly and knowing when to stop and verify."
         }
@@ -265,18 +280,22 @@
       "summary": "Uploading a document is only half the job. Place long material before your question, ask Claude to pull quotes before it analyzes, and shape the prompt to the kind of work: analysis, research, drafting, or brainstorming.",
       "sections": [
         {
+          "id": "give-documents-as-attachments-not-retyped-fragments",
           "heading": "Give documents as attachments, not retyped fragments",
           "body": "Claude can read uploaded files directly in a chat or Project, including common formats such as PDF, Word documents, plain text, CSV, and images. Some formats, such as spreadsheets, rely on code execution being available. Uploading the real file keeps the full, original text in view. Retyping or summarizing it yourself first can drop details and add your own errors.\n\nExact limits on file size, page count, and number of files change over time, so check the current help article rather than memorizing numbers."
         },
         {
+          "id": "documents-first-question-last",
           "heading": "Documents first, question last",
           "body": "With long material, put the documents **at the top** and your instructions and question **at the end**. Anthropic's testing found that queries at the end can noticeably improve response quality on long inputs.\n\nWhen you paste several documents, label each one (for example `<document>` tags with a title or source) so Claude can tell them apart and refer to them."
         },
         {
+          "id": "quote-first-then-analyze",
           "heading": "Quote first, then analyze",
           "body": "For long documents, ask Claude to **first extract the word-for-word passages relevant to your question** (for example into `<quotes>` tags), then answer using only those quotes. This keeps the answer anchored to the text, makes it easy for you to check, and cuts through irrelevant material.\n\n```\n<document>...policy PDF text...</document>\n\nFirst, quote the passages that describe remote-work eligibility in <quotes> tags.\nThen, using only those quotes, list who is eligible and any exceptions.\nIf the document doesn't say, write \"not stated\".\n```"
         },
         {
+          "id": "adapt-the-prompt-to-the-task-type",
           "heading": "Adapt the prompt to the task type",
           "body": "- **Analysis:** give criteria and ask for reasoning before the conclusion.\n- **Research:** state the question, the sources to trust, and ask for sources or quotes behind each claim.\n- **Drafting:** give audience, purpose, tone, length, and an example; iterate with specific edits.\n- **Brainstorming:** ask for many varied options, defer judgment, then narrow with criteria in a second step.\n\nThe same \"write me something about X\" prompt can't serve all four."
         }
@@ -322,22 +341,27 @@
       "summary": "Claude can produce fluent, confident text that's wrong. Learn the high-risk categories and a verification routine sized to the stakes.",
       "sections": [
         {
+          "id": "what-a-hallucination-is",
           "heading": "What a hallucination is",
           "body": "A hallucination is output that sounds plausible but isn't supported by facts or by the source you provided. Common forms:\n\n- Invented **citations, quotes, URLs, or statistics**.\n- Wrong **dates, names, figures**, or attributions.\n- **Overreach**: a summary that states something the document doesn't actually say.\n- Fabricated details about **niche or very recent** topics beyond the model's knowledge."
         },
         {
+          "id": "high-risk-zones",
           "heading": "High-risk zones",
           "body": "Be most skeptical about:\n\n- Specific numbers, percentages, and calculations.\n- Legal, medical, financial, or regulatory claims.\n- Anything recent (after the model's training cutoff) unless web search was used.\n- Direct quotes and references, especially when the source wasn't provided.\n- Claims about your own organization that Claude couldn't have known."
         },
         {
+          "id": "reduce-hallucinations-at-the-source",
           "heading": "Reduce hallucinations at the source",
           "body": "- **Ground** Claude in documents: upload them, and ask it to answer only from them.\n- Explicitly **permit uncertainty**: \"If the document doesn't say, answer 'not stated.'\"\n- Ask for **supporting quotes**: \"For each claim, quote the sentence from the report that supports it.\"\n- Use **web search or Research** for current facts, and check the sources it links."
         },
         {
+          "id": "verification-routine",
           "heading": "Verification routine",
           "body": "Scale verification to the stakes:\n\n- **Low stakes** (brainstorm, internal draft): skim for sense.\n- **Medium** (internal report): spot-check key claims and every number against the source.\n- **High** (external, legal, financial, customer-facing): verify every factual claim against primary sources, have a subject-matter expert review, and keep a record of what you checked.\n\nOpen the linked citations yourself. A citation that exists doesn't prove the claim. Confirm the source actually says it."
         },
         {
+          "id": "stronger-checks-for-important-work",
           "heading": "Stronger checks for important work",
           "body": "Anthropic's guidance on reducing hallucinations adds a few techniques worth knowing:\n\n- **Quotes first for long documents** (Anthropic's docs give >20k tokens as the guide): ask Claude to pull word-for-word quotes relevant to your question, then answer using only those quotes.\n- **Cite or retract**: ask Claude to find a supporting quote for each claim and to withdraw any claim it can't support.\n- **Best-of-N comparison**: ask the same question more than once (for example in separate chats). If the answers disagree on a fact, treat that fact as suspect and check it.\n- **Restrict to the provided sources**: tell Claude to use only the documents you gave it, not general knowledge.\n\nNone of these removes hallucinations entirely. Critical information still needs validation against the authoritative source."
         }
@@ -384,18 +408,22 @@
       "summary": "Beyond 'is it true?', evaluate whether the output is complete, correct in its math, fair, fit for the audience, and logically sound.",
       "sections": [
         {
+          "id": "use-a-rubric",
           "heading": "Use a rubric",
           "body": "Decide what 'good' means before you read the output. A simple rubric:\n\n- **Accuracy**: are claims correct and supported?\n- **Completeness**: does it cover every requirement and input?\n- **Relevance**: does it answer the actual question?\n- **Audience fit**: tone, reading level, jargon.\n- **Format**: length and structure as requested.\n- **Risk**: anything that could embarrass, mislead, or expose the organization?\n\nYou can give Claude the rubric and ask it to self-review. That's useful as a first pass, but not a replacement for your review."
         },
         {
+          "id": "checking-calculations-and-data",
           "heading": "Checking calculations and data",
           "body": "Language models can make arithmetic or aggregation mistakes, especially when doing math 'in their head' over long tables. Safer approaches:\n\n- Ask Claude to **show the calculation steps** so you can follow them.\n- Use **code execution** (where enabled), which runs real code on the uploaded file instead of estimating.\n- **Recompute key totals** yourself in a spreadsheet.\n- Check that the totals reconcile with the source (row counts, sums)."
         },
         {
+          "id": "bias-and-fairness",
           "heading": "Bias and fairness",
           "body": "Output can reflect biases in training data or in how you framed the question. Watch for stereotyped assumptions, one-sided framing, and uneven treatment of groups. That matters a lot in hiring, performance reviews, lending, and customer treatment. Ask for counterarguments, check that criteria are applied consistently, and never let AI be the sole decision-maker on decisions about people."
         },
         {
+          "id": "critique-techniques",
           "heading": "Critique techniques",
           "body": "- **Ask for a critique**: \"List the three weakest points in this analysis and what evidence would strengthen each.\"\n- **Fresh-eyes review**: paste the draft into a **new chat** and ask for a review as a skeptical stakeholder. A fresh context doesn't carry the original conversation's assumptions.\n- **Compare alternatives**: ask for two or three approaches with trade-offs, rather than one answer.\n- **Show reasoning**: ask Claude to explain how it reached a conclusion, so you can spot weak steps."
         }
@@ -437,18 +465,22 @@
       "summary": "A correct answer can still fail its reader. Learn to adapt output for an audience without changing its meaning, compare alternative drafts fairly, and pick the right output format: inline, artifact, or structured data.",
       "sections": [
         {
+          "id": "edit-for-the-intended-audience",
           "heading": "Edit for the intended audience",
           "body": "The same content often needs different versions: engineers want root causes, executives want impact and decision, customers want what changes for them. When you ask Claude to adapt a draft, say who the reader is, what they already know, what they need to do, and what to leave out (internal jargon, speculation, internal names).\n\nThen check the adapted version against the original. Simplifying is where meaning drifts: hedges disappear (\"may reduce costs by up to 15%\" becomes \"cuts costs 15%\"), caveats are dropped, and new commitments appear. Facts, figures, and promises must survive the rewrite unchanged."
         },
         {
+          "id": "compare-outputs-against-criteria-not-impressions",
           "heading": "Compare outputs against criteria, not impressions",
           "body": "Asking for two or three alternatives is a good way to see options, but choose between them with criteria you set in advance: accuracy against the source, coverage of the key messages, audience fit, length, and risk. Longer, more confident, or more polished is not the same as better.\n\nYou can ask Claude to compare drafts against your rubric as a first pass. The final choice, and the fact check of the chosen version, stay with you."
         },
         {
+          "id": "organise-and-curate-before-you-share",
           "heading": "Organise and curate before you share",
           "body": "Claude can produce more than the reader needs. Curating is part of validation: cut repetition, put the conclusion first, group related points, and remove anything you couldn't verify. If a section can't be traced to a source or a clear reasoning step, it shouldn't go out just because it reads well."
         },
         {
+          "id": "pick-the-output-format",
           "heading": "Pick the output format",
           "body": "| Format | Best for |\n|---|---|\n| **Inline answer** | Short answers, quick explanations, back-and-forth thinking |\n| **Artifact / document** | Substantial, self-contained content you'll reuse, edit, or share, such as a checklist, a report, or a small app |\n| **Structured data** (table, CSV, JSON) | Output that feeds a spreadsheet or another system, or that must be compared item by item |\n\nClaude typically creates an artifact for content that is substantial and self-contained (usually more than about 15 lines) and likely to be edited or reused, and answers inline otherwise. You can also ask for a specific format. Artifacts need the \"Create and edit files\" setting (formerly \"Cloud code execution and file creation\") to be enabled.\n\nFor structured data, name the exact fields, say what to enter when a value is missing (for example \"not stated\"), and spot-check rows against the source. A neat table can hide invented values as easily as prose can."
         }
@@ -494,22 +526,27 @@
       "summary": "Anthropic's AI Fluency framework (Delegation, Description, Discernment, Diligence) gives you vocabulary for how you evaluate and stand behind AI-assisted work. It's a teaching lens, not a named exam objective, but its ideas run through this domain.",
       "sections": [
         {
+          "id": "the-four-ds-in-one-line-each",
           "heading": "The four Ds in one line each",
           "body": "From Anthropic's AI Fluency course materials:\n\n- **Delegation**: deciding what work humans do, what AI does, and how to split it (problem awareness, platform awareness, task delegation).\n- **Description**: communicating effectively with the AI.\n- **Discernment**: thoughtfully and critically evaluating AI outputs, processes, behaviours, and interactions.\n- **Diligence**: using AI responsibly and ethically, being transparent, and taking accountability for AI-assisted work.\n\nThe guide's own sample item calls verifying a cited detail \"the diligence step\", so the vocabulary is worth knowing even though the exam objectives don't name the framework."
         },
         {
+          "id": "description-product-process-performance",
           "heading": "Description: product, process, performance",
           "body": "- **Product description**: what you want: the output, format, audience, and style.\n- **Process description**: how Claude should approach it, such as steps to follow or sources to use.\n- **Performance description**: how Claude should behave while working with you, for example concise vs. detailed, or challenging vs. supportive.\n\nGood evaluation starts here: you can only judge an output against what you asked for."
         },
         {
+          "id": "discernment-product-process-performance",
           "heading": "Discernment: product, process, performance",
           "body": "- **Product discernment**: is the output accurate, appropriate, coherent, and relevant?\n- **Process discernment**: how did Claude get there? Look for logical errors, lapses in attention, or inappropriate reasoning steps. Asking Claude to show its reasoning makes this possible.\n- **Performance discernment**: is the way Claude is communicating working for you? If not, change your description."
         },
         {
+          "id": "diligence-creation-transparency-deployment",
           "heading": "Diligence: creation, transparency, deployment",
           "body": "- **Creation diligence**: being thoughtful about which AI systems you use and how.\n- **Transparency diligence**: being honest about AI's role in your work with everyone who needs to know.\n- **Deployment diligence**: taking responsibility for verifying and vouching for the outputs you use or share.\n\nA disclaimer such as \"AI-generated, not checked\" is not diligence. You remain accountable for what you send."
         },
         {
+          "id": "interaction-modes-change-how-you-check",
           "heading": "Interaction modes change how you check",
           "body": "- **Automation**: Claude executes a defined task. Check outputs systematically, often by sampling.\n- **Augmentation**: you and Claude think together in back-and-forth. Discernment happens turn by turn.\n- **Agency**: you configure Claude to work more independently, setting its knowledge and behaviour rather than exact actions. Checks move to the setup and to review points."
         }
@@ -559,18 +596,22 @@
       "summary": "Know where Claude lives and what each surface is best at: the Claude apps on web, desktop, and mobile for everyday knowledge work; integrations such as Claude for Excel, Claude in Chrome, and Claude Tag in Slack; developer surfaces (Claude Code and the API) that Associates recognise and escalate; and individual vs. organizational plans.",
       "sections": [
         {
+          "id": "chat-apps-web-desktop-mobile",
           "heading": "Chat apps: web, desktop, mobile",
           "body": "**claude.ai** (web), the **desktop apps**, and the **mobile apps** offer the core experience: conversations, file uploads, **Projects**, **artifacts**, web search, **Research**, connectors, and more, depending on your plan.\n\nOn accounts where it has rolled out (individual paid plans first; Team and Enterprise when admins turn it on), chat and Cowork are merged into **one Claude**: a single conversation where Claude decides whether to answer quickly or to create files, run code, or browse. You don't need to pick a separate mode. For most knowledge work (drafting, analysis, summaries, planning), the chat apps are the default surface."
         },
         {
+          "id": "integrations-excel-chrome-slack",
           "heading": "Integrations: Excel, Chrome, Slack",
           "body": "Integrations bring Claude to where the work already lives. Keep the concepts, and verify current availability before relying on one.\n\n- **Claude for Excel**: an add-in that works inside a workbook. It cites the cells behind its answers and preserves formula relationships when it changes values. Anthropic's guidance is not to use it for final client deliverables without human review or for audit-critical calculations without verification, and to use it only with **trusted spreadsheets**.\n- **Claude in Chrome**: a browser extension that can read pages and take actions in the browser on paid plans. **Prompt injection** from web pages is the biggest risk. Claude asks permission before financial sites, admins can allow or block sites, and a separate browser profile is recommended for sensitive accounts.\n- **Claude Tag (Slack)**: the Slack integration is now called **Claude Tag**. It is for Team and Enterprise plans (public beta at the time of writing). You `@Claude` in a channel and results post in the thread. Rule of thumb from Anthropic's docs: team work in shared channels is Claude Tag; personal work on your own files is Cowork (now part of the unified Claude app) or Claude Code."
         },
         {
+          "id": "developer-surfaces-claude-code-and-the-api",
           "heading": "Developer surfaces: Claude Code and the API",
           "body": "**Claude Code** is Anthropic's agentic coding tool: it reads a codebase, edits files, and runs commands. The **Claude API** is how developers build Claude into their own products and automated pipelines.\n\nThe Associate credential is **not** for people who build against APIs or design agentic systems. Your job is to **recognise** when a need belongs there (for example, \"embed Claude in our customer portal\" or \"refactor our app's codebase\") and **escalate** it to developers or architects, rather than configure it yourself. Drafting a marketing email or a project plan does not need Claude Code."
         },
         {
+          "id": "plans-conceptually",
           "heading": "Plans, conceptually",
           "body": "- **Free**: try Claude with lower limits and fewer features (for example, no Research).\n- **Pro, Max, Ultra**: individual paid plans with progressively higher usage and more features, such as Opus and Research.\n- **Team / Enterprise**: organizational plans with central billing, admin controls, SSO, and (for Enterprise) advanced security and compliance features such as audit logs and custom data retention. Under commercial terms, customer content is not used to train models by default.\n\nPlan names, prices, limits, and included features change often. **Verify current plans** on Anthropic's pricing page. For the exam, know the **concept**: individual vs. organizational plans, and that organizations get admin governance."
         }
@@ -628,22 +669,27 @@
       "summary": "Haiku, Sonnet, and Opus trade capability against speed and cost. Web search, Research, thinking and effort, and artifacts each fit specific jobs.",
       "sections": [
         {
+          "id": "model-tiers",
           "heading": "Model tiers",
           "body": "Claude comes in a family of models:\n\n- **Opus**: the most capable of the three. Best for complex reasoning, nuanced writing, difficult analysis, and long agentic knowledge work. Slower, costs more, and uses more of your limits.\n- **Sonnet**: a strong balance of intelligence and speed. A good default for much everyday professional work.\n- **Haiku**: the fastest and lowest-cost. Built for high-volume, latency-sensitive tasks such as classification, extraction, and routing.\n\nAlign the choice with **cost, speed, and quality**: use the smallest model that reliably meets your quality bar, and move up a tier when quality matters more than speed. Anthropic also offers a newer top tier above Opus on some plans; the same trade-off applies. Version numbers change, so learn the trade-off, not the version."
         },
         {
+          "id": "web-search-vs-research-vs-thinking",
           "heading": "Web search vs. Research vs. thinking",
           "body": "Anthropic's own guidance separates three features:\n\n- **Web search**: straightforward, factual questions that one or two searches can answer, such as recent events, today's prices, or a current policy. Claude cites its sources.\n- **Research**: comprehensive information gathering that needs many searches over a few minutes (and, on web and desktop, can use your connected sources). It produces a longer, cited report. It is on paid plans, needs web search on, and uses limits faster.\n- **Extended thinking**: complex reasoning that **doesn't** need recent information from the web, such as multi-step analysis, planning, tricky logic, or math-heavy scenarios.\n\nYou can combine thinking with Research to pair careful planning with broad gathering. Either way, **check the cited sources**."
         },
         {
+          "id": "effort-and-thinking-in-the-apps",
           "heading": "Effort and thinking in the apps",
           "body": "In the Claude apps, one model menu controls the **model**, the **effort** level, and **thinking**. Effort runs from Low (routine work) through High (a balanced default) up to Max (the deepest analysis). Higher effort uses more tokens and more of your usage limit.\n\nSome top models **always think**, so there is no thinking toggle for them; if you want a faster, lighter answer, **lower the effort** instead. Turning up effort or thinking on a two-line rewrite only adds latency and cost."
         },
         {
+          "id": "artifacts-and-projects",
           "heading": "Artifacts and Projects",
           "body": "- **Artifacts** are standalone outputs beside the chat: documents, code, diagrams, simple interactive apps, and visualizations. Claude typically makes one when the content is substantial, self-contained, and likely to be reused or edited. Use artifacts for reusable deliverables, not for a quick conversational answer.\n- **Projects** are self-contained workspaces with their own instructions, knowledge, and chat history. Use one when you'll return to the same context repeatedly."
         },
         {
+          "id": "files-and-analysis",
           "heading": "Files and analysis",
           "body": "You can upload PDFs, documents, images, and spreadsheets. With **code execution and file creation** turned on (the setting is now labelled \"Create and edit files\"), Claude can run code to analyze data accurately and create files such as spreadsheets, documents, and slides. Use it for data work instead of relying on mental arithmetic."
         }
@@ -697,14 +743,17 @@
       "summary": "Every conversation has a context limit, and Claude's memory features decide what carries over between chats. Know when to restart, when to summarize, and when to persist context in a Project or memory.",
       "sections": [
         {
+          "id": "context-window-vs-usage-limits",
           "heading": "Context window vs. usage limits",
           "body": "Two different limits often get confused:\n\n- The **context window** (length limit) is how much text Claude can consider in one conversation: your messages, its replies, and attached files.\n- **Usage limits** cap how much you can use Claude over a period of time, and are shared across Claude surfaces.\n\nLong conversations, large attachments, higher effort, Research, and web search all consume more. With code execution on, Claude can **automatically summarize earlier messages** as a chat nears the limit so you can keep going, though that also uses more of your limit."
         },
         {
+          "id": "restart-summarize-or-persist",
           "heading": "Restart, summarize, or persist?",
           "body": "- **Restart** (start a new chat) when the topic changes, when a long thread has drifted or picked up wrong assumptions, or when responses get slower and less focused. Old, irrelevant context can hurt more than help.\n- **Summarize** when you need to continue the same work in a fresh chat: ask Claude for a concise summary of decisions, open questions, and key facts, check it, and paste it into the new chat.\n- **Persist** context you'll reuse across many chats: put stable reference material and instructions in a **Project**, and let **memory** carry personal preferences and ongoing context. Keep project instructions short and remove files you no longer need."
         },
         {
+          "id": "memory-chat-search-and-incognito",
           "heading": "Memory, chat search, and incognito",
           "body": "- **Memory** stores context from your chats as topics you can view and edit in settings. Each Project has its own memory and, by default, also draws on your account memory; turn off \"Use account memory\" in a Project to isolate it fully. Pausing memory keeps what's stored; resetting deletes it. On Team and Enterprise, owners control memory for the organization.\n- **Chat search** (paid plans) lets Claude look up relevant past conversations when you ask.\n- **Incognito chats** are not saved to history or memory. Use them when you don't want a conversation to influence future ones, while remembering that organizational retention rules still apply."
         }
@@ -750,18 +799,22 @@
       "summary": "Turn one-off chats into repeatable workflows: shared context in Projects, clean file inputs, and artifacts as the deliverable.",
       "sections": [
         {
+          "id": "projects-as-a-workspace",
           "heading": "Projects as a workspace",
           "body": "A **Project** groups related chats with shared **project knowledge** (uploaded documents) and **project instructions** (custom instructions that apply to every chat in the Project). On Team and Enterprise plans, Projects can be **shared** with colleagues, which standardizes how a team uses Claude for a workflow.\n\nExamples:\n- \"Brand Voice\" Project: style guide, approved messaging, sample posts, and instructions on tone.\n- \"Support Macros\" Project: policy documents and instructions to cite policy sections and flag cases for escalation."
         },
         {
+          "id": "designing-the-workflow",
           "heading": "Designing the workflow",
           "body": "Before building, map the process:\n\n- **Inputs**: where does the information come from (files, connected apps, people)?\n- **Claude's steps**: draft, summarize, classify, analyze?\n- **Human checkpoints**: who reviews what, and when?\n- **Output**: where does it go (document, email, ticket), and in what format?\n- **Failure handling**: what happens when Claude is unsure or the case is unusual?\n\nPut Claude where it adds leverage, such as first drafts, summaries, and pattern-finding. Keep humans where judgment, approval, or accountability is required."
         },
         {
+          "id": "working-with-files",
           "heading": "Working with files",
           "body": "- Upload the **source of truth**, not a stale copy.\n- Prefer text-based files (searchable PDFs, DOCX, CSV) over blurry scans when you can.\n- Say which file to use for what: \"Use pricing_2026.pdf for prices, and ignore the older deck.\"\n- Very large knowledge sets may be retrieved selectively rather than read in full, so ask Claude to cite which document it used."
         },
         {
+          "id": "artifacts-as-deliverables",
           "heading": "Artifacts as deliverables",
           "body": "Artifacts let you build and refine a document, table, diagram, or small interactive tool beside the conversation. Teams use them for reusable assets such as a calculator, a checklist, or a formatted report template. Shared or published artifacts should get the same review as any other company content."
         }
@@ -807,18 +860,22 @@
       "summary": "Connectors let Claude reach your tools (drive, email, calendar, chat, CRM) so it can work with live information instead of copy-pasted snippets. They're built on the Model Context Protocol (MCP).",
       "sections": [
         {
+          "id": "what-connectors-do",
           "heading": "What connectors do",
           "body": "**Connectors** link Claude to external apps and data sources. Anthropic provides connectors for popular services (for example Google Drive, Gmail, Google Calendar, and others), and users or organizations can add **custom connectors** to remote MCP servers (custom connectors are not verified by Anthropic, so use only trusted, approved ones). With a connector enabled, Claude can search, read, and in some cases take actions in those systems, within the permissions of your account.\n\nTwo common examples:\n- **Gmail**: Claude can search and read mail and can draft, send, reply and forward. By default it asks for your approval before each action.\n- **Google Drive**: Claude can search and read Docs, Sheets, Slides and PDFs. It extracts the text, so treat charts and images in those files as content it may not see.\n\nOn Team and Enterprise plans, admins can set each connector or tool to always allow, need approval, or be blocked."
         },
         {
+          "id": "mcp-in-one-paragraph",
           "heading": "MCP in one paragraph",
           "body": "The **Model Context Protocol (MCP)** is an open standard for connecting AI applications to tools and data. Think of it as a universal adapter: a service exposes an MCP server, and Claude (the client) can use its tools. As a business user you don't need to build MCP servers. You do need to know that connectors are how Claude gets **live, permissioned access** to your systems, and that each one expands what Claude can see and do."
         },
         {
+          "id": "using-connectors-well",
           "heading": "Using connectors well",
           "body": "- Enable **only the connectors a task needs**.\n- Be specific: \"Search my Drive for the Q3 board deck from October and summarize slides about churn.\"\n- Review any **action** (sending an email, creating an event) before confirming it.\n- Remember that Claude acts **with your permissions**. If you can see it, a connector may let Claude see it.\n- Only use connectors your organization has **approved**. Admins on Team and Enterprise plans can control which connectors are available."
         },
         {
+          "id": "risks-to-keep-in-mind",
           "heading": "Risks to keep in mind",
           "body": "Content from connected sources (emails, web pages, documents) can contain misleading or even malicious instructions. This is called **prompt injection**. Be cautious when Claude reads untrusted content and is also able to take actions. Keep a human confirmation step for consequential actions."
         }
@@ -860,22 +917,27 @@
       "summary": "Analyse a use case, pick the right Claude surface for each step, run recurring work as a repeatable workflow, and explain to stakeholders what Claude will and won't do.",
       "sections": [
         {
+          "id": "start-from-requirements-not-features",
           "heading": "Start from requirements, not features",
           "body": "Before choosing a feature, write down the use case:\n\n- **Goal**: what outcome does the team need, and how will you know it worked?\n- **Volume and frequency**: one-off, weekly, or hundreds of items a day?\n- **Inputs**: which documents, apps, or data, and how sensitive are they?\n- **Risk**: what happens if an output is wrong? Who is accountable?\n\nThen decide whether Claude should **augment** the current process (draft, summarize, check) or whether the process should be **redesigned** around what Claude does well. Augmenting is usually the safer first step."
         },
         {
+          "id": "match-each-step-to-a-surface",
           "heading": "Match each step to a surface",
           "body": "| Need | Good fit |\n|---|---|\n| Quick question, one-off draft | Chat |\n| Same context reused by a team | A shared **Project** with knowledge and instructions |\n| A substantial, reusable deliverable (report, table, tool) | An **artifact**, or a Claude Doc or Slides deck you can export |\n| Live data from Drive, Gmail, a CRM | An approved **connector** |\n| A simple fact that may have changed | **Web search** |\n| Broad investigation across many sources, with a cited report | **Research** (paid plans) |\n| Analysis inside a workbook | **Claude for Excel**, with cell-level citations |\n\nResearch takes longer and uses more of your limit than a quick search, so don't use it for simple lookups. Claude Docs export to Word, PDF, Markdown or Google Docs, and Slides export to PowerPoint or PDF, so outputs can land in the tools your team already uses."
         },
         {
+          "id": "research-planning-and-process-optimisation",
           "heading": "Research, planning, and process optimisation",
           "body": "Claude helps at the front of a project, not only at the drafting stage:\n\n- **Research**: gather and compare sources, then verify the key claims before you rely on them.\n- **Planning**: turn a goal into a phased plan with owners, risks, and open questions, then have the team challenge it.\n- **Process optimisation**: give Claude a description of the current process and ask it to find bottlenecks, duplicated steps, and candidate steps for automation. Treat its suggestions as hypotheses to test with the people who do the work."
         },
         {
+          "id": "make-recurring-work-repeatable",
           "heading": "Make recurring work repeatable",
           "body": "When a task repeats (a weekly status digest, a monthly report), standardize it: one Project or saved setup, a fixed prompt or template, defined inputs, and a named reviewer. Where the unified chat experience is available, **scheduled tasks** can run recurring work for you. A schedule does not replace the human checkpoint. Someone still reviews the output before it is sent or acted on."
         },
         {
+          "id": "communicate-value-and-limitations",
           "heading": "Communicate value and limitations",
           "body": "Stakeholders need a balanced picture:\n\n- **Value**: time saved on first drafts, summaries, and analysis; more consistent outputs; faster research. Measure this in a pilot instead of promising it.\n- **Limitations**: Claude can be confidently wrong (hallucinations), may reflect bias, has a knowledge cutoff unless it uses search or connectors, and does not own accountability.\n- **Controls**: say where humans review, which data Claude can and cannot access, and how errors are caught and escalated.\n\nOverselling (\"it's always accurate\", \"we can drop review\") damages trust when the first error appears. Underselling (\"it's just autocomplete\") stalls adoption."
         }
@@ -925,22 +987,27 @@
       "summary": "Configuration means Claude starts each task with the right context and behavior, without you re-pasting it. Know which layer to use for which job, and keep the knowledge behind it current.",
       "sections": [
         {
+          "id": "the-configuration-toolkit",
           "heading": "The configuration toolkit",
           "body": "- **Account-wide instructions** (\"Instructions for Claude\", under Settings > Your Claude): preferences that apply to all your chats, for example \"I'm a finance analyst. Prefer concise answers with tables.\"\n- **Project instructions**: custom instructions scoped to one Project. They apply only inside that Project.\n- **Project knowledge**: documents attached to one Project, so every chat in it starts with the same reference material.\n- **Memory**: Claude can remember relevant context from past conversations so you don't repeat yourself. It is stored as editable topics that you can view, change, pause, or reset.\n- **Skills**: folders of instructions, scripts and resources that Claude loads **only when relevant** to a task, such as building a document in your company's template or applying brand guidelines. Skills need code execution to be enabled.\n- **Connectors**: give Claude access to live sources such as Google Drive or Gmail (covered in the next lesson).\n\nThe old \"Use style\" menu in Claude chat has been deprecated. To control tone and format, put it in account instructions, project instructions, or a Skill. Feature availability depends on your plan and your organization's settings, so check what's enabled for you."
         },
         {
+          "id": "choosing-the-right-mechanism",
           "heading": "Choosing the right mechanism",
           "body": "- Applies to **everything you do** -> account-wide instructions.\n- Applies to **one workflow or team** -> a Project with instructions and knowledge.\n- Needs your **voice or a fixed format** -> describe it (with a short example) in account or project instructions, or package it in a Skill if it's a repeatable procedure.\n- A **repeatable procedure** that should be available on demand across contexts -> a Skill.\n- Context about **you** that builds up over time -> memory.\n- Team-critical **rules** -> explicit project instructions or a shared Skill, never only someone's memory."
         },
         {
+          "id": "projects-in-practice",
           "heading": "Projects in practice",
           "body": "- A Project is a self-contained workspace with its own chat history, knowledge base, and instructions.\n- On paid plans, when project knowledge approaches the context limit, Claude switches to retrieval (RAG) so the Project can hold much more material. Retrieval pulls in the most relevant passages, so clear, non-conflicting documents matter even more.\n- On Team and Enterprise plans, Projects can be shared with **Can view** or **Can edit** access. Editors can change instructions and knowledge and manage members, so grant edit rights deliberately.\n- Everyone with access to a shared Project can get at its knowledge through Claude. Only add what all members are allowed to see."
         },
         {
+          "id": "writing-good-project-instructions",
           "heading": "Writing good project instructions",
           "body": "Keep instructions short, specific, and explain the *why*:\n\n```\nPurpose: Help support agents draft replies to billing tickets.\nAudience: Customers; friendly, plain language, no jargon.\nSources: Use only the attached Billing Policy v4. Cite the section.\nRules: Never promise refunds over $100; flag for a supervisor instead,\n       because larger refunds need approval.\nIf unsure or the policy doesn't cover it: say so and recommend escalation.\nFormat: Greeting, 2-4 short paragraphs, sign-off.\n```"
         },
         {
+          "id": "knowledge-hygiene",
           "heading": "Knowledge hygiene",
           "body": "Knowledge management is ongoing:\n\n- Remove **outdated** documents. Old pricing in project knowledge leads to wrong answers.\n- Use clear, **versioned file names**.\n- Avoid **conflicting** documents, or state in the instructions which source wins.\n- Assign an **owner** who reviews instructions and knowledge on a schedule and after policy changes.\n- Remove files you no longer need. Smaller, cleaner knowledge is easier for Claude to use well."
         }
@@ -999,14 +1066,17 @@
       "summary": "Connectors give Claude live access to your tools; memory carries context between chats. Both are configuration you have to manage, alongside a routine for keeping instructions and knowledge current.",
       "sections": [
         {
+          "id": "connectors-as-knowledge-sources",
           "heading": "Connectors as knowledge sources",
           "body": "- Connectors such as **Google Drive** and **Gmail** let Claude search and read your live content instead of you uploading copies.\n- Access **mirrors your existing permissions**: Claude can only reach what you can already reach.\n- The Drive connector reads Docs, Sheets, Slides and PDFs as text. The Gmail connector can search, read, draft, send, reply and forward, and by default asks for your approval before each action.\n- On Team and Enterprise plans, admins can set each connector or tool to **Always allow**, **Needs approval**, or **Blocked**.\n- Custom connectors are not verified by Anthropic. Only add ones from sources you trust.\n\n**Upload vs. connect:** upload a fixed, approved reference (a signed policy version) to project knowledge. Connect when Claude needs the current state of a source that changes often. Turn off connectors a task doesn't need; they add noise and use more of your limits."
         },
         {
+          "id": "how-memory-works",
           "heading": "How memory works",
           "body": "- Memory is stored as individual **topics** that you can view and edit (Settings > Your Claude).\n- **Each Project has its own memory** and also uses your account memory. Turn off \"Use account memory\" in a Project to isolate it completely, for example for a confidential client engagement.\n- **Pausing** memory keeps what's already saved; **resetting** deletes it all.\n- Sensitive topics are excluded unless you opt in, and some categories (such as government IDs and financial account numbers) are never saved.\n- **Incognito chats** are not saved to history or memory and are excluded from chat search. They are only available outside Projects, and on Team and Enterprise they still follow the organization's retention and export settings.\n- On Team and Enterprise, Owners control memory for the whole organization, and they cannot view members' memories."
         },
         {
+          "id": "maintaining-configurations",
           "heading": "Maintaining configurations",
           "body": "Configurations drift. A Project that was right in January can be wrong by June.\n\n- **Trigger reviews** on events (new policy, price change, reorg), not just on a calendar.\n- **Replace, don't append**: when a document is superseded, remove the old version or clearly mark which one wins in the instructions.\n- **Re-test** after changes: keep a few test prompts with known good answers and run them after you edit instructions or knowledge.\n- **Keep instructions short**: long, accumulated instructions contradict themselves and use up context.\n- **Name an owner** and record what changed and why."
         }
@@ -1060,22 +1130,27 @@
       "summary": "Know what you're allowed to share with Claude, in which workspace, and under which policy. Responsible use protects customers, colleagues, and your organization.",
       "sections": [
         {
+          "id": "classify-before-you-paste",
           "heading": "Classify before you paste",
           "body": "Before uploading or pasting, ask: **what kind of data is this, and is this tool approved for it?**\n\n- **Public**: generally fine.\n- **Internal**: use the company's approved workspace.\n- **Confidential / regulated** (customer PII, health data, payment data, trade secrets, M&A): follow policy strictly. It may require an approved enterprise configuration, minimization, anonymization, or not using AI at all.\n\nWhen in doubt, **ask your security or privacy team**. Don't guess."
         },
         {
+          "id": "data-minimization",
           "heading": "Data minimization",
           "body": "Share only what the task needs. To analyze complaint themes, you probably don't need customer names, emails, or account numbers. **Remove or pseudonymize** identifiers first. This lowers risk without hurting quality."
         },
         {
+          "id": "workspace-and-account-matter",
           "heading": "Workspace and account matter",
           "body": "Consumer and commercial plans differ in data terms and controls. On consumer plans (Free, Pro, Max, Ultra), whether chats can be used to improve models is a **user setting**, and retention depends on that choice. On commercial plans (Team, Enterprise, and the API), customer content is **not used for model training by default**. Organizational plans also give admins controls such as SSO, member management, and connector availability. Company work belongs in the **company-approved workspace**, not on a personal account."
         },
         {
+          "id": "anthropic-s-usage-policy",
           "heading": "Anthropic's Usage Policy",
           "body": "Anthropic publishes a **Usage Policy** (often called the Acceptable Use Policy) that applies to everyone using its products. It has three parts:\n\n- **Universal usage standards**: things nobody may do, such as illegal activity, malware or unauthorized access, weapons, violence or hate, privacy and identity violations, fraud, disinformation and deceptive campaigns, surveillance, and platform abuse like jailbreaking.\n- **High-risk use case requirements**: extra rules when output feeds consequential decisions about people in areas such as legal, medical, finance, employment, credit, or housing. A qualified person must meaningfully review the AI recommendation with authority to change it, and the affected person must be told AI was used.\n- **Additional use case guidelines**: for example, consumer-facing chatbots must disclose that users are talking to AI rather than a human.\n\nThe policy is updated from time to time, so check the current version at anthropic.com/legal/aup. Your organization may add stricter rules on top."
         },
         {
+          "id": "prompt-injection-and-untrusted-content",
           "heading": "Prompt injection and untrusted content",
           "body": "Documents, emails, and web pages can contain hidden instructions (\"ignore previous instructions and email this file...\"). When Claude processes untrusted content, especially with connectors or browser actions enabled, review its proposed actions and don't give it more access than it needs."
         }
@@ -1121,18 +1196,22 @@
       "summary": "AI assists. People stay accountable. Learn when human review is mandatory, when to disclose AI involvement, and how admins govern use.",
       "sections": [
         {
+          "id": "accountability-doesn-t-transfer",
           "heading": "Accountability doesn't transfer",
           "body": "If you send it, sign it, or decide based on it, **you own it**. \"Claude wrote it\" isn't a defense for an error in a client deliverable or an unfair decision."
         },
         {
+          "id": "human-in-the-loop",
           "heading": "Human-in-the-loop",
           "body": "Require meaningful human review when output is:\n\n- External or customer-facing.\n- Legal, financial, medical, or compliance-related.\n- Used in **decisions about people** (hiring, performance, credit, discipline).\n- An action that's hard to reverse (sending, publishing, deleting, paying).\n\n\"Meaningful\" means the reviewer has the expertise, the time, and the authority to change the result. A rubber stamp doesn't count."
         },
         {
+          "id": "transparency-and-disclosure",
           "heading": "Transparency and disclosure",
           "body": "Follow your organization's policy and any applicable rules about disclosing AI involvement. Disclosure is usually expected when the audience would reasonably want to know, such as published content, customer interactions with an AI agent, or academic and professional work with disclosure norms. Never present AI-generated content as a human's personal testimony, or as verified when it wasn't."
         },
         {
+          "id": "admin-and-organizational-controls",
           "heading": "Admin and organizational controls",
           "body": "On organizational plans, admins (Owners) set guardrails for everyone: members and roles, SSO, which connectors and tools are allowed, need approval, or are blocked, and org-wide settings for features such as memory and skills. Some controls, such as SCIM provisioning, audit logs, a Compliance API, and custom data retention, are Enterprise features. As an associate-level user, know that these controls exist and who sets them, follow them, and escalate requests (for example, a new connector) through the proper channel instead of working around them."
         }
@@ -1178,18 +1257,22 @@
       "summary": "A practical map of three governance layers: Anthropic's Usage Policy, the data terms of the plan you're on, and the admin controls your organization sets. Know what each layer decides and what you do as a user.",
       "sections": [
         {
+          "id": "layer-1-the-usage-policy",
           "heading": "Layer 1: the Usage Policy",
           "body": "The Usage Policy applies to every user and every plan. Its **universal standards** prohibit uses such as creating malware, fraud, surveillance, privacy and identity violations, disinformation, and trying to jailbreak or abuse the platform.\n\nIts **high-risk requirements** apply when Claude's output informs decisions that significantly affect people, such as hiring, lending, housing, insurance, or legal and medical matters:\n\n- **Human-in-the-loop**: a qualified person meaningfully reviews the AI recommendation and has the authority to change it.\n- **Disclosure**: the affected person is clearly told AI was used. Naming the specific tool isn't required.\n\nSeparately, a **consumer-facing chatbot** must tell users they're interacting with AI, not a human."
         },
         {
+          "id": "layer-2-plan-data-terms",
           "heading": "Layer 2: plan data terms",
           "body": "- **Consumer plans** (Free, Pro, Max, Ultra): each user chooses whether chats may be used for model training, and retention depends on that choice.\n- **Commercial plans** (Team, Enterprise, API): customer content isn't used to train models by default under commercial terms.\n\nEven on a commercial plan, your **company's data policy** still decides what may be shared. Commercial terms reduce risk; they don't make restricted data fair game."
         },
         {
+          "id": "layer-3-organization-admin-controls",
           "heading": "Layer 3: organization admin controls",
           "body": "Owners and admins on Team and Enterprise plans configure the workspace for everyone:\n\n- **Identity**: SSO (Team and Enterprise); SCIM user provisioning on Enterprise.\n- **Connectors and tools**: each can be set to always allow, need approval, or blocked. Enterprise custom roles can restrict them further.\n- **Features**: org-level settings for things like memory, skills, browser use, and available models.\n- **Oversight**: audit logs, a Compliance API, and custom data retention on Enterprise.\n\nAdmins can turn memory off org-wide, but they can't read members' individual memories."
         },
         {
+          "id": "what-the-user-does",
           "heading": "What the user does",
           "body": "You don't configure these layers, but you work inside them:\n\n1. Classify the data and confirm the workspace is approved for it.\n2. Remove or anonymize identifiers the task doesn't need. Telling Claude \"don't keep this\" isn't a control.\n3. Never paste secrets: passwords, API keys, tokens, or credentials.\n4. Keep a qualified human in charge of consequential decisions and disclose AI use where required.\n5. If a control blocks you, ask the admin or follow the approval process. Don't route around it."
         }
@@ -1243,18 +1326,22 @@
       "summary": "When output disappoints, diagnose the cause before changing anything. Most problems trace back to missing context, an unclear spec, overloaded conversations, or the wrong model or feature.",
       "sections": [
         {
+          "id": "symptom-likely-cause-fix",
           "heading": "Symptom → likely cause → fix",
           "body": "- **Generic or vague output** → missing context or success criteria → add audience, purpose, and an example.\n- **Too long or wordy** → no length or format spec → set a length (\"under 120 words\") and format. If you always want brevity, put that preference in account or project instructions.\n- **Ignores an instruction** → instruction buried, conflicting, or unexplained → move it up front, remove conflicts, explain why it matters.\n- **Wrong format** → no example → show the exact format.\n- **Made-up facts** → not grounded → provide sources, permit \"not stated,\" and use web search.\n- **Forgets earlier details in a long chat** → long or cluttered context → summarize and start a fresh chat, or move stable context into a Project.\n- **Slow responses / hitting limits** → heavy model, high effort or extra features on simple tasks, huge files, very long threads → use a lighter model or lower effort, trim inputs, start new chats."
         },
         {
+          "id": "long-conversations",
           "heading": "Long conversations",
           "body": "Every message in a chat adds to the context Claude processes. Very long threads can dilute focus and use up usage limits faster. Good habits:\n\n- **One task per chat** where practical.\n- When a chat gets long or starts drifting, ask Claude for a **summary of decisions, constraints and open items**, check it, then start a new chat with that summary.\n- Put persistent reference material in **Project knowledge**, rather than re-uploading it into one ever-growing thread.\n- With code execution on, Claude can **automatically summarise earlier messages** as a chat nears the context limit. That keeps the chat going, but it is not a substitute for a clean restart when the thread has drifted, and it uses more of your limit."
         },
         {
+          "id": "usage-limits",
           "heading": "Usage limits",
           "body": "Usage limits and length limits are different things. **Usage limits** cap how much you can use Claude over time (a session window that starts with your first message, plus weekly limits, shared across Claude apps). The **length limit** is the context window of a single conversation. Ways to stretch usage: choose a lighter model or lower effort for simple tasks, avoid re-sending large files, keep chats focused, and batch related questions into one well-structured message. Exact limits vary by plan and change over time, so check the current help-center details for your plan."
         },
         {
+          "id": "change-one-thing-at-a-time",
           "heading": "Change one thing at a time",
           "body": "When you're refining a prompt or Project instructions, change **one variable**, test on the same few representative examples, and keep what works. Random rewrites make it hard to know what fixed (or broke) the result."
         }
@@ -1304,18 +1391,22 @@
       "summary": "Know the difference between usage limits and the context window, what eats into each, and how to split a big job into steps so it fits and stays accurate.",
       "sections": [
         {
+          "id": "two-different-limits",
           "heading": "Two different limits",
           "body": "- **Usage limits** cap how much you use Claude over time: a session window that starts with your first message, plus weekly limits. They are shared across Claude on the web, desktop and Claude Code.\n- **Length limit** is the **context window**: how much one conversation can hold (messages, files, tool results).\n\nHitting a usage limit means *wait or reduce consumption*. Hitting the length limit means *start a new chat or reduce what's in this one*. Exact numbers vary by plan and change, so check the current help article rather than memorising them."
         },
         {
+          "id": "what-uses-more-of-your-limit",
           "heading": "What uses more of your limit",
           "body": "- Long messages and large attachments\n- Long conversations (the whole history is processed each turn)\n- Research and web search\n- Higher effort settings and thinking\n- Artifacts and multi-step tasks\n- Connectors and tools you have switched on but don't need\n\n**Project knowledge is cached**, so reusing it costs less than re-uploading the same file into new chats. The cache expires after a period of inactivity."
         },
         {
+          "id": "optimise-without-losing-quality",
           "heading": "Optimise without losing quality",
           "body": "- Match the model and effort to the task: a lighter model or lower effort for routine drafting, the most capable settings for hard analysis.\n- Turn off web search and connectors you don't need for this task.\n- Batch related questions into one well-structured message and give the context up front.\n- Keep project instructions short and remove knowledge files you no longer use.\n- Start a fresh chat (with a summary) instead of dragging a long thread forward."
         },
         {
+          "id": "split-large-tasks",
           "heading": "Split large tasks",
           "body": "A 60-page report or a 40-file review in one prompt is slow, expensive and hard to check. Break it into steps:\n\n1. **Plan**: ask Claude for an outline or a list of sub-tasks.\n2. **Execute in chunks**: one section, chapter or batch per message (or per chat), using the same instructions.\n3. **Check each output** before moving on, so errors don't compound.\n4. **Assemble**: combine the checked pieces and ask for a final consistency pass.\n\nKeep shared instructions and reference files in a Project so every chunk gets the same context without re-uploading."
         }

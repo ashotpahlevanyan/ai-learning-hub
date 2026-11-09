@@ -103,18 +103,22 @@
       "summary": "How the three classic agent architectures trade speed for foresight, and how the ReAct Thought, Action, Observation loop turns an LLM into a deliberative agent that grounds its reasoning in tool results.",
       "sections": [
         {
+          "id": "three-architectures-one-trade-off",
           "heading": "Three architectures, one trade-off",
           "body": "The NCP-AAI study guide expects you to know **reactive, deliberative and hybrid** architectures and to pick between them for a scenario.\n\n| Architecture | How it decides | Strength | Weakness |\n|---|---|---|---|\n| **Reactive** | Stimulus maps straight to response (rules, a classifier, a single prompt). No planning, no world model. | Fast, cheap, predictable | Shallow: cannot pursue multi-step goals |\n| **Deliberative** | Builds or consults a model of the goal and world, plans, then acts | Handles multi-step goals and novel situations | Slower, costlier, more ways to go wrong |\n| **Hybrid** | A reactive layer handles time-critical inputs; a deliberative planner sits above it | Fast reflexes *and* long-horizon goals | More components to design and test |\n\nExam scenarios usually hide the answer in a constraint. A hard latency budget plus a safety reflex (stop the robot, block the transaction) points to a reactive layer. A goal that needs several dependent steps points to deliberation. If both appear in one scenario, the answer is hybrid."
         },
         {
+          "id": "matching-architecture-to-the-job",
           "heading": "Matching architecture to the job",
           "body": "- A **FAQ bot** with a fixed set of intents does not need a planner. A reactive design (intent classifier plus templated or single-prompt answers) is cheaper and more reliable.\n- A **research assistant** that must search, read, compare and write needs deliberation: each step depends on what the previous step found.\n- A **warehouse or factory agent** that must halt instantly on a sensor alarm but also schedule multi-step work is the classic hybrid.\n\nAdding deliberation where it is not needed is a common anti-pattern. Every extra reasoning step adds latency, tokens and a chance to drift."
         },
         {
+          "id": "the-react-loop",
           "heading": "The ReAct loop",
           "body": "**ReAct** (Reason + Act) interleaves reasoning traces with tool calls ([Yao et al.](https://arxiv.org/abs/2210.03629)):\n\n1. **Thought**: the model reasons about what it knows and what it needs next.\n2. **Action**: it emits a tool call (a tool name plus arguments).\n3. **Observation**: the runtime executes the tool and appends the result to the context.\n4. Repeat until the model emits a final answer.\n\nThe point of the loop is **grounding**. Each observation is real data the next thought must account for, which reduces hallucination compared with reasoning alone. It also produces a readable trace you can show to users and use for debugging.\n\nEngineering controls every ReAct agent needs:\n- a **maximum iteration** cap and a clear stop condition, so a confused agent cannot loop forever;\n- **tool-error handling** that returns the error as an observation instead of crashing the run;\n- **output parsing** that tolerates or repairs malformed tool calls."
         },
         {
+          "id": "react-relatives-you-should-recognise",
           "heading": "ReAct relatives you should recognise",
           "body": "- **ReWOO** plans all tool calls up front, executes them, then solves. It needs fewer LLM calls than ReAct when the plan does not depend on intermediate results ([ReWOO paper](https://arxiv.org/abs/2305.18323)). It adapts poorly when an early result should change the plan.\n- **Reflection / self-critique** adds a step where the agent reviews its own output and retries.\n- **Plan-and-execute** separates a planner from an executor and re-plans on failure.\n\nThe NeMo Agent Toolkit (NAT) ships ready-made agent types for several of these: **ReAct**, **ReWOO**, **Reasoning**, **Router**, **Tool Calling**, and **Sequential** and **Parallel Executor** agents, chosen through its YAML workflow configuration.\n\n> **Current status:** NVIDIA deprecated the NeMo Agent Toolkit in October 2026 (end of life at the end of 2026) in favour of newer NeMo components. The exam study guide predates this and still tests NAT, so learn it as exam content."
         }
@@ -169,18 +173,22 @@
       "summary": "When to hard-code control flow with prompt chains and routers, when to let a model choose, and how graph-based stateful orchestration with checkpoints makes multi-step, multi-turn agents reliable and resumable.",
       "sections": [
         {
+          "id": "a-spectrum-of-control",
           "heading": "A spectrum of control",
           "body": "Study-guide objective 1.6 asks you to apply **logic trees, prompt chains and stateful orchestration** for multi-step reasoning. Think of them as a spectrum from \"the developer decides the path\" to \"the model decides the path\":\n\n1. **Prompt chain**: a fixed sequence of LLM calls where each output feeds the next (extract, then validate, then format). Predictable, easy to test, cheap.\n2. **Logic tree / router**: a classifier or rule picks a branch (billing chain versus technical-support chain). Still developer-defined paths, but chosen per input.\n3. **Agent loop**: the model chooses the next tool or step at runtime (ReAct). Flexible but less predictable.\n\nUse the least autonomy that solves the problem. If you can draw the flowchart in advance, a chain or router usually beats a free-roaming agent on reliability, cost and testability."
         },
         {
+          "id": "making-chains-reliable",
           "heading": "Making chains reliable",
           "body": "- Put **validation gates** between steps: check the output schema, required fields or a simple rule before passing it on. Fail fast or retry the step rather than letting a bad intermediate result poison later steps.\n- Give each step **one job** and a focused prompt. A single mega-prompt that extracts, reasons and formats at once is harder to debug.\n- Make branches explicit. A router should have a defined fallback branch (for example, a human handoff) for inputs it cannot classify.\n\nIn NAT, the **Sequential Executor** runs steps in order, the **Router** agent dispatches to one of several branches, and the **Parallel Executor** fans independent steps out at once."
         },
         {
+          "id": "stateful-orchestration-as-a-graph",
           "heading": "Stateful orchestration as a graph",
           "body": "Framework-neutral mental model (LangGraph-style):\n\n- **Nodes** are steps: an LLM call, a tool, a sub-agent or a human review.\n- **Edges** carry control flow. **Conditional edges** branch on state, for example \"if the validator failed, go back to the drafter\".\n- A **shared state** object travels through the graph and accumulates results.\n- **Cycles** are allowed, which gives you retry and reflection loops (bounded by a counter).\n- The state is **checkpointed** after each step, keyed by a thread or session ID.\n\nCheckpointing is what makes an agent **stateful across turns and failures**:\n- a multi-turn task can pause for user input and resume later from the same point;\n- a crash or timeout resumes from the last checkpoint instead of restarting;\n- a human-approval step can **interrupt** the graph and resume when the reviewer responds;\n- the saved states form an audit trail of how the agent reached its result."
         },
         {
+          "id": "memory-belongs-in-the-design",
           "heading": "Memory belongs in the design",
           "body": "The study guide also lists **short- and long-term memory** under this domain (1.4) as well as in Cognition, Planning and Memory.\n\n- **Short-term memory** is the working context: the current conversation and graph state. Manage it with trimming, sliding windows or summarisation so long sessions stay inside the context window.\n- **Long-term memory** persists outside the model across sessions: past interactions (episodic), facts (semantic, often in a vector or graph store) and learned procedures. It is retrieved into context when relevant.\n\nDesign decision: what does the agent need to remember *within* this task (state) versus *across* tasks (long-term store)? Mixing the two, for example stuffing every past conversation into the prompt, is a cost and accuracy anti-pattern."
         }
@@ -231,18 +239,22 @@
       "summary": "The main multi-agent topologies, when splitting work across agents pays off, and how protocols such as A2A (agent to agent) and MCP (agent to tools and data) let independently built agents collaborate.",
       "sections": [
         {
+          "id": "why-more-than-one-agent",
           "heading": "Why more than one agent",
           "body": "One agent with dozens of tools and a sprawling prompt tends to pick the wrong tool more often and becomes hard to test. Splitting work across **specialised agents** gives each a narrow prompt, a small toolset and its own evaluation. The cost is coordination overhead: more LLM calls, more latency and more failure modes. Split when specialisation or parallelism clearly pays for that overhead.\n\nThe study guide's reading list includes a multi-agent fraud-detection framework and NVIDIA's multi-agent blueprints (for example the Multi-Agent Intelligent Warehouse on build.nvidia.com), which are good mental models."
         },
         {
+          "id": "topologies",
           "heading": "Topologies",
           "body": "| Pattern | Shape | Use when |\n|---|---|---|\n| **Supervisor / orchestrator-worker** | A central agent delegates subtasks to workers and synthesises results | You need one accountable decision and an audit trail |\n| **Hierarchical** | Supervisors of supervisors (teams) | One supervisor would juggle too many workers or too much context |\n| **Sequential pipeline** | Agent A's output feeds agent B | Stages are fixed and ordered |\n| **Parallel fan-out / fan-in** | Independent workers run at once, an aggregator merges | Subtasks do not depend on each other and latency matters |\n| **Network / peer** | Agents message each other directly | Open-ended collaboration; hardest to control and debug |\n\nCoordination concerns in every pattern: clear **task contracts** (input and output schema per agent), **timeouts and fallbacks** when a worker fails, loop limits on agents that hand work back and forth, and tracing across agent boundaries."
         },
         {
+          "id": "agent-to-agent-protocols-a2a",
           "heading": "Agent-to-agent protocols: A2A",
           "body": "Objective 1.3 is about **configuring agent-to-agent communication protocols**. The open **A2A protocol** ([specification](https://a2a-protocol.org/latest/specification/)) is the main standard; version 1.0.0 is released and A2A has joined the Agentic AI Foundation.\n\n- **Discovery:** each agent publishes an **Agent Card**, a JSON document at `/.well-known/agent-card.json` that lists its skills, capabilities (such as streaming and push notifications) and security schemes. Older material uses `agent.json`.\n- **Core objects:** a **Task** (unit of work with an ID), **Messages** (turns from user or agent), **Parts** (content pieces) and **Artifacts** (outputs).\n- **Task lifecycle:** Submitted, Working, then a terminal state (Completed, Failed, Canceled, Rejected) or an interrupted state (**Input Required**, **Auth Required**). Input Required is a protocol-level human-in-the-loop hook.\n- **Transport:** JSON-RPC 2.0, gRPC and HTTP/REST bindings; streaming over server-sent events; push notifications to a client webhook for long tasks.\n- **Opacity:** agents collaborate *without access to each other's internal state, memory or tools*. Each side can use a different framework or vendor."
         },
         {
+          "id": "a2a-versus-mcp",
           "heading": "A2A versus MCP",
           "body": "- **MCP (Model Context Protocol)** connects an agent or application to **tools, resources and prompts** exposed by a server.\n- **A2A** connects an agent to **another agent**, treated as an opaque peer that accepts tasks.\n\nRule of thumb: if the other side is a function or data source your agent drives, expose it through MCP. If it is an autonomous agent that plans its own work, possibly owned by another team or company, talk to it over A2A. Many systems use both. The NeMo Agent Toolkit includes MCP client and server support and an A2A client and server, so a NAT workflow can both call remote agents and be published as one."
         }
@@ -297,14 +309,17 @@
       "summary": "Three design concerns that round out the domain: knowledge graphs for relational, multi-hop reasoning; interfaces that keep humans informed and in control; and architectures that adapt and scale.",
       "sections": [
         {
+          "id": "knowledge-graphs-for-relational-reasoning",
           "heading": "Knowledge graphs for relational reasoning",
           "body": "Objective 1.7: **integrate knowledge graphs to enable relational reasoning.** A knowledge graph stores **entities** as nodes and **typed relationships** as edges (Supplier *supplies* Component, Component *used in* Product).\n\n- **Vector search** answers \"find text similar to this question\". It is good for fuzzy, semantic lookups.\n- **Graph queries** answer \"follow these relationships\": multi-hop questions such as *which products contain a part from a supplier in region X*. Similarity search often misses these because no single chunk contains the whole chain.\n- **GraphRAG / hybrid** retrieval combines both: vector search finds entry points, graph traversal expands along relationships, and the results ground the LLM's answer.\n\nAgents typically use the graph through a tool (a query function the agent can call) and can cite the path of relationships as an explanation."
         },
         {
+          "id": "designing-the-human-agent-interface",
           "heading": "Designing the human-agent interface",
           "body": "Objective 1.1 asks for **intuitive human-agent interaction**. Patterns that recur in exam scenarios:\n\n- **Stream progress.** Stream tokens and surface intermediate steps (\"searching orders...\", \"calling refund API\") so users are not left staring at a spinner during multi-step runs.\n- **Show your work.** Display the plan, sources and tool calls so users can check and trust the result.\n- **Approval gates.** Before an irreversible or side-effecting action (refund, email, deletion), show what will happen and ask for confirmation.\n- **Ask, do not guess.** When required information is missing, prompt the user (A2A's Input Required state and MCP's elicitation are protocol-level versions of this).\n- **Easy escalation and correction.** Let users interrupt, edit, or hand off to a human, and collect structured feedback (ratings with reasons) to improve the agent.\n\nNAT ships a built-in chat UI and an API server (`nat serve`) for exercising workflows interactively."
         },
         {
+          "id": "adaptability-and-scalability",
           "heading": "Adaptability and scalability",
           "body": "Objective 1.8: **ensure adaptability and scalability of the agent's architecture.**\n\nAdaptability:\n- Keep models, prompts and tools in **configuration**, not code, so you can swap an LLM or add a tool without a rewrite. NAT's YAML workflow configuration and its plugins for LangChain/LangGraph, LlamaIndex, CrewAI, Semantic Kernel and others are examples of a framework-agnostic approach.\n- Put tools behind stable interfaces (function schemas, MCP servers) so their implementations can change independently.\n- Version prompts, tools, model IDs and configs together so a change can be evaluated and rolled back.\n\nScalability:\n- Make agent workers **stateless** and externalise state (checkpoints, memory, sessions) to a shared store, so any replica can serve any request and you can scale horizontally.\n- Decompose by capability (router or supervisor plus specialists) so tool lists and prompts stay small as features grow.\n- Run long or independent work **asynchronously** and in parallel; use streaming or push notifications for long tasks.\n- Route easy requests to smaller, cheaper models and reserve large models for hard steps."
         }
@@ -355,18 +370,22 @@
       "summary": "How to write prompts that hold up in production, split work into dynamic prompt chains, and bring vision, speech and cross-modal embedding models into an agent.",
       "sections": [
         {
+          "id": "why-prompts-break-in-production",
           "heading": "Why prompts break in production",
           "body": "A prompt that works in a notebook often fails on real traffic. Inputs are messier, users phrase things in new ways, and one long prompt tries to do too many jobs at once. The study guide frames the skill as engineering prompts and **dynamic prompt chains for reliable performance**, so the goal is predictable behaviour, not clever wording.\n\nThe basic tools still apply:\n\n- **A clear system prompt** that sets the role, the scope, the output format and what to do when unsure.\n- **Few-shot examples** that match the exact output schema you expect.\n- **Chain-of-thought** instructions for multi-step reasoning, with the reasoning kept apart from the final answer when the answer feeds code.\n- **Structured output**: ask for JSON that matches a schema, then validate it in code and re-prompt on failure instead of trusting it."
         },
         {
+          "id": "dynamic-prompt-chains",
           "heading": "Dynamic prompt chains",
           "body": "A **prompt chain** splits one large task into steps. Each step has its own focused prompt, and its checked output becomes the input to the next step. A typical chain is *extract → classify → retrieve → draft → check*.\n\nA chain is **dynamic** when the next step is chosen at runtime from earlier outputs. For example, an intent classifier routes a billing question to a billing prompt and a tool-heavy path, while a greeting goes straight to a short reply. Stateful graph frameworks express this as nodes with conditional edges.\n\nWhy chains beat one big prompt:\n\n1. Each step is smaller, so it is easier to test and debug.\n2. You can **validate between steps** and stop or retry early.\n3. You can pick a different model per step, such as a small fast model for classification and a larger one for drafting.\n4. Failures point to one step, so you can trace them."
         },
         {
+          "id": "prompt-engineering-vs-p-tuning",
           "heading": "Prompt engineering vs p-tuning",
           "body": "The guide includes NVIDIA's reading on *prompt engineering and p-tuning*. Prompt engineering changes only the text you send. **P-tuning** is a parameter-efficient method: a small model is trained to produce task-specific \"virtual tokens\" (soft prompt embeddings) that are prepended to the prompt, and at inference those virtual tokens come from a lookup table. The base model's weights stay frozen. Use it when good prompting has plateaued and full fine-tuning would cost too much. It is still a training step, so it needs labelled task data."
         },
         {
+          "id": "integrating-multimodal-models",
           "heading": "Integrating multimodal models",
           "body": "Domain 2 asks you to integrate generative and multimodal models for **text, vision and audio**. NVIDIA NIM covers these with model categories that include **Vision Language Models**, **Speech (Riva)** and **NV-CLIP**.\n\nCommon patterns:\n\n- **Vision:** send images such as screenshots, charts or scanned forms to a VLM. It returns a description or structured fields, and a text LLM then reasons over that output.\n- **Audio:** put speech recognition in front of the LLM and text-to-speech after it, streaming both ways to keep latency low for voice agents.\n- **Cross-modal retrieval:** NV-CLIP puts images and text in a shared embedding space, so a text query can find relevant images.\n- **Multimodal RAG:** the guide's reading pairs LlamaIndex, NIM and Milvus. Extract text, tables and images from documents, embed them, store the vectors, and retrieve across all of them at query time.\n\nKeep each model behind its own interface, so you can swap a VLM or speech model without rewriting the agent."
         }
@@ -416,18 +435,22 @@
       "summary": "Design tool schemas the model can call reliably, validate on the server, and register tools and functions in the NeMo Agent Toolkit so they can be reused across frameworks, MCP and A2A.",
       "sections": [
         {
+          "id": "how-tool-calling-works",
           "heading": "How tool calling works",
           "body": "In framework-neutral terms, the model does not run code itself. The loop goes like this:\n\n1. The app tells the model which tools exist. Each has a **name**, a **description** and a **JSON Schema** for its arguments.\n2. The model returns a structured call with a tool name and JSON arguments.\n3. The app **validates** the arguments, runs the tool and returns the result to the model as an observation.\n4. The model keeps reasoning, calls another tool or answers.\n\nThe ReAct pattern makes this an interleaved *Thought → Action → Observation* loop."
         },
         {
+          "id": "designing-tools-the-model-calls-correctly",
           "heading": "Designing tools the model calls correctly",
           "body": "Most wrong tool calls trace back to vague tool design. Good practice:\n\n- **Specific names and descriptions** that say when to use the tool *and when not to*.\n- **Tight schemas** using enums, formats, required fields and ranges instead of free-text strings.\n- **Server-side validation** of every argument. Return a clear, structured error the model can act on, such as `date must be YYYY-MM-DD`.\n- **Small, single-purpose tools** rather than one tool with a `mode` flag that does ten things.\n- **Least privilege**: give tools only the permissions they need, and require human approval for irreversible side effects.\n- **Idempotency** for write operations, for example an idempotency key, so retries cannot create duplicates."
         },
         {
+          "id": "tools-in-the-nemo-agent-toolkit",
           "heading": "Tools in the NeMo Agent Toolkit",
           "body": "The NeMo Agent Toolkit (NAT) registers tools as **Functions** or **Function Groups** (which can include per-user functions). It wires them together with a **YAML workflow configuration**, so you can change a workflow without changing code.\n\nNAT also includes:\n\n- **Framework plugins** for LangChain/LangGraph, LlamaIndex, CrewAI, AutoGen, Semantic Kernel, Agno, Google ADK and Strands. A tool written once can be used by agents in different frameworks.\n- An **MCP client and server**. The client consumes tools from MCP servers, and the server publishes your functions as MCP tools.\n- An **A2A client and server**, so other agents can delegate tasks to a workflow without seeing its internal tools or memory.\n- Built-in agent types such as ReAct, ReWOO, Reasoning, Router, Tool Calling, and Sequential and Parallel Executors.\n\n> **Current status:** NVIDIA deprecated NAT in October 2026, with end of life at the end of 2026. The study guide (SEP25) still tests NAT, under its earlier name Agent Intelligence Toolkit, so learn it as exam content."
         },
         {
+          "id": "mcp-in-one-paragraph",
           "heading": "MCP in one paragraph",
           "body": "The Model Context Protocol uses JSON-RPC 2.0 between **hosts**, **clients** and **servers**. Servers offer **Tools** (functions the model runs), **Resources** (context and data) and **Prompts** (templated messages). Use MCP to connect an agent to tools and data. Use A2A to connect agents to other agents. The current revision (2026-07-28) is stateless: every request carries its protocol version and client capabilities, so older material describing a session handshake is out of date. Treat tool annotations from untrusted servers as untrusted."
         }
@@ -485,18 +508,22 @@
       "summary": "Apply retry, circuit breaker and fallback patterns to agent tool calls, stream responses and progress to users with feedback hooks, and refine how agents decide using evaluation data.",
       "sections": [
         {
+          "id": "retry-done-right",
           "heading": "Retry done right",
           "body": "The study guide's Domain 2 readings include the Azure **Transient Fault Handling**, **Retry** and **Circuit Breaker** patterns. Agents call many remote services, including LLM endpoints, search APIs and business systems, so they hit transient faults all the time.\n\nRetry rules:\n\n- Retry only **transient** faults such as timeouts, 429s and 503s. Do not retry validation or auth errors, because the result will not change.\n- Use **exponential backoff with jitter** so many clients don't retry at the same instant (a thundering herd).\n- **Cap** the number of attempts and the total time.\n- Retry only **idempotent or safe** operations. Protect writes with an idempotency key."
         },
         {
+          "id": "circuit-breakers-and-graceful-recovery",
           "heading": "Circuit breakers and graceful recovery",
           "body": "A **circuit breaker** wraps calls to a dependency and has three states:\n\n| State | Behaviour |\n|---|---|\n| **Closed** | Calls pass through and failures are counted. Too many failures trip it to Open. |\n| **Open** | Calls **fail fast** without touching the dependency, for a cool-down period. |\n| **Half-Open** | A limited number of trial calls go through. Success closes the breaker; failure opens it again. |\n\nCombine the patterns so that retry logic **stops retrying while the breaker is open**. Otherwise retries keep hammering a dependency that is already down.\n\n**Graceful degradation** means having a plan when a call still fails:\n\n- Serve a cached answer.\n- Fall back to a simpler or smaller model.\n- Skip an optional enrichment step.\n- Hand off to a human with the context attached.\n\nInside the agent loop, catch tool exceptions and return them as **structured observations**, so the model can choose another tool or re-plan instead of crashing. Bound the loop with a maximum number of iterations."
         },
         {
+          "id": "streaming-conversation-flows-with-feedback",
           "heading": "Streaming conversation flows with feedback",
           "body": "Long agent runs feel broken if the user sees nothing for 20 seconds. Two kinds of streaming help:\n\n- **Token streaming**, usually over **Server-Sent Events (SSE)**, so the answer appears as it is generated.\n- **Intermediate step events**, such as *Searching knowledge base…* or *Calling inventory API…*, which show progress and make the agent's behaviour visible.\n\nAdd feedback mechanisms to the flow. A thumbs up or down with a **reason code**, stored **with the trace** of that run, tells you exactly which step failed. Users should also be able to interrupt or correct the agent mid-stream."
         },
         {
+          "id": "evaluating-and-refining-decision-strategies",
           "heading": "Evaluating and refining decision strategies",
           "body": "Refining decisions is an evidence loop, not guesswork:\n\n1. Build a dataset of representative tasks with expected answers. For tool-heavy agents, include expected tool trajectories too.\n2. Run the agent. NAT supports this with `nat eval --config_file=...` and evaluators such as `trajectory` (an LLM judge of tool-use steps) and `ragas` metrics.\n3. Use `--reps` to measure run-to-run variance before you trust a difference.\n4. Change **one thing** at a time, such as a tool description, the router prompt or the agent type, and compare on the same dataset and the same judge.\n\nThe agent type is itself a strategy choice. **ReAct** re-decides after every observation, which makes it adaptive but costs more LLM calls. **ReWOO** plans all tool calls up front and then executes them, using fewer LLM calls when the tool sequence is predictable. A **Router** sends each request to a specialised path."
         }
@@ -558,26 +585,32 @@
       "summary": "How to build a repeatable evaluation pipeline for an agent: a golden dataset, judge-based evaluators, `nat eval` run modes and the output files you read afterwards.",
       "sections": [
         {
+          "id": "why-agents-need-an-evaluation-pipeline",
           "heading": "Why agents need an evaluation pipeline",
           "body": "An agent can reach the right answer by a bad route, or take a sensible route and still answer wrongly. A useful evaluation pipeline therefore checks two things:\n\n- **Final-answer quality**: is the answer accurate, relevant and grounded in the retrieved context?\n- **Trajectory quality**: did the agent choose sensible tools, in a sensible order, without wasted calls?\n\nThe pipeline has to be **repeatable**. That means a fixed dataset (often called a golden dataset), fixed evaluators and judge models, and a recorded configuration. Without those, a change in score could come from the agent, the judge or chance, and you can't tell which."
         },
         {
+          "id": "anatomy-of-a-nat-eval-run",
           "heading": "Anatomy of a `nat eval` run",
           "body": "NeMo Agent Toolkit (NAT) runs evaluation from the same YAML file that defines the workflow:\n\n```bash\nnat eval --config_file=workflow.yml\n```\n\nThe `eval` section of the config has two parts:\n\n- `eval.general` holds `output_dir`, `dataset`, `max_concurrency` (default 8) and the profiler settings.\n- `eval.evaluators` has one named entry per evaluator. Each entry has a `_type` and, for judge-based evaluators, an `llm_name` that points to the judge LLM.\n\nThe dataset can be json, jsonl, csv, xls, parquet or a custom format. Its default columns are `id`, `question` and `answer`, where `answer` is the reference answer."
         },
         {
+          "id": "built-in-evaluators",
           "heading": "Built-in evaluators",
           "body": "| Evaluator `_type` | What it scores |\n|---|---|\n| `ragas` | RAG quality. The recommended metrics are **AnswerAccuracy**, **ContextRelevance** and **ResponseGroundedness**, each from 0 to 1. FactualCorrectness is also available. |\n| `trajectory` | An LLM judge scores the agent's tool-use trajectory, meaning the sequence of steps and tool calls. |\n| `tunable_rag_evaluator` | Coverage, Correctness and Relevance, with weights you can change or a custom judge prompt. |\n| `langsmith`, `langsmith_custom`, `langsmith_judge` | Evaluators based on LangSmith. |\n\nRun `nat info components -t evaluator` to list the evaluators installed in your environment."
         },
         {
+          "id": "run-modes-worth-knowing",
           "heading": "Run modes worth knowing",
           "body": "- `--reps=N` repeats the whole run N times, so you can measure variance.\n- `--override eval.general.max_concurrency 1` lowers parallelism, for example when a judge endpoint is rate-limited.\n- `--skip_workflow --dataset=<file>` scores outputs that already exist, offline, without running the agent again.\n- `--skip_completed_entries` resumes an interrupted run.\n- `--endpoint http://localhost:8000` evaluates a remote workflow started with `nat serve`, not a local copy.\n\nThe NAT server also exposes an `/evaluate` REST endpoint, so evaluation can be started over HTTP."
         },
         {
+          "id": "reading-the-outputs",
           "heading": "Reading the outputs",
           "body": "Every run writes to `output_dir`:\n\n- `workflow_output.json` holds what the agent actually produced for each dataset item.\n- `<evaluator>_output.json` holds per-item scores and the judge's reasoning for each evaluator.\n- `config_original.yml` is the config as you wrote it. `config_effective.yml` is the config **after** CLI overrides were applied. Use the effective one when you need to reproduce or audit a run. A `config_metadata.json` file is written alongside them.\n\nIf the profiler is turned on, its files go to the same directory (see the profiling lesson)."
         },
         {
+          "id": "current-status-of-the-toolkit",
           "heading": "Current status of the toolkit",
           "body": "> **Callout.** The study guide (dated SEP25) links to the *Agent Intelligence Toolkit* 1.1 docs. The same product was earlier called AgentIQ and is now the NeMo Agent Toolkit, with the `nvidia-nat` package and `nat` CLI since 1.2. NVIDIA deprecated NeMo Agent Toolkit in October 2026, with end of life at the end of 2026, and is moving to successor tools. The exam still tests NAT concepts, so learn `nat eval` as described here and check the NVIDIA docs for the current tooling in real projects."
         }
@@ -627,22 +660,27 @@
       "summary": "How to run fair, controlled comparisons between agent versions, measure variance, slice results by task and turn evaluation into a regression gate.",
       "sections": [
         {
+          "id": "control-everything-except-the-change",
           "heading": "Control everything except the change",
           "body": "A comparison is only fair when the agent change is the **only** thing that differs between runs. Hold these constant:\n\n- the same dataset, with the same items and reference answers\n- the same evaluators and the same judge LLM and judge prompt\n- the same concurrency and environment\n\nIf you give each agent its own judge, or a judge prompt tuned to its style, you are measuring the judges, not the agents. Keep `config_effective.yml` from each run so you can show what was held constant."
         },
         {
+          "id": "measure-variance-before-declaring-a-winner",
           "heading": "Measure variance before declaring a winner",
           "body": "LLM agents and LLM judges are both non-deterministic, so one run per version can mislead. A 0.03 gap between single runs may be noise.\n\nUse `nat eval --reps=N` to repeat the run and look at the spread of scores for each version. Only treat a difference as real when it is larger than the run-to-run variation."
         },
         {
+          "id": "slice-by-task-and-dataset",
           "heading": "Slice by task and dataset",
           "body": "An aggregate score hides where an agent fails. Break per-item results from `<evaluator>_output.json` down by task category, dataset or difficulty. A version that improves the average while regressing a high-value slice, such as billing disputes in a support agent, may still be the wrong one to ship.\n\nCompare across **several** datasets where you can, for example a curated golden set plus items drawn from recent production feedback, so a gain on one benchmark doesn't hide overfitting to it."
         },
         {
+          "id": "answer-metrics-versus-trajectory-metrics",
           "heading": "Answer metrics versus trajectory metrics",
           "body": "Two agents with the same answer accuracy can differ a lot in cost and risk. Pair answer-level metrics (ragas AnswerAccuracy, ResponseGroundedness) with the `trajectory` evaluator and with profiler data such as tokens and latency. The best agent is the one that meets the quality bar at acceptable latency and cost, which is not always the one with the top accuracy score."
         },
         {
+          "id": "evaluation-as-a-regression-gate",
           "heading": "Evaluation as a regression gate",
           "body": "Run the same `nat eval` job on a golden dataset in CI before promoting a new prompt, model or tool version. Promote only if key metrics don't regress beyond an agreed threshold. Version prompts, tool definitions, model IDs and configs together so a regression can be traced to the change that caused it."
         }
@@ -688,26 +726,32 @@
       "summary": "Use the NAT profiler to find bottlenecks, collect structured user feedback and tune the accuracy, latency and cost trade-off with targeted, measured changes.",
       "sections": [
         {
+          "id": "what-the-profiler-collects",
           "heading": "What the profiler collects",
           "body": "The NAT profiler records tokens, latency and LLM and tool calls for each invocation, using framework callbacks. To instrument your own Python functions, decorate them with `@track_function`. The profiler runs as part of `nat eval`, so quality scores and performance data come from the same run."
         },
         {
+          "id": "profiler-options",
           "heading": "Profiler options",
           "body": "These keys go under `eval.general.profiler`:\n\n| Key | Purpose |\n|---|---|\n| `compute_llm_metrics` | Per-call LLM metrics such as latency and token counts |\n| `token_uniqueness_forecast` | Forecasts how unique the tokens are across requests |\n| `workflow_runtime_forecast` | Forecasts workflow runtime |\n| `prompt_caching_prefixes` | Finds shared prompt prefixes that are candidates for KV-cache reuse |\n| `bottleneck_analysis` | Finds where time goes, using `enable_nested_stack` or `simple_stack` |\n| `concurrency_spike_analysis` | Flags moments when concurrency reaches or exceeds a `spike_threshold` |\n\nForecasts use linear and random-forest models. A separate Sizing Calculator, `nat sizing calc`, runs the workflow at several concurrency levels and estimates how many GPUs are needed for a target number of users and response time."
         },
         {
+          "id": "profiler-outputs",
           "heading": "Profiler outputs",
           "body": "- `standardized_data_all.csv`: one row per profiled event, for your own analysis\n- `workflow_profiling_report.txt` and `workflow_profiling_metrics.json`: summary and bottleneck findings\n- `gantt_chart.png` (from bottleneck analysis; some versions prefix the model name): a timeline of LLM and tool calls that shows what ran in sequence and what ran in parallel\n- `all_requests_profiler_traces.json`: raw traces\n- `inference_optimization.json`: latency, throughput and runtime with 90%, 95% and 99% confidence intervals"
         },
         {
+          "id": "tuning-accuracy-against-latency-and-cost",
           "heading": "Tuning accuracy against latency and cost",
           "body": "Common levers and what they cost you:\n\n- **Smaller or quantized models** lower latency and cost but may lower accuracy. Route easy requests to a small model and keep the larger model for hard ones.\n- **Fewer reasoning steps or tool calls** cut latency and tokens, but check with the `trajectory` evaluator and answer metrics that quality holds.\n- **Prompt and KV caching** helps when many requests share a long prefix. `prompt_caching_prefixes` finds those prefixes.\n- **Concurrency and batching** raise throughput, but watch p95 latency and spikes.\n\nNAT also includes a hyper-parameter and prompt optimizer that searches configurations against your evaluation metrics. Whatever you change, re-run the same evaluation and compare against the baseline."
         },
         {
+          "id": "structured-user-feedback",
           "heading": "Structured user feedback",
           "body": "Free-text comments are hard to act on. Structured feedback is easier to use:\n\n- thumbs up or down plus a **reason code** (for example wrong answer, missing source, too slow, unsafe)\n- an optional rating and comment\n- stored **with the trace or request ID**, so you can see exactly what the agent did\n\nReview the negative cases, turn representative ones into new evaluation items, fix, and re-evaluate. This loop is often called a **data flywheel**. Don't retrain or change prompts automatically on raw feedback without review, because feedback is noisy and can be gamed."
         },
         {
+          "id": "from-results-to-targeted-optimisation",
           "heading": "From results to targeted optimisation",
           "body": "1. Find the biggest gap: a failing slice in the evaluator output, or the dominant span in the profiler report.\n2. Form a hypothesis, for example \"the retriever returns irrelevant chunks for billing questions\" if ContextRelevance is low.\n3. Change **one** thing.\n4. Re-run the same evaluation, with `--reps`, and compare against the baseline on quality, latency and cost.\n\nChanging several things at once, or optimising without a baseline, makes it impossible to say what helped."
         }
@@ -765,18 +809,22 @@
       "summary": "How NIM microservices package optimized inference as containers, and how to run them on Kubernetes with persistent caches, profiles, GPU-aware autoscaling and load balancing.",
       "sections": [
         {
+          "id": "why-this-domain-matters",
           "heading": "Why this domain matters",
           "body": "Deployment and Scaling is weighted **13%** on the NCP-AAI exam page, but the September 2025 study guide lists **5%**. Prepare to the higher figure. The study guide breaks the domain into five tasks:\n\n- deploying and orchestrating multi-agent systems at production scale\n- MLOps for CI/CD, monitoring and governance\n- profiling under distributed load\n- scaling with Docker and Kubernetes behind load balancers\n- keeping costs down while staying highly available\n\nThis lesson covers the serving layer. The next two cover inference scaling, MLOps and cost."
         },
         {
+          "id": "nim-as-the-unit-of-deployment",
           "heading": "NIM as the unit of deployment",
           "body": "An **NVIDIA NIM** for LLMs is a prebuilt inference microservice that ships as a container. The quickstart runs it with a published port (for example `-p 8000:8000`) and an **NGC API key**. Clients call an **OpenAI-compatible API** such as `/v1/chat/completions`.\n\nThe practical effect is that an agent written against an OpenAI-style client can usually switch to a self-hosted NIM by changing the base URL and model name. The agent logic stays the same.\n\nNIM is part of **NVIDIA AI Enterprise**. The NIM catalog also includes vision-language, speech and retrieval microservices, so one agent system often runs several NIMs side by side."
         },
         {
+          "id": "caches-and-profiles",
           "heading": "Caches and profiles",
           "body": "- **Model cache.** Mount persistent storage at `NIM_CACHE_PATH`, which defaults to `/opt/nim/.cache`. Without a persistent mount, every container start downloads the model again. That causes slow cold starts and slow scale-out, and it adds egress cost.\n- **Profiles.** A NIM picks an optimized *profile* (engine plus hardware configuration) for the GPUs it finds. Run `list-model-profiles` to see the profiles, and set `NIM_MODEL_PROFILE` to pin one. The preferred engine order has changed between NIM releases, so pin the profile explicitly when you need reproducible behavior.\n- **Model-free image.** NIM 2.0.x adds a model-free image that takes a model path or a Hugging Face model."
         },
         {
+          "id": "kubernetes-autoscaling-and-load-balancing",
           "heading": "Kubernetes, autoscaling and load balancing",
           "body": "On Kubernetes, NVIDIA provides the **NIM Operator** to manage NIM deployments declaratively. It handles the lifecycle of NIM microservices and their models, including model caching and autoscaling, so you don't hand-maintain `docker run` commands on each node.\n\nScaling signals matter. LLM serving is GPU-bound, so CPU utilization is often a poor autoscaling trigger. Export GPU telemetry with the **DCGM exporter** into **kube-prometheus** (NVIDIA's GPU telemetry guide, a study-guide reading), then scale on GPU and **request-queue** metrics.\n\nPut several replicas behind a load balancer. Spread them across failure zones so that losing one node or zone does not take the agent down. For multi-agent systems, scale each agent service and each model endpoint on its own, because a planner, a retriever and a large reasoning model rarely have the same load profile."
         }
@@ -838,18 +886,22 @@
       "summary": "Batching with Triton (now Dynamo-Triton), multi-node LLM serving with Dynamo, and using the NeMo Agent Toolkit profiler to find bottlenecks and size GPUs for agent workloads.",
       "sections": [
         {
+          "id": "batching-on-a-single-server",
           "heading": "Batching on a single server",
           "body": "**Triton Inference Server**, now branded **NVIDIA Dynamo-Triton**, is the general multi-framework model server. Its batchers decide how requests share the GPU.\n\n- The **dynamic batcher** combines individual requests on the server side. `max_queue_delay_microseconds` lets a batch wait briefly for more requests, then sends it as it is when the delay expires. The docs advise leaving `preferred_batch_size` unset in most cases. Queue policy sets `max_queue_size`, and priority levels are supported.\n- The **sequence batcher** serves *stateful* models by routing every request in a sequence to the same model instance.\n- For iterative (LLM-style) sequences, **in-flight batching** releases finished requests and reschedules in-flight ones on each iteration, which keeps the GPU busy."
         },
         {
+          "id": "distributed-llm-serving-with-dynamo",
           "heading": "Distributed LLM serving with Dynamo",
           "body": "**NVIDIA Dynamo** is an open-source distributed inference framework that sits above engines such as vLLM, SGLang and TensorRT-LLM. It reached 1.0 GA in 2026, so do not describe it as experimental. Its headline features are:\n\n- **Disaggregated prefill/decode serving.** The compute-heavy prompt (prefill) phase and the token-generation (decode) phase run on separate workers, so long prompts stop stalling generation for other users.\n- **NIXL**, which transfers KV cache between workers.\n- **KV-aware routing.** Requests go to workers that already hold the relevant KV cache, which avoids recomputing shared prefixes such as long agent system prompts.\n- An SLO-driven **Planner** that adjusts GPU resources to meet service-level objectives."
         },
         {
+          "id": "profiling-agent-workflows",
           "heading": "Profiling agent workflows",
           "body": "The **NeMo Agent Toolkit (NAT)** profiler records per-invocation tokens, latency, and LLM and tool calls. `@track_function` instruments arbitrary code. It runs as part of `nat eval`, configured under the eval `profiler` settings. Useful options:\n\n- `bottleneck_analysis` (nested-stack or simple-stack) finds which step dominates end-to-end latency.\n- `concurrency_spike_analysis` with a `spike_threshold` flags moments when concurrent calls pile up.\n- `prompt_caching_prefixes` finds shared prompt prefixes worth caching for KV reuse.\n- `token_uniqueness_forecast` and `workflow_runtime_forecast` support capacity planning.\n\nThe outputs include `gantt_chart.png`, `workflow_profiling_report.txt`, `all_requests_profiler_traces.json` and `inference_optimization.json`. The last one reports latency, throughput and runtime with 90/95/99% confidence intervals. The **Sizing Calculator** (`nat sizing calc`) estimates the GPU cluster size needed for a target number of users and workflow runtime.\n\nUse `--reps` for repeated runs and `eval.general.max_concurrency` to control load, so that comparisons reflect variance and not one lucky run."
         },
         {
+          "id": "current-status",
           "heading": "Current status",
           "body": "NVIDIA deprecated the NeMo Agent Toolkit in October 2026, with end of life at the end of 2026, and newer NeMo tools take over its roles. The exam blueprint (September 2025) still references the toolkit, under its earlier name Agent Intelligence Toolkit. Learn NAT for the exam, and check NVIDIA docs before you build anything new."
         }
@@ -907,18 +959,22 @@
       "summary": "Treat prompts, tools, models and configs as one versioned release, gate promotion on automated evaluation, roll out gradually, keep audit trails, and cut cost without losing availability.",
       "sections": [
         {
+          "id": "what-counts-as-a-release",
           "heading": "What counts as a release",
           "body": "An agent's behavior depends on more than code: prompt templates, tool definitions and schemas, model identifiers (and the NIM profile), retrieval settings and workflow configuration. Version **all of these together**, so that any production behavior traces back to one release and a rollback restores all of it.\n\nAvoid floating \"latest\" model references and hot-editing prompts in production. Both break reproducibility."
         },
         {
+          "id": "ci-cd-with-evaluation-gates",
           "heading": "CI/CD with evaluation gates",
           "body": "Ordinary unit tests cannot catch a prompt change that quietly lowers answer quality. Add an **evaluation gate** to CI: run `nat eval --config_file=<workflow.yml>` against a fixed golden dataset with the same evaluators and judge as the baseline, and block promotion if scores regress.\n\nNAT can also evaluate a running service with `--endpoint` (for a workflow started with `nat serve`), so the same check can run against a staging deployment.\n\nRoll out with a **canary** (a small traffic slice, compared on live metrics) or **blue-green** (switch traffic between two full environments). Both give a fast rollback path."
         },
         {
+          "id": "governance",
           "heading": "Governance",
           "body": "Keep **audit logs** of agent decisions, tool calls and model and prompt versions, so you can explain and reconstruct any action. Combine them with access control on who can promote releases.\n\nGovernance belongs in the pipeline. A release that has no eval record or approval does not ship."
         },
         {
+          "id": "cost-without-losing-availability",
           "heading": "Cost without losing availability",
           "body": "Cost levers:\n\n- **Right-size models per subtask.** Route easy queries or simple steps to smaller models and save the large model for hard reasoning.\n- **Caching.** Use prompt and KV caching. The NAT profiler's `prompt_caching_prefixes` helps find shared prefixes.\n- **Batching.** Raise GPU utilization with dynamic or in-flight batching.\n- **Scale to zero in dev and test.** Not in production paths that must stay available.\n\nAvailability levers:\n\n- multiple replicas across zones behind a load balancer\n- autoscaling on queue depth\n- persistent model caches so new replicas start fast\n- graceful fallbacks when a dependency is down\n\nAlways check that a cost cut does not quietly remove the redundancy that keeps the service available."
         }
@@ -968,26 +1024,32 @@
       "summary": "How agents turn a goal into steps: the five planning families from the LLM-agent planning survey, chain-of-thought, ReAct vs ReWOO vs plan-and-execute, and reflection loops that let an agent correct itself.",
       "sections": [
         {
+          "id": "why-planning-is-its-own-skill",
           "heading": "Why planning is its own skill",
           "body": "A single prompt-and-answer works for simple questions. Multi-step goals (\"reconcile these invoices, flag mismatches, email the vendor\") need the agent to **decide what to do next** many times, using results it did not have at the start. Planning is the part of the agent that chooses and orders those steps. Domain 5 asks you to pick a planning strategy for a scenario and to spot failure modes such as looping, drifting off-goal or committing to a broken plan."
         },
         {
+          "id": "the-survey-taxonomy-framework-neutral",
           "heading": "The survey taxonomy (framework-neutral)",
           "body": "The survey *Understanding the Planning of LLM Agents* (arXiv:2402.02716) groups approaches into five families. They are useful vocabulary for scenario questions:\n\n1. **Task decomposition**: split the goal into sub-goals, either all up front (decompose-first) or one at a time as you go (interleaved).\n2. **Multi-plan selection**: generate several candidate plans or reasoning paths, then pick one by voting, scoring or search (tree-style exploration).\n3. **External-module-aided planning**: hand the plan search to a classical planner or other tool and let the LLM translate in and out.\n4. **Reflection and refinement**: critique the result or the failed step, then revise the plan.\n5. **Memory-augmented planning**: retrieve past experiences or facts to inform the current plan.\n\nReal agents mix these. A plan-and-execute agent is decomposition plus reflection; an agent that recalls how it solved a similar ticket last week adds memory augmentation."
         },
         {
+          "id": "chain-of-thought-and-its-limits",
           "heading": "Chain-of-thought and its limits",
           "body": "**Chain-of-thought (CoT)** prompting elicits intermediate reasoning steps before the final answer, which improves multi-step arithmetic, logic and commonsense tasks on large models (arXiv:2201.11903). Variants include few-shot CoT (worked examples in the prompt), zero-shot CoT (an instruction to reason step by step) and self-consistency (sample several chains and take the majority answer, which is a form of multi-plan selection).\n\nCoT on its own reasons **only over what is in the context**. It cannot fetch a fresh exchange rate or check a database, so for tasks that need external facts, combine reasoning with actions (tools or retrieval)."
         },
         {
+          "id": "react-rewoo-and-plan-and-execute",
           "heading": "ReAct, ReWOO and plan-and-execute",
           "body": "- **ReAct** interleaves Thought, Action (tool call) and Observation. It adapts after every observation, which makes it robust when results are unpredictable, but it costs one LLM call per step and can loop.\n- **ReWOO** (Reasoning WithOut Observation) plans **all tool calls up front** with placeholders, runs them, then a solver writes the answer. It needs fewer LLM calls and fewer tokens than ReAct, but it cannot easily adapt mid-way if an early tool returns something unexpected (arXiv:2305.18323).\n- **Plan-and-execute** writes an explicit step list, executes steps (often with a cheaper model or tool calls) and **re-plans** when a step fails or new information changes the picture.\n\nNVIDIA NeMo Agent Toolkit ships ready-made agent types including ReAct, ReWOO, Reasoning, Router, Tool Calling and Sequential/Parallel Executor agents, so these patterns are configuration choices rather than code you write from scratch."
         },
         {
+          "id": "reflection-and-self-correction",
           "heading": "Reflection and self-correction",
           "body": "**Reflection** adds a critique step: the agent (or a separate critic) inspects an answer, a failed tool call or a test result, writes down what went wrong, and tries again with that lesson in context. **Reflexion** (arXiv:2303.11366) stores these verbal self-reflections in an episodic memory buffer so later attempts improve without changing model weights.\n\nReflection works best with an **external signal**: a failing unit test, a schema validation error, a tool error code or a grader score. Asking a model to \"double-check\" with no new evidence often just restates the same mistake. Always cap reflection rounds so a stubborn task cannot loop forever."
         },
         {
+          "id": "adapting-from-feedback-and-experience",
           "heading": "Adapting from feedback and experience",
           "body": "The study guide subtopic 5.5 asks you to adapt reasoning strategies from prior experience and feedback. In practice that means: log trajectories, keep lessons learned (reflections, successful plans) in long-term memory, retrieve them for similar tasks, and route structured user feedback into evaluation sets. Large models can also learn a task pattern from examples in the prompt (in-context learning) without retraining, which is why retrieved past examples can steer behaviour."
         }
@@ -1042,22 +1104,27 @@
       "summary": "Short-term vs long-term memory (episodic, semantic, procedural), keeping the context window under control, and persisting orchestration state so multi-turn and long-running tasks survive restarts and interruptions.",
       "sections": [
         {
+          "id": "short-term-memory-the-context-window",
           "heading": "Short-term memory: the context window",
           "body": "**Short-term (working) memory** is what the model sees on this call: system prompt, recent conversation turns, tool results and scratchpad reasoning. It is bounded by the context window and every token costs latency and money. Common management strategies:\n\n- **Sliding window / trimming**: keep the last N turns or tokens; simple, but old facts silently disappear.\n- **Summarization**: replace older turns with a running summary; keeps the gist, loses detail, and can drift if summaries are summarised repeatedly.\n- **Selective retention**: pin critical facts (user ID, constraints, decisions) in a structured state block that is never trimmed.\n- **Tool-result compaction**: store large tool outputs externally and keep only a reference or extract in context."
         },
         {
+          "id": "long-term-memory-three-kinds",
           "heading": "Long-term memory: three kinds",
           "body": "**Long-term memory** lives outside the model, in a database, vector store, graph store or object store, and is retrieved when relevant.\n\n| Kind | Holds | Example |\n|---|---|---|\n| **Episodic** | Past interactions and events | \"Last month this customer's refund failed because the order was split.\" |\n| **Semantic** | Facts and knowledge | User preferences, product facts, entity relationships (vector or graph store) |\n| **Procedural** | How to do things | Learned workflows, successful plans, refined instructions |\n\nWrite policies matter as much as read policies: decide what is worth remembering, deduplicate, attach timestamps and provenance, and expire or correct stale facts. Scope memory per user or tenant so one user's memories never leak into another's session."
         },
         {
+          "id": "memory-in-nemo-agent-toolkit",
           "heading": "Memory in NeMo Agent Toolkit",
           "body": "NeMo Agent Toolkit includes an **Automatic Memory Wrapper** agent that adds memory retrieval and storage around another agent, plus pluggable memory and object-store backends. Redis memory support moved to a Redis-maintained `nemo-agent-toolkit-redis` package in the 1.9 line. For the exam, the point is architectural: memory is a component you configure and swap, separate from the reasoning agent.\n\n*Current status:* NVIDIA deprecated NeMo Agent Toolkit in October 2026, with end of life at the end of 2026, in favour of NeMo Relay, NeMo Helix and NeMo Fabric. The exam guide (dated September 2025) still references the toolkit, so learn it as exam content."
         },
         {
+          "id": "state-persistence-for-multi-turn-tasks",
           "heading": "State persistence for multi-turn tasks",
           "body": "Memory is about *knowledge*; **orchestration state** is about *where the task is*. A long-running agent needs to know which steps finished, what tools returned and what it is waiting for. The standard pattern is a stateful graph whose shared state is **checkpointed after each step and keyed by a thread or session ID**. That gives you:\n\n- **Resume after crash or redeploy** from the last checkpoint instead of starting over (and re-running side effects).\n- **Human-in-the-loop interrupts**: pause before an approval step, persist state, resume hours later when a person responds.\n- **Isolation**: each conversation or job has its own thread ID, so concurrent users do not overwrite each other.\n- **Debuggability**: replay or inspect state at any step.\n\nMake side-effecting steps idempotent (or record completion in state) so a resumed run does not, for example, send the same email twice."
         },
         {
+          "id": "choosing-the-right-mechanism",
           "heading": "Choosing the right mechanism",
           "body": "- The user said something three turns ago and the agent forgot: a short-term context problem (trimming too aggressive, no pinned facts).\n- The agent should know a returning user's preferences next week: long-term semantic memory with per-user scope.\n- The agent should avoid repeating a failed approach on similar tasks: episodic or procedural memory (for example, stored reflections).\n- A five-step job must survive a pod restart: checkpointed orchestration state, not a bigger context window.\n- Stuffing everything into the prompt is rarely the answer: it raises cost and latency, and long noisy contexts can hurt accuracy."
         }
@@ -1116,26 +1183,32 @@
       "summary": "How an agent grounds its answers in enterprise knowledge: ingestion, chunking, embeddings, approximate nearest neighbor search, hybrid retrieval, reranking, and where NVIDIA NeMo Retriever fits.",
       "sections": [
         {
+          "id": "why-agents-retrieve",
           "heading": "Why agents retrieve",
           "body": "A language model only knows what was in its training data and what is in its context window. Retrieval-augmented generation (RAG) fixes both gaps at query time: the agent fetches relevant passages from an external store and puts them in the prompt, so answers can use **fresh or proprietary facts** and can **cite their sources**.\n\nFor an agent, retrieval is usually a **tool**, not a fixed pre-step. The agent decides when to search, rewrites the query, may search several times (multi-hop), and can choose among several knowledge tools: a vector index for documents, a SQL tool for the warehouse, a graph query for relationships, or a live API for data that changes by the minute.\n\nThe study guide lists this as Domain 6 subtopics 6.1 (retrieval pipelines: RAG, embedded search, hybrid approaches) and 6.2 (configure and optimize vector databases)."
         },
         {
+          "id": "the-two-halves-of-a-rag-pipeline",
           "heading": "The two halves of a RAG pipeline",
           "body": "**Offline (ingestion) path**\n1. *Extract* content from source documents: text, tables, charts, images.\n2. *Chunk* the content into retrievable units, with a chosen size and overlap.\n3. *Embed* each chunk with an embedding model into a dense vector.\n4. *Index* the vectors plus metadata (source, section, date, access tags) in a vector database.\n\n**Online (query) path**\n1. Embed the query with the **same** embedding model.\n2. Retrieve top-k candidates by vector similarity, optionally combined with keyword search and metadata filters.\n3. Rerank the candidates and keep the best few.\n4. Generate the answer from those passages, with citations.\n\nA recurring exam theme: each stage has its own failure mode, so diagnose the stage before changing the model. If the right passage never reaches the prompt, no amount of prompt tuning or model swapping will fix the answer."
         },
         {
+          "id": "chunking-and-embeddings",
           "heading": "Chunking and embeddings",
           "body": "- **Chunk size** trades precision against context. Small chunks match narrowly but may lose surrounding meaning; large chunks carry context but dilute similarity and waste prompt tokens.\n- **Overlap** keeps a sentence that straddles a boundary retrievable from either side.\n- **Structure-aware chunking** (split on headings, keep tables whole, prepend the section title) usually beats fixed-width splitting for manuals and policies.\n- **Embeddings must be consistent.** Vectors from different embedding models (or different versions) live in different spaces. If you change the embedding model, re-embed the whole corpus; never mix query vectors from one model with document vectors from another."
         },
         {
+          "id": "vector-databases-and-ann-indexes",
           "heading": "Vector databases and ANN indexes",
           "body": "Exact (flat) search compares the query with every vector, which is accurate but scales linearly. Production systems use **approximate nearest neighbor (ANN)** indexes:\n\n- **HNSW** (hierarchical navigable small world graphs): fast, high recall, more memory.\n- **IVF** (inverted file): clusters vectors and only searches the nearest clusters.\n\nBoth expose knobs that trade recall for latency. Milvus, the vector database NeMo Retriever extraction ingests into, supports GPU-accelerated indexing and search (for example GPU_CAGRA and GPU_IVF_* indexes) built on NVIDIA RAPIDS libraries such as cuVS.\n\nStore **metadata** next to each vector and filter on it (tenant, department, document type, date). Filtering by the user's entitlements at retrieval time is how you stop an agent from surfacing documents the user should not see; a system-prompt instruction is not an access control."
         },
         {
+          "id": "hybrid-search-and-reranking",
           "heading": "Hybrid search and reranking",
           "body": "- **Dense retrieval** captures meaning and paraphrase but can miss exact tokens such as part numbers, error codes or names.\n- **Sparse/keyword retrieval (for example BM25)** nails exact terms but misses paraphrase.\n- **Hybrid search** runs both and fuses the results, which is the usual fix when queries mix natural language with identifiers.\n\n**Reranking** is a second stage. The first stage cheaply pulls a generous candidate set (for example top 50). A reranker, typically a cross-encoder that reads the query and each passage *together*, scores every pair and reorders them; you keep the top few. It improves precision, but it can only reorder what the first stage returned, so it does not fix recall."
         },
         {
+          "id": "where-nvidia-nemo-retriever-fits",
           "heading": "Where NVIDIA NeMo Retriever fits",
           "body": "**NeMo Retriever** is a family of NIM microservices for the RAG pipeline:\n\n- **Extraction** (also called NVIDIA Ingest or **nv-ingest**) pulls text, tables, charts and images out of documents. It runs through `nv-ingest-cli` or a Python API and ingests into Milvus. For scanned pages or complex layouts it can use **nemoretriever-parse**, and it calls NIM services for image OCR and object detection.\n- **Text Embedding NIM** turns chunks and queries into vectors.\n- **Text Reranking NIM** scores query-passage pairs to reorder candidates.\n\nThe embedding and reranking NIMs expose OpenAI-compatible and gRPC APIs. NVIDIA also publishes a **Build a RAG Pipeline** blueprint on build.nvidia.com as a reference workflow that wires these pieces together.\n\n> **Current status:** model names and versions in the NeMo Retriever catalog change often. Learn the roles (extract, embed, rerank) rather than specific model names."
         }
@@ -1198,18 +1271,22 @@
       "summary": "When similarity search is the wrong tool: relational and multi-hop questions, knowledge graphs and GraphRAG, and giving agents safe access to structured data such as SQL warehouses and live APIs.",
       "sections": [
         {
+          "id": "where-vector-rag-runs-out",
           "heading": "Where vector RAG runs out",
           "body": "Vector search answers \"find passages that look like this question\". It struggles when the answer depends on **relationships** spread across many documents:\n\n- *Multi-hop*: \"Which suppliers of parts used in product X are located in region Y?\" needs product -> parts -> suppliers -> locations.\n- *Aggregation and global questions*: \"What are the main themes across all incident reports this year?\" is not answered by any single chunk.\n- *Exact structured facts*: \"What was Q3 revenue by region?\" lives in a table, not in prose.\n\nRaising top-k or chunk size rarely fixes these; it just adds noise. The fix is to pick a knowledge representation that matches the question."
         },
         {
+          "id": "knowledge-graphs",
           "heading": "Knowledge graphs",
           "body": "A **knowledge graph** stores entities as nodes and relationships as typed edges (for example `Part -SUPPLIED_BY-> Supplier -LOCATED_IN-> Region`). An agent can answer relational questions by **traversing** edges or by issuing a graph query, and the path itself is an explanation of the answer.\n\nKnowledge graphs are built by extracting entities and relations from documents (often with an LLM), by mapping existing structured data, or both. The study guide lists integrating knowledge graphs for relational reasoning under Domain 1 (1.7), so expect graph questions to show up as architecture choices as well."
         },
         {
+          "id": "graphrag",
           "heading": "GraphRAG",
           "body": "**GraphRAG** combines the two approaches. During indexing, an LLM extracts an entity-relationship graph from the corpus, the graph is partitioned into communities, and summaries are generated for those communities. At query time the system can answer:\n\n- **Local** questions by starting from the entities in the query and pulling in their neighborhood plus the source passages.\n- **Global** questions (\"what are the main themes?\") by combining community summaries, which plain vector RAG handles poorly.\n\nThe trade-off is cost and complexity: graph extraction is LLM-heavy at index time and must be refreshed as documents change."
         },
         {
+          "id": "structured-data-give-the-agent-a-query-tool",
           "heading": "Structured data: give the agent a query tool",
           "body": "For tables, warehouses and operational systems, the usual pattern is not to embed rows but to give the agent a **tool**:\n\n- A **text-to-SQL** or parameterized-query tool against a read-only replica or view, with the schema (tables, columns, meanings) provided as context.\n- A **live API** tool for data that changes faster than any index can be refreshed (prices, inventory, ticket status).\n\nGuard these tools the way you guard any tool: least-privilege credentials, read-only access where possible, validated arguments, row limits and timeouts. Return results with their provenance so the agent can cite them.\n\nA strong agent routes each question: documents to the retriever, relationships to the graph, numbers to SQL, and live state to the API. Hybrid pipelines often combine several in one answer."
         }
@@ -1255,18 +1332,22 @@
       "summary": "Turning messy enterprise sources into trustworthy agent knowledge: ETL for structured, unstructured and multimodal data, data quality checks and preprocessing, and keeping indexes fresh.",
       "sections": [
         {
+          "id": "etl-for-agent-knowledge",
           "heading": "ETL for agent knowledge",
           "body": "The study guide adds two subtopics that are easy to overlook: **6.3 build ETL pipelines to integrate enterprise or client data sources** and **6.4 conduct data quality checks, augmentation and preprocessing**.\n\nA knowledge ETL pipeline for an agent typically:\n1. **Extracts** from sources: file shares, wikis, ticketing systems, databases, object storage.\n2. **Transforms**: parse formats, extract tables and images, clean and normalize text, deduplicate, chunk, attach metadata (source URL, owner, timestamps, access tags), and embed.\n3. **Loads** into the right stores: a vector database, a graph, a search index, or a warehouse.\n\nTreat it like any production data pipeline: idempotent steps, versioned configuration, monitoring, and the ability to reprocess when the chunking strategy or embedding model changes."
         },
         {
+          "id": "structured-unstructured-and-multimodal-data",
           "heading": "Structured, unstructured and multimodal data",
           "body": "- **Structured** (tables, rows, JSON records): keep the structure. Load into a queryable store and expose it via a tool; if tables must be retrieved as text, serialize them so the header and units stay with the values.\n- **Unstructured** (prose documents, emails, transcripts): extract text cleanly, preserve headings, and chunk along the document's structure.\n- **Semi-structured and multimodal** (PDFs with tables, charts, scanned pages, diagrams, images): naive text extraction drops or scrambles tables and ignores charts. NeMo Retriever extraction (nv-ingest) is built for this: it pulls text, tables, charts and images separately, and uses nemoretriever-parse for scanned or complex layouts along with OCR and object-detection NIMs. Images and charts can then be made retrievable, for example through generated descriptions or multimodal embeddings (NIM's catalog includes vision-language models and NV-CLIP), while keeping a link back to the source page."
         },
         {
+          "id": "data-quality-checks-and-preprocessing",
           "heading": "Data quality checks and preprocessing",
           "body": "Retrieval quality is bounded by corpus quality. Common checks:\n\n- **Deduplication** (exact and near-duplicate) so the same paragraph does not fill every top-k slot.\n- **Boilerplate removal**: navigation menus, legal footers, repeated headers.\n- **Encoding and language normalization**, broken characters, empty or tiny chunks.\n- **Metadata completeness**: every chunk has source, date and access tags; missing tags should fail the load rather than default to \"public\".\n- **PII handling** according to policy before content enters a shared index.\n- **Augmentation** where useful: generated titles or summaries per chunk, synonyms, or synthetic question-answer pairs used to evaluate retrieval.\n\nTrack quality with a fixed set of test queries whose correct sources are known, and rerun it after every pipeline change."
         },
         {
+          "id": "freshness",
           "heading": "Freshness",
           "body": "Stale knowledge produces confident wrong answers. Match the refresh method to how fast the data changes:\n\n- **Slow-changing documents**: scheduled **incremental** indexing that upserts changed documents and deletes removed ones, keyed by a stable document ID and modification timestamp. Full re-indexing is reserved for chunking or embedding-model changes.\n- **Frequently changing records**: **change data capture (CDC)** or event-driven updates from the source system.\n- **Real-time state** (prices, stock, order status): do not index it at all; give the agent a live query tool.\n\nStore timestamps in metadata so the agent can prefer recent sources, filter by date, and tell the user how current an answer is."
         }
@@ -1320,18 +1401,22 @@
       "summary": "Which NVIDIA serving component to use for which job, how they layer on top of each other, and the batching and caching settings that cut latency.",
       "sections": [
         {
+          "id": "four-layers-four-jobs",
           "heading": "Four layers, four jobs",
           "body": "Exam scenarios often name several NVIDIA products and ask which one fixes the problem. Each component works at a different layer:\n\n| Component | Layer | Use it when |\n|---|---|---|\n| **TensorRT-LLM** | Engine and library | You need lower LLM latency and memory use: optimized kernels, quantization (FP8/FP4/INT4), in-flight batching, paged KV cache |\n| **Triton Inference Server** (now **NVIDIA Dynamo-Triton**) | General model server | You serve many models or frameworks behind one server: multi-framework backends, dynamic batching, ensembles |\n| **Dynamo** | Distributed LLM serving | One model has to span many GPUs or nodes: disaggregated prefill/decode, KV-aware routing, KV transfer via NIXL, a Planner |\n| **NIM** | Packaged microservice | You want a prebuilt, optimized model container with an OpenAI-compatible API, ready quickly |\n\nThese are layers, not rivals. A NIM container picks an engine profile (TensorRT-LLM among them) for you. Dynamo sits above engines such as vLLM, SGLang and TensorRT-LLM."
         },
         {
+          "id": "nim-in-practice",
           "heading": "NIM in practice",
           "body": "- A NIM runs as a container and exposes an **OpenAI-compatible API**, for example `/v1/chat/completions`. Pulling it requires an NGC API key.\n- **Mount a model cache** at `NIM_CACHE_PATH` (default `/opt/nim/.cache`). Without the mount, the model downloads again every time the container starts.\n- **Profiles** choose the engine and hardware configuration automatically. `list-model-profiles` shows the options and `NIM_MODEL_PROFILE` pins one. The default engine preference has changed between NIM releases, so check the docs for your version rather than assuming one.\n- On Kubernetes, the **NIM Operator** manages NIM deployments. NIM is part of NVIDIA AI Enterprise.\n- Multimodal NIMs exist too: vision language models, speech (Riva) and NV-CLIP. For document ingestion, **NeMo Retriever** NIMs handle extraction, embedding and reranking."
         },
         {
+          "id": "triton-batching-knobs",
           "heading": "Triton batching knobs",
           "body": "- The **dynamic batcher** combines separate requests on the server so the GPU processes them together. `max_queue_delay_microseconds` lets a batch wait briefly for more requests. When the delay expires, the batch goes as it is. The docs recommend leaving `preferred_batch_size` unset in most cases.\n- The **sequence batcher** is for **stateful** models. It routes every request in a sequence to the same model instance.\n- For iterative (LLM-style) sequences, **in-flight batching** releases finished requests and schedules waiting ones at each iteration, so a long generation doesn't hold up short ones.\n- **Ensembles** chain models, such as preprocess, model and postprocess, inside the server without extra network round-trips."
         },
         {
+          "id": "naming-you-will-see",
           "heading": "Naming you will see",
           "body": "The study guide still says \"Triton Inference Server\". NVIDIA has since rebranded it **NVIDIA Dynamo-Triton** as part of the Dynamo platform. Either name may appear in a question, and both mean the same server. Dynamo has also reached general availability, so treat it as a production option, not an experiment."
         }
@@ -1385,18 +1470,22 @@
       "summary": "How NVIDIA's agent-side tools fit on top of NIM: NAT for building, evaluating and profiling workflows across frameworks, Guardrails for safety rails, and Blueprints as reference starting points.",
       "sections": [
         {
+          "id": "how-the-pieces-stack",
           "heading": "How the pieces stack",
           "body": "A typical NVIDIA agent stack looks like this, from top to bottom:\n\n1. **Blueprint**: a reference workflow you start from and customize, such as AI-Q for deep research or a RAG pipeline.\n2. **NeMo Agent Toolkit (NAT)**: wires agents, tools and LLMs together in YAML, and evaluates and profiles the workflow.\n3. **NeMo Guardrails**: programmable rails around the LLM's input, retrieval, dialog, tool execution and output.\n4. **NIM / NeMo Retriever**: the model, embedding and reranking endpoints.\n5. **TensorRT-LLM, Triton (Dynamo-Triton), Dynamo**: the engines and servers underneath."
         },
         {
+          "id": "nemo-agent-toolkit-nat",
           "heading": "NeMo Agent Toolkit (NAT)",
           "body": "- Install with the pip package `nvidia-nat` and run the `nat` CLI. It is Apache-2.0 licensed. Earlier names were AgentIQ and **Agent Intelligence Toolkit** (`aiqtoolkit`, CLI `aiq`). The study guide uses the older name.\n- NAT is **framework-agnostic**. Plugins cover LangChain/LangGraph, LlamaIndex, CrewAI, AutoGen, Semantic Kernel and others, so you can profile a mixed-framework workflow as one system.\n- Tools are registered as Functions or Function Groups and wired together in a YAML workflow config. Built-in agent types include ReAct, ReWOO, Reasoning, Router and Tool Calling.\n- NAT includes an MCP client and server and an A2A client and server.\n- `nat eval --config_file=...` runs evaluators such as `ragas`, `trajectory` and `tunable_rag_evaluator` against a dataset. `--reps` repeats runs so you can measure variance.\n- The **profiler** records tokens, latency and LLM/tool calls for every invocation. It does bottleneck analysis, finds shared prompt prefixes for KV-cache reuse, and produces a Gantt chart. `nat serve` exposes the workflow as an API server, and NAT also ships a built-in chat UI.\n\n> **Current status:** NVIDIA deprecated NAT in October 2026 and named successor tools. The exam guide still tests NAT, so learn it as described here and check the GitHub README for what replaces it in new projects."
         },
         {
+          "id": "nemo-guardrails",
           "heading": "NeMo Guardrails",
           "body": "- There are five **rail types**: **input** (screen user messages, e.g. jailbreak detection or PII masking), **retrieval** (filter retrieved chunks, which helps against indirect prompt injection), **dialog** (keep the conversation on allowed topics and flows), **execution** (check tool and action calls) and **output** (content safety and PII on responses).\n- Flows are written in **Colang**. `config.yml` sets models, prompts, rails and tracing, and custom actions are Python functions.\n- Built-in `self check input` and `self check output` flows use an LLM with prompts kept in `prompts.yml`. For stronger checks, NVIDIA offers dedicated **NemoGuard NIMs** for content safety, topic control and jailbreak detection.\n- `nemoguardrails server` runs the rails as a service with a `/v1/chat/completions` endpoint. Guardrails also integrates with LangChain and LangGraph."
         },
         {
+          "id": "blueprints",
           "heading": "Blueprints",
           "body": "NVIDIA Blueprints (formerly \"NIM Agent Blueprints\") are **reference workflows**: sample code, deployment configs and documentation that combine NIM, NeMo and partner tools for one use case. Examples include the AI-Q research agent, a RAG pipeline, video search and summarization, and voice agents. The catalog changes often. The exam tests the concept: start from a blueprint and customize it rather than building from scratch."
         }
@@ -1450,18 +1539,22 @@
       "summary": "How to instrument an agent so every run can be reconstructed: spans for LLM, tool and retrieval steps, the reliability metrics a dashboard should show, and how NeMo Agent Toolkit exports telemetry.",
       "sections": [
         {
+          "id": "why-agents-need-traces-not-just-logs",
           "heading": "Why agents need traces, not just logs",
           "body": "A single user request to an agent can fan out into many LLM calls, tool calls and retrievals, and the path changes from run to run. A flat application log rarely tells you *which* step went wrong. The fix is **distributed tracing**: model each run as a **trace** made of nested **spans**, one per step.\n\nFor each span, record at least:\n- the step type (LLM call, tool call, retrieval, guardrail check) and its name\n- inputs and outputs (redacted where they contain sensitive data)\n- latency, token counts and estimated cost\n- errors, retries and status codes\n\nWith that structure you can open one failed run and see that, for example, the retriever returned irrelevant chunks, the LLM answered anyway, and the output looked confident."
         },
         {
+          "id": "reliability-metrics-for-a-monitoring-dashboard",
           "heading": "Reliability metrics for a monitoring dashboard",
           "body": "The study guide asks you to *define monitoring dashboards and reliability metrics*. For agents, pure infrastructure metrics are not enough. A useful dashboard combines:\n\n| Metric | What it tells you |\n|---|---|\n| Task success rate | Is the agent completing the job end to end? |\n| Tool-error rate | Are integrations failing (timeouts, auth, bad arguments)? |\n| p95 / p99 latency | Tail experience, not just the average |\n| Tokens and cost per request | Runaway loops and prompt bloat |\n| Groundedness / answer accuracy | Are answers supported by the retrieved context? |\n| Escalation rate | How often humans have to take over |\n\nTrack these over time and per version so that a regression shows up as a step change after a release."
         },
         {
+          "id": "telemetry-in-nemo-agent-toolkit",
           "heading": "Telemetry in NeMo Agent Toolkit",
           "body": "NeMo Agent Toolkit (NAT) includes an **Observe Workflows** capability built on **OpenTelemetry**-based telemetry exporters, with native **LangSmith** integration; the project also credits Phoenix and Weave as observability integrations. Because exporters are standard OpenTelemetry, traces can go to whichever backend your organization already runs, instead of a bespoke log format.\n\nNAT's **profiler** complements tracing: it collects per-invocation tokens, latency, and LLM and tool calls, and `@track_function` instruments arbitrary Python functions. Its outputs include `all_requests_profiler_traces.json`, a `gantt_chart.png` and bottleneck analysis, which help you find the slow step in a multi-step workflow.\n\n> **Current status:** NVIDIA deprecated NAT in October 2026 in favour of newer NeMo components. The exam study guide still teaches NAT (and its earlier names), so learn it as exam content."
         },
         {
+          "id": "propagating-trace-context-across-protocols",
           "heading": "Propagating trace context across protocols",
           "body": "Agents often call tools on other servers. If the trace breaks at every hop, you lose the end-to-end picture. The MCP specification reserves the W3C trace-context keys `traceparent`, `tracestate` and `baggage` in a request's `_meta` field so a client can pass its trace context to an MCP server. Use the same idea for any internal service: forward the trace ID on every call so spans from different processes join one trace."
         }
@@ -1511,18 +1604,22 @@
       "summary": "A root-cause workflow for hallucinations and tool failures, plus how to keep a deployed agent healthy with version-against-version benchmarks, drift monitoring and controlled updates.",
       "sections": [
         {
+          "id": "diagnosing-hallucinations",
           "heading": "Diagnosing hallucinations",
           "body": "When a RAG-backed agent gives a confident wrong answer, work from the evidence in the trace rather than immediately changing the model:\n\n1. **Check retrieval first.** Were the right documents retrieved? Low context relevance means the problem is upstream (chunking, embeddings, filters, stale index), and no prompt change will fix it.\n2. **Then check grounding.** If the right context was present, did the answer stick to it? Low groundedness points at the prompt, the model, or missing instructions to cite or abstain.\n3. **Check tool outputs.** A tool that silently returned an empty or error payload can lead the model to invent data.\n\nNAT's `ragas` evaluator exposes metrics that map neatly onto this split: **ContextRelevance** (retrieval), **ResponseGroundedness** (grounding) and **AnswerAccuracy** (end result), each scored from 0 to 1."
         },
         {
+          "id": "diagnosing-tool-failures",
           "heading": "Diagnosing tool failures",
           "body": "Tool failures show up as error spans, retries, or the model looping on the same call. Separate the causes:\n- **Transient** faults (timeouts, rate limits, 5xx): handle with bounded retries with backoff and a circuit breaker so you stop hammering a failing dependency.\n- **Persistent** faults (auth expired, schema changed, endpoint removed): retries only add latency and cost; alert and fail gracefully.\n- **Model-side** faults (wrong tool chosen, malformed arguments): fix tool descriptions and schemas, and validate arguments before execution.\n\nA rising tool-error rate on the dashboard right after an upstream API release is a classic signal of the persistent kind."
         },
         {
+          "id": "benchmark-every-release-against-the-previous-one",
           "heading": "Benchmark every release against the previous one",
           "body": "The study guide asks you to *continuously benchmark deployed agents against prior versions*. Keep a fixed golden dataset and run the same evaluation, with the same judge, against the current and candidate versions. With NAT this is `nat eval --config_file=<workflow.yml>`; use `--reps=N` to measure run-to-run variance before you conclude one version is better, and `--endpoint` to evaluate a workflow already running under `nat serve`. Each run writes `config_effective.yml` alongside the evaluator outputs, so you can tell exactly which configuration produced which score.\n\nVersion prompts, tool definitions, model IDs and configuration **together**: an agent's behaviour depends on all of them, so changing any one is a release."
         },
         {
+          "id": "drift-updates-and-uptime",
           "heading": "Drift, updates and uptime",
           "body": "Live agents degrade even when nobody changes the code: source documents go stale, user questions shift, and upstream models or APIs change. Monitor input distributions and data-quality signals, and re-run evaluations on fresh samples of production traffic. Feed reviewed failures and structured user feedback back into the evaluation set (a data flywheel) so the benchmark keeps reflecting reality.\n\nRoll out updates gradually (canary or blue-green), compare live metrics between old and new, and keep the previous version ready for a fast rollback. That is how you deliver the study guide's goal of continuous uptime, transparency and trust."
         }
@@ -1576,18 +1673,22 @@
       "summary": "How to build defence in depth around an agent: the five NeMo Guardrails rail types, the NVIDIA safety models that plug into them, and where escalation to a human fits.",
       "sections": [
         {
+          "id": "why-one-filter-is-never-enough",
           "heading": "Why one filter is never enough",
           "body": "An agent takes untrusted input, retrieves untrusted documents, calls tools that change things, and returns generated text. A single system-prompt instruction such as \"never reveal customer data\" protects none of these reliably. The model can be talked out of it, and the instruction does nothing about retrieved or tool content.\n\nA **layered safety framework** puts independent checks at every boundary, so a miss in one layer can be caught by the next. Each layer is cheap to reason about, can be tested on its own, and leaves a record for audit."
         },
         {
+          "id": "the-five-rail-types",
           "heading": "The five rail types",
           "body": "NeMo Guardrails organises programmable checks into five rail types:\n\n| Rail | Runs on | Typical use |\n|---|---|---|\n| **Input** | the user message | jailbreak and injection detection, PII masking, rejecting off-policy requests |\n| **Dialog** | the conversation flow | keeping the bot on approved topics, scripted responses, routing |\n| **Retrieval** | retrieved chunks in RAG | dropping or masking chunks, which helps against *indirect* prompt injection |\n| **Execution** | tool / action calls | validating inputs and outputs of actions before and after they run |\n| **Output** | the generated answer | content safety, PII leakage, fact or policy checks |\n\nFlows are written in **Colang**. A `config.yml` file declares the models, prompts, active rails and tracing, and custom actions are plain Python functions. The built-in `self check input` and `self check output` flows ask an LLM to judge a message against a policy prompt kept in `prompts.yml`."
         },
         {
+          "id": "plugging-in-nvidia-safety-models",
           "heading": "Plugging in NVIDIA safety models",
           "body": "Self-check prompts are a start, but they rely on an LLM judging its own traffic. Dedicated safety models add purpose-built checks as separate rails. The Guardrails docs list integrations including:\n\n- **Jailbreak protection**: self-check, heuristics, and the **NemoGuard Jailbreak Detection NIM**.\n- **Content safety**: the **NemoGuard Content Safety** model (Llama 3.1 based), with newer safety-guard models appearing in the NIM catalog.\n- **Topic control**: the **NemoGuard Topic Control NIM**, which keeps a bot within its allowed scope.\n- **PII detection**: integrations such as Presidio and NVIDIA GLiNER-PII.\n\nModel names in this family change often, so learn the *role* each one plays (jailbreak, content safety, topic, PII) rather than a version string."
         },
         {
+          "id": "serving-and-escalation",
           "heading": "Serving and escalation",
           "body": "Guardrails can run inside your Python app, in LangChain or LangGraph, or as a server (`nemoguardrails server --config ./config`) that exposes an OpenAI-style `/v1/chat/completions` endpoint. The server option lets several apps share one policy configuration.\n\nRails decide whether to allow, block, rewrite or escalate. **Escalation protocols** matter most for high-risk or ambiguous cases. When a rail flags a request it can't settle, or the agent is about to take an irreversible action, route it to a human reviewer instead of silently failing or silently proceeding."
         }
@@ -1637,18 +1738,22 @@
       "summary": "The policy side of agent safety: treating tool and retrieved content as untrusted, least privilege and approval gates, privacy controls, bias and toxicity mitigation, audit trails, and principle-level regulatory compliance.",
       "sections": [
         {
+          "id": "prompt-injection-everything-external-is-untrusted",
           "heading": "Prompt injection: everything external is untrusted",
           "body": "**Direct injection** comes from the user (\"ignore your instructions...\"). **Indirect injection** hides instructions in content the agent reads: a web page, an email, a retrieved chunk, or a tool result. An agent that obeys such text can leak data or misuse tools.\n\nDefences work together:\n- Treat retrieved content and tool output as **data, never instructions**. Filter it with retrieval rails.\n- Give each tool **least privilege**: read-only where possible, narrowly scoped credentials, allow-listed destinations.\n- Require **human approval** for side-effecting or irreversible actions such as payments, deletions and external emails.\n- Validate tool calls with execution rails before they run.\n\nMCP takes the same stance: tool annotations and descriptions from a server are untrusted unless the server itself is trusted."
         },
         {
+          "id": "privacy-and-enterprise-policy",
           "heading": "Privacy and enterprise policy",
           "body": "Privacy preservation means minimising what sensitive data enters and leaves the system:\n- Detect and **mask PII** on input before it reaches the model or logs, and on output before it reaches the user.\n- Keep only the data the task needs, and redact traces and logs that hold user content.\n- Encode enterprise policy (approved topics, data-handling rules) as rails, so it's enforced the same way every time and can be tested."
         },
         {
+          "id": "bias-and-toxicity",
           "heading": "Bias and toxicity",
           "body": "Bias and toxicity are mitigated at several levels:\n- **Measure**: evaluate outputs across demographic or user slices with a fixed test set, and track toxicity and refusal rates per slice, not just overall.\n- **Filter**: use content-safety output rails to block toxic or harmful generations.\n- **Improve**: feed flagged examples back into prompts, retrieval data or fine-tuning, then re-evaluate against the same set to confirm the fix.\n\nAn average score that looks fine can hide a group that is consistently served worse, so look at the slices."
         },
         {
+          "id": "audit-trails-and-regulation",
           "heading": "Audit trails and regulation",
           "body": "**Audit trails** record who asked what, which rails fired, which tools ran with which arguments, who approved them, and which model and config version answered. Logs should be tamper-evident, access-controlled and redacted, and kept as long as policy requires. Together with versioned guardrail configs, they let you reconstruct and justify any decision.\n\n**Regulation** is risk-based. The EU AI Act is now **adopted law (Regulation (EU) 2024/1689)**, not a proposal, even though some study material still calls it one. Its themes are risk tiers, transparency, human oversight, and documentation for higher-risk uses. Sector regulators such as the FDA (for AI in medical devices) add domain rules. Also respect **licensing**: check the licence terms of every model, dataset and library you ship."
         }
@@ -1707,22 +1812,27 @@
       "summary": "Where to put humans in an agent's control flow: approval gates before irreversible actions, confidence- and risk-based escalation, interrupt-and-resume on checkpointed state, and the protocol hooks (A2A Input Required, MCP Elicitation) that carry a request for human input.",
       "sections": [
         {
+          "id": "why-oversight-is-a-design-concern-not-an-afterthought",
           "heading": "Why oversight is a design concern, not an afterthought",
           "body": "The NCP-AAI study guide gives Domain 10 four subtopics: intuitive UIs with **user-in-the-loop** interaction, **structured feedback loops**, **transparency** (explainable reasoning and decision traceability), and **human oversight and intervention** for accountability and trust.\n\nAn agent that can call tools can change the world: send email, move money, delete records, open tickets. The more autonomy and side effects it has, the more you need explicit points where a human can see what is about to happen and stop it. Oversight is cheapest when it is built into the workflow graph from the start rather than bolted on after an incident."
         },
         {
+          "id": "approval-gates-before-irreversible-actions",
           "heading": "Approval gates before irreversible actions",
           "body": "An **approval gate** pauses the agent *before* a side-effecting or irreversible step and shows a human exactly what will happen (the tool, its arguments, and the reason). The human approves, edits, or rejects.\n\nGood practice:\n- Gate by **risk**, not by every step. Read-only lookups usually run freely; refunds above a threshold, deletions, external messages and production changes are gated.\n- Show the **concrete action**, such as `issue_refund(order=1832, amount=480.00)`, not a vague \"May I proceed?\".\n- Let the reviewer **edit** the arguments, not just say yes or no.\n- Log who approved what, and when, so the decision is auditable.\n\nGating everything causes approval fatigue: reviewers start clicking \"approve\" without reading, which is worse than a well-chosen gate."
         },
         {
+          "id": "escalation-confidence-risk-and-failure",
           "heading": "Escalation: confidence, risk and failure",
           "body": "**Escalation** hands the task (or one decision) to a human when the agent should not continue alone. Common triggers:\n- **Low confidence**: retrieval found nothing relevant, a classifier score is below threshold, or the agent's answers disagree across samples.\n- **High stakes**: legal, medical, financial or safety-relevant requests, or requests that a policy says need a human.\n- **Repeated failure**: tool errors after retries, or a circuit breaker is open. A human handoff is a legitimate fallback for graceful degradation.\n- **User request**: the user asks for a person.\n\nThe handoff should carry context (conversation, plan so far, tool results) so the human does not start from zero. Track the **escalation rate** as a reliability metric: a sudden rise often signals drift or a broken tool."
         },
         {
+          "id": "interrupt-and-resume-on-checkpointed-state",
           "heading": "Interrupt and resume on checkpointed state",
           "body": "In a stateful graph orchestrator (the LangGraph-style pattern covered in Domain 1), shared state is **checkpointed** per thread. A human-in-the-loop step **interrupts** the graph at a node, persists the state, and waits. When the human responds, hours later if needed, the graph **resumes from the checkpoint** with the human's input merged in, rather than re-running earlier steps or re-calling tools that already had side effects.\n\nThis is why durable checkpointing matters for oversight: without it, a pause for approval either blocks a worker indefinitely or loses the run."
         },
         {
+          "id": "protocol-level-hooks-for-asking-a-human",
           "heading": "Protocol-level hooks for asking a human",
           "body": "Agent protocols carry HITL natively:\n- **A2A**: a task can enter the **Input Required** state (or **Auth Required**). These are *interrupted*, non-terminal states; the client supplies the missing input and the task continues. Completed, Failed, Canceled and Rejected are terminal.\n- **MCP**: **Elicitation** is a client feature that lets a server request information from the user through the client. MCP's security principles also call for **user consent before tool invocation** and treat tool annotations as untrusted unless the server is trusted.\n\nUse these instead of inventing an ad-hoc \"please reply with...\" convention in free text."
         }
@@ -1781,22 +1891,27 @@
       "summary": "How to make agent behavior understandable and correctable: surfacing plans, sources and tool calls, decision traceability through traces and audit logs, user-facing explanations versus raw reasoning, and structured feedback that flows into the evaluation set (the data flywheel).",
       "sections": [
         {
+          "id": "what-users-should-be-able-to-see",
           "heading": "What users should be able to see",
           "body": "Transparency means a user or operator can understand **what the agent did and why**. Practical mechanisms:\n- **Show the plan** for multi-step tasks before or while executing it.\n- **Cite sources** for retrieved facts so claims can be checked.\n- **Surface tool calls** (\"Searched orders for #1832\", \"Created ticket INC-552\") so side effects are never invisible.\n- **State uncertainty** and limits plainly (\"I could not find a policy covering this; routing to an agent\").\n- **Disclose that the user is talking to an AI.** Transparency and human oversight are core principles in AI regulation such as the EU AI Act, which is adopted law, not a proposal."
         },
         {
+          "id": "explainable-reasoning-without-dumping-raw-chain-of-thought",
           "heading": "Explainable reasoning without dumping raw chain-of-thought",
           "body": "Chain-of-thought prompting can improve multi-step reasoning, and a ReAct loop (Thought, Action, Observation) gives a natural record of steps. But a raw reasoning transcript is not automatically a good explanation: it can be long, contain internal details or sensitive data, and does not guarantee the model's stated reasons are faithful.\n\nPrefer a **concise, user-facing rationale** grounded in evidence: the sources used, the rule applied, and the action taken. Keep the full step-by-step trace for operators and auditors, with sensitive fields redacted."
         },
         {
+          "id": "decision-traceability",
           "heading": "Decision traceability",
           "body": "**Traceability** means any decision can be reconstructed after the fact. Record each run as a trace with spans for every LLM call, tool call, retrieval and guardrail check, plus inputs, outputs, model version, prompt version, and the human approvals or overrides that occurred.\n\nNeMo Agent Toolkit (NAT) provides observability and profiling for workflows, and NeMo Guardrails can enforce input, dialog, retrieval, execution and output rails whose decisions also belong in the trace. With this in place you can answer \"why did the agent refund this customer?\" with evidence rather than guesswork.\n\n*Current status:* NAT was deprecated in October 2026 (successors: NeMo Relay, Helix, Fabric), but the exam guide still teaches NAT."
         },
         {
+          "id": "intuitive-uis-and-user-in-the-loop-interaction",
           "heading": "Intuitive UIs and user-in-the-loop interaction",
           "body": "The interface is where oversight actually happens. NAT ships a built-in chat UI and an API server (`nat serve`) for interacting with workflows. Whatever UI you use, design for intervention:\n- clear approve / edit / reject controls on proposed actions\n- a visible **stop** or cancel control for long-running tasks\n- streaming progress so users can catch a wrong turn early\n- an obvious path to a human."
         },
         {
+          "id": "structured-feedback-and-the-data-flywheel",
           "heading": "Structured feedback and the data flywheel",
           "body": "Free-text complaints are hard to act on. **Structured feedback** captures a rating (thumbs up/down or a scale) plus a **reason code** (wrong answer, missing source, unsafe, too slow) and stores it **with the trace** of the run it describes.\n\nThat linkage enables a **data flywheel**: production interactions and feedback are triaged, the failures become new **evaluation cases**, prompts, tools or models are improved, and the change is re-evaluated before release. NAT's evaluation tooling (`nat eval`) runs a workflow against a dataset, so routing curated failures into that dataset closes the loop. Human overrides at approval gates are equally valuable signals: every rejected action is a labeled example of what the agent should not do."
         }

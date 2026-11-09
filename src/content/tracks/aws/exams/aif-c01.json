@@ -73,22 +73,27 @@
       "summary": "How the main AI terms relate to each other, plus the vocabulary (model, algorithm, training, inference, fit, bias) that Domain 1 questions assume you know.",
       "sections": [
         {
+          "id": "the-nesting-of-terms",
           "heading": "The nesting of terms",
           "body": "- **Artificial intelligence (AI)** is the broad field of building systems that perform tasks we associate with human intelligence. Not every AI system learns: a hand-written rules engine is still AI.\n- **Machine learning (ML)** is a subset of AI where a system **learns patterns from data** instead of being explicitly programmed with rules.\n- **Deep learning** is a subset of ML that uses **neural networks with many layers**. It shines on unstructured data such as images, audio and text.\n- **Generative AI (GenAI)** uses deep learning models (usually very large ones) to **create new content**: text, images, audio, code.\n- **Large language models (LLMs)** are generative models trained on huge text corpora to understand and produce language.\n- **Agentic AI** describes systems that pursue a goal with some autonomy: they plan steps, call tools or APIs, observe results and iterate, usually with a foundation model as the reasoning engine.\n\nThink of it as AI > ML > deep learning > GenAI/LLMs, with agentic AI as a way of *using* models to take actions."
         },
         {
+          "id": "application-fields",
           "heading": "Application fields",
           "body": "- **Computer vision (CV):** understanding images and video (object detection, defect inspection, face analysis).\n- **Natural language processing (NLP):** understanding and generating human language (sentiment, entity extraction, translation, summarisation).\n- **Speech:** speech-to-text and text-to-speech sit next to NLP.\n\nA neural network is a set of connected layers of nodes whose weights are adjusted during training. \"Deep\" simply means many layers."
         },
         {
+          "id": "model-algorithm-training-and-inference",
           "heading": "Model, algorithm, training and inference",
           "body": "- An **algorithm** is the learning procedure (for example, a decision-tree learner or gradient descent on a neural network).\n- A **model** is the artifact the algorithm produces after learning from data: the learned parameters that map inputs to outputs.\n- **Training** is the process of fitting the model to data. **Inference** is using the trained model to make predictions on new data.\n\nTraining is usually expensive and occasional. Inference happens every time the model serves a request."
         },
         {
+          "id": "fit-bias-and-fairness",
           "heading": "Fit, bias and fairness",
           "body": "- **Overfitting:** the model memorises the training data and performs poorly on new data (high training score, much lower validation score).\n- **Underfitting:** the model is too simple to capture the pattern and performs poorly even on training data.\n- **Bias** (in the responsible-AI sense) is systematic skew in outputs, often caused by unrepresentative data. **Fairness** asks whether outcomes are equitable across groups."
         },
         {
+          "id": "data-types",
           "heading": "Data types",
           "body": "| Type | Example |\n|---|---|\n| Labeled | Emails tagged spam / not spam |\n| Unlabeled | Raw customer purchase logs |\n| Tabular / structured | Rows and columns in a database |\n| Time-series | Sensor readings or sales by day |\n| Image | Product photos, X-rays |\n| Text | Support tickets, reviews |\n| Unstructured | Audio, images, free text, documents |\n\nLabeled data enables supervised learning. Unlabeled data is used for unsupervised learning (and for pre-training foundation models)."
         }
@@ -134,18 +139,22 @@
       "summary": "Pick supervised, unsupervised or reinforcement learning from a scenario, and pick real-time, serverless, asynchronous or batch inference from latency and traffic requirements.",
       "sections": [
         {
+          "id": "supervised-learning",
           "heading": "Supervised learning",
           "body": "Learns from **labeled** examples (input plus the correct answer).\n- **Classification** predicts a category: fraud / not fraud, which of five ticket types.\n- **Regression** predicts a number: house price, next month's demand.\n\nClue words: \"historical data with known outcomes\", \"labeled\", \"predict whether\", \"predict how much\"."
         },
         {
+          "id": "unsupervised-learning",
           "heading": "Unsupervised learning",
           "body": "Finds structure in **unlabeled** data.\n- **Clustering** groups similar items (customer segmentation).\n- **Anomaly detection** flags unusual points.\n- **Dimensionality reduction** compresses many features into fewer.\n\nClue words: \"no labels\", \"discover groups\", \"segment\"."
         },
         {
+          "id": "reinforcement-learning-rl",
           "heading": "Reinforcement learning (RL)",
           "body": "An **agent** takes actions in an **environment** and learns from **rewards or penalties** to maximise cumulative reward. Typical uses: robotics, game playing, resource scheduling. A related idea, reinforcement learning from human feedback (RLHF), uses human preference signals to align foundation models.\n\nClue words: \"trial and error\", \"reward\", \"learns a policy\"."
         },
         {
+          "id": "inference-types-on-sagemaker-ai",
           "heading": "Inference types on SageMaker AI",
           "body": "| Option | Use when |\n|---|---|\n| **Real-time endpoint** | Interactive, low-latency, steady traffic (checkout fraud check) |\n| **Serverless Inference** | Intermittent or unpredictable traffic with idle periods; you do not want to manage instances and can tolerate cold starts |\n| **Asynchronous Inference** | Large payloads or long processing times; requests are queued and results delivered near real time |\n| **Batch transform** | Offline scoring of a whole dataset; no one is waiting on an individual response |\n\nRule of thumb: someone waiting now = real-time; spiky and idle = serverless; big and slow per request = asynchronous; whole dataset on a schedule = batch. Exact payload and timeout limits change, so check the SageMaker AI docs rather than memorising numbers."
         }
@@ -194,18 +203,22 @@
       "summary": "Decide whether AI/ML is appropriate at all, when traditional ML beats a foundation model, and map common use cases to the managed AWS AI services.",
       "sections": [
         {
+          "id": "when-ai-ml-is-not-the-right-fit",
           "heading": "When AI/ML is not the right fit",
           "body": "- The task needs a **specific, deterministic outcome** rather than a prediction (tax calculations, applying a fixed business rule). Write the rule in code.\n- A **cost-benefit analysis** does not justify it: the data, build and run cost outweighs the value, or there is too little quality data.\n- Errors are unacceptable and cannot be caught by human review.\n\nML outputs are probabilistic. If being \"usually right\" is not good enough and the logic is known, ML is the wrong tool."
         },
         {
+          "id": "traditional-ml-vs-a-foundation-model",
           "heading": "Traditional ML vs a foundation model",
           "body": "Prefer a **traditional ML model** (for example a classifier on tabular data) over a large foundation model when you face:\n- **Regulatory concerns** that require each decision to be justified.\n- **Explainability requirements**: simpler models are easier to interpret.\n- **Operational constraints**: tight latency, low cost per prediction, small hardware footprint.\n\nFoundation models suit open-ended language or multimodal tasks where flexibility matters more than strict explainability."
         },
         {
+          "id": "managed-aws-ai-services-no-ml-expertise-required",
           "heading": "Managed AWS AI services (no ML expertise required)",
           "body": "| Need | Service |\n|---|---|\n| Sentiment, entities, key phrases, PII in text | **Amazon Comprehend** |\n| Objects, faces, labels, unsafe content in images and video | **Amazon Rekognition** |\n| Speech to text (call recordings, captions) | **Amazon Transcribe** |\n| Translate text between languages | **Amazon Translate** |\n| Extract text, forms and tables from scanned documents | **Amazon Textract** |\n| Conversational chatbot (voice or text) | **Amazon Lex** |\n| Text to lifelike speech | **Amazon Polly** |\n| Personalised recommendations | **Amazon Personalize** |\n\nWhen none of these fit, build or fine-tune with **Amazon SageMaker AI**, or use a foundation model through **Amazon Bedrock**."
         },
         {
+          "id": "chaining-services",
           "heading": "Chaining services",
           "body": "Many scenarios combine services:\n- Call analytics: **Transcribe** (audio to text) then **Comprehend** (sentiment).\n- Multilingual narration: **Translate** then **Polly**.\n- Invoice processing: **Textract** (extract fields) then **Comprehend** (entities or PII).\n\nWatch the direction: Transcribe is speech-to-text, Polly is text-to-speech."
         }
@@ -258,22 +271,27 @@
       "summary": "The stages of an ML project, what MLOps adds, where Amazon SageMaker AI fits, and how to choose model and business metrics.",
       "sections": [
         {
+          "id": "the-ml-lifecycle",
           "heading": "The ML lifecycle",
           "body": "1. **Define the business goal** and how success will be measured.\n2. **Frame the ML problem** (classification, regression, clustering...).\n3. **Collect and prepare data**: cleaning, labeling, splitting into training, validation and test sets.\n4. **Feature engineering**: turn raw data into useful inputs.\n5. **Train and tune** (hyperparameter tuning).\n6. **Evaluate** on held-out data against model and business metrics.\n7. **Deploy** using a suitable inference option.\n8. **Monitor** in production for data and model drift, then **retrain**.\n\nThe loop does not end at deployment: real-world data changes, so models degrade over time."
         },
         {
+          "id": "mlops",
           "heading": "MLOps",
           "body": "MLOps applies DevOps practices to ML. The guide names Amazon SageMaker AI, Amazon Bedrock, Amazon Quick and Kiro among the AWS services used across the ML pipeline. Key MLOps ideas named in the exam guide:\n- **Experimentation** that is tracked and comparable.\n- **Repeatable processes**: versioned data, code and models; automated pipelines.\n- **Scalable systems** for training and serving.\n- Managing **technical debt** (fragile notebooks, undocumented steps).\n- **Production readiness**, **model monitoring** and **re-training**."
         },
         {
+          "id": "amazon-sagemaker-ai",
           "heading": "Amazon SageMaker AI",
           "body": "Amazon SageMaker was renamed **Amazon SageMaker AI** on 3 December 2024. \"Amazon SageMaker\" now refers to the broader unified data, analytics and AI platform, which includes SageMaker AI. SageMaker AI is the managed service to build, train and deploy ML models, with capabilities such as:\n- **SageMaker Studio** notebooks and IDE for development.\n- **SageMaker JumpStart** for pretrained models, solution templates and example notebooks.\n- Managed training and **hyperparameter tuning**.\n- **SageMaker Pipelines** and **Model Registry** for repeatable workflows and model versioning.\n- **SageMaker Model Cards** to document intended use, risk and evaluation results.\n- Deployment: real-time, serverless, asynchronous and batch transform.\n\nNote: several SageMaker AI features (including Clarify, Model Monitor and Augmented AI) were placed in maintenance mode and closed to new customers from 30 July 2026. Know what they do, but the current exam guide focuses on the concepts (monitoring, bias detection) rather than those product names."
         },
         {
+          "id": "model-metrics",
           "heading": "Model metrics",
           "body": "For classification, start from the confusion matrix (true/false positives and negatives).\n- **Accuracy** = correct predictions / all predictions. Misleading on **imbalanced** data: predicting \"no fraud\" every time can still be 99% accurate.\n- **Precision** = of the items predicted positive, how many really were. Optimise when **false positives** are costly (legitimate emails sent to spam).\n- **Recall** = of the real positives, how many were caught. Optimise when **false negatives** are costly (missing a disease or fraud).\n- **F1 score** = harmonic mean of precision and recall; a single balanced number for imbalanced classes.\n- **AUC (area under the ROC curve)** summarises how well a binary classifier separates the classes across all thresholds (1.0 perfect, 0.5 random). Useful for comparing models independently of a chosen threshold. AUC is not named in the current (v1.2) exam guide, which lists accuracy, precision, recall and F1, so treat it as background knowledge.\n\nRegression models use error measures such as mean squared error (MSE) or root mean squared error (RMSE)."
         },
         {
+          "id": "business-metrics",
           "heading": "Business metrics",
           "body": "Model metrics do not prove business value. The guide lists **cost per user**, **development costs**, **customer feedback** and **return on investment (ROI)**. Define them in step 1 of the lifecycle and track them after launch alongside model metrics."
         }
@@ -323,22 +341,27 @@
       "summary": "Tokens, chunking, embeddings, vectors, transformers, foundation models, multimodal and diffusion models, plus the agentic AI vocabulary that the current exam guide adds.",
       "sections": [
         {
+          "id": "tokens-and-chunking",
           "heading": "Tokens and chunking",
           "body": "A **token** is the unit a language model reads and writes. It is usually a word piece, not a whole word. Tokens matter for three practical reasons:\n\n- **Context window**: a model can only attend to a limited number of tokens per request (prompt plus response).\n- **Cost**: on-demand foundation model (FM) pricing is **token-based**, billed per input token and per output token.\n- **Latency**: more output tokens means a longer response time.\n\n**Chunking** splits long documents into smaller pieces before they are embedded and stored. Chunk size is a trade-off: chunks that are too large dilute relevance and use up context, and chunks that are too small lose surrounding meaning."
         },
         {
+          "id": "embeddings-and-vectors",
           "heading": "Embeddings and vectors",
           "body": "An **embedding** is a numeric representation of content (text, an image, and so on) as a **vector**, which is a list of numbers. An embedding model places items with similar *meaning* close together in vector space.\n\n- Similarity search (semantic search) compares a query vector with stored vectors and returns the nearest neighbours.\n- Vectors are stored in a **vector store** (for example Amazon OpenSearch Service, Amazon Aurora PostgreSQL with pgvector, Amazon Neptune or Amazon RDS for PostgreSQL).\n- Embeddings are the foundation of retrieval-augmented generation (RAG): chunk, embed, store, then retrieve the closest chunks at query time.\n\nEmbeddings capture meaning. They do **not** compress or encrypt data, and they are not the same thing as tokens."
         },
         {
+          "id": "transformers-and-foundation-models",
           "heading": "Transformers and foundation models",
           "body": "The **transformer** architecture uses *self-attention* to weigh how each token relates to every other token in the input. This lets models process sequences in parallel and capture long-range context. Most modern **large language models (LLMs)** are transformer-based.\n\nA **foundation model (FM)** is a large model pre-trained on broad, mostly unlabelled data at very large scale. It can be adapted to many downstream tasks (summarisation, Q&A, classification, code generation) through prompting, RAG or fine-tuning instead of training a separate model per task. An LLM is one kind of FM."
         },
         {
+          "id": "multimodal-and-diffusion-models",
           "heading": "Multimodal and diffusion models",
           "body": "- **Multimodal models** accept or produce more than one modality, such as text plus images, audio or video. Example uses: describe an image, answer questions about a chart, generate an image caption.\n- **Diffusion models** generate content (most often images) by learning to reverse a noising process. They start from random noise and remove noise step by step, guided by a prompt, until a coherent image appears.\n\nOn AWS, Amazon Nova includes understanding models (text and multimodal) and creative models for image and video generation, all offered through Amazon Bedrock."
         },
         {
+          "id": "context-engineering-and-agentic-ai",
           "heading": "Context engineering and agentic AI",
           "body": "- **Prompt engineering** shapes the instruction. **Context engineering** is the broader practice of deciding *what information goes into the context window*: retrieved documents, conversation memory, tool results and instructions, within the token budget.\n- **Agentic AI** systems use an FM to plan and take multi-step actions: they call **tools**, keep **memory** (short-term within a session, long-term across sessions), and follow **workflow orchestration**. Multi-agent patterns let several specialised agents collaborate and communicate.\n- The **Model Context Protocol (MCP)** is an open protocol that standardises how agents discover and call external tools and data sources, so one tool integration can be reused by many agents."
         }
@@ -393,18 +416,22 @@
       "summary": "Where generative AI adds value, where it fails (hallucination, nondeterminism, interpretability, inaccuracy), and which business metrics show whether it is working.",
       "sections": [
         {
+          "id": "typical-use-cases",
           "heading": "Typical use cases",
           "body": "Generative AI fits tasks where producing or transforming content is the goal:\n\n- Summarisation of documents, calls or tickets\n- Conversational assistants and customer-service chatbots\n- Content creation: marketing copy, product descriptions, images\n- Code generation and explanation\n- Translation and rewriting for tone or reading level\n- Search and Q&A over company knowledge (usually with RAG)\n- Agentic automation of multi-step tasks that call tools and APIs"
         },
         {
+          "id": "advantages",
           "heading": "Advantages",
           "body": "- **Adaptability**: one FM can handle many tasks through prompting, with no task-specific training.\n- **Speed to value**: teams can prototype in hours with a managed API.\n- **Responsiveness and scale**: content can be produced on demand for many users.\n- **Simplicity**: natural-language interfaces lower the skill barrier for end users."
         },
         {
+          "id": "limitations",
           "heading": "Limitations",
           "body": "- **Hallucination**: the model produces fluent, confident output that is false or not supported by the sources. Mitigations: ground answers with RAG, use contextual grounding checks (Amazon Bedrock Guardrails), validate outputs and ask for citations.\n- **Nondeterminism**: the same prompt can return different outputs. Lowering temperature reduces variability but does not guarantee identical answers. Avoid using FMs where an exact, repeatable result is required.\n- **Interpretability**: it is hard to explain *why* a large model produced a given output. Where regulation demands explainable decisions, a simpler traditional ML model may be the better choice.\n- **Inaccuracy and stale knowledge**: the model only knows its training data up to a cutoff unless you supply current context.\n- **Cost and latency** at scale, plus responsible-AI risks such as bias and toxicity."
         },
         {
+          "id": "measuring-business-value",
           "heading": "Measuring business value",
           "body": "Technical quality is not enough. The guide lists business metrics such as **conversion rate**, **average revenue per user (ARPU)**, **customer lifetime value (CLV)**, **ROI**, **efficiency** (for example time saved per task), **accuracy** and **cross-domain performance**. Pick the metric that matches the use case: a sales assistant might track conversion rate, while an internal summariser tracks time saved."
         }
@@ -450,14 +477,17 @@
       "summary": "The stages a foundation model goes through: data selection, model selection, pre-training, fine-tuning, evaluation, deployment and feedback.",
       "sections": [
         {
+          "id": "the-stages",
           "heading": "The stages",
           "body": "The exam guide describes the FM lifecycle as:\n\n1. **Data selection**: gather and curate large, representative, licensed data.\n2. **Model selection**: choose an architecture or an existing FM that fits the modality, size, latency and cost needs.\n3. **Pre-training**: self-supervised training on huge unlabelled corpora. This is the most expensive stage and is usually done by model providers, not by most customers.\n4. **Fine-tuning**: adapt the pre-trained model to a task or domain with smaller, often labelled, datasets.\n5. **Evaluation**: measure quality, safety and fitness with benchmarks, metrics, human review or LLM-as-a-judge.\n6. **Deployment**: serve the model for inference (managed API, provisioned capacity, or endpoints).\n7. **Feedback**: monitor real use, collect user feedback, and feed it into the next iteration."
         },
         {
+          "id": "who-does-what",
           "heading": "Who does what",
           "body": "Most organisations **start from an existing FM** (for example through Amazon Bedrock or SageMaker JumpStart) and enter the lifecycle at model selection, then customise, evaluate and deploy. Training from scratch is rare because pre-training needs massive data, compute and expertise. The Generative AI Security Scoping Matrix calls that case \"self-trained models\"."
         },
         {
+          "id": "feedback-closes-the-loop",
           "heading": "Feedback closes the loop",
           "body": "The lifecycle is iterative. Production feedback (thumbs up or down, error reports, drift in user questions) drives re-evaluation, prompt changes, new RAG content or further fine-tuning. Techniques such as reinforcement learning from human feedback (RLHF) use human preference signals to improve model behaviour."
         }
@@ -502,18 +532,22 @@
       "summary": "Choosing between Amazon Bedrock, SageMaker AI and JumpStart, Amazon Quick, Kiro, Strands Agents and Bedrock AgentCore, and the cost trade-offs of on-demand, batch and provisioned throughput.",
       "sections": [
         {
+          "id": "amazon-bedrock",
           "heading": "Amazon Bedrock",
           "body": "**Amazon Bedrock** is a fully managed, serverless service that gives API access to many FMs from Amazon (Amazon Nova) and third-party providers. You do not manage infrastructure. It also offers Knowledge Bases (RAG), Guardrails, model evaluation, Prompt Management and model customisation (for example supervised fine-tuning and distillation).\n\nChoose Bedrock when you want to **consume** FMs quickly through an API with minimal operational overhead."
         },
         {
+          "id": "sagemaker-ai-and-sagemaker-jumpstart",
           "heading": "SageMaker AI and SageMaker JumpStart",
           "body": "**Amazon SageMaker AI** (renamed from Amazon SageMaker in December 2024) is the platform for building, training and deploying your own ML models with full control over instances and code.\n\n**SageMaker JumpStart** is an ML hub inside SageMaker AI with pretrained open-source and proprietary models, solution templates and example notebooks. You can fine-tune, evaluate and deploy models to endpoints that you control, and private curated hubs limit which models teams can use.\n\nChoose JumpStart when you need to deploy or fine-tune a model on infrastructure you configure, or need a model or level of control that Bedrock does not offer."
         },
         {
+          "id": "agentic-and-productivity-services",
           "heading": "Agentic and productivity services",
           "body": "- **Amazon Bedrock AgentCore**: a platform for running agents built with any framework and any model. Its modular services include Runtime (serverless, session isolation), Memory, Gateway (turns APIs and Lambda functions into MCP tools), Identity, Code Interpreter, Browser, Observability, Evaluations and Policy.\n- **Strands Agents**: an open-source, model-agnostic SDK (Python and TypeScript) for building agents, with MCP support and multi-agent patterns. Agents can be deployed to AgentCore and other compute targets.\n- **Kiro**: an AI development environment with spec-driven development (requirements, design, tasks), steering, hooks and MCP. It is the successor to the Amazon Q Developer IDE plugins.\n- **Amazon Quick**: an AI-powered service (evolved from Amazon QuickSight) for business users to analyse data, research, build apps and automate tasks through chat and agents, grounded in organisational data.\n\n**Legacy names you may still see:** Amazon Q Business and Amazon Q Developer IDE plugins are moving to maintenance or end of support, and Amazon Bedrock Agents is now \"Bedrock Agents Classic\" and closed to new customers. PartyRock, a no-code playground for building gen AI apps, is not named in the current exam guide. Treat these as background, not as the default answer for new builds."
         },
         {
+          "id": "cost-trade-offs",
           "heading": "Cost trade-offs",
           "body": "| Option | How you pay | Fits |\n|---|---|---|\n| **On-demand** | Per input and output token, no commitment | Variable or unpredictable traffic, prototypes |\n| **Batch** | Discounted versus on-demand for supported models | Large offline jobs that do not need immediate answers |\n| **Provisioned Throughput** | Hourly per model unit, with no-commitment or discounted 1-month and 6-month terms | Steady, high, predictable volume that needs guaranteed throughput; **required to run a customised model in Bedrock** |\n| **Service tiers** | Priority costs more for faster responses; Flex costs less for latency-tolerant work | Matching price to responsiveness needs |\n\nOther trade-offs the guide names: **responsiveness**, **availability**, **redundancy**, **performance**, **regional coverage** (not every model is in every Region), **token-based pricing** and **custom models** (customised models add training and storage cost and need provisioned capacity). Exact prices and discounts change, so reason about them qualitatively."
         }
@@ -571,14 +605,17 @@
       "summary": "How to pick a foundation model by cost, modality, latency, context size, customisation and language support, and how inference parameters and prompt caching shape what you get back.",
       "sections": [
         {
+          "id": "selection-criteria-the-exam-expects",
           "heading": "Selection criteria the exam expects",
           "body": "The AIF-C01 guide lists these criteria for choosing a foundation model (FM):\n\n- **Cost**: most Bedrock models are billed per input and output token on demand. Bigger models usually cost more per token.\n- **Modality**: text, image, video, speech or embeddings. A text-only model cannot create images. Image generation needs an image model such as a diffusion model (for example, Amazon Nova Canvas).\n- **Latency**: smaller models answer faster. Use a small model for high-volume, simple jobs such as classification or routing.\n- **Multilingual support**: check that the model supports the languages your users write in.\n- **Model size and complexity**: larger models reason better but cost more and respond more slowly.\n- **Customisation**: whether the model supports fine-tuning or distillation in Bedrock.\n- **Input/output length**: the context window has to hold the prompt, any retrieved context and the answer.\n- **Prompt caching**: whether the model supports caching a long context that you reuse.\n\nThe Bedrock catalogue changes often, so the exam tests the trade-off rather than particular model versions. Start with the **smallest model that meets the quality bar** and move up only when evaluation shows you need to."
         },
         {
+          "id": "inference-parameters",
           "heading": "Inference parameters",
           "body": "Inference parameters change the output without retraining the model:\n\n| Parameter | Effect |\n|---|---|\n| **Temperature** | Lower values give more deterministic, focused output. Higher values give more random, creative output. |\n| **Top P** | Samples only from the smallest set of tokens whose cumulative probability reaches P (0.8 means the top 80% of probability mass). |\n| **Top K** | Samples only from the K most likely next tokens. |\n| **Max tokens (response length)** | Caps the length of the output. Setting it too low cuts answers off mid-sentence. |\n| **Stop sequences** | Strings that make the model stop generating when it produces them. |\n| **Penalties** | Discourage repeated tokens. |\n\nFor factual, repeatable tasks such as extraction, classification or compliance summaries, use a **low temperature**. For brainstorming and marketing copy, use a higher one. Many model providers recommend adjusting temperature *or* top P, not both at once."
         },
         {
+          "id": "prompt-caching",
           "heading": "Prompt caching",
           "body": "Prompt caching cuts **latency and input-token cost** when many requests reuse the same long prefix, such as a policy manual, a large system prompt or a document a user is chatting about.\n\n- Put **static content first** and variable content (the user question) last, so the prefix can be cached.\n- Bedrock supports implicit caching and explicit caching with cache checkpoints. The cache expires after a time-to-live that resets on every hit.\n- Writing to the cache can cost more than normal input tokens. Reading from the cache costs less.\n- It works with **on-demand** inference and **not with batch** inference.\n\nCaching does not change what the model answers. It only saves you from reprocessing the same prefix each time."
         }
@@ -629,14 +666,17 @@
       "summary": "Ground answers in your own data with Amazon Bedrock Knowledge Bases and a vector store, and give models tools and actions through agents built on Amazon Bedrock AgentCore.",
       "sections": [
         {
+          "id": "how-retrieval-augmented-generation-works",
           "heading": "How retrieval-augmented generation works",
           "body": "Retrieval-augmented generation (RAG) gives the model relevant passages from your own data at query time, so its answers rest on current, private information **without retraining**.\n\n1. **Ingest**: documents (for example, in Amazon S3) are split into **chunks**.\n2. **Embed**: an **embedding model** (for example, Titan Text Embeddings or Cohere Embed) turns each chunk into a vector.\n3. **Store**: the vectors go into a **vector store**.\n4. **Retrieve**: at query time the question is embedded, and the most semantically similar chunks are found.\n5. **Augment and generate**: the retrieved chunks are added to the prompt, and the FM writes the answer, often with citations.\n\n**Amazon Bedrock Knowledge Bases** manages this pipeline. A quick-create option can build the vector index for you.\n\nUse RAG when information **changes often**, is **proprietary**, or when answers must **cite sources**. When documents change, you re-sync the knowledge base. You do not retrain anything."
         },
         {
+          "id": "vector-stores-and-chunking",
           "heading": "Vector stores and chunking",
           "body": "The exam guide names **Amazon OpenSearch Service, Amazon Aurora, Amazon Neptune and Amazon RDS for PostgreSQL** as vector database options. Bedrock Knowledge Bases supports, among others:\n\n- Amazon OpenSearch Serverless and OpenSearch Service managed clusters\n- Amazon Aurora PostgreSQL with **pgvector**, a good fit when a team already runs PostgreSQL\n- Amazon Neptune Analytics for **GraphRAG** (relationships between entities)\n- Amazon S3 Vectors, low-cost storage for vectors that are queried infrequently\n- Third-party stores such as Pinecone, Redis Enterprise Cloud and MongoDB Atlas\n\n**Chunking** affects retrieval quality. Chunks that are too large bring in irrelevant text and use up context. Chunks that are too small lose surrounding meaning. Tune the chunk size and overlap when retrieval returns poor passages."
         },
         {
+          "id": "agents",
           "heading": "Agents",
           "body": "An **AI agent** uses an FM to reason over a task, plan steps, call **tools** (APIs, functions, knowledge bases) and act on the results. Typical business uses are booking, order handling, IT support and multi-step workflows.\n\n- **Amazon Bedrock AgentCore** is the current AWS platform for running agents built with any framework and any model. Its modular services include Runtime (serverless, with session isolation), Memory (short- and long-term), Gateway (turns APIs and Lambda functions into **MCP** tools), Identity, Code Interpreter, Browser, Observability, Evaluations and Policy.\n- **Strands Agents** is an open-source, model-agnostic SDK for building agents. It supports MCP and multi-agent patterns.\n- **Model Context Protocol (MCP)** is an open standard for connecting agents to tools and data sources.\n- **Amazon Bedrock Agents** (action groups plus attached knowledge bases) is now called **Bedrock Agents Classic** and is closed to new customers. AWS directs new builders to AgentCore and Strands.\n\nRAG retrieves *knowledge*. An agent takes *actions*. An agent can also use a knowledge base as one of its tools."
         }
@@ -691,14 +731,17 @@
       "summary": "Prompting techniques that improve output quality, how Bedrock Prompt Management handles prompts, and the main attacks against prompts and how to defend against them.",
       "sections": [
         {
+          "id": "building-blocks-and-techniques",
           "heading": "Building blocks and techniques",
           "body": "A good prompt has **context** (background and role), a clear **instruction**, the **input data**, and an **output format**. **Negative prompts** say what to leave out.\n\n- **Zero-shot**: give the instruction with no examples. This works for simple, common tasks.\n- **Single-shot / few-shot**: include one or more input-output examples. This is the cheapest way to fix the **format and style** of the output.\n- **Chain-of-thought**: ask the model to reason step by step. This helps with multi-step logic and arithmetic.\n- **Prompt templates**: reusable prompts with variables, so many requests are worded the same way.\n- **Context engineering**: choosing what goes into the context window (instructions, retrieved chunks, memory, tool results) so it stays relevant and within limits.\n\n**Amazon Bedrock Prompt Management** lets you create, save and reuse prompts with **variables**, compare **variants**, save **versions**, and use them in applications or in **Bedrock Flows**. It also offers prompt optimisation."
         },
         {
+          "id": "attacks-on-prompts",
           "heading": "Attacks on prompts",
           "body": "| Risk | What happens |\n|---|---|\n| **Prompt injection / hijacking** | Input, or retrieved content, carries instructions that override the system prompt, such as \"ignore previous instructions\". **Indirect** injection hides those instructions in documents, web pages or emails that the model reads. |\n| **Jailbreaking** | Role-play or clever wording gets the model to bypass its safety rules. |\n| **Exposure / prompt leaking** | The model reveals its system prompt or sensitive data from its context. |\n| **Poisoning** | Malicious or biased data is planted in **training data or a RAG source** so that the model learns, or retrieves, harmful content. |"
         },
         {
+          "id": "defences",
           "heading": "Defences",
           "body": "- **Amazon Bedrock Guardrails**: content filters, including a **Prompt Attack** filter for jailbreaks and injection, plus denied topics, word filters and sensitive-information (PII) filters. These apply to inputs and outputs. The ApplyGuardrail API lets you apply a guardrail to text without invoking a Bedrock FM, for example to check content from another model.\n- Keep system instructions separate from user input, and treat retrieved or user content as **data, not instructions**.\n- Apply **least privilege** to agent tools. A hijacked agent can do only what its role allows.\n- Validate and filter outputs before they reach users or downstream systems.\n- Against poisoning: **curate and govern** data sources, control who can write to knowledge-base sources, and track data lineage.\n- Log and monitor AI interactions so you can detect abuse."
         }
@@ -744,14 +787,17 @@
       "summary": "When to use prompt engineering, RAG, fine-tuning, continued pre-training or distillation, what each costs, and how to prepare training data.",
       "sections": [
         {
+          "id": "the-customisation-ladder",
           "heading": "The customisation ladder",
           "body": "Move from cheap and fast to costly and slow, and stop at the first level that meets the requirement:\n\n| Approach | Changes model weights? | Use when |\n|---|---|---|\n| **Prompt engineering / in-context learning** | No | Instructions and a few examples are enough. This is the cheapest and fastest option. |\n| **RAG** | No | Answers need current, private or citable knowledge. |\n| **Fine-tuning (supervised)** | Yes | You have **labelled** prompt-response pairs and need a consistent task behaviour, style or format. |\n| **Continued pre-training** | Yes | You have a large **unlabelled** domain corpus and the model needs the domain's vocabulary. |\n| **Distillation** | Yes (student model) | You want a **smaller, cheaper, faster** model that comes close to a larger teacher model on your use case. |\n| **Pre-training from scratch** | Builds a new model | Rarely justified: highest cost, data and expertise. |\n\nFine-tuning teaches *behaviour*. It is a poor way to keep *facts* up to date. Use RAG for that."
         },
         {
+          "id": "customisation-on-amazon-bedrock",
           "heading": "Customisation on Amazon Bedrock",
           "body": "The Bedrock customisation page currently lists:\n\n- **Supervised fine-tuning**: trains on labelled data.\n- **Reinforcement fine-tuning**: learns from feedback scored by reward functions (for example, in AWS Lambda), using prompt datasets or invocation logs.\n- **Distillation**: a teacher model writes responses to your prompts, and a smaller student model is fine-tuned on them.\n\nTraining is billed by the tokens processed (corpus tokens times epochs), plus monthly storage for the custom model. Treat continued pre-training as a general technique. Do not assume Bedrock supports it for every model.\n\nOther terms in the guide: **instruction tuning** (fine-tuning on instruction-response pairs), **transfer learning** (reusing what a model already learned for a new task) and **domain adaptation** (specialising a model for one domain)."
         },
         {
+          "id": "preparing-data",
           "heading": "Preparing data",
           "body": "The quality of a customised model depends on its data:\n\n- **Curation**: remove duplicates, errors and low-quality examples. Quality matters more than raw volume.\n- **Labelling**: make labels accurate and consistent for supervised fine-tuning.\n- **Representativeness**: cover the real range of inputs, users and languages, to avoid bias and gaps.\n- **Size**: enough examples to learn the task. More data cannot make up for poor quality.\n- **Governance**: control where data comes from and who can access it, remove or mask PII, and track lineage.\n- **RLHF (reinforcement learning from human feedback)**: people rank responses, and those rankings train the model to prefer helpful, harmless answers.\n\nKeep a held-out evaluation set that the model never sees during training."
         }
@@ -798,14 +844,17 @@
       "summary": "Human evaluation, benchmark datasets, ROUGE, BLEU and BERTScore, LLM-as-a-judge, Amazon Bedrock Evaluations, and the business metrics for RAG and agent applications.",
       "sections": [
         {
+          "id": "evaluation-methods",
           "heading": "Evaluation methods",
           "body": "- **Human evaluation (human-in-the-loop)**: people rate outputs for qualities that are hard to measure automatically, such as tone, helpfulness and brand style. It is the most expensive method and the hardest to scale.\n- **Benchmark datasets**: standard or custom prompt sets with reference answers, for comparing models the same way. Build a custom dataset from real prompts in your domain.\n- **LLM-as-a-judge**: a second model scores the responses against criteria and explains the scores. It scales better than human review.\n- **Automatic metrics** compare the output with a reference:\n\n| Metric | Measures | Typical task |\n|---|---|---|\n| **ROUGE** | Recall-oriented n-gram overlap with the reference | Summarisation |\n| **BLEU** | Precision-oriented n-gram overlap | Machine translation |\n| **BERTScore** | **Semantic** similarity using embeddings, so paraphrases still score | Any generation where the wording can vary |"
         },
         {
+          "id": "amazon-bedrock-evaluations",
           "heading": "Amazon Bedrock Evaluations",
           "body": "Bedrock Evaluations supports several job types:\n\n- **Automatic (programmatic) model evaluation** with built-in or custom prompt datasets.\n- **Human-worker evaluation** using your own employees or subject-matter experts.\n- **Judge-model evaluation**: an LLM scores the responses and explains its scores.\n- **RAG evaluation** of Bedrock Knowledge Bases or external RAG sources. It needs **ground truth** answers to compare against.\n\nIt can evaluate Bedrock FMs, custom, imported and provisioned models, and prompt routers. **AgentCore Evaluations** covers agents."
         },
         {
+          "id": "evaluating-applications-not-just-models",
           "heading": "Evaluating applications, not just models",
           "body": "The v1.2 guide expects you to evaluate whole **RAG, agent and workflow applications**:\n\n- **RAG**: retrieval quality (are the right chunks found?) and generation quality (is the answer correct, complete and grounded in the retrieved text?).\n- **Agents**: whether the task completes, whether tool calls are correct, and how many steps it takes.\n- **Business metrics**: task completion rate, user satisfaction, cost per interaction, and productivity or ROI.\n\nA model with excellent benchmark scores can still fail your business goal, so measure both."
         }
@@ -848,22 +897,27 @@
       "summary": "What \"responsible AI\" means on the exam: the six features in the guide, the eight AWS dimensions, how dataset choices and bias/variance hurt groups of people, how to detect it, and the legal risks of gen AI.",
       "sections": [
         {
+          "id": "the-features-the-exam-guide-names",
           "heading": "The features the exam guide names",
           "body": "The AIF-C01 guide lists six features of responsible AI. Learn them with a one-line test for each:\n\n- **Bias:** does the system treat some groups systematically differently because of skewed data or design?\n- **Fairness:** are outcomes and error rates acceptable across demographic groups?\n- **Inclusivity:** does it work for the full range of people who will use it (languages, dialects, accessibility needs)?\n- **Robustness:** does it keep behaving correctly with noisy, unexpected or adversarial input?\n- **Safety:** does it avoid harmful output and harmful actions?\n- **Veracity:** is the output true and grounded, rather than a confident hallucination?\n\nAWS describes responsible AI on its own site with **eight dimensions**: fairness, explainability, privacy and security, safety, controllability, veracity and robustness, governance, and transparency. Questions may use either vocabulary."
         },
         {
+          "id": "datasets-where-most-bias-starts",
           "heading": "Datasets: where most bias starts",
           "body": "The guide asks you to recognise good dataset characteristics:\n\n- **Inclusivity and diversity:** the data covers the people, languages and situations the model will meet.\n- **Curated data sources:** known, vetted origins rather than whatever was easy to scrape.\n- **Balanced datasets:** no group or class is so rare that the model effectively ignores it.\n\nIf a speech model is trained mostly on one accent, it will fail more often for everyone else. That is a **data** problem, and no prompt or inference setting fixes it."
         },
         {
+          "id": "bias-and-variance-effects",
           "heading": "Bias and variance effects",
           "body": "Statistical bias and variance also have human consequences:\n\n- **Underfitting (high bias):** the model is too simple and is inaccurate for everyone, often worst for groups with unusual patterns.\n- **Overfitting (high variance):** the model memorises training data. It scores well in training and poorly on new data, and it can lock in quirks of the groups that dominated the training set.\n- **Effects on demographic groups:** a model can look accurate overall while being much less accurate for a subgroup.\n\nThe guide names three ways to **detect** these problems: **analysing label quality** (were labels applied consistently and without prejudice?), **human audits** (people review samples of inputs and outputs), and **subgroup analysis** (compare metrics such as accuracy or approval rate per group instead of only overall)."
         },
         {
+          "id": "legal-and-business-risks-of-gen-ai",
           "heading": "Legal and business risks of gen AI",
           "body": "The guide lists these risks of working with generative AI:\n\n- **Intellectual property (IP) infringement claims:** generated text, code or images can reproduce protected material.\n- **Biased outputs:** discriminatory content or decisions create legal and reputational exposure.\n- **Loss of customer trust:** one viral bad answer can damage a brand.\n- **End-user risk:** users may act on harmful or wrong advice.\n- **Hallucinations:** confident but false statements presented as fact.\n\nMitigations combine people, process and tooling: curated and properly licensed data, guardrails, grounding with RAG, human review for high-impact decisions, and clear disclosure that content is AI-generated."
         },
         {
+          "id": "responsible-model-selection-including-sustainability",
           "heading": "Responsible model selection, including sustainability",
           "body": "Choosing a model responsibly means checking more than accuracy: intended use and known limitations, licensing of the model and its training data, evaluation results for your use case, and **environmental and sustainability considerations**. A smaller model that meets the quality bar uses less compute (and usually costs less) than the largest available model. Picking the largest model by default is not the responsible choice."
         }
@@ -910,18 +964,22 @@
       "summary": "Amazon Bedrock Guardrails safeguards, Amazon Bedrock Model Evaluations, SageMaker Model Cards and AWS AI Service Cards, plus where SageMaker Clarify, Model Monitor and Amazon A2I now stand.",
       "sections": [
         {
+          "id": "amazon-bedrock-guardrails",
           "heading": "Amazon Bedrock Guardrails",
           "body": "Guardrails apply configurable safeguards to **both user inputs and model outputs**, and return a custom message when something is blocked. The safeguards are:\n\n| Safeguard | Use it when |\n|---|---|\n| **Content filters** | Block harmful categories (hate, insults, sexual, violence, misconduct) at an adjustable strength. The **prompt attack** category catches jailbreak and prompt-injection attempts. Works on text and images. |\n| **Denied topics** | The app must refuse a whole subject, such as investment advice in a banking support bot. |\n| **Word filters** | Block profanity or specific custom words, such as competitor names. |\n| **Sensitive information filters** | **Block or mask** PII, or custom patterns defined with regex (for example account numbers). |\n| **Contextual grounding checks** | In RAG, flag responses that are not grounded in the retrieved source or not relevant to the question. |\n| **Automated Reasoning checks** | Validate responses against logical rules derived from a policy to detect hallucinated or non-compliant claims. |\n\nThe **ApplyGuardrail API** evaluates text against a guardrail **without invoking a Bedrock foundation model**, so the same policy can protect a self-hosted or third-party model. Guardrails are versioned."
         },
         {
+          "id": "evaluating-models-responsibly",
           "heading": "Evaluating models responsibly",
           "body": "**Amazon Bedrock Model Evaluations** is named in the guide as a transparency tool. It supports:\n\n- **Automatic (programmatic) evaluation** with built-in or custom prompt datasets.\n- **Human evaluation** by your own employees or subject-matter experts, for qualities like helpfulness, tone or harm that metrics miss.\n- **LLM-as-a-judge** evaluation, where a second model scores responses and explains its scores.\n- **RAG evaluation** of knowledge bases or external RAG sources.\n\nRun evaluations on **your own representative prompts**, including prompts that probe for bias, toxicity and robustness, before choosing a model."
         },
         {
+          "id": "documenting-models-model-cards-and-ai-service-cards",
           "heading": "Documenting models: Model Cards and AI Service Cards",
           "body": "- **Amazon SageMaker Model Cards** record a model's intended uses, a **risk rating** (unknown, low, medium or high), training details, evaluation results, ethical considerations and caveats. Every edit creates an immutable new version, cards can be exported to PDF for auditors, and they integrate with the SageMaker Model Registry. Use them for models **you** build or customise.\n- **AWS AI Service Cards** are documentation that **AWS** publishes about its own AI services: intended use cases, limitations and responsible AI design choices. Read them when you **consume** an AWS AI service.\n\nOther transparency sources the guide names: **open source models, open data and licensing**. Open weights and documented training data let others inspect a model; clear licences tell you what you may legally do with it."
         },
         {
+          "id": "clarify-model-monitor-and-a2i-know-them-but-know-their-statu",
           "heading": "Clarify, Model Monitor and A2I: know them, but know their status",
           "body": "Older study material leans on three SageMaker AI features:\n\n- **SageMaker Clarify:** pre-training and post-training bias metrics, and SHAP feature attributions for explainability.\n- **SageMaker Model Monitor:** monitors deployed models for data quality, model quality, bias drift and feature-attribution drift.\n- **Amazon Augmented AI (A2I):** routes low-confidence predictions to human reviewers.\n\nAWS placed all three in **maintenance mode, closed to new customers from 2026-07-30**, and exam guide v1.2 no longer names them. Learn the **concepts** they represent (bias metrics, feature attribution, drift monitoring, human-in-the-loop review), because the guide still describes related methods such as label-quality analysis, human audits and subgroup analysis. The responsible AI tools v1.2 does name are Bedrock Guardrails, Bedrock Model Evaluations and SageMaker Model Cards."
         }
@@ -976,14 +1034,17 @@
       "summary": "The difference between transparent and explainable models, when to trade some accuracy for explainability, the safety vs. transparency tension, and human-centred design for explainable AI.",
       "sections": [
         {
+          "id": "transparent-vs-explainable",
           "heading": "Transparent vs. explainable",
           "body": "- **Transparency** is about openness: what data and model were used, how the system was built and tested, what it is intended for and what its limits are. Model cards, AI Service Cards, licences and open models support it.\n- **Explainability** is about a specific output: *why* did the model make this prediction for this input? Feature attributions are a typical technique.\n\nSimple models (linear models, small decision trees) are **interpretable** by nature. Large foundation models are much harder to explain, which the guide lists as a gen AI limitation."
         },
         {
+          "id": "the-trade-offs",
           "heading": "The trade-offs",
           "body": "- **Performance vs. explainability:** a complex model may be slightly more accurate, but if regulators or customers need a reason for each decision (for example a declined loan), a more interpretable model can be the right choice. The guide also lists explainability requirements as a reason to prefer traditional ML over an FM.\n- **Safety vs. transparency:** publishing every detail of your safety controls (exact filter rules, system prompts, thresholds) helps attackers craft bypasses. Be transparent about **what** the system does, its limits and how decisions are made, without handing out a bypass recipe.\n- **Transparency vs. privacy and IP:** you may not be able to publish training data that contains personal or licensed content."
         },
         {
+          "id": "human-centred-design-for-explainable-ai",
           "heading": "Human-centred design for explainable AI",
           "body": "The guide names two principles:\n\n- **Transparency about AI decisions:** tell users when they are talking to AI or reading AI-generated content, and give the main reasons behind decisions that affect them.\n- **User feedback mechanisms:** let users flag wrong or harmful output (for example thumbs up/down or a report button) and route that feedback into evaluation and improvement.\n\nFor high-impact decisions, keep a **human in the loop** to review or override the model."
         }
@@ -1024,18 +1085,22 @@
       "summary": "Who secures what under the shared responsibility model, and the AWS controls you combine to protect AI workloads: IAM, encryption with KMS, Macie, PrivateLink, Guardrails and AgentCore Identity and Policy.",
       "sections": [
         {
+          "id": "shared-responsibility-for-ai-workloads",
           "heading": "Shared responsibility for AI workloads",
           "body": "AWS is responsible for **security of the cloud**: the facilities, hardware, network and the managed service software behind services such as Amazon Bedrock and SageMaker AI. You are responsible for **security in the cloud**: who can call the model, what data you send it, how you encrypt and classify that data, how you configure the application and what you do with the output.\n\nThe split moves with the service type. With a managed API such as Bedrock you do not patch model hosts, but you still own IAM permissions, prompts, data, guardrail configuration and logging. With self-managed EC2 or container hosting you also own the OS, patches and network configuration."
         },
         {
+          "id": "identity-and-access-iam",
           "heading": "Identity and access: IAM",
           "body": "- Grant access with **IAM roles** (temporary credentials) for applications and services, not long-lived access keys embedded in code.\n- Apply **least privilege**: scope policies to the specific actions (for example only invoking a model) and specific resources (specific models, knowledge bases or buckets) the workload needs.\n- Use **service roles** so a service such as a Bedrock knowledge base or a SageMaker training job can read only the S3 data it needs.\n- For agents, the v1.2 guide names **Amazon Bedrock AgentCore Identity** (identity and credential handling for agents acting for users or calling tools) and **Policy in AgentCore** (rules that limit what an agent may do). Treat these as the agent-level layer on top of IAM."
         },
         {
+          "id": "protecting-data-encryption-macie-privatelink",
           "heading": "Protecting data: encryption, Macie, PrivateLink",
           "body": "- **Encryption at rest** with **AWS KMS** keys (AWS managed or customer managed keys when you need control over key policy, rotation and revocation). **Encryption in transit** with TLS.\n- **Amazon Macie** discovers and classifies sensitive data such as PII in **Amazon S3**. Run it on training or RAG source buckets *before* the data reaches a model.\n- **AWS PrivateLink** (interface VPC endpoints) gives private connectivity from your VPC to supported AWS services so traffic does not traverse the public internet. For example, an OpenSearch Serverless vector store for a knowledge base can be made private through a VPC endpoint.\n- **AWS Secrets Manager** holds credentials, for example for third-party vector stores used by Bedrock Knowledge Bases."
         },
         {
+          "id": "ai-specific-threats-and-controls",
           "heading": "AI-specific threats and controls",
           "body": "| Threat | Typical control |\n|---|---|\n| Prompt injection / jailbreak | Bedrock Guardrails content filter with the **prompt attack** category, input validation, least-privilege tools for agents |\n| Data leakage of PII in responses | Guardrails **sensitive information filters** (block or mask), Macie on source data, least-privilege retrieval |\n| Hallucinated or ungrounded answers | **Contextual grounding checks** for RAG, Automated Reasoning checks, output validation |\n| Toxic output | Guardrails content filters, denied topics, word filters |\n| Vulnerable compute | Amazon Inspector scanning, patching |\n\nGuardrails apply to both inputs and outputs, and the **ApplyGuardrail API** lets you evaluate text without invoking a Bedrock model."
         }
@@ -1090,14 +1155,17 @@
       "summary": "Data governance (lineage, cataloguing, retention, residency, logging), the AWS compliance services named in the exam guide, and governance frameworks such as the Generative AI Security Scoping Matrix.",
       "sections": [
         {
+          "id": "data-governance-concepts",
           "heading": "Data governance concepts",
           "body": "- **Data lineage**: where data came from and every transformation it went through, so you can trace a model output or training set back to its sources (source citation and data origins).\n- **Data cataloguing**: a searchable inventory of datasets with schema and metadata, for example the AWS Glue Data Catalog, with AWS Lake Formation for fine-grained access.\n- **Data lifecycle and retention**: how long data, prompts, outputs and logs are kept, and when they are archived or deleted (S3 lifecycle rules help here).\n- **Data residency**: keeping data in specific AWS Regions to meet legal or contractual requirements. You choose the Region; data stays there unless you enable features that move or process it elsewhere (for example cross-Region replication or cross-Region inference), so review those settings.\n- **Logging, monitoring and observation**: audit trails of who accessed what, plus logs of AI interactions (prompts and responses) for investigation.\n- **SageMaker Model Cards** document intended use, risk rating, training details and evaluation results, with immutable versions, supporting transparency and audit."
         },
         {
+          "id": "the-compliance-and-governance-services",
           "heading": "The compliance and governance services",
           "body": "| Service | Answers the question |\n|---|---|\n| **AWS CloudTrail** | *Who* called *which API*, *when*, from where? (audit trail of account activity, including calls to Bedrock and SageMaker APIs) |\n| **AWS Config** | What is the *configuration* of my resources, how has it changed, and is it *compliant* with my rules? |\n| **Amazon Inspector** | Do my workloads (EC2, container images, Lambda) have known *software vulnerabilities* or unintended network exposure? |\n| **AWS Artifact** | Where do I download AWS *compliance reports* (for example SOC, ISO) and review/accept *agreements*? |\n| **AWS Trusted Advisor** | Am I following *best practices* for cost, security, fault tolerance, performance and service quotas? |\n| **Amazon CloudWatch** | Metrics, logs and alarms for operational monitoring |\n\nAWS Audit Manager (continuous evidence collection for audits) appears in older study material, but it is **not listed in the current (v1.2) exam guide**. Know it only well enough to recognise it."
         },
         {
+          "id": "governance-protocols-and-the-scoping-matrix",
           "heading": "Governance protocols and the Scoping Matrix",
           "body": "Governance is not only tooling. The guide lists **policies**, a **review cadence** and review strategies, **transparency standards** and **team training**.\n\nThe **Generative AI Security Scoping Matrix** classifies a workload by how much of the model you own:\n\n1. **Consumer app** - using a public third-party gen AI service (buy).\n2. **Enterprise app** - a third-party SaaS product with gen AI features under an enterprise agreement (buy).\n3. **Pre-trained models** - building your app on a third-party foundation model through an API, for example Amazon Bedrock.\n4. **Fine-tuned models** - refining a foundation model with your own data.\n5. **Self-trained models** - training a model from scratch on your data.\n\nYour responsibility grows from scope 1 to 5. It is assessed across governance and compliance, legal and privacy, risk management, controls and resilience. Fine-tuning (scope 4) means your data is now embedded in the model, so the model itself inherits the data classification."
         }

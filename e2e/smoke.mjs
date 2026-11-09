@@ -47,18 +47,20 @@ try {
     const docs = await page.$$eval('.sources a', as => as.map(a => [a.href, a.target]));
     if (!docs.length) fail(`${ex}: first lesson shows no official-docs links`);
     if (docs.some(([href, target]) => !href.startsWith('https://') || target !== '_blank')) fail(`${ex}: lesson source link is not an external https link`);
-    await page.click('text=Mark complete');
+    await page.click('button:visible:has-text("Mark complete")'); // the bottom action bar at this width
 
     await page.goto(`${B}${ex}/practice`); await page.click('text=Start practice');
     for (let i = 0; i < 2; i++) {
+      // The main button lives in the bottom action bar on phones and in the question card on wider screens.
+      const primary = ':is(.actionbar .ab-btn.primary, .q-actions .btn.primary):visible';
       await page.click('.opt >> nth=0');
-      if (await page.$('text=Check answer')) {
+      if (await page.$('.choose')) {
         const n = await page.$$eval('.opt', o => o.length);
-        for (let k = 1; k < n && await page.$('button:has-text("Check answer")[disabled]'); k++) await page.click(`.opt >> nth=${k}`);
-        await page.click('text=Check answer');
+        for (let k = 1; k < n && await page.$(`${primary}[disabled]`); k++) await page.click(`.opt >> nth=${k}`);
+        await page.click(primary);
       }
       await has('.feedback .sources a', `${ex}: practice answer shows no "Read more" source`);
-      await page.click('.q-card .btn.primary');
+      await page.click(primary);
     }
 
     await page.goto(`${B}${ex}/cards`); await page.click('.flash'); await page.click('text=3 · Good');

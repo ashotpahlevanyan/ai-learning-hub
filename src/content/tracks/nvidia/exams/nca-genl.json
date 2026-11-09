@@ -73,18 +73,22 @@
       "summary": "Supervised versus unsupervised learning, feature engineering, train/validation/test splits, cross-validation, and the bias-variance trade-off behind overfitting and underfitting.",
       "sections": [
         {
+          "id": "kinds-of-learning",
           "heading": "Kinds of learning",
           "body": "- **Supervised learning** trains on labelled examples (input → known output). **Classification** predicts a category (spam / not spam); **regression** predicts a number (a price, a temperature).\n- **Unsupervised learning** finds structure in unlabelled data: **clustering** (for example k-means for customer segments), **dimensionality reduction** (for example PCA for visualisation), anomaly detection.\n- **Self-supervised learning** creates labels from the data itself. LLM pre-training is self-supervised: the \"label\" for each position is simply the next token (or a masked token) in the text.\n- **Reinforcement learning** learns from a reward signal rather than fixed labels. It shows up in LLMs as the RL step of RLHF.\n\nExam questions often describe a business need and ask which kind of learning fits. The tell is the data: labels present → supervised; no labels and you want groups → clustering."
         },
         {
+          "id": "features-and-feature-engineering",
           "heading": "Features and feature engineering",
           "body": "A **feature** is an input variable the model uses. **Feature engineering** turns raw data into useful inputs:\n- encoding categorical values (one-hot encoding for unordered categories);\n- scaling numeric values so features on large scales do not dominate distance-based or gradient-based methods;\n- deriving new signals (day of week from a timestamp, ratios, text statistics).\n\nDeep learning reduces the need for hand-made features on unstructured data (images, text) because the network **learns representations**, but tabular problems still benefit from careful features. In NLP, classic pipelines use libraries such as spaCy for tokenisation, part-of-speech tags and named entities, and NumPy arrays to hold the resulting numeric features."
         },
         {
+          "id": "train-validation-and-test",
           "heading": "Train, validation and test",
           "body": "- **Training set:** the data the model's weights are fitted on.\n- **Validation set:** data used to choose hyperparameters, compare models and decide when to stop training.\n- **Test set:** held back until the end for a single, unbiased estimate of performance on new data.\n\nIf you tune repeatedly against the test set, information leaks into your choices and the test score becomes optimistic. **k-fold cross-validation** splits the data into k folds, trains k times holding out a different fold each time, and averages the scores. It gives a steadier estimate when data is limited and is a standard way to **compare models** fairly."
         },
         {
+          "id": "overfitting-underfitting-and-the-bias-variance-trade-off",
           "heading": "Overfitting, underfitting and the bias-variance trade-off",
           "body": "- **Underfitting (high bias):** the model is too simple. Training and validation error are **both** high. Fix with more capacity, better features or longer training.\n- **Overfitting (high variance):** the model memorises the training data. Training error is low but validation error is much higher. Fix with more (or augmented) data, **regularisation** (L1/L2 weight penalties, also called weight decay), **dropout**, **early stopping**, or a smaller model.\n\nThe NVIDIA DLI *Fundamentals of Deep Learning* course demonstrates this directly: a model that scores almost perfectly on training images but poorly on validation images is overfitting, and **data augmentation** (random flips, rotations, zooms) improves generalisation by showing the model more varied examples."
         }
@@ -131,18 +135,22 @@
       "summary": "How a neural network learns: neurons and layers, activation functions, matching losses to tasks, backpropagation, learning rate, optimisers and transfer learning.",
       "sections": [
         {
+          "id": "neurons-layers-and-activations",
           "heading": "Neurons, layers and activations",
           "body": "A neuron computes a weighted sum of its inputs plus a bias, then applies a non-linear **activation function**. Stacking layers of neurons lets the network model complex functions; without non-linear activations, any stack of layers collapses into a single linear transformation.\n\n| Activation | Shape | Typical use |\n|---|---|---|\n| **ReLU** | max(0, x) | Default for hidden layers; cheap and reduces vanishing gradients |\n| **Sigmoid** | squashes to (0, 1) | Binary classification output; probability of one class |\n| **Tanh** | squashes to (−1, 1) | Older recurrent networks |\n| **Softmax** | turns a vector into probabilities summing to 1 | Multi-class output layer; also inside attention |\n| **GELU** | smooth ReLU-like curve | Common in Transformer feed-forward layers |\n\nSigmoid and tanh **saturate**: for large inputs their gradient is close to zero, which causes **vanishing gradients** in deep networks. That is a main reason ReLU-family activations replaced them in hidden layers."
         },
         {
+          "id": "loss-functions",
           "heading": "Loss functions",
           "body": "The **loss** measures how wrong the predictions are; training minimises it.\n- **Mean squared error (MSE)** for regression.\n- **Binary cross-entropy** for two-class problems with a sigmoid output.\n- **Categorical cross-entropy** for multi-class problems with a softmax output. LLMs are trained with cross-entropy over the vocabulary at each position, and **perplexity** is the exponential of that average loss.\n\nChoose the loss that matches the output: a softmax layer paired with MSE trains poorly compared with cross-entropy."
         },
         {
+          "id": "gradient-descent-and-backpropagation",
           "heading": "Gradient descent and backpropagation",
           "body": "**Backpropagation** applies the chain rule to compute the gradient of the loss with respect to every weight. **Gradient descent** then moves each weight a small step against its gradient. The size of that step is the **learning rate**:\n- too high → the loss oscillates or diverges (can become NaN);\n- too low → training is very slow or stalls.\n\nVariants: **batch** gradient descent uses all data per step, **stochastic** uses one example, and **mini-batch** (the norm) uses a small batch, which fits GPU parallelism. One **epoch** is a full pass over the training data. Adaptive optimisers such as **Adam** keep per-parameter estimates of the gradient's first and second moments and adjust step sizes automatically; Adam (and its weight-decay variant AdamW) is the usual choice for Transformers."
         },
         {
+          "id": "transfer-learning",
           "heading": "Transfer learning",
           "body": "Training a large network from scratch needs lots of data and compute. **Transfer learning** starts from a model pretrained on a large dataset, **freezes** most of its layers, replaces the final layer with a new head for your task, and trains only the new parts. Once the head converges you can optionally **fine-tune** by unfreezing some layers with a low learning rate. The DLI course uses exactly this pattern with a pretrained image model, and the same idea, at much larger scale, underlies fine-tuning a pretrained LLM."
         }
@@ -189,22 +197,27 @@
       "summary": "How Transformers turn text into tokens and vectors, how scaled dot-product and multi-head attention work, why positional information is needed, and how encoder, decoder and decoder-only models differ.",
       "sections": [
         {
+          "id": "tokenisation",
           "heading": "Tokenisation",
           "body": "Models read **tokens**, not words. Modern LLMs use **subword** tokenisers such as byte-pair encoding (BPE), which start from characters (or bytes) and merge frequent pairs into larger units. Common words become one token; rare words, names and code split into several pieces, so there is no true \"out-of-vocabulary\" word.\n\nConsequences you will be tested on:\n- **Context limits, throughput and usually pricing are measured in tokens**, not words or characters.\n- The same text can produce different token counts with different tokenisers; non-English text and code often need more tokens per word.\n- A model must be used with the tokeniser it was trained with."
         },
         {
+          "id": "embeddings",
           "heading": "Embeddings",
           "body": "Each token ID is mapped to a dense **embedding vector** learned during training. Vectors for related meanings end up close together in that space (word2vec showed this with simple models). Inside a Transformer, embeddings become **contextual**: after attention layers, the vector for \"bank\" differs in \"river bank\" and \"bank loan\".\n\nSeparate **text-embedding models** produce one vector per sentence or passage. Comparing those vectors with **cosine similarity** powers semantic search, clustering and the retrieval step of RAG."
         },
         {
+          "id": "self-attention",
           "heading": "Self-attention",
           "body": "For each token, the model computes a **query (Q)**, a **key (K)** and a **value (V)** vector. Attention scores are dot products of a token's query with every key, scaled by **1/√d_k** and passed through **softmax**; the output is the weighted sum of the values:\n\n`Attention(Q, K, V) = softmax(QKᵀ / √d_k) V`\n\nThe paper scales by √d_k because large dot products push softmax into regions with extremely small gradients. **Multi-head attention** runs several attention operations in parallel on different learned projections so the model can \"jointly attend to information from different representation subspaces at different positions\", then concatenates the results.\n\nBecause every token attends to every other token in one step, the Transformer drops recurrence entirely. That makes training **highly parallel** on GPUs, but attention cost grows **quadratically** with sequence length, which is one reason context windows are finite."
         },
         {
+          "id": "positional-information",
           "heading": "Positional information",
           "body": "Self-attention by itself has no notion of order: shuffle the tokens and each one sees the same set of keys. The original Transformer adds **positional encodings** (fixed sine and cosine functions of position) to the input embeddings; later models use learned position embeddings or rotary/relative schemes. The goal is the same: inject the order of the sequence."
         },
         {
+          "id": "encoder-decoder-and-decoder-only",
           "heading": "Encoder, decoder and decoder-only",
           "body": "| Architecture | Attention | Typical pre-training | Good for | Examples |\n|---|---|---|---|---|\n| **Encoder-only** | Bidirectional (sees left and right) | Masked language modelling | Classification, NER, embeddings, extractive tasks | BERT |\n| **Encoder-decoder** | Encoder bidirectional; decoder causal plus cross-attention to encoder | Sequence-to-sequence | Translation, summarisation | Original Transformer, T5 |\n| **Decoder-only** | **Causal** (masked): each token sees only earlier tokens | Next-token prediction | Open-ended generation, chat | GPT-style LLMs |\n\nThe **context window** is the maximum number of tokens (prompt plus generated output) a model can attend to at once. Anything beyond it is invisible to the model, so long documents must be chunked, summarised or retrieved selectively."
         }
@@ -256,18 +269,22 @@
       "summary": "How a base model is pre-trained, why instruction tuning turns it into an assistant, and how RLHF and preference methods align it with human intent.",
       "sections": [
         {
+          "id": "pre-training",
           "heading": "Pre-training",
           "body": "Pre-training learns general language ability from a very large unlabelled corpus with a self-supervised objective:\n- **Causal language modelling** (decoder-only, GPT style): predict the next token from everything before it.\n- **Masked language modelling** (encoder-only, BERT style): hide about 15% of tokens and predict them from both sides. BERT also used a **next sentence prediction** task.\n\nThe result is a **base (foundation) model**. It is a strong text continuer but not an assistant: ask it a question and it may continue with more questions. Pre-training is by far the most compute-intensive stage, which is why most teams start from an existing foundation model instead of training one."
         },
         {
+          "id": "supervised-fine-tuning-and-instruction-tuning",
           "heading": "Supervised fine-tuning and instruction tuning",
           "body": "**Supervised fine-tuning (SFT)** continues training on labelled examples. **Instruction tuning** is SFT on many tasks phrased as natural-language instructions with good responses. The FLAN work showed that instruction tuning a pretrained model across many tasks substantially improves its **zero-shot** performance on unseen tasks. Instruction-tuned (\"instruct\" or \"chat\") models follow requests instead of merely continuing text.\n\nFull fine-tuning updates every weight, which is expensive and risks **catastrophic forgetting** of general skills. Parameter-efficient methods (next lesson) are the common alternative."
         },
         {
+          "id": "rlhf",
           "heading": "RLHF",
           "body": "**Reinforcement learning from human feedback** aligns a model with what people actually prefer (helpful, honest, harmless). The InstructGPT recipe has three steps:\n1. **SFT** on human-written demonstrations of the desired behaviour.\n2. **Reward model:** humans rank several model outputs for the same prompt; a model is trained to predict those preferences as a scalar reward.\n3. **RL optimisation:** the policy (the LLM) is optimised against the reward model with **PPO**, with a penalty that keeps it close to the SFT model so it does not drift or \"game\" the reward.\n\nInstructGPT found that labelers preferred outputs from a 1.3B-parameter RLHF model over the 175B GPT-3 base model, showing that alignment is not just about size. Collecting human preference rankings is therefore a real job in LLM projects, and the NCA-GENL subtopics mention taking part in it."
         },
         {
+          "id": "preference-optimisation-without-rl",
           "heading": "Preference optimisation without RL",
           "body": "**Direct Preference Optimization (DPO)** trains directly on preference pairs (chosen versus rejected responses) with a simple classification-style loss, avoiding a separate reward model and the RL loop. It is a popular, simpler alternative to PPO-based RLHF that uses the same kind of human preference data."
         }
@@ -321,14 +338,17 @@
       "summary": "The cheapest-first ladder for adapting an LLM: zero-shot, few-shot and chain-of-thought prompting, then parameter-efficient fine-tuning with p-tuning, prompt tuning and LoRA.",
       "sections": [
         {
+          "id": "prompt-engineering",
           "heading": "Prompt engineering",
           "body": "Prompt engineering changes the input, not the weights, so it is the fastest and cheapest thing to try first.\n- **Zero-shot:** give only the instruction (\"Classify this review as positive or negative\").\n- **Few-shot (in-context learning):** include a handful of input → output examples in the prompt. GPT-3 showed large models can pick up a task from such demonstrations without any gradient updates. Few-shot examples are especially good for enforcing an **output format**.\n- **Chain-of-thought (CoT):** show or request intermediate reasoning steps before the final answer. CoT prompting markedly improves multi-step arithmetic, commonsense and symbolic reasoning in sufficiently large models.\n- Good practice: clear instructions, a role or persona, explicit constraints, delimiters around supplied content, and a specified output schema.\n\nLimits: prompts consume context tokens on every call, and some behaviours (domain style, specialised tasks at scale) cannot be reached by prompting alone."
         },
         {
+          "id": "parameter-efficient-fine-tuning-peft",
           "heading": "Parameter-efficient fine-tuning (PEFT)",
           "body": "PEFT adapts a model by training a small number of new parameters while the pretrained weights stay **frozen**. It needs far less GPU memory and storage than full fine-tuning and reduces catastrophic forgetting.\n\n**P-tuning and prompt tuning.** Instead of hand-writing a text prompt, the model learns **continuous \"virtual token\" embeddings** that are prepended to the input. In p-tuning, a small trainable **prompt encoder** (an LSTM plus MLP in the original p-tuning paper) generates these virtual tokens; in the narrower sense, prompt tuning learns the embeddings directly (NVIDIA's blog uses the two names almost interchangeably). After tuning, NVIDIA's blog explains, the virtual tokens are stored in a lookup table for inference, and models p-tuned on different tasks can be saved without large amounts of memory, so one frozen base model can serve many tasks.\n\n**LoRA (Low-Rank Adaptation).** LoRA freezes the pretrained weights and injects **trainable low-rank decomposition matrices** (W + BA, with rank r much smaller than the layer size) into Transformer layers, typically the attention projections. The paper reports cutting trainable parameters by about 10,000× and GPU memory by about 3× for GPT-3 175B versus full fine-tuning, with **no additional inference latency** because the low-rank update can be merged into the base weights. Small per-task adapters can be stored and swapped on one shared base model."
         },
         {
+          "id": "choosing-an-approach",
           "heading": "Choosing an approach",
           "body": "| Need | First choice |\n|---|---|\n| Quick improvement, consistent format | Prompting (zero/few-shot) |\n| Multi-step reasoning | Chain-of-thought prompting |\n| Up-to-date or private facts, citations | RAG (next lesson) |\n| Domain style or a specialised task across many calls | PEFT (LoRA, p-tuning) |\n| Deep behaviour change with lots of data and compute | Full fine-tuning |\n\nFine-tuning teaches **behaviour and style** well but is a poor way to inject frequently changing **facts**; that is what retrieval is for."
         }
@@ -387,18 +407,22 @@
       "summary": "How retrieval-augmented generation grounds an LLM in your data, the role of embedding and reranking models and vector databases, and how temperature, top-k and top-p shape generated text.",
       "sections": [
         {
+          "id": "why-rag",
           "heading": "Why RAG",
           "body": "LLMs only know what was in their training data, up to a cutoff, and they can **hallucinate** plausible but wrong answers. **Retrieval-augmented generation (RAG)** fetches relevant passages from an external knowledge source at query time and adds them to the prompt so the model answers from that evidence. NVIDIA's explainer highlights the benefits: answers grounded in current or private data, **citations** users can check, fewer hallucinations, and no need to retrain the model when the data changes."
         },
         {
+          "id": "the-rag-pipeline",
           "heading": "The RAG pipeline",
           "body": "**Ingestion (offline):**\n1. Load documents and split them into **chunks** (sized to fit the context and keep one idea per chunk, often with some overlap).\n2. Convert each chunk to a vector with an **embedding model**.\n3. Store vectors plus metadata in a **vector database** (Milvus is the one on NVIDIA's reading list) with an index for fast approximate nearest-neighbour search.\n\n**Query time (online):**\n1. Embed the user question with the **same** embedding model.\n2. Retrieve the top-k most similar chunks (cosine or dot-product similarity), optionally combined with keyword search.\n3. Optionally **rerank** candidates with a cross-encoder reranking model for higher precision.\n4. Insert the best chunks into the prompt and let the LLM generate a grounded answer with citations.\n\nNVIDIA packages embedding and reranking models as **NeMo Retriever** NIM microservices (text embedding and text reranking), alongside LLM NIMs for generation."
         },
         {
+          "id": "common-rag-failure-points",
           "heading": "Common RAG failure points",
           "body": "- **Irrelevant retrieval:** poor chunking, a mismatched embedding model, or no reranking. Fix retrieval before blaming the LLM.\n- **Query and document embedded with different models:** the vectors are not comparable.\n- **Too many chunks stuffed into the prompt:** higher cost and latency, and the relevant passage can be buried.\n- **Stale index:** re-embed and re-index documents when they change."
         },
         {
+          "id": "decoding-how-tokens-are-chosen",
           "heading": "Decoding: how tokens are chosen",
           "body": "At each step the model outputs a probability distribution over the vocabulary. The **decoding strategy** picks the next token:\n- **Greedy:** always the most likely token. Deterministic but can be repetitive.\n- **Beam search:** keeps several candidate sequences; common in translation.\n- **Temperature:** divides the logits before softmax. **Low (near 0)** sharpens the distribution → focused, near-deterministic output (good for extraction, code, factual QA). **High** flattens it → more diverse and creative but more error-prone.\n- **Top-k:** sample only from the k most likely tokens. **k = 1 is greedy.**\n- **Top-p (nucleus):** sample from the **smallest set of tokens whose cumulative probability reaches p**. The set adapts: small when the model is confident, larger when it is not. The nucleus-sampling paper introduced it to avoid both the bland repetition of greedy/beam decoding and the incoherent tail of pure sampling.\n\nOther controls include maximum new tokens, stop sequences, and repetition or frequency penalties."
         }
@@ -452,18 +476,22 @@
       "summary": "How raw text becomes training-ready data: cleaning, language ID, heuristic and classifier filtering, three kinds of deduplication, tokenization and synthetic data, using NVIDIA NeMo Curator as the reference tool.",
       "sections": [
         {
+          "id": "why-curation-matters",
           "heading": "Why curation matters",
           "body": "Model quality depends heavily on data quality. Web-scale text is full of boilerplate, near-copies, other languages, spam and unsafe content. Training on it wastes GPU hours, and the model can memorise repeated passages. The exam's official subtopics include preparing large datasets (scraping, tokenization) for pretraining, fine-tuning and RLHF. Curation is the step that makes those datasets usable.\n\nA typical text pipeline runs in this order:\n\n1. **Extract and clean**: strip HTML, fix Unicode and normalise whitespace.\n2. **Identify language**: keep only the target languages.\n3. **Filter**: apply cheap heuristic rules first, then ML quality, domain and safety classifiers.\n4. **Deduplicate**: exact, then fuzzy, then semantic.\n5. **Redact or flag sensitive content** where needed (PII), then **tokenize** and shard.\n\nRun the cheap steps first so the expensive GPU steps see less data."
         },
         {
+          "id": "nemo-curator-at-a-glance",
           "heading": "NeMo Curator at a glance",
           "body": "**NeMo Curator** is NVIDIA's open-source, scalable data-curation library. It now covers **text, image, video and audio**.\n\n- **Language identification**: FastText and GlotLID models.\n- **Heuristic filters**: rule-based checks such as document length, symbol-to-word ratio, repeated lines or n-grams, and URL density.\n- **Classifier filters**: quality, domain and safety classifiers. These include lightweight FastText classifiers and GPU-distributed model-based classifiers.\n- **Synthetic data**: LLM-based generation of new examples, for instance to fill gaps in a fine-tuning set.\n- **Scaling**: the execution backend **moved from Dask to Ray** (Ray Data, Xenna and Ray Actor Pool executors), and the docs include a migration guide. Older tutorials that show Dask clusters describe the previous design.\n\nThe NVIDIA Trust Center still uses the older name \"NeMo Data Curator\"."
         },
         {
+          "id": "three-kinds-of-deduplication",
           "heading": "Three kinds of deduplication",
           "body": "| Type | How it works | Catches |\n|---|---|---|\n| **Exact** | Hash each document (MD5) and drop identical hashes | Byte-identical copies |\n| **Fuzzy** | **MinHash** signatures plus **locality-sensitive hashing (LSH)** to bucket similar documents; GPU-accelerated | Near-duplicates: same article with a different header, date or footer |\n| **Semantic** | Embed documents, **cluster** the embeddings and drop items that are too close within a cluster | Paraphrases and different wording of the same content |\n\nExact dedup is cheapest but misses almost-identical pages. Fuzzy dedup handles template noise. Semantic dedup is the most expensive and the only one of the three that catches meaning-level redundancy."
         },
         {
+          "id": "tokenization-and-the-final-dataset",
           "heading": "Tokenization and the final dataset",
           "body": "Models consume **tokens**, not characters. Subword tokenizers (for example BERT's **WordPiece**, or BPE in many decoder models) split rare words into pieces so the vocabulary stays fixed in size. Practical consequences:\n\n- Always tokenize with the **same tokenizer as the model** you will train or fine-tune. Token IDs are not portable between vocabularies.\n- Measure dataset size and sequence lengths **in tokens**. Context limits and training cost are counted in tokens.\n- Check the **token-length distribution** (a histogram) before choosing a maximum sequence length, so you know how much truncation or padding you cause.\n\nFor fine-tuning and RLHF, the \"dataset\" is often prompt–response pairs or preference pairs (chosen vs rejected). The same rules apply: dedupe, filter for quality and safety, and hold out an evaluation split that does not overlap with training data."
         }
@@ -513,18 +541,22 @@
       "summary": "Speeding up exploratory analysis and classical ML on GPUs with cuDF, cudf.pandas, cuML and cuml.accel, and knowing when acceleration applies.",
       "sections": [
         {
+          "id": "rapids-now-nvidia-cuda-x-data-science",
           "heading": "RAPIDS, now NVIDIA CUDA-X Data Science",
           "body": "**RAPIDS** is NVIDIA's suite of GPU data-science libraries. NVIDIA now brands it as **CUDA-X libraries for data science**, and the docs moved from docs.rapids.ai to docs.nvidia.com/datascience. The library names are unchanged:\n\n- **cuDF**: a GPU DataFrame library with a **pandas-like API**, built on the C++ library libcudf.\n- **cuML**: GPU-accelerated machine-learning algorithms with an API that mirrors **scikit-learn** (fit / predict / transform).\n\nBoth are on the exam's official reading list, alongside NVIDIA's GPU data-science blog."
         },
         {
+          "id": "cudf-and-cudf-pandas",
           "heading": "cuDF and cudf.pandas",
           "body": "You can use cuDF in two ways:\n\n1. **Directly**: `import cudf` and work with `cudf.DataFrame`. Most of the API matches pandas.\n2. **cudf.pandas (zero code change)**: keep your pandas code and turn on the accelerator:\n   - in Jupyter: `%load_ext cudf.pandas` before importing pandas\n   - for a script: `python -m cudf.pandas script.py`\n   - in code: `cudf.pandas.install()`\n\nWith cudf.pandas, supported operations run on the GPU. Anything unsupported **falls back to regular pandas on the CPU** automatically, so the code still runs correctly. Heavy fallback reduces the speedup, so profile if a workload is slower than expected.\n\ncuDF also provides a GPU engine for **Polars** users."
         },
         {
+          "id": "cuml-and-cuml-accel",
           "heading": "cuML and cuml.accel",
           "body": "cuML offers 50+ algorithms: regression, classification, clustering (for example k-means, DBSCAN), dimensionality reduction (PCA, UMAP, t-SNE) and nearest neighbours. NVIDIA's docs cite an **average speedup of 10–50x** over CPU equivalents. Treat that as a typical range, not a guarantee; small datasets may see little gain because of data-transfer and launch overhead.\n\n- **cuml.accel** accelerates existing scikit-learn code with zero code changes, in the same spirit as cudf.pandas.\n- **Scaling out**: cuML scales to multiple GPUs and nodes through **Dask**.\n\nA common LLM-adjacent use is reducing **embedding vectors** to 2-D with GPU UMAP or t-SNE, then plotting them to inspect clusters, outliers and near-duplicates."
         },
         {
+          "id": "when-the-gpu-helps",
           "heading": "When the GPU helps",
           "body": "GPU acceleration pays off when:\n\n- data is large (millions of rows) and operations are vectorised (joins, group-bys, sorts, string operations)\n- you iterate many times, as in exploratory analysis or hyperparameter sweeps\n\nIt helps less when:\n\n- data is tiny, so transfer overhead dominates\n- code relies on row-by-row Python loops or `apply` with arbitrary Python functions, which defeat vectorisation\n- the data does not fit in GPU memory (then use chunking, multi-GPU via Dask, or a larger GPU)\n\nResults should match the CPU libraries closely. Small floating-point differences between CPU and GPU implementations are normal, so compare metrics with a tolerance rather than exact equality."
         }
@@ -574,14 +606,17 @@
       "summary": "Choosing the right chart, comparing models with loss, R² and explained variance, and spotting trends and confounders that could mislead an analysis.",
       "sections": [
         {
+          "id": "pick-the-chart-for-the-question",
           "heading": "Pick the chart for the question",
           "body": "The official Data Analysis subtopics include data mining and visualisation and creating graphs and charts with specialised software (the reading list names Matplotlib and the Python Data Science Handbook).\n\n| Question | Chart |\n|---|---|\n| How is one variable distributed (token lengths, latency)? | **Histogram** or box plot |\n| How do two numeric variables relate? | **Scatter plot** |\n| How does a value change over steps or time (training loss)? | **Line chart** |\n| How do categories compare (error rate per language)? | **Bar chart** |\n| Where do embeddings cluster? | 2-D **scatter** after PCA/UMAP/t-SNE |\n| Which predictions get confused? | **Confusion matrix** heatmap |\n\nLabel axes and units, start bar-chart axes at zero, and use a log scale when values span orders of magnitude."
         },
         {
+          "id": "comparing-models-with-statistical-metrics",
           "heading": "Comparing models with statistical metrics",
           "body": "**Loss** is what training minimises: cross-entropy for classification and next-token prediction, mean squared error (MSE) for regression. Plot **training and validation loss** together:\n\n- both falling: still learning\n- training falls while validation rises: **overfitting**; consider early stopping, regularisation or more data\n- both high and flat: **underfitting**; consider a larger model, better features or more training\n\nFor regression, two variance-based metrics appear often:\n\n- **R² (coefficient of determination)** = 1 − SS_res / SS_tot. 1.0 is perfect, 0 matches always predicting the mean, and it can be negative for a model worse than the mean.\n- **Explained variance** = 1 − Var(y − ŷ) / Var(y). It ignores a constant offset in the errors, so a model that is consistently biased can score high on explained variance yet lower on R². The two are identical when residuals have zero mean, and the scikit-learn guide recommends R² in general for this reason.\n\nCompare models on the **same held-out data**, and prefer cross-validation when data is small so one lucky split does not decide the winner."
         },
         {
+          "id": "trends-and-factors-that-affect-results",
           "heading": "Trends and factors that affect results",
           "body": "The exam asks you to identify trends and factors that could affect results. Common culprits:\n\n- **Data leakage**: test examples (or near-duplicates) also appear in training data, which inflates scores. Dedup across splits.\n- **Distribution shift**: production inputs differ from the evaluation set (new topics, languages, lengths).\n- **Class imbalance**: high accuracy that just reflects the majority class; check per-class precision and recall.\n- **Confounders and aggregation**: a trend in aggregated data can reverse inside subgroups (Simpson's paradox), so slice results by key segments.\n- **Outliers**: a few extreme values can dominate means and MSE; check medians and plots.\n- **Small samples**: differences within noise; repeat runs or use confidence intervals.\n\nCorrelation in a chart is not causation. Treat a trend as a hypothesis to test, not a conclusion."
         }
@@ -634,14 +669,17 @@
       "summary": "Turning curated content into searchable vectors: choosing an embedding model, chunking, similarity search, vector databases and reranking.",
       "sections": [
         {
+          "id": "from-text-to-vectors",
           "heading": "From text to vectors",
           "body": "An **embedding model** maps text to a dense vector so that semantically similar texts land close together. Official NCA-GENL subtopics include \"curate and embed content datasets for RAG\" and \"select and use models to create text embeddings\".\n\nNVIDIA ships embedding and reranking models as **NeMo Retriever** microservices within **NIM** (text embedding and text reranking). Rules that matter regardless of model:\n\n- **Use the same embedding model** for documents and queries. Vectors from different models live in different spaces and cannot be compared.\n- **Re-embed the whole corpus** if you change the embedding model.\n- Stay within the model's **input length limit**, which is counted in tokens."
         },
         {
+          "id": "chunking-and-metadata",
           "heading": "Chunking and metadata",
           "body": "Documents are split into **chunks** before embedding.\n\n- Chunks that are too large blur several topics into one vector and waste context in the prompt.\n- Chunks that are too small lose the surrounding meaning.\n- A small **overlap** between chunks keeps sentences that span a boundary retrievable.\n\nStore **metadata** with each chunk (source, date, section, access level). That enables filtering (\"only 2025 policies\") and citations in answers. Curate before you embed: dedup and remove boilerplate, or retrieval will return the same passage many times."
         },
         {
+          "id": "vector-databases-and-retrieval",
           "heading": "Vector databases and retrieval",
           "body": "A **vector database** (the exam reading list names **Milvus**) stores embeddings and runs **approximate nearest-neighbour (ANN)** search, usually by cosine similarity or inner product. ANN indexes trade a little recall for much lower latency than brute-force comparison over millions of vectors.\n\nA typical RAG retrieval flow:\n\n1. Embed the user query with the same model used for documents.\n2. Retrieve the top-k nearest chunks, optionally with metadata filters.\n3. **Rerank** the candidates with a reranking model, which scores each query–chunk pair more precisely.\n4. Pass the best chunks to the LLM as context.\n\nRetrieval-augmented generation grounds answers in your current, private data without retraining the LLM, and lets the answer cite its sources."
         }
@@ -696,18 +734,22 @@
       "summary": "How to set up an experiment you can trust: a baseline, clean train/validation/test splits, a sensible hyperparameter search and tracked, reproducible runs.",
       "sections": [
         {
+          "id": "start-with-a-baseline",
           "heading": "Start with a baseline",
           "body": "An experiment answers one question: *did this change make the model better than what we had?* You can only answer that with a **baseline**.\n\n- For an LLM application, the usual baseline is the **base or instruction-tuned model with a simple zero-shot or few-shot prompt**. Fine-tuning or RAG must beat it on the same evaluation set to justify the cost.\n- For a classic ML task, a trivial baseline (always predict the majority class) shows whether the model learned anything at all.\n- **Change one thing at a time.** If you swap the model, the prompt and the data together, you cannot tell which change caused the result.\n\nThe NCA-GENL exam page lists \"run experiments that evaluate models and pipelines\" and \"evaluate, refine and benchmark models\" as Experimentation subtopics, so expect questions on how to set up a fair comparison."
         },
         {
+          "id": "train-validation-and-test-splits",
           "heading": "Train, validation and test splits",
           "body": "| Split | Used for | Rule |\n|---|---|---|\n| **Training** | Updating model weights | The model sees it every epoch |\n| **Validation (dev)** | Choosing hyperparameters, early stopping, comparing prompts | You look at it many times |\n| **Test (held-out)** | Final, unbiased estimate | Touch it once, at the end |\n\nCommon mistakes:\n\n- **Tuning on the test set.** Every time you pick a setting because it scored best on test data, the test score becomes optimistic.\n- **Leakage.** Near-duplicate documents in both training and test data, or features that encode the label, inflate scores. Deduplicate before splitting (NeMo Curator offers exact, fuzzy and semantic deduplication).\n- **Benchmark contamination.** Public benchmark questions can appear in web-scale pretraining data, so a high score may reflect memorisation. Decontaminate training data against your evaluation sets.\n- **Wrong split shape.** For imbalanced labels, use a **stratified** split. For time-dependent data, split by time so the model never trains on the future.\n\nWhen data is small, **k-fold cross-validation** gives a steadier estimate than one split. Cross-validation is named on the exam page under ML fundamentals."
         },
         {
+          "id": "hyperparameters-that-matter",
           "heading": "Hyperparameters that matter",
           "body": "For fine-tuning LLMs, the settings that most often decide success are:\n\n- **Learning rate.** Too high and loss spikes or diverges, and the model can forget general skills. Too low and training barely moves. Usually the first thing to tune.\n- **Epochs / steps.** Too many on a small dataset overfits. Use **early stopping** on validation loss.\n- **Batch size** (and gradient accumulation). It affects stability and memory.\n- **PEFT settings.** For LoRA, the rank *r* and scaling *alpha* control how many trainable parameters the adapter has.\n- **Decoding settings at evaluation time.** Temperature, top-k and top-p change the outputs you score, so fix them (often temperature 0 or greedy) when comparing models.\n\nSearch strategies: grid search tries every combination; **random search** usually finds good settings with fewer runs when only a few hyperparameters matter. Always pick the winner on the **validation** set."
         },
         {
+          "id": "track-every-run",
           "heading": "Track every run",
           "body": "A run you cannot reproduce is not evidence. For each run record:\n\n- code version, dataset version and split, and the base model checkpoint\n- every hyperparameter and the **random seed**\n- training and validation curves, final metrics, and sample outputs\n- hardware and software versions\n\nExperiment trackers such as Weights & Biases (its quickstart is on the official NCA-GENL reading list) log these automatically and let you compare runs side by side. Run several seeds when differences are small. A one-point gain from a single run may just be noise."
         }
@@ -769,18 +811,22 @@
       "summary": "What perplexity, BLEU, ROUGE, accuracy, precision, recall and F1 actually measure, when each is misleading, and how to read benchmark results.",
       "sections": [
         {
+          "id": "perplexity",
           "heading": "Perplexity",
           "body": "**Perplexity** measures how well a language model predicts held-out text. It is the exponential of the average negative log-likelihood per token, so **lower is better**.\n\n- It is useful for tracking pretraining or domain-adaptation progress on held-out data.\n- It does **not** measure whether answers are correct, helpful or safe.\n- Perplexities from models with **different tokenizers** are not directly comparable, because \"per token\" means different things."
         },
         {
+          "id": "overlap-metrics-bleu-and-rouge",
           "heading": "Overlap metrics: BLEU and ROUGE",
           "body": "Both compare generated text with one or more **reference** texts by counting overlapping n-grams.\n\n| Metric | Orientation | Typical task |\n|---|---|---|\n| **BLEU** | Precision of n-grams, with a brevity penalty for short outputs | Machine translation |\n| **ROUGE** | Recall-oriented (ROUGE-N for n-grams, ROUGE-L for longest common subsequence) | Summarisation |\n\nLimits: they reward wording, not meaning. A correct paraphrase can score low, and a fluent answer with a wrong fact can score high. Embedding-based metrics such as **BERTScore** compare meaning with contextual embeddings and correlate better with human judgement on many tasks. For open-ended chat, overlap metrics are a poor fit."
         },
         {
+          "id": "classification-metrics",
           "heading": "Classification metrics",
           "body": "When the LLM output is a label (sentiment, intent, a yes/no answer), use classification metrics from the scikit-learn metrics guide on the official reading list:\n\n- **Accuracy** = correct / total. Misleading with **class imbalance**: 98% accuracy on data that is 98% negative may mean the model never finds a positive.\n- **Precision** = TP / (TP + FP). How many flagged items were right. Prioritise it when false alarms are costly.\n- **Recall** = TP / (TP + FN). How many real positives were found. Prioritise it when misses are costly (fraud, safety).\n- **F1** = harmonic mean of precision and recall. A single score that punishes a model that sacrifices one for the other.\n- **Exact match** is common for short-answer QA.\n\nFor regression-style outputs, the Data Analysis domain covers loss functions and explained variance."
         },
         {
+          "id": "benchmarks-and-harnesses",
           "heading": "Benchmarks and harnesses",
           "body": "Public benchmarks give a standard yardstick:\n\n- **MMLU**: multiple-choice questions across 57 subjects, testing broad knowledge.\n- **TruthfulQA**: tests whether a model repeats common misconceptions.\n- **HELM**: a framework that reports many metrics (accuracy, calibration, robustness, fairness, toxicity, efficiency) across many scenarios, not one number.\n\nTools such as EleutherAI's **lm-evaluation-harness** (official reading) run many benchmarks with the same prompts and settings, which makes comparisons fair. NVIDIA's **NeMo Evaluator** (a NeMo Framework library and NeMo Helix service) covers academic benchmarks, LLM-as-judge, RAG and agentic evaluation.\n\nCautions: benchmark scores can be **contaminated** by training data; prompt format and few-shot count change scores; and a general benchmark rarely predicts performance on *your* task. Always add a task-specific evaluation set."
         }
@@ -846,14 +892,17 @@
       "summary": "How to evaluate open-ended output with human raters and LLM judges, the known biases of LLM judges, and the separate metrics for the retrieval and generation halves of a RAG pipeline.",
       "sections": [
         {
+          "id": "human-evaluation",
           "heading": "Human evaluation",
           "body": "Humans remain the reference for helpfulness, tone and harm. Make human evaluation reliable:\n\n- Write a **rubric** with clear criteria and examples for each score.\n- Prefer **pairwise comparison** (A vs B) over absolute 1-10 scores; people agree more on which is better.\n- **Blind** raters to which model produced which output, and randomise order.\n- Measure **inter-annotator agreement**; low agreement means the rubric is unclear.\n\nHuman evaluation is slow and expensive, so teams use it to calibrate cheaper automatic methods."
         },
         {
+          "id": "llm-as-a-judge",
           "heading": "LLM-as-a-judge",
           "body": "A strong LLM grades outputs against a rubric or picks the better of two answers. The MT-Bench study found strong LLM judges can agree with human preferences about as often as humans agree with each other, which makes them a scalable proxy.\n\nKnown biases and mitigations:\n\n| Bias | What happens | Mitigation |\n|---|---|---|\n| **Position bias** | Prefers the first (or second) answer | Run both orders; count a win only if it holds when swapped |\n| **Verbosity bias** | Prefers longer answers | Rubric that rewards concision; length controls |\n| **Self-enhancement bias** | Prefers outputs from its own model family | Use a different judge model, or several |\n| **Limited reasoning** | Misgrades maths or code | Give a reference answer; ask the judge to reason first |\n\nValidate the judge against a sample of human labels before trusting it. NVIDIA's NeMo Evaluator (a NeMo Framework library, also offered as a service in NeMo Helix, the recently introduced successor to the archived NeMo microservices) supports LLM-as-judge evaluation. Product names here have changed recently, so focus on the concept."
         },
         {
+          "id": "evaluating-rag-two-halves",
           "heading": "Evaluating RAG: two halves",
           "body": "A RAG answer can fail because retrieval found the wrong passages, or because the generator ignored or contradicted good passages. Measure each half.\n\n**Retrieval metrics** (need relevance labels):\n\n- **Recall@k**: share of the relevant documents that appear in the top *k*. If it is low, the generator never sees the evidence.\n- **Precision@k**: share of the top *k* that are relevant. Low precision floods the context with noise.\n- **MRR** (mean reciprocal rank) and **nDCG**: reward putting relevant documents near the top.\n\n**Generation metrics** (RAGAS-style, often scored by an LLM judge):\n\n- **Faithfulness / groundedness**: are the answer's claims supported by the retrieved context? Low faithfulness is hallucination.\n- **Answer relevance**: does the answer address the question?\n- **Context relevance**: is the retrieved context focused on the question?\n\nDiagnosis: low recall@k → fix chunking, embeddings, hybrid search or add a reranker. High recall but low faithfulness → fix the prompt (\"answer only from the context\"), the model, or the context order."
         }
@@ -902,18 +951,22 @@
       "summary": "A decision framework for prompting, RAG, PEFT and full fine-tuning, plus how to recognise and fix hallucination, overfitting, underfitting and catastrophic forgetting.",
       "sections": [
         {
+          "id": "pick-the-lightest-method-that-works",
           "heading": "Pick the lightest method that works",
           "body": "| Approach | Changes weights? | Best for | Costs |\n|---|---|---|---|\n| **Prompt engineering** (zero/few-shot, chain-of-thought) | No | Fast iteration, format and task instructions | Longer prompts at inference |\n| **RAG** | No | Fresh, private or fast-changing knowledge; citations | Retrieval infrastructure, latency |\n| **Prompt tuning / p-tuning** | Learns soft prompt embeddings; base frozen | Task adaptation with very few trainable parameters | Needs training data |\n| **PEFT (LoRA)** | Small adapter matrices; base frozen | Style, format, domain behaviour, specialised tasks | Training run, labelled data |\n| **Full fine-tuning** | All weights | Large shifts with lots of data | Most compute; highest forgetting risk |\n\nA common rule of thumb: **RAG adds knowledge, fine-tuning changes behaviour.** Start with prompting, add RAG when the model lacks facts, and fine-tune when it needs a consistent style, format or skill that prompts cannot deliver. Methods combine: a LoRA-tuned model can sit behind a RAG pipeline."
         },
         {
+          "id": "hallucination",
           "heading": "Hallucination",
           "body": "A hallucination is fluent output that is not supported by the input or by facts.\n\nCauses: missing knowledge (the fact postdates training or is private), weak retrieval, prompts that pressure the model to always answer, and high-temperature sampling.\n\nFixes:\n\n- **Ground with RAG** and instruct the model to answer only from the provided context and say when it does not know.\n- Ask for **citations** so claims can be checked.\n- Lower the temperature for factual tasks.\n- Measure **faithfulness** in evaluation and add guardrails (NeMo Guardrails has retrieval and output rails) for production.\n\nFine-tuning on new facts is a weak fix: it is costly to repeat each time facts change and does not reliably stop invented answers."
         },
         {
+          "id": "overfitting-and-underfitting",
           "heading": "Overfitting and underfitting",
           "body": "Read the loss curves:\n\n| Pattern | Diagnosis | Fixes |\n|---|---|---|\n| Training loss falls, **validation loss rises** | **Overfitting** (memorising) | Early stopping, fewer epochs, more or more varied data, regularisation (dropout, weight decay), data augmentation, smaller LoRA rank |\n| **Both stay high** | **Underfitting** | Train longer, raise learning rate carefully, larger model or rank, better features or data |\n| Loss spikes or becomes NaN | Unstable training | Lower learning rate, warm-up, gradient clipping, check data |\n\nThe NVIDIA DLI Fundamentals of Deep Learning course (on the exam page) covers the bias-variance trade-off and overfitting with data augmentation and transfer learning."
         },
         {
+          "id": "catastrophic-forgetting",
           "heading": "Catastrophic forgetting",
           "body": "**Catastrophic forgetting** is when fine-tuning on a narrow new task overwrites what the model knew, so general skills (or earlier tasks) degrade.\n\nSymptoms: the tuned model does its new task well, but scores drop on general benchmarks or it loses instruction-following or safety behaviour.\n\nMitigations:\n\n- **PEFT** such as LoRA or p-tuning keeps base weights frozen, so the original model is intact and the adapter can be removed.\n- **Mix in general data** (replay) alongside task data.\n- Use a **lower learning rate** and fewer epochs.\n- Regularisation methods such as elastic weight consolidation (EWC) penalise changes to weights important for earlier tasks.\n- **Always re-run general benchmarks** after fine-tuning, not only the task metric."
         }
@@ -967,18 +1020,22 @@
       "summary": "The remaining official Experimentation subtopics: collecting human preference data for RLHF, preparing datasets, judging technologies on cost, portability, compatibility and usability, and load-testing LLM applications.",
       "sections": [
         {
+          "id": "human-data-for-rlhf",
           "heading": "Human data for RLHF",
           "body": "The exam page lists \"understand or take part in collecting human data for RLHF\". In the InstructGPT recipe:\n\n1. **Supervised fine-tuning (SFT)** on human-written demonstrations.\n2. **Preference collection**: annotators see several model outputs for a prompt and **rank or compare** them.\n3. A **reward model** is trained to predict those preferences.\n4. The policy is optimised against the reward model with reinforcement learning (PPO), with a penalty that keeps it close to the SFT model.\n\nGood preference data needs clear labelling guidelines, diverse and trained annotators, quality checks such as agreement on overlap items, and separate criteria where needed (Llama 2, for example, collected helpfulness and safety preferences separately). Annotators' consent and privacy matter too (see Trustworthy AI)."
         },
         {
+          "id": "preparing-large-datasets",
           "heading": "Preparing large datasets",
           "body": "Pretraining, fine-tuning and RLHF all start with data work (an official subtopic):\n\n- **Collect / scrape** text, respecting licences and robots rules.\n- **Clean and filter**: language ID, heuristic quality filters, classifier-based quality and safety filters.\n- **Deduplicate**: exact, fuzzy (MinHash + LSH) and semantic deduplication; NeMo Curator does all three on GPUs.\n- **Tokenize** with the model's own tokenizer and check sequence lengths against the context window.\n- **Decontaminate** against evaluation sets so test scores stay honest."
         },
         {
+          "id": "evaluating-technologies",
           "heading": "Evaluating technologies",
           "body": "The exam asks you to evaluate technologies on four axes:\n\n- **Cost**: GPU hours to train, cost per token or per request to serve, engineering time.\n- **Portability**: can the model or service move between clouds, data centres and workstations? Containers (NIM runs as a container from NGC) and exchange formats such as ONNX help.\n- **Compatibility**: does it fit your hardware, frameworks and APIs? For example, NIM LLM microservices expose an OpenAI-compatible API, so existing client code can switch with little change.\n- **Usability**: documentation, tooling and how hard it is for the team to operate.\n\nScore candidates on the same task-specific evaluation set and the same load test, not on vendor claims."
         },
         {
+          "id": "hardware-and-software-tests-for-llm-apps",
           "heading": "Hardware and software tests for LLM apps",
           "body": "Quality is not enough; an LLM app also has to be fast and stable. Key measurements:\n\n- **Time to first token (TTFT)**: how long until streaming starts. Dominates perceived responsiveness in chat.\n- **Inter-token latency** and total latency.\n- **Throughput**: tokens or requests per second across all users.\n- Behaviour under realistic **concurrency** and prompt/response lengths.\n\nBatching (such as dynamic batching in NVIDIA Dynamo-Triton, formerly Triton Inference Server) raises GPU utilisation and throughput but can add latency per request, so test at the concurrency you expect in production. NIM documentation includes an LLM benchmarking guide, and Dynamo-Triton exposes GPU utilisation, throughput and latency metrics for Prometheus."
         }
@@ -1031,18 +1088,22 @@
       "summary": "Know what NumPy, pandas, PyTorch, Hugging Face Transformers, spaCy and orchestration frameworks such as LangChain or LlamaIndex each do in an LLM app, and how NVIDIA GPU libraries speed them up.",
       "sections": [
         {
+          "id": "arrays-and-tables-numpy-and-pandas",
           "heading": "Arrays and tables: NumPy and pandas",
           "body": "- **NumPy** gives you n-dimensional arrays and vectorised maths. Embeddings are just float arrays, so cosine similarity, normalisation and batching are NumPy one-liners. Prefer vectorised operations over Python loops.\n- **pandas** gives you labelled DataFrames for loading, cleaning, joining and summarising tabular data (CSV logs, evaluation results, chunk metadata).\n- On a GPU, **cuDF** offers a pandas-like DataFrame, and **`cudf.pandas`** accelerates existing pandas code with zero code changes (`%load_ext cudf.pandas` in Jupyter, or `python -m cudf.pandas script.py`). Unsupported operations fall back to pandas on the CPU.\n- **cuML** mirrors the scikit-learn `fit` / `predict` / `transform` API on the GPU for traditional ML."
         },
         {
+          "id": "deep-learning-pytorch",
           "heading": "Deep learning: PyTorch",
           "body": "PyTorch is the framework used in NVIDIA's Fundamentals of Deep Learning course, and NVIDIA's LLM libraries (Megatron Bridge, TensorRT-LLM) are now PyTorch-native.\n- **Tensors** are GPU-capable arrays. Move the model *and* its inputs to the same device (`model.to(device)`, `x.to(device)`), or PyTorch raises a device-mismatch error.\n- A training step is: forward pass, loss, `loss.backward()`, `optimizer.step()`, `optimizer.zero_grad()`.\n- For inference, switch to evaluation mode and disable gradient tracking to save memory."
         },
         {
+          "id": "models-and-text-hugging-face-transformers-and-spacy",
           "heading": "Models and text: Hugging Face Transformers and spaCy",
           "body": "- **Transformers** loads pretrained checkpoints with a matching **tokenizer**. Always use the tokenizer that ships with the checkpoint: a different vocabulary produces meaningless token IDs.\n- High-level **pipelines** wrap tokenise → model → decode for tasks such as summarisation or text generation. They are good for prototyping, not for high-throughput serving.\n- **spaCy** (on the official reading list) handles classic NLP: tokenisation, sentence splitting, part-of-speech tags and named-entity recognition. It is useful for cleaning text and splitting documents before chunking."
         },
         {
+          "id": "orchestration-langchain-and-llamaindex-style-frameworks",
           "heading": "Orchestration: LangChain and LlamaIndex style frameworks",
           "body": "These frameworks glue the pieces of an LLM app together. They do not train or serve models.\n- **Loaders and splitters** read documents and chunk them.\n- **Embeddings and vector stores** index the chunks.\n- **Retrievers** fetch the top-k relevant chunks for a query.\n- **Chains, query engines or agents** build the prompt, call the LLM and post-process the answer.\n\nBecause NIM exposes an OpenAI-compatible API, these frameworks can point at a self-hosted NIM endpoint the same way they point at a hosted API. NVIDIA's GenerativeAIExamples repository has reference RAG apps built this way."
         }
@@ -1096,18 +1157,22 @@
       "summary": "Map each NVIDIA product to its job: NGC for software, NeMo for building and customising models, NIM for packaged inference, Dynamo-Triton for multi-framework serving, TensorRT-LLM and TensorRT for optimisation.",
       "sections": [
         {
+          "id": "ngc-where-the-software-comes-from",
           "heading": "NGC: where the software comes from",
           "body": "NGC is \"a curated set of GPU-optimized software for AI, HPC, and Visualization\". It hosts **containers, pretrained models, Helm charts and SDKs**.\n- The container registry is **nvcr.io**.\n- `docker login nvcr.io` uses the literal username **`$oauthtoken`** and an **NGC API key** as the password.\n- Use personal or service keys. The legacy API key type is being retired.\n\nPulling an NGC framework container gives you a tested combination of CUDA, libraries and framework versions instead of building your own."
         },
         {
+          "id": "nemo-build-and-customise-models",
           "heading": "NeMo: build and customise models",
           "body": "The NeMo Framework has been restructured into modular libraries. For LLMs, the current training library is **NeMo Megatron Bridge**, \"a PyTorch-native library within the NeMo Framework\" built on Megatron Core. It covers:\n- pretraining, supervised fine-tuning (SFT) and PEFT (LoRA, DoRA)\n- **Hugging Face ↔ Megatron checkpoint conversion**\n- tensor, pipeline, context and expert parallelism, with BF16, FP8 and FP4 mixed precision.\n\nRelated libraries include **NeMo Curator** (data curation), **NeMo Evaluator**, NeMo RL and NeMo Export-Deploy. **NeMo Guardrails** adds programmable input, dialog, retrieval, execution and output rails to an app.\n\nOlder material calls the stack \"NeMo 2.0\", \"NeMo Megatron\" or NeMo Launcher. Treat those as history, and learn the concepts rather than exact library names."
         },
         {
+          "id": "nim-packaged-inference-microservices",
           "heading": "NIM: packaged inference microservices",
           "body": "NVIDIA NIM microservices are for \"accelerating the deployment of foundation models on any cloud or data center\". A NIM is a container from NGC with an optimised runtime.\n- LLM NIMs expose an **OpenAI-compatible API**.\n- They use **TensorRT-LLM, vLLM or SGLang** backends with optimised profiles for the detected GPU.\n- Other categories include vision-language models, **NeMo Retriever** (embedding, reranking), speech and NemoGuard safety models.\n- You can try them at build.nvidia.com (the API catalog). Production use is licensed through NVIDIA AI Enterprise, and the Developer Program allows free development use.\n- On Kubernetes, the **NIM Operator** manages NIM deployments."
         },
         {
+          "id": "dynamo-triton-tensorrt-llm-and-tensorrt",
           "heading": "Dynamo-Triton, TensorRT-LLM and TensorRT",
           "body": "| Product | Job |\n|---|---|\n| **Dynamo-Triton (formerly Triton Inference Server)** | Open-source server for many frameworks (TensorRT, TensorRT-LLM, PyTorch, ONNX Runtime, Python, vLLM and more) with a model repository, dynamic batching, concurrent model execution and HTTP/gRPC APIs |\n| **NVIDIA Dynamo** | A separate, LLM-focused distributed inference framework (disaggregated prefill/decode serving, prefix caching, KV-cache offload) |\n| **TensorRT-LLM** | Open-source, PyTorch-native LLM inference library: in-flight batching, paged KV cache, quantisation (FP8, FP4), speculative decoding and parallelism |\n| **TensorRT** | SDK that optimises trained networks, often imported from **ONNX**, into fast inference engines |\n\nRule of thumb: NIM if you want an LLM endpoint with the least effort; Dynamo-Triton if you serve many model types; TensorRT-LLM if you are tuning the LLM engine itself."
         }
@@ -1161,18 +1226,22 @@
       "summary": "Understand why GPUs speed up deep learning, estimate model memory, and know how quantisation, KV-cache management, batching, speculative decoding and parallelism make LLM inference cheaper and faster.",
       "sections": [
         {
+          "id": "cuda-and-why-gpus-help",
           "heading": "CUDA and why GPUs help",
           "body": "**CUDA** is NVIDIA's parallel computing platform and programming model. Deep learning is dominated by large matrix multiplications, which split into many independent operations. A GPU runs thousands of these in parallel, so training and inference run far faster than on a CPU.\n\nIn practice you rarely write CUDA kernels yourself. Libraries such as PyTorch, cuDF, cuML and TensorRT-LLM call optimised CUDA code for you. Your job is to keep the GPU busy: keep data on the device, batch requests, and avoid needless CPU↔GPU copies."
         },
         {
+          "id": "memory-a-quick-estimate",
           "heading": "Memory: a quick estimate",
           "body": "Weight memory ≈ parameters × bytes per parameter.\n\n| Precision | Bytes | 7B model | 70B model |\n|---|---|---|---|\n| FP32 | 4 | ~28 GB | ~280 GB |\n| FP16 / BF16 | 2 | ~14 GB | ~140 GB |\n| FP8 / INT8 | 1 | ~7 GB | ~70 GB |\n| FP4 / INT4 | 0.5 | ~3.5 GB | ~35 GB |\n\nOn top of the weights, inference needs the **KV cache**, which grows with batch size × sequence length. Long contexts and many concurrent users can need as much memory as the weights."
         },
         {
+          "id": "quantisation",
           "heading": "Quantisation",
           "body": "Quantisation stores weights (and sometimes activations or the KV cache) at lower precision.\n- It cuts memory, so you can use fewer or smaller GPUs or run bigger batches.\n- It raises throughput, because low-precision maths is faster on supporting hardware.\n- It can cost some accuracy, so **evaluate on your task** before and after.\n\nTensorRT-LLM documents **FP8** (H100 and later), which \"can double performance and halve memory consumption\" compared with 16-bit, and **FP4** on Blackwell GPUs (the docs name B200). Check that your GPU generation supports a format before you choose it."
         },
         {
+          "id": "serving-optimisations-in-tensorrt-llm",
           "heading": "Serving optimisations in TensorRT-LLM",
           "body": "- **In-flight (continuous) batching:** finished sequences leave the batch and new requests join at each generation step, instead of waiting for the slowest sequence.\n- **Paged KV cache:** stores the KV cache in fixed-size blocks to cut fragmentation and fit more concurrent sequences. Block reuse shares common prefixes.\n- **Chunked prefill:** splits long prompts into pieces so they do not stall token generation for other users.\n- **Speculative decoding** (EAGLE, MTP, NGram): cheap draft tokens are proposed and the main model verifies several at once, cutting per-token latency.\n- **Parallelism:** *tensor* parallelism splits each layer across GPUs, *pipeline* parallelism splits the layer stack into stages, and *expert* parallelism spreads mixture-of-experts experts."
         }
@@ -1222,18 +1291,22 @@
       "summary": "Package and serve models behind APIs in containers, configure batching, and reason about latency versus throughput with metrics such as time to first token.",
       "sections": [
         {
+          "id": "containers-and-apis",
           "heading": "Containers and APIs",
           "body": "- **Containers** bundle the model runtime, CUDA libraries and dependencies, so the same image runs on a laptop GPU, in a data centre or in the cloud. NGC hosts NIM and framework containers. You authenticate with an NGC API key.\n- **LLM NIM** serves an **OpenAI-compatible** HTTP API. Existing OpenAI SDK or LangChain code usually needs only a new base URL, key and model name.\n- **Dynamo-Triton** serves models over **HTTP/REST and gRPC** (KServe protocol). Models live in a file-system **model repository**, one directory per model with its configuration and versions.\n- On **Kubernetes**, use Helm charts from NGC or the **NIM Operator**, and scale replicas behind a load balancer."
         },
         {
+          "id": "latency-versus-throughput",
           "heading": "Latency versus throughput",
           "body": "- **Latency** is how long one request waits. For chat, users feel **time to first token (TTFT)** and the gap between tokens (**inter-token latency**).\n- **Throughput** is how much work the system finishes per second (requests or tokens across all users).\n- Larger batches and more concurrency usually **raise throughput but raise per-request latency**.\n\nChoose by workload:\n- An interactive chatbot needs a TTFT target, so cap batch size and concurrency.\n- A nightly summarisation job over millions of documents has nobody waiting, so maximise batch size and throughput."
         },
         {
+          "id": "batching-options",
           "heading": "Batching options",
           "body": "- **Dynamic batching (Dynamo-Triton):** the server groups individual requests that arrive close together into one batch. You set this per model, including how long a request may wait in the queue. It trades a small queue delay for much better GPU use.\n- **In-flight (continuous) batching (TensorRT-LLM and other LLM engines that NIM uses):** for token-by-token generation, requests join and leave the running batch at each step.\n- **Static batching:** wait until a full batch arrives and run it to completion. Simple, but poor for LLM generation because short answers wait for long ones."
         },
         {
+          "id": "running-it-reliably",
           "heading": "Running it reliably",
           "body": "- **Observe:** Dynamo-Triton exports metrics for GPU utilisation, throughput and latency in Prometheus format. Alert on tail latency (p95/p99), error rate and queue depth, not just averages.\n- **Benchmark before launch:** NIM documents an LLM benchmarking guide. Measure TTFT, inter-token latency and throughput at realistic concurrency and prompt lengths.\n- **Scale:** add replicas for more throughput. Use tensor parallelism when one model does not fit on one GPU.\n- **Safety and security:** keep API keys in secrets, put guardrails in front of the model, and pin container versions for reproducibility."
         }
@@ -1295,18 +1368,22 @@
       "summary": "Turn user requirements into data, hardware and software components, build a grounded RAG pipeline, and monitor it under supervision.",
       "sections": [
         {
+          "id": "from-requirements-to-components",
           "heading": "From requirements to components",
           "body": "One official subtopic is identifying the data, hardware and software components that a set of user requirements calls for. Work through each requirement and ask what it forces:\n- **Data:** which documents, how fresh, who may see them, and whether you have labelled examples for evaluation.\n- **Hardware:** the model size and precision set GPU memory, and concurrency sets the number of GPUs or replicas. On-premises or air-gapped requirements rule out hosted APIs.\n- **Software:** an LLM endpoint (NIM), an embedding model and vector database for retrieval, an orchestration framework, guardrails, and monitoring.\n\nExample: \"answer questions about our policy PDFs, which change weekly, on-premises, never reveal PII\" needs RAG (not fine-tuning), self-hosted NIMs and an output rail that masks PII."
         },
         {
+          "id": "the-rag-pipeline",
           "heading": "The RAG pipeline",
           "body": "Retrieval-augmented generation grounds answers in your documents at query time.\n1. **Ingest and chunk** the documents (spaCy or framework splitters).\n2. **Embed** each chunk with an embedding model, such as a NeMo Retriever embedding NIM.\n3. **Store** the vectors in a vector database (Milvus is on the official reading list).\n4. At query time, **embed the question with the same model**, retrieve the top-k chunks, and optionally **rerank** them.\n5. **Augment** the prompt with the chunks and **generate** the answer, ideally with citations.\n\nRAG suits fast-changing or private knowledge because you update the index, not the model weights."
         },
         {
+          "id": "chatbots-and-summarisers",
           "heading": "Chatbots and summarisers",
           "body": "- **Chatbots** keep conversation history within the context window. Summarise or truncate older turns, and add retrieval for factual questions.\n- **Summarisers** hit context limits on long documents. Use map-reduce: summarise chunks, then summarise the summaries.\n- **Fine-tuning versus RAG:** fine-tune (for example with LoRA, which trains small low-rank adapter matrices while the base weights stay frozen) to change style, format or domain behaviour. Use RAG to supply facts that change."
         },
         {
+          "id": "guardrails-and-monitoring",
           "heading": "Guardrails and monitoring",
           "body": "- **NeMo Guardrails** adds input, retrieval, dialog, execution and output rails. Examples are jailbreak detection on input, topic control, and PII masking on output. You configure it with Colang and `config.yml`.\n- **Monitor** data collection, experiments and production. Log prompts and responses (with consent and PII handling), retrieval hit rates, latency, errors and user feedback. Watch for drift when documents or traffic change."
         }
@@ -1359,22 +1436,27 @@
       "summary": "The four principles NVIDIA uses to define trustworthy AI, how bias enters an AI system and how to reduce it, how to balance data privacy with consent, and how model cards make a model transparent.",
       "sections": [
         {
+          "id": "nvidia-s-four-trustworthy-ai-principles",
           "heading": "NVIDIA's four Trustworthy AI principles",
           "body": "The NVIDIA AI Trust Center groups trustworthy AI under four principles. Learn them by name, because scenario questions often describe a problem and ask which principle is at stake.\n\n| Principle | What it asks of an AI system | Typical scenario |\n|---|---|---|\n| **Privacy** | Comply with privacy laws and norms when collecting and using data | Chat logs reused for training without the right consent |\n| **Safety and Security** | Perform as intended, and avoid unintended harm and malicious threats | A chatbot is jailbroken into giving dangerous instructions |\n| **Transparency** | Explain in non-technical language how the AI reached its output | A clinician asks why a model flagged a patient |\n| **Nondiscrimination** | Minimise bias and give all groups an equal opportunity to benefit | A screening model rejects one group far more often |\n\nThe exam's Trustworthy AI subtopics follow the same shape: describe the ethical principles, balance data privacy with data consent, use NVIDIA and other technologies to improve trustworthiness, and minimise bias."
         },
         {
+          "id": "where-bias-comes-from-and-how-to-reduce-it",
           "heading": "Where bias comes from and how to reduce it",
           "body": "Bias can enter at every stage of the lifecycle:\n\n- **Data:** some groups are under-represented, labels reflect historical decisions, or scraped text contains stereotypes.\n- **Proxies:** dropping a protected attribute (such as gender) does not remove bias when other features (postcode, first name, school) correlate with it.\n- **Evaluation:** a single overall accuracy number can hide a model that performs much worse for a minority group.\n- **Deployment:** a model used outside its intended population or purpose can behave unfairly.\n\nPractical mitigation:\n\n1. Audit the training data for representation and label quality before training.\n2. Measure metrics **disaggregated by group** (error rates, approval rates), not just in aggregate.\n3. Curate and filter data. NVIDIA's NeMo Curator, for example, provides quality, domain and safety classifiers and deduplication for training data.\n4. Document known gaps and intended use in a model card, and keep a human in the loop for high-stakes decisions.\n5. Re-check after deployment, because data drift can introduce new bias."
         },
         {
+          "id": "balancing-data-privacy-with-data-consent",
           "heading": "Balancing data privacy with data consent",
           "body": "Privacy and consent are related but different:\n\n- **Consent** asks whether the people who provided the data agreed to *this* use. Data collected to resolve support tickets was not necessarily collected to train a model.\n- **Privacy** asks whether personal information is protected however it is used: minimised, access-controlled, and redacted or anonymised where possible.\n\nA trustworthy workflow checks that the purpose of use matches what people consented to, collects only the data the task needs, removes or masks personally identifiable information (PII) before training or retrieval, and records these decisions. \"The data is already in our database\" or \"it was publicly visible\" does not by itself settle either question.\n\nOn the technology side, NVIDIA's Trust Center lists Confidential Computing among its security features (it protects data and models while they are being processed), and NeMo Guardrails supports PII detection and masking at runtime."
         },
         {
+          "id": "transparency-and-model-cards",
           "heading": "Transparency and model cards",
           "body": "A **model card** is a short, structured document that ships with a model. It typically covers:\n\n- what the model is and how it was trained, including training data at a high level\n- **intended use** and **out-of-scope** uses\n- evaluation results, ideally broken down by relevant groups\n- known limitations, bias and safety considerations\n\nModel cards serve the Transparency principle: they let users, auditors and downstream developers decide whether a model fits their use case. NVIDIA's Trust Center names a **Model Card Generator** (which automates creating model cards) and **Model Card++**, NVIDIA's free, open-source templates in the NVIDIA Trustworthy-AI GitHub repository for documenting a model's transparency, risks, usage and limitations.\n\nTransparency for end users also means explaining in plain language how a result was reached, for example by citing the retrieved sources behind a RAG answer."
         },
         {
+          "id": "nvidia-technologies-for-trustworthiness",
           "heading": "NVIDIA technologies for trustworthiness",
           "body": "The Trust Center page names several NVIDIA tools. At associate level, know what problem each one addresses:\n\n- **NeMo Guardrails:** programmable runtime controls on what goes into and comes out of an LLM application (see the next lesson).\n- **NeMo Curator:** filtering, classification and deduplication of training data.\n- **Model Card Generator / Model Card++:** documentation for transparency.\n- **Confidential Computing:** protects data and models while they are being processed.\n- **SteerLM:** a technique for steering model outputs toward desired attributes.\n- **TAO Toolkit** and **NVIDIA Halos** (safety for physical AI such as autonomous vehicles) are also listed.\n\nThe official reading list for this domain also includes the NIST AI Risk Management Framework and Google's Responsible AI practices, which cover the same ideas from a vendor-neutral angle."
         }
@@ -1433,26 +1515,32 @@
       "summary": "The main runtime threats to an LLM application and how NeMo Guardrails' five rail types, safety models and grounding techniques counter them.",
       "sections": [
         {
+          "id": "the-threats-guardrails-address",
           "heading": "The threats guardrails address",
           "body": "- **Prompt injection:** text that tries to override the application's instructions. In *direct* injection the user types it (\"ignore your previous instructions...\"). In *indirect* injection it is hidden in content the app pulls in, such as a retrieved web page, a document or a tool result.\n- **Jailbreaks:** prompts designed to get the model to ignore its safety training, for example role-play framings or obfuscated requests.\n- **Harmful or toxic content:** unsafe requests coming in, or unsafe text going out.\n- **Off-topic use:** a bank assistant drawn into political debate or unrelated tasks.\n- **Sensitive data leakage:** PII in prompts, retrieved chunks or responses.\n- **Hallucination:** fluent, confident output that is not supported by facts or by the provided context.\n\nNo single control handles all of these, so production apps layer several (defence in depth)."
         },
         {
+          "id": "nemo-guardrails-and-its-five-rail-types",
           "heading": "NeMo Guardrails and its five rail types",
           "body": "**NeMo Guardrails** is an open-source Python library for adding *programmable guardrails* to LLM-based applications. A microservice version can also be deployed on Kubernetes with Helm. Guardrails sit between the application and the LLM and run at five points:\n\n| Rail | Applied to | Example use |\n|---|---|---|\n| **Input** | The user's message, before the LLM sees it | Reject jailbreak attempts, mask PII, block unsafe requests |\n| **Retrieval** | Chunks retrieved in a RAG pipeline | Drop or redact chunks that contain injected instructions or sensitive data |\n| **Dialog** | How the conversation flows | Keep the bot on approved topics, follow a defined flow |\n| **Execution** | Inputs and outputs of actions/tools the LLM calls | Validate a tool call before it runs |\n| **Output** | The LLM's response, before the user sees it | Block unsafe text, mask PII, check facts |\n\nThe exam is likely to test matching a risk to the rail that intercepts it at the right point."
         },
         {
+          "id": "configuring-guardrails",
           "heading": "Configuring guardrails",
           "body": "A guardrails configuration has two main parts:\n\n- **`config.yml`** (YAML): which models to use, prompts, and which rails are enabled.\n- **Colang** files: a modelling language for defining dialog **flows**, such as how to respond when a user asks about a forbidden topic.\n\nIn Python you load a configuration with `RailsConfig` and wrap the model with `LLMRails`. The Guardrails server exposes an OpenAI-style `/v1/chat/completions` endpoint, so client code changes little. LangChain and LangGraph integration is available as an option.\n\n```python\nfrom nemoguardrails import RailsConfig, LLMRails\nconfig = RailsConfig.from_path(\"./config\")\nrails = LLMRails(config)\nreply = rails.generate(messages=[{\"role\": \"user\", \"content\": \"Hi\"}])\n```"
         },
         {
+          "id": "built-in-safety-capabilities",
           "heading": "Built-in safety capabilities",
           "body": "NeMo Guardrails integrates several ready-made checks:\n\n- **Content safety:** an LLM *self-check* prompt, NVIDIA's NemoGuard content-safety model (named \"Llama 3.1 NemoGuard 8B Content Safety\" in the docs, with newer pages using Nemotron Safety Guard naming), or LlamaGuard.\n- **Jailbreak protection:** heuristic checks and the **NemoGuard Jailbreak Detection** NIM.\n- **Topic control:** the **NemoGuard Topic Control** NIM keeps conversations within the allowed scope.\n- **PII detection and masking:** integrations such as Microsoft Presidio, GLiNER and Private AI.\n\nNVIDIA ships its safety models as NIM microservices (the NemoGuard category), so they can run alongside the main LLM. Because model names in this area change, focus on the *capability* (content safety, jailbreak detection, topic control, PII masking) rather than the exact product name."
         },
         {
+          "id": "mitigating-hallucinations",
           "heading": "Mitigating hallucinations",
           "body": "Hallucinations cannot be fully eliminated, but you can reduce them and catch them:\n\n1. **Ground the model with RAG.** Retrieval-augmented generation fetches relevant passages from trusted sources and puts them in the prompt, so answers are based on current, authoritative data. It also lets the app **cite sources**, which supports transparency.\n2. **Instruct the model to answer only from the provided context** and to say when it does not know.\n3. **Add an output check** that verifies the answer against the retrieved context (fact-checking or hallucination rails) before returning it.\n4. **Keep humans in the loop** for high-stakes answers, and evaluate regularly with test sets.\n\nAnti-patterns: fine-tuning on more general web text to \"add facts\", raising temperature, or relying on the model's confidence in its own answer."
         },
         {
+          "id": "defence-in-depth-and-red-teaming",
           "heading": "Defence in depth and red teaming",
           "body": "A robust design combines:\n\n- input rails (jailbreak, content safety, PII) **and** output rails (content safety, PII, fact-checking), because filtering only the input misses unsafe generations and indirect injection\n- retrieval rails for RAG content and execution rails for tools, especially in agents\n- least-privilege tool permissions and human approval for risky actions\n- **red teaming**: deliberately attacking the app with jailbreaks and injections before release. NVIDIA's newer NeMo tooling includes the open-source *garak* LLM vulnerability scanner for this.\n\nSafety is ongoing: log blocked requests, review them, and update rails as new attack patterns appear."
         }
