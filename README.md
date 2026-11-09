@@ -43,6 +43,8 @@ Routes are generated from the registry: `/<track>`, `/<track>/guide`, `/<track>/
 
 ## Deploy (GitHub Pages)
 
+For production operations (repository settings, the Supabase go-live order, rollback and monitoring) see [DEPLOY.md](DEPLOY.md).
+
 Pushing to `main` runs `.github/workflows/deploy.yml`: tests, build, then publish to Pages.
 
 One-time setup: in the repo go to **Settings → Pages → Build and deployment → Source: GitHub Actions**.
