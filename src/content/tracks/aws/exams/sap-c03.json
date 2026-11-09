@@ -1357,7 +1357,7 @@
         },
         {
           "title": "Strangler fig pattern — Prescriptive Guidance",
-          "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/strangler-fig.html"
+          "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/modernization-decomposing-monoliths/strangler-fig.html"
         },
         {
           "title": "SAP-C03 Domain 4 guide — AWS Certification",
@@ -6364,7 +6364,7 @@
       "sources": [
         {
           "title": "Strangler fig pattern — Prescriptive Guidance",
-          "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/strangler-fig.html"
+          "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/modernization-decomposing-monoliths/strangler-fig.html"
         },
         {
           "title": "SAP-C03 Domain 4 guide — AWS Certification",

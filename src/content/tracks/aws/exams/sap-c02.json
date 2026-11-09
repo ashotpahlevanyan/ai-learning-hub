@@ -1414,7 +1414,7 @@
       "lab": "Redesign a synchronous order flow (order -> inventory -> billing -> email) into an event-driven design. Mark which hops use SQS, SNS or EventBridge and why, and note where a FIFO queue is required.",
       "sources": [
         {
-          "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/strangler-fig.html",
+          "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/modernization-decomposing-monoliths/strangler-fig.html",
           "title": "Strangler fig pattern — Prescriptive Guidance"
         },
         {
@@ -5613,7 +5613,7 @@
       ],
       "sources": [
         {
-          "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/strangler-fig.html",
+          "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/modernization-decomposing-monoliths/strangler-fig.html",
           "title": "Strangler fig pattern — Prescriptive Guidance"
         }
       ]
