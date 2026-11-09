@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
 import { barTone } from '../lib/quiz';
 
-export function Bar({ value, tone }: { value: number; tone?: 'good' | 'warn' | 'bad' | 'accent' }) {
+/** A progress bar; `label` is its accessible name, e.g. "Readiness". */
+export function Bar({ value, tone, label }: { value: number; tone?: 'good' | 'warn' | 'bad' | 'accent'; label: string }) {
   const t = tone ?? barTone(value);
   return (
-    <div className={`bar ${t}`} role="progressbar" aria-valuenow={Math.round(value * 100)} aria-valuemin={0} aria-valuemax={100}>
+    <div className={`bar ${t}`} role="progressbar" aria-label={label} aria-valuenow={Math.round(value * 100)} aria-valuemin={0} aria-valuemax={100}>
       <span style={{ width: `${Math.max(0, Math.min(1, value)) * 100}%` }} />
     </div>
   );

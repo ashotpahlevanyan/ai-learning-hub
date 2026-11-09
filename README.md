@@ -13,6 +13,7 @@ npm test           # content validation + logic tests
 npm run build      # production build in dist/
 npm run test:e2e   # browser smoke test of dist/ (after build)
 npm run test:e2e:db  # database-backed content, with fallbacks (builds dist-db/)
+npm run test:e2e:a11y  # axe-core WCAG 2.2 AA audit of dist/, light and dark, desktop and phone
 npm run check:links  # every source/resource URL still resolves (network)
 ```
 

@@ -82,7 +82,7 @@ export default function CardsPage() {
             <span>{i + 1} / {all.length} · {domainName(card.domain)}</span>
             {!p.cards[card.id] && <Tag tone="warn">new</Tag>}
           </div>
-          <button className="card flash" onClick={() => setFlipped(f => !f)} aria-label={flipped ? 'Show question' : 'Reveal answer'}>
+          <button className="card flash" onClick={() => setFlipped(f => !f)} aria-expanded={flipped}>
             {flipped ? (
               <div className="back"><div className="muted small"><Md inline>{card.front}</Md></div><Md>{card.back}</Md></div>
             ) : (

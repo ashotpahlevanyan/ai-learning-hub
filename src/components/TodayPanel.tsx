@@ -48,7 +48,7 @@ export default function TodayPanel({ title = 'Today' }: { title?: string }) {
                 <Link to={base}><strong>{summary.code}</strong> <span className="muted">{summary.name}</span></Link>
                 <span className="muted small">{days !== undefined && days >= 0 ? `${days} day${days === 1 ? '' : 's'} to exam · ` : ''}{pct(r)}% ready</span>
               </div>
-              <Bar value={r} />
+              <Bar value={r} label={`${summary.code} readiness`} />
               <div className="row small">
                 {p.activeMock && <Link className="btn primary" to={`${base}/mock`}>Resume {summary.kind === 'course' ? 'test' : 'mock'}</Link>}
                 {cards.due.length > 0 && <Link className="btn" to={`${base}/cards`}>{cards.due.length} card{cards.due.length === 1 ? '' : 's'} due</Link>}

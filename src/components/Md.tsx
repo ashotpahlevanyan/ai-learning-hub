@@ -28,6 +28,10 @@ export default function Md({ children, inline = false }: { children: string; inl
         a: ({ href, children: c }) =>
           href && /^https?:/.test(href) ? <a href={href} target="_blank" rel="noreferrer">{c}</a> : <a href={href}>{c}</a>,
         table: ({ children: c }) => <div className="table-wrap"><table>{c}</table></div>,
+        // Code blocks scroll sideways, so keyboards must be able to reach them.
+        pre: ({ children: c }) => <pre tabIndex={0}>{c}</pre>,
+        // GFM task lists render read-only checkboxes; name them so screen readers say what they mean.
+        input: ({ type, checked, disabled }) => type === 'checkbox' ? <input type="checkbox" checked={!!checked} disabled={disabled} readOnly aria-label={checked ? 'Done' : 'To do'} /> : <input type={type} />,
         ...(inline ? { p: ({ children: c }) => <>{c}</> } : {}),
       }}
     >

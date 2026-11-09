@@ -23,7 +23,7 @@ export default function ExamGuide() {
       {[...exam.domains].sort((a, b) => b.weight - a.weight).map(d => (
         <section className="card" key={d.id}>
           <div className="spread"><h3 className="flush">{d.name}</h3><Tag>{d.weight}% · ~{Math.round((exam.items * d.weight) / 100)} items</Tag></div>
-          <Bar value={d.weight / maxW} tone="accent" />
+          <Bar value={d.weight / maxW} tone="accent" label={`${d.name}: exam weight, relative to the largest domain`} />
           {d.summary && <Md>{d.summary}</Md>}
           {d.subskills && <ul>{d.subskills.map(s => <li key={s}>{s}</li>)}</ul>}
           <div className="row">

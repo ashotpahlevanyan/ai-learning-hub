@@ -34,7 +34,7 @@ export default function ReviewPage() {
               {exam.domains.map(d => {
                 const x = m.dom[d.id];
                 if (!x) return null;
-                return <tr key={d.id}><td>{d.name}</td><td className="bar-cell"><Bar value={x[0] / x[1]} /></td><td className="num">{x[0]}/{x[1]}</td></tr>;
+                return <tr key={d.id}><td>{d.name}</td><td className="bar-cell"><Bar value={x[0] / x[1]} label={`${d.name}: share correct`} /></td><td className="num">{x[0]}/{x[1]}</td></tr>;
               })}
             </tbody>
           </table>

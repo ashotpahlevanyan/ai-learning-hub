@@ -73,7 +73,7 @@ export default function ExamDashboard() {
       </section>
 
       <div className="grid stats">
-        <StatCard label="Lessons" value={`${done}/${exam.lessons.length}`} note={left ? `${fmtHours(left)} of reading left` : 'All read'}><Bar value={exam.lessons.length ? done / exam.lessons.length : 0} tone="accent" /></StatCard>
+        <StatCard label="Lessons" value={`${done}/${exam.lessons.length}`} note={left ? `${fmtHours(left)} of reading left` : 'All read'}><Bar value={exam.lessons.length ? done / exam.lessons.length : 0} tone="accent" label="Lessons read" /></StatCard>
         <StatCard label="Questions seen" value={`${seen}/${exam.questions.length}`} note={att ? `${pct(cor / att)}% accuracy over ${att} answers` : 'No answers yet'} />
         <StatCard label="Flashcards today" value={cards.due.length + cards.fresh.length} note={`${cards.learned}/${cards.total} learned`} />
         <StatCard label={exam.kind === 'course' ? 'Best practice test' : 'Best mock'} value={best || '—'} note={last ? `${p.mocks.length} taken · last ${last.score}` : 'None taken yet'} />
@@ -87,7 +87,7 @@ export default function ExamDashboard() {
             <div className="domain-row" key={d.id}>
               <div><strong>{d.name}</strong><div className="muted small">{s.seen}/{s.total} seen{s.seen ? ` · ${pct(s.acc)}% correct` : ''}</div></div>
               <div className="w"><Tag>{d.weight}%</Tag></div>
-              <div><Bar value={s.mastery} /><div className="muted small">{pct(s.mastery)}%</div></div>
+              <div><Bar value={s.mastery} label={`${d.name} mastery`} /><div className="muted small">{pct(s.mastery)}%</div></div>
               <Link className="btn small" to={`${base}/practice?domain=${d.id}`}>Drill</Link>
             </div>
           );

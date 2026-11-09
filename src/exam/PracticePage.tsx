@@ -161,7 +161,7 @@ function PracticeQuestion({ session: s, setSession: set }: { session: Session; s
         <span>Question {s.i + 1} of {s.items.length} · {domainName(q.domain)}</span>
         <span>{s.items.filter(x => x.done && x.ok).length} correct · <button className="linklike" onClick={quit}>End session</button></span>
       </div>
-      <Bar value={s.i / s.items.length} tone="accent" />
+      <Bar value={s.i / s.items.length} tone="accent" label="Questions done in this session" />
       <div className="card q-card">
         <QuestionView q={q} order={item.order} picked={item.picked} reveal={item.done} onPick={pick} />
         {item.done && <div ref={feedback} className={`feedback ${right ? 'good' : 'bad'}`} role="status"><strong>{right ? 'Correct.' : 'Not quite.'}</strong> <Md>{q.explanation}</Md><Sources list={q.sources} /></div>}

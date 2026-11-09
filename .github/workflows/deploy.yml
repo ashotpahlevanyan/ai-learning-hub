@@ -46,6 +46,8 @@ jobs:
       # Browser smoke test of the built site; a failure blocks the deploy.
       - run: npx playwright-core install --with-deps chromium
       - run: npm run test:e2e
+      # Accessibility (axe-core, WCAG 2.2 AA): serious or critical violations block the deploy.
+      - run: npm run test:e2e:a11y
       # Database-backed content against a local REST stand-in (builds its own copy in dist-db/).
       - run: npm run test:e2e:db
       # Optional content database: with the DATABASE_URL secret set, every deploy that passed the tests replaces

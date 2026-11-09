@@ -15,7 +15,8 @@
     "test:e2e": "node e2e/smoke.mjs",
     "content:verify-db": "vite-node scripts/verify-db.ts",
     "test:e2e:db": "node e2e/db.mjs",
-    "check:rechecks": "node scripts/check-rechecks.mjs"
+    "check:rechecks": "node scripts/check-rechecks.mjs",
+    "test:e2e:a11y": "node e2e/a11y.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.118.0",
@@ -35,6 +36,7 @@
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
     "@vitejs/plugin-react": "4.3.4",
+    "axe-core": "4.14.0",
     "playwright-core": "1.47.2",
     "typescript": "5.6.3",
     "vite": "5.4.21",
