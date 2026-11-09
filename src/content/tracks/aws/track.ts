@@ -29,6 +29,7 @@ export const aws: Track = {
     {
       kind: 'exam', id: 'sap-c02', code: 'SAP-C02', name: 'Solutions Architect – Professional', level: 'AWS · Professional · last exam day 16 Nov 2026', tier: 'Professional',
       audience: 'Solutions architects with 2+ years designing and deploying cloud architecture on AWS', items: 75, minutes: 180, price: '$300',
+      lastDay: '2026-11-16', replacedBy: 'sap-c03',
       load: () => load(import('./exams/sap-c02.json')),
     },
     {

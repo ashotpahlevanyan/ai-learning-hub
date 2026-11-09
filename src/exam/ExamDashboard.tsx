@@ -5,9 +5,11 @@ import { cardQueue, DAY } from '../lib/srs';
 import { barTone, domainStats, fmtTime, readiness } from '../lib/quiz';
 import { Bar, StatCard, Tag, pct } from '../components/ui';
 import { fmtHours, studyTime } from '../lib/studyTime';
+import { fmtDay, isRetired, isRetiring, replacementOf } from '../lib/retire';
 
 export default function ExamDashboard() {
-  const { exam, key, base, domainName } = useExam();
+  const { exam, key, base, domainName, track, summary } = useExam();
+  const successor = replacementOf(track, summary);
   const p = useProgress(key);
   const { days } = useAppState();
   const ds = domainStats(exam, p);
@@ -38,6 +40,12 @@ export default function ExamDashboard() {
 
   return (
     <>
+      {(isRetired(summary) || isRetiring(summary)) && (
+        <div className={`card notice ${isRetired(summary) ? 'bad' : 'warn'}`} role="status">
+          {isRetired(summary) ? <>This exam was retired: the last day to sit it was {fmtDay(summary.lastDay!)}.</> : <>The last day to sit this exam is {fmtDay(summary.lastDay!)}.</>}
+          {successor && <> {isRetired(summary) ? 'Study' : 'Book it only if you can sit it by then; otherwise study'} <Link to={`/${track.id}/${successor.id}`}>{successor.code} {successor.name}</Link>{isRetired(summary) ? ' instead' : ''}.</>}
+        </div>
+      )}
       <section className="card hero-card">
         <div className="spread">
           <div>

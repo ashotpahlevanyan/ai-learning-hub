@@ -92,6 +92,10 @@ export interface ExamSummary {
   items: number;
   minutes: number;
   price: string;
+  /** Last day the exam can be taken (YYYY-MM-DD). After it the exam shows as retired. */
+  lastDay?: string;
+  /** Id of the exam in the same track that replaces this one. */
+  replacedBy?: string;
   load: () => Promise<Exam>;
 }
 

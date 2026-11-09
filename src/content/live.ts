@@ -19,26 +19,24 @@ async function recall<T>(key: string): Promise<T | undefined> {
   try { return await (await (await caches.open(CACHE)).match(cacheUrl(key)))?.json(); } catch { return undefined; }
 }
 
-/** Where the exam on screen came from, for the dashboard and debugging. */
-export const loadedFrom = new Map<string, 'database' | 'cache' | 'bundle'>();
-
 async function preferDb<T>(key: string, remote: () => Promise<T>, bundled: () => Promise<T>): Promise<T> {
   try {
     const v = await remote();
-    loadedFrom.set(key, 'database');
     void remember(key, v);
     return v;
   } catch (err) {
     console.warn(`Content database unavailable for ${key}; using a local copy.`, err);
     const cached = await recall<T>(key);
-    if (cached) { loadedFrom.set(key, 'cache'); return cached; }
-    loadedFrom.set(key, 'bundle');
+    if (cached) return cached;
     return bundled();
   }
 }
 
-/** Call once at startup. Does nothing unless the build enables database content. */
-export function enableDatabaseContent(cfg: DbConfig = { url: env.VITE_SUPABASE_URL, key: env.VITE_SUPABASE_ANON_KEY }) {
+/**
+ * Call once at startup. Does nothing unless the build enables database content.
+ * The timeout is short: a slow database should not keep a page waiting when a local copy is at hand.
+ */
+export function enableDatabaseContent(cfg: DbConfig = { url: env.VITE_SUPABASE_URL, key: env.VITE_SUPABASE_ANON_KEY, timeout: 6000 }) {
   if (!contentFromDb) return;
   for (const t of tracks) {
     const guide = t.loadGuide;

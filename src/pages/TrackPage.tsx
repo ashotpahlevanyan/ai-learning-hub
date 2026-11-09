@@ -7,6 +7,7 @@ import { library } from '../content/library';
 import { useMeta } from '../lib/useMeta';
 import studyTimes from 'virtual:study-time';
 import { fmtHours, QUESTION_MIN } from '../lib/studyTime';
+import { fmtDay, isRetired, isRetiring, orderForListing, replacementOf } from '../lib/retire';
 
 export default function TrackPage() {
   const { trackId } = useParams();
@@ -28,14 +29,19 @@ export default function TrackPage() {
 
       <h2>{track.exams.every(e => e.kind === 'course') ? 'Courses' : 'Exams and courses'}</h2>
       <div className="grid exams">
-        {track.exams.map(e => {
+        {orderForListing(track.exams).map(e => {
           const p = state.ex[`${track.id}/${e.id}`];
           const started = p && (Object.keys(p.q).length || Object.keys(p.lessons).length);
+          const retired = isRetired(e), next = replacementOf(track, e);
           return (
-            <Link key={e.id} to={`/${track.id}/${e.id}`} className={`card exam-card tier-${e.tier.toLowerCase()}`}>
-              <div className="spread"><span className="code">{e.code}</span><span className="tag">{e.kind === 'course' ? 'Course' : e.tier}</span></div>
+            <Link key={e.id} to={`/${track.id}/${e.id}`} className={`card exam-card tier-${e.tier.toLowerCase()}${retired ? ' retired' : ''}`}>
+              <div className="spread"><span className="code">{e.code}</span>{retired
+                ? <span className="tag bad">Retired</span>
+                : isRetiring(e) ? <span className="tag warn">Last day {fmtDay(e.lastDay!)}</span>
+                : <span className="tag">{e.kind === 'course' ? 'Course' : e.tier}</span>}</div>
               <h3>{e.name}</h3>
               <div className="muted small">{e.level}</div>
+              {retired && <p className="small"><strong>No longer offered</strong> (last day {fmtDay(e.lastDay!)}).{next ? ` Study ${next.code} instead.` : ''}</p>}
               <p className="small">{e.audience}</p>
               <dl className="facts">
                 <div><dt>{e.kind === 'course' ? 'Test items' : 'Items'}</dt><dd>{e.items}</dd></div>
