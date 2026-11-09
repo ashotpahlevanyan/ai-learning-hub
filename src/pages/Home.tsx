@@ -24,6 +24,7 @@ export default function Home() {
         <div className="row">
           <Link className="btn primary" to="/claude">Start the Claude track</Link>
           <a className="btn" href="#tracks">Browse all tracks</a>
+          <Link className="btn" to="/roadmap">Six-month roadmap</Link>
           <Link className="btn" to="/library">Reading library</Link>
         </div>
       </section>

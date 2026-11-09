@@ -55,6 +55,17 @@ describe('mergeStates', () => {
     expect(m.updatedAt).toBe(20);
   });
 
+  it('merges roadmap ticks by latest change, so an untick on one device wins over an older tick', () => {
+    const a = { ...state({}, [], 10), roadmap: { tasks: { 'w1-0': { ok: true, at: 100 }, 'w1-1': { ok: false, at: 300 } }, cloud: 'azure' as const } };
+    const b = { ...state({}, [], 20), roadmap: { tasks: { 'w1-1': { ok: true, at: 200 }, 'w2-0': { ok: true, at: 50 } }, start: '2026-12-01' } };
+    const r = mergeStates(a, b).roadmap!;
+    expect(r.tasks).toEqual({ 'w1-0': { ok: true, at: 100 }, 'w1-1': { ok: false, at: 300 }, 'w2-0': { ok: true, at: 50 } });
+    expect(r.cloud).toBe('azure');
+    expect(r.start).toBe('2026-12-01');
+    expect(mergeStates(state({}), state({})).roadmap).toBeUndefined();
+    expect(sameProgress(a, { ...a, roadmap: { tasks: {} } })).toBe(false);
+  });
+
   it('is idempotent and order-insensitive for progress', () => {
     const a = state({ x: { lessons: { l1: 1 }, q: { q1: { n: 1, c: 1, lastOk: true, last: 5 } } } }, ['2026-11-01']);
     const b = state({ x: { lessons: { l2: 2 } }, y: { lessons: { l9: 3 } } }, ['2026-11-02']);

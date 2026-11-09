@@ -13,6 +13,7 @@ const ProgressPage = lazy(() => import('./pages/ProgressPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const SearchPage = lazy(() => import('./pages/SearchPage'));
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
+const RoadmapPage = lazy(() => import('./pages/RoadmapPage'));
 const ExamLayout = lazy(() => import('./exam/ExamLayout'));
 const ExamDashboard = lazy(() => import('./exam/ExamDashboard'));
 const ExamGuide = lazy(() => import('./exam/ExamGuide'));
@@ -52,6 +53,7 @@ export default function App() {
         <Link to="/" className="brand"><span className="logo" aria-hidden="true">A</span> AI Learning Hub</Link>
         <nav className="topnav" aria-label="Main">
           {tracks.map(t => <NavLink key={t.id} to={`/${t.id}`}>{t.navLabel ?? t.name}</NavLink>)}
+          <NavLink to="/roadmap">Roadmap</NavLink>
           <NavLink to="/library">Library</NavLink>
           <NavLink to="/search">Search</NavLink>
           <NavLink to="/progress">My progress</NavLink>
@@ -67,6 +69,7 @@ export default function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/library" element={<LibraryPage />} />
+              <Route path="/roadmap" element={<RoadmapPage />} />
               <Route path="/:trackId" element={<TrackPage />} />
               <Route path="/:trackId/guide" element={<GuidePage />} />
               <Route path="/:trackId/:examId" element={<ExamLayout />}>

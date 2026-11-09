@@ -1,4 +1,4 @@
-import type { AppState, ExamProgress, MockRecord } from './store';
+import type { AppState, ExamProgress, MockRecord, RoadmapState } from './store';
 import { pruneMocks } from './store';
 
 /**
@@ -17,6 +17,7 @@ export function mergeStates(local: AppState, remote: AppState): AppState {
     theme: local.theme,
     ex,
     days: [...new Set([...local.days, ...remote.days])].sort().slice(-400),
+    ...(local.roadmap || remote.roadmap ? { roadmap: mergeRoadmap(local.roadmap, remote.roadmap, local.updatedAt >= remote.updatedAt) } : {}),
     updatedAt: Math.max(local.updatedAt, remote.updatedAt),
   };
 }
@@ -46,9 +47,22 @@ function mergeExam(a: ExamProgress, b: ExamProgress, aIsNewer: boolean): ExamPro
   return structuredClone(out);
 }
 
+function mergeRoadmap(a: RoadmapState | undefined, b: RoadmapState | undefined, aIsNewer: boolean): RoadmapState {
+  const [newer, older] = aIsNewer ? [a, b] : [b, a];
+  // Ticks and unticks both carry a time, so an untick on one device isn't undone by an older tick on another.
+  // On a tie the newer device wins, because it is applied last.
+  const tasks: RoadmapState['tasks'] = {};
+  for (const src of [older, newer]) for (const [k, v] of Object.entries(src?.tasks ?? {})) if (!tasks[k] || v.at >= tasks[k].at) tasks[k] = v;
+  const out: RoadmapState = { tasks };
+  const cloud = newer?.cloud ?? older?.cloud, start = newer?.start ?? older?.start;
+  if (cloud) out.cloud = cloud;
+  if (start) out.start = start;
+  return structuredClone(out);
+}
+
 /** True when the two states hold the same progress (ignores timestamps and theme). */
 export function sameProgress(a: AppState, b: AppState) {
-  return canonical([a.ex, a.days]) === canonical([b.ex, b.days]);
+  return canonical([a.ex, a.days, a.roadmap]) === canonical([b.ex, b.days, b.roadmap]);
 }
 
 // JSON with sorted keys, so key order from merging doesn't make equal states look different.

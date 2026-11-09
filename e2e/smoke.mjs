@@ -80,13 +80,17 @@ try {
   }
   await page.goto(`${B}/search?q=prompt`); await page.waitForSelector('.results li', { timeout: 20000 }).catch(() => fail('search returned nothing'));
   await page.goto(`${B}/`); await page.waitForSelector('.today-list li').catch(() => fail('Today panel missing after studying'));
-  for (const p of paths.filter(p => /^\/[\w-]+$/.test(p) && !['/about', '/library'].includes(p))) { // track pages show study time per exam
+  for (const p of paths.filter(p => /^\/[\w-]+$/.test(p) && !['/about', '/library', '/roadmap'].includes(p))) { // track pages show study time per exam
     await page.goto(B + p); await page.waitForSelector('.exam-card');
     const n = await page.$$eval('.exam-card', cs => cs.filter(c => !/About [\d.]+ (h|min) of study/.test(c.textContent)).length);
     if (n) fail(`${p}: ${n} exam cards show no study time`);
   }
   await page.goto(`${B}/library`); await page.waitForSelector('.library li a[href^="https://"]').catch(() => fail('library has no entries'));
   await page.goto(`${B}/library?track=azure&free=1`); if (!(await page.$$('.library li')).length) fail('library filter shows nothing for azure + free');
+  await page.goto(`${B}/roadmap`); await page.waitForSelector('.this-week .tasks input[type=checkbox]').catch(() => fail('roadmap shows no tasks for this week'));
+  if ((await page.$$('details.week')).length !== 24) fail('roadmap does not show 24 weeks');
+  await page.click('.this-week .tasks input[type=checkbox]'); await page.reload(); await page.waitForSelector('.this-week .tasks input');
+  if (!(await page.$eval('.this-week .tasks input', i => i.checked))) fail('roadmap tick is not saved');
   await page.goto(`${B}/progress`); await page.waitForSelector('table').catch(() => fail('progress page has no table'));
   await page.goto(`${B}/no/such/page`); await page.waitForSelector('h1');
   if (!(await page.textContent('body')).includes('Page not found')) fail('unknown URL does not show the 404 page');

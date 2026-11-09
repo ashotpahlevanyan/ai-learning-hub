@@ -21,12 +21,19 @@ export interface ExamProgress {
   examDate?: string;
   hours?: number;
 }
+/** The six-month roadmap: ticked tasks (latest change wins when devices merge), chosen cloud and start date. */
+export interface RoadmapState {
+  tasks: Record<string, { ok: boolean; at: number }>;
+  cloud?: 'aws' | 'azure';
+  start?: string;
+}
 export interface AppState {
   v: 1;
   theme?: 'light' | 'dark';
   /** keyed by "<trackId>/<examId>" so tracks never collide */
   ex: Record<string, ExamProgress>;
   days: string[];
+  roadmap?: RoadmapState;
   updatedAt: number;
 }
 

@@ -81,3 +81,31 @@ describe('library', () => {
     expect(problems).toEqual([]);
   });
 });
+
+describe('roadmap', () => {
+  it('links only to real pages and library entries, with 5–12 hours a week (exam and review weeks are lighter)', async () => {
+    const { roadmap, roadmapTasks } = await import('./roadmap');
+    const { library } = await import('./library');
+    const titles = new Set(library.map(i => i.title)), routes = ['learn', 'cards', 'practice', 'mock', 'mistakes', 'plan', 'guide'];
+    const problems: string[] = [];
+    expect(roadmap.length).toBe(6);
+    roadmap.forEach((m, i) => { if (m.weeks.length !== 4) problems.push(`month ${i + 1} has ${m.weeks.length} weeks`); });
+    for (const cloud of ['aws', 'azure'] as const) {
+      const tasks = roadmapTasks(cloud);
+      if (new Set(tasks.map(t => t.id)).size !== tasks.length) problems.push(`${cloud}: duplicate task ids`);
+      for (let w = 1; w <= 24; w++) {
+        const h = tasks.filter(t => t.week === w).reduce((a, t) => a + t.hours, 0);
+        if (h < 5 || h > 12) problems.push(`${cloud} week ${w}: ${h} h`);
+      }
+      tasks.forEach(t => {
+        t.lib?.forEach(title => { if (!titles.has(title)) problems.push(`${t.id}: no library entry "${title}"`); });
+        if (t.to) {
+          const [, track, exam, sub] = t.to.path.split('/');
+          const ok = tracks.find(x => x.id === track)?.exams.some(e => e.id === exam);
+          if (!ok || (sub && !routes.includes(sub))) problems.push(`${t.id}: bad link ${t.to.path}`);
+        }
+      });
+    }
+    expect(problems).toEqual([]);
+  });
+});

@@ -272,3 +272,24 @@ select { max-width: 100%; }
 .katex-display { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Six-month roadmap */
+.tag.kind-skill { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.tag.kind-build { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.tag.kind-exam { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.tasks { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 4px; }
+.tasks li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.tasks li > div { min-width: 0; }
+.tasks input[type=checkbox] { width: 18px; height: 18px; margin-top: 4px; accent-color: var(--good); }
+.tasks label { cursor: pointer; }
+.tasks li.done label { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--border); }
+.task-links { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 2px; }
+.done-when { border-left: 3px solid var(--good); padding-left: 10px; margin-bottom: 0; }
+.week { padding-block: 12px; }
+.week > summary { cursor: pointer; list-style-position: outside; }
+.week[open] > summary { margin-bottom: 8px; }
+.legend { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.month-facts { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 12px; }
+.month-facts > div { display: grid; gap: 4px; min-width: 0; }
+.roadmap .controls input[type=date] { font: inherit; padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); }
+.segmented { gap: 4px; }
