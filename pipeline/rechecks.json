@@ -1,0 +1,11 @@
+{
+  "_about": "Content that goes stale on a known date. scripts/check-rechecks.mjs (weekly in CI) fails once a date has passed, until the entry is re-verified and removed or moved. Each entry: the date to recheck on or after, the exam or track key, and what to check.",
+  "rechecks": [
+    { "on": "2026-11-12", "key": "claude/ccao-f", "what": "The new Anthropic Usage Policy takes effect. Re-verify the d6 lessons and questions (high-risk areas list, effective date).", "report": "pipeline/reports/claude-ccao-f-2026-11-07.md" },
+    { "on": "2026-11-17", "key": "aws/sap-c02", "what": "SAP-C02 retired on 16 Nov (the site now shows it as retired automatically). Confirm SAP-C03 is live as described, then decide whether to drop the SAP-C02 bundle.", "report": "pipeline/reports/aws-sap-c02-2026-11-07.md" },
+    { "on": "2026-11-17", "key": "claude/ccdv-f", "what": "A new CCDV-F guide is expected (single source). Recheck the domains and weights against it.", "report": "pipeline/reports/claude-ccdv-f-2026-11-07.md" },
+    { "on": "2026-11-30", "key": "openai/openai-dev", "what": "OpenAI shuts down the Evals platform, v1/prompts and Agent Builder. Reword lessons and questions that describe them as deprecated so they read as removed.", "report": "pipeline/reports/openai-openai-dev-2026-11-07.md" },
+    { "on": "2026-12-07", "key": "claude/ccdv-f", "what": "Reported CCDV-F exam content update (single source). Recheck the domains and the version-sensitive API claims.", "report": "pipeline/reports/claude-ccdv-f-2026-11-07.md" },
+    { "on": "2027-01-06", "key": "openai/openai-dev", "what": "Deadline for the fine-tuning jobs described in the course. Recheck the fine-tuning lesson and questions.", "report": "pipeline/reports/openai-openai-dev-2026-11-07.md" }
+  ]
+}

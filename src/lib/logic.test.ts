@@ -71,3 +71,39 @@ describe('readiness', () => {
     expect(readiness(exam, p)).toBe(1);
   });
 });
+
+import { isRetired, isRetiring, orderForListing } from './retire';
+import { tracks as allTracks } from '../content';
+import type { ExamSummary } from './types';
+
+describe('exam retirement', () => {
+  const s = { id: 'a', lastDay: '2026-11-16' } as ExamSummary, t = { id: 'b' } as ExamSummary;
+  it('is current through the last day and retired after it', () => {
+    expect(isRetired(s, '2026-11-16')).toBe(false);
+    expect(isRetired(s, '2026-11-17')).toBe(true);
+    expect(isRetiring(s, '2026-11-01')).toBe(true);
+    expect(isRetiring(s, '2026-11-17')).toBe(false);
+    expect(isRetiring(t, '2026-11-01')).toBe(false);
+  });
+  it('lists retired exams last', () => {
+    expect(orderForListing([s, t], '2026-11-20').map(e => e.id)).toEqual(['b', 'a']);
+    expect(orderForListing([s, t], '2026-11-10').map(e => e.id)).toEqual(['a', 'b']);
+  });
+  it('names real replacements and valid dates', () => {
+    for (const tr of allTracks) for (const e of tr.exams) {
+      if (e.lastDay) expect(e.lastDay).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      if (e.replacedBy) expect(tr.exams.some(x => x.id === e.replacedBy && x.id !== e.id)).toBe(true);
+    }
+  });
+});
+
+import rechecks from '../../pipeline/rechecks.json';
+describe('pipeline/rechecks.json', () => {
+  it('names real exams and valid dates', () => {
+    const keys = new Set(allTracks.flatMap(t => [t.id, ...t.exams.map(e => `${t.id}/${e.id}`)]));
+    for (const r of rechecks.rechecks) {
+      expect(keys.has(r.key), r.key).toBe(true);
+      expect(r.on).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+});

@@ -14,7 +14,8 @@
     "content:export": "vite-node scripts/export-content.ts",
     "test:e2e": "node e2e/smoke.mjs",
     "content:verify-db": "vite-node scripts/verify-db.ts",
-    "test:e2e:db": "node e2e/db.mjs"
+    "test:e2e:db": "node e2e/db.mjs",
+    "check:rechecks": "node scripts/check-rechecks.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.118.0",

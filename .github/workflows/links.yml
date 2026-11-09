@@ -1,6 +1,7 @@
-name: Check source links
+name: Check source links and rechecks
 
-# Official docs move often. Weekly, check that every source and resource URL still resolves.
+# Official docs move often. Weekly, check that every source and resource URL still resolves,
+# and fail when a dated content recheck (pipeline/rechecks.json) has come due.
 on:
   schedule:
     - cron: '0 6 * * 1'
@@ -18,3 +19,12 @@ jobs:
         with:
           node-version: 22
       - run: node scripts/check-links.mjs
+
+  rechecks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/check-rechecks.mjs --soon 14
