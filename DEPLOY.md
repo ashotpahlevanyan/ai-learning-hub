@@ -18,8 +18,8 @@ Without any Supabase settings the site is fully functional: progress stays in th
 
 A push to `main` runs these steps, and any failure stops the deploy:
 
-1. A settings check fails fast if `CONTENT_SOURCE=db` is set without the `DATABASE_URL` secret, or if database content is on without the Supabase variables.
-2. `npm ci`, then `npm test`: content validation, logic, a round trip of every exam through its database rows, and a real-Postgres (PGlite) load of the schema.
+1. `npm ci`, then `npm test`: content validation, logic, a round trip of every exam through its database rows, and a real-Postgres (PGlite) load of the schema.
+2. A settings check fails fast if `CONTENT_SOURCE=db` is set without the `DATABASE_URL` secret, or if database content is on without the Supabase variables.
 3. `npm run build` with the base path and site URL taken from `public/CNAME`.
 4. `npm run test:e2e`: every exam in Chrome at phone width, plus a pass under the real Content-Security-Policy.
 5. `npm run test:e2e:a11y`: an axe-core audit (WCAG 2.2 AA) of 20 pages in light and dark themes, at desktop and phone width. Serious and critical violations fail the run.
