@@ -57,6 +57,9 @@ create table if not exists public.exams (
   review jsonb,                            -- {date, questionsChecked, fixed, dropped}
   unique (track_id, id)
 );
+-- A hash of the exam's content, set by the exporter. The site reads it before and after the other tables to
+-- detect a reload that committed mid-read. (Added after the first release, hence the alter for existing projects.)
+alter table public.exams add column if not exists version text;
 
 create table if not exists public.domains (
   exam_key text not null references public.exams (key) on delete cascade,

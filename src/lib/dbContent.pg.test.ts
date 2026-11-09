@@ -15,7 +15,7 @@ let db: PGlite, out: string, cfg: DbConfig;
 const ident = (s: string) => { if (!/^[a-z_]+$/.test(s)) throw new Error(`bad identifier ${s}`); return s; };
 
 /** Answers the subset of PostgREST that dbContent uses: eq filters, order, limit, offset, select. */
-const rest = (async (input: string | URL) => {
+const rest = (async (input: string | URL, init?: RequestInit) => {
   const u = new URL(String(input)), table = ident(u.pathname.split('/').pop()!);
   const where: string[] = [], args: string[] = [];
   let order = '', limit = '', offset = '', select = '*';
@@ -27,8 +27,13 @@ const rest = (async (input: string | URL) => {
     else if (v.startsWith('eq.')) { args.push(v.slice(3)); where.push(`${ident(k)}::text = $${args.length}`); }
   }
   const sql = `select coalesce(json_agg(t), '[]'::json) as rows from (select ${select} from public.${table}${where.length ? ` where ${where.join(' and ')}` : ''}${order}${limit}${offset}) t`;
-  const r = await db.query<{ rows: unknown }>(sql, args);
-  return new Response(JSON.stringify(r.rows[0].rows), { status: 200 });
+  const r = await db.query<{ rows: unknown[] }>(sql, args);
+  const headers: Record<string, string> = {};
+  if ((init?.headers as Record<string, string> | undefined)?.Prefer === 'count=exact') {
+    const c = await db.query<{ n: number }>(`select count(*)::int as n from public.${table}${where.length ? ` where ${where.join(' and ')}` : ''}`, args);
+    headers['Content-Range'] = `0-${r.rows[0].rows.length - 1}/${c.rows[0].n}`;
+  }
+  return new Response(JSON.stringify(r.rows[0].rows), { status: 200, headers });
 }) as unknown as typeof fetch;
 
 const loadAll = async () => {
@@ -44,6 +49,7 @@ beforeAll(async () => {
   await db.exec('create role anon; create role authenticated; create role service_role;');
   await db.exec(readFileSync('supabase/content.sql', 'utf8'));
   await loadAll();
+  await db.exec(readFileSync('supabase/content.sql', 'utf8')); // the deploy re-runs the schema script each time
   await loadAtomic(); // a reload must replace, not duplicate or fail
   cfg = { url: 'https://db.test', key: 'anon', pageSize: 300, fetch: rest };
 }, 180000);
@@ -54,6 +60,11 @@ afterAll(async () => {
 });
 
 describe('content database (Postgres)', () => {
+  it('stamps every exam with a content version', async () => {
+    const r = await db.query<{ n: number }>('select count(*)::int as n from public.exams where version is null');
+    expect(r.rows[0].n).toBe(0);
+  });
+
   it('holds one row per exam', async () => {
     const r = await db.query<{ n: number }>('select count(*)::int as n from public.exams');
     expect(r.rows[0].n).toBe(tracks.reduce((s, t) => s + t.exams.length, 0));

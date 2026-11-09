@@ -33,9 +33,13 @@ export default function ExamLayout() {
   useMeta(summary ? `${summary.code} ${summary.name}` : undefined, summary ? `${summary.kind === 'course' ? 'Course' : 'Exam prep'} for ${summary.name} (${summary.level}): lessons, flashcards, practice questions and timed mock exams.` : undefined, !/\/learn\/[^/]+$/.test(pathname));
 
   useEffect(() => {
+    setFailed(false);
     if (!summary || cache.has(key)) { setExam(cache.get(key)); return; }
     setExam(undefined);
-    summary.load().then(e => { cache.set(key, e); setExam(e); }).catch(() => setFailed(true));
+    // Moving between exams keeps this component: a slow load for the previous exam must not land on the new one.
+    let live = true;
+    summary.load().then(e => { cache.set(key, e); if (live) setExam(e); }).catch(() => { if (live) setFailed(true); });
+    return () => { live = false; };
   }, [key, summary]);
 
   // On narrow screens the tabs scroll sideways: keep the current one in view.

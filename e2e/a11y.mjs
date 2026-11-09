@@ -21,8 +21,13 @@ try {
   const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined, headless: true });
   for (const [scheme, width] of [['light', 1280], ['dark', 390]]) {
     const page = await browser.newPage({ viewport: { width, height: 900 }, colorScheme: scheme, bypassCSP: true });
-    for (const path of [...PAGES, '/claude/ccar-f/learn/first-lesson', '/claude/ccar-f/practice#question']) {
-      if (path.endsWith('first-lesson')) {
+    for (const path of [...PAGES, '/claude/ccar-f/learn/first-lesson', '/claude/ccar-f/practice#question', '/claude/ccar-f#mock-history']) {
+      if (path.endsWith('#mock-history')) {
+        // Saved mocks, so the dashboard shows its score trend chart and history table.
+        const mocks = [610, 705, 760].map((score, i) => ({ date: Date.UTC(2026, 9, 1 + i), pct: score / 1000, score, n: 20, ok: 14, secs: 1500, dom: {} }));
+        await page.evaluate(m => localStorage.setItem('aiLearningHub.v1', JSON.stringify({ v: 1, ex: { 'claude/ccar-f': { q: {}, cards: {}, lessons: {}, newCards: {}, mocks: m } }, days: [], updatedAt: 1 })), mocks);
+        await page.goto(`${B}/claude/ccar-f`); await page.waitForSelector('.trend svg');
+      } else if (path.endsWith('first-lesson')) {
         await page.goto(`${B}/claude/ccar-f/learn`); await page.click('.lesson-list a >> nth=0'); await page.waitForSelector('article h1');
       } else if (path.endsWith('#question')) {
         await page.goto(`${B}/claude/ccar-f/practice`); await page.click('text=Start practice'); await page.click('.opt >> nth=0');

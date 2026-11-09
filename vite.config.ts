@@ -62,5 +62,7 @@ const studyTimes = (): Plugin => {
 export default defineConfig(({ mode }) => ({
   base: process.env.BASE_PATH || '/',
   plugins: [react(), csp(loadEnv(mode, process.cwd(), 'VITE_').VITE_SUPABASE_URL), studyTimes()],
+  // Changes on every build; names the offline copy of database content so a new deploy never serves an older one.
+  define: { __BUILD_ID__: JSON.stringify(Date.now().toString(36)) },
   test: { environment: 'node' },
 }));

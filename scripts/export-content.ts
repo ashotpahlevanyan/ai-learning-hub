@@ -6,6 +6,7 @@
 // export always matches what is published. Loading replaces existing rows (see README).
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { createHash } from 'node:crypto';
 import { tracks } from '../src/content';
 import { library, topics } from '../src/content/library';
 import { roadmap } from '../src/content/roadmap';
@@ -28,6 +29,8 @@ for (const [ti, t] of tracks.entries()) {
 
   for (const [ei, s] of t.exams.entries()) {
     const { exam, ...examRows } = examToRows(t.id, ei, s, await s.load(), problems);
+    // The content hash lets readers notice a reload that happened while they were reading (see dbContent.ts).
+    exam.version = createHash('sha256').update(JSON.stringify({ exam, examRows })).digest('hex').slice(0, 16);
     rows.exams.push(exam);
     for (const [table, list] of Object.entries(examRows)) rows[table as keyof typeof examRows].push(...list);
   }

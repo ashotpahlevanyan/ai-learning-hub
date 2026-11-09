@@ -25,6 +25,20 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      # Catch settings that would leave the site reading stale or unverifiable database content.
+      - name: Check content settings
+        env:
+          CONTENT_SOURCE: ${{ vars.CONTENT_SOURCE }}
+          HAS_DATABASE_URL: ${{ secrets.DATABASE_URL != '' }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+        run: |
+          if [ "$CONTENT_SOURCE" = "db" ] && [ "$HAS_DATABASE_URL" != "true" ]; then
+            echo "::error::CONTENT_SOURCE=db needs the DATABASE_URL secret, or the database would never get this commit's content."; exit 1
+          fi
+          if { [ "$CONTENT_SOURCE" = "db" ] || [ "$HAS_DATABASE_URL" = "true" ]; } && { [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; }; then
+            echo "::error::Database content needs the SUPABASE_URL and SUPABASE_ANON_KEY variables."; exit 1
+          fi
       # A custom domain (public/CNAME) serves from "/"; otherwise the site lives at /<repo>/.
       - name: Choose base path and site URL
         run: |
@@ -60,6 +74,8 @@ jobs:
         run: |
           if [ -z "$DATABASE_URL" ]; then echo "DATABASE_URL is not set: skipping."; exit 0; fi
           npm run content:export
+          # The schema script is idempotent; re-running it applies columns added since the project was set up.
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q -f supabase/content.sql
           psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q -f export/load.sql
           npm run content:verify-db
       - uses: actions/configure-pages@v5

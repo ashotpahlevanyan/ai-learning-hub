@@ -30,7 +30,7 @@ export default function ScoreTrend({ mocks, passing }: { mocks: MockRecord[]; pa
 
   return (
     <figure className="trend" ref={box}>
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Scores of ${mocks.length} attempts, from ${mocks[0].score} to ${mocks[mocks.length - 1].score}; ${passed} at or above the pass mark of ${passing}.`} onMouseLeave={() => setHover(null)}>
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="group" aria-label={`Scores of ${mocks.length} attempts, from ${mocks[0].score} to ${mocks[mocks.length - 1].score}; ${passed} at or above the pass mark of ${passing}.`} onMouseLeave={() => setHover(null)}>
         {ticks.map(t => (
           <g key={t}>
             <line className="grid" x1={L} x2={W - R} y1={y(t)} y2={y(t)} />
@@ -44,7 +44,7 @@ export default function ScoreTrend({ mocks, passing }: { mocks: MockRecord[]; pa
           <g key={m.date}>
             <circle className="dot" cx={x(i)} cy={y(m.score)} r={hover === i ? 5.5 : 4} />
             {/* The hit target is larger than the mark. */}
-            <circle className="hit" cx={x(i)} cy={y(m.score)} r={14} tabIndex={0} aria-label={`Attempt ${i + 1}: ${m.score}`}
+            <circle className="hit" cx={x(i)} cy={y(m.score)} r={14} tabIndex={0} role="img" aria-label={`Attempt ${i + 1}: ${m.score}`}
               onMouseEnter={() => setHover(i)} onFocus={() => setHover(i)} onBlur={() => setHover(null)} />
           </g>
         ))}

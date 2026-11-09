@@ -9,7 +9,10 @@ import { tracks } from './index';
 const env = import.meta.env;
 export const contentFromDb = env.VITE_CONTENT_SOURCE === 'db' && !!env.VITE_SUPABASE_URL && !!env.VITE_SUPABASE_ANON_KEY;
 
-const CACHE = 'db-content-v1';
+// One cache per build: after a deploy, a copy read from the database under an older build is dropped, so a newer
+// bundle wins over it when the database is down.
+const CACHE = `db-content-${__BUILD_ID__}`;
+const dropOldCaches = () => caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('db-content-') && k !== CACHE).map(k => caches.delete(k)))).catch(() => {});
 const cacheUrl = (key: string) => `${location.origin}/__db-content/${key}.json`;
 
 async function remember(key: string, value: unknown) {
@@ -47,6 +50,7 @@ async function load<T>(key: string, remote: () => Promise<T>, bundled: () => Pro
  */
 export function enableDatabaseContent(cfg: DbConfig = { url: env.VITE_SUPABASE_URL, key: env.VITE_SUPABASE_ANON_KEY, timeout: 6000 }) {
   if (!contentFromDb) return;
+  if (typeof caches !== 'undefined') void dropOldCaches();
   for (const t of tracks) {
     const guide = t.loadGuide;
     t.loadGuide = () => preferDb(`guide/${t.id}`, () => fetchGuide(cfg, t.id), guide);

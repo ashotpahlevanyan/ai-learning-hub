@@ -28,7 +28,8 @@ l0.title = MARK + l0.title;
 
 let up = true, hits = 0;
 const db = createServer((req, res) => {
-  const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'apikey, authorization, accept' };
+  // Like Supabase: the Prefer header is allowed and Content-Range is readable by the page.
+  const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'apikey, authorization, accept, prefer', 'Access-Control-Expose-Headers': 'Content-Range' };
   if (req.method === 'OPTIONS') { res.writeHead(204, cors); return res.end(); }
   if (!up) { res.writeHead(503, cors); return res.end('down'); }
   const u = new URL(req.url, DB), name = u.pathname.replace('/rest/v1/', '');
@@ -40,8 +41,10 @@ const db = createServer((req, res) => {
   const order = (u.searchParams.get('order') || '').split(',').filter(Boolean);
   rows = [...rows].sort((a, b) => { for (const c of order) { if (a[c] < b[c]) return -1; if (a[c] > b[c]) return 1; } return 0; });
   const off = Number(u.searchParams.get('offset') || 0), lim = Number(u.searchParams.get('limit') || 1e9);
-  res.writeHead(200, { ...cors, 'Content-Type': 'application/json' });
-  res.end(JSON.stringify(rows.slice(off, off + lim)));
+  const page = rows.slice(off, off + lim);
+  const range = req.headers.prefer === 'count=exact' ? { 'Content-Range': `${off}-${off + page.length - 1}/${rows.length}` } : {};
+  res.writeHead(200, { ...cors, ...range, 'Content-Type': 'application/json' });
+  res.end(JSON.stringify(page));
 }).listen(DB_PORT);
 
 const web = spawn('npx', ['vite', 'preview', '--port', String(WEB_PORT), '--strictPort', '--outDir', OUT], { stdio: 'ignore' });

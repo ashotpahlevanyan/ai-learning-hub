@@ -107,7 +107,7 @@ To load into Supabase:
 
 Build with `VITE_CONTENT_SOURCE=db` (plus the Supabase URL and anon key) and the site reads exams and track guides from the database instead of the bundled files. The track and exam listings stay bundled, so pages and the sitemap still render without the database.
 
-For each exam the site uses, in order: the database; the last copy it read from the database (kept in the browser's Cache API, so it works offline); the bundled JSON. An unreachable database, an HTTP error or an exam with missing rows (for example, one caught mid-load) never breaks a page. The code is in `src/lib/dbContent.ts` (REST reads, paging past Supabase's 1000-row cap, row → exam assembly) and `src/content/live.ts` (fallbacks).
+For each exam the site uses, in order: the database; the last copy it read from the database under the current build (kept in the browser's Cache API, so it works offline; a new deploy drops older copies so they never override a newer bundle); the bundled JSON. An unreachable database, an HTTP error, a table that returns fewer rows than it counts, or an exam whose content `version` changed while it was being read (a reload committing mid-read) never breaks a page: the site falls back instead of showing or caching a partial or mixed copy. The code is in `src/lib/dbContent.ts` (REST reads, paging past Supabase's 1000-row cap, row → exam assembly) and `src/content/live.ts` (fallbacks).
 
 In the deploy workflow:
 

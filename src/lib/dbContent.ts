@@ -37,19 +37,21 @@ const ORDER: Record<string, string> = {
   domains: 'position', lessons: 'position', lesson_sections: 'lesson_id,position', questions: 'position',
   question_options: 'question_id,position', flashcards: 'position', sources: 'owner_type,owner_id,position',
 };
-/** Supabase caps a response at 1000 rows by default, so larger tables are read in pages. */
+/** Supabase caps a response at 1000 rows by default (max-rows), so larger tables are read in pages. */
 export const PAGE = 1000;
 
-async function get(cfg: DbConfig, path: string): Promise<Row[]> {
+interface Page { rows: Row[]; /** Total matching rows, when the server reports it (Content-Range: 0-99/1234). */ total?: number }
+
+async function get(cfg: DbConfig, path: string, count = false): Promise<Page> {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), cfg.timeout ?? 10000);
   try {
-    const res = await (cfg.fetch ?? fetch)(`${cfg.url.replace(/\/$/, '')}/rest/v1/${path}`, {
-      headers: { apikey: cfg.key, Authorization: `Bearer ${cfg.key}`, Accept: 'application/json' },
-      signal: ctl.signal,
-    });
+    const headers: Record<string, string> = { apikey: cfg.key, Authorization: `Bearer ${cfg.key}`, Accept: 'application/json' };
+    if (count) headers.Prefer = 'count=exact';
+    const res = await (cfg.fetch ?? fetch)(`${cfg.url.replace(/\/$/, '')}/rest/v1/${path}`, { headers, signal: ctl.signal });
     if (!res.ok) throw new Error(`${path.split('?')[0]}: HTTP ${res.status}`);
-    return await res.json();
+    const total = Number(res.headers.get('content-range')?.split('/')[1]);
+    return { rows: await res.json(), total: Number.isFinite(total) ? total : undefined };
   } finally {
     clearTimeout(timer);
   }
@@ -58,20 +60,30 @@ async function get(cfg: DbConfig, path: string): Promise<Row[]> {
 async function getAll(cfg: DbConfig, table: string, filter: string): Promise<Row[]> {
   const out: Row[] = [];
   const size = cfg.pageSize ?? PAGE;
-  for (let offset = 0; ; offset += size) {
-    const page = await get(cfg, `${table}?${filter}&select=*&order=${ORDER[table]}&limit=${size}&offset=${offset}`);
-    out.push(...page);
-    if (page.length < size) return out;
+  let total: number | undefined;
+  // Advance by the rows actually received: the server may return fewer than asked for.
+  for (let offset = 0; ; offset = out.length) {
+    const page = await get(cfg, `${table}?${filter}&select=*&order=${ORDER[table]}&limit=${size}&offset=${offset}`, offset === 0);
+    if (offset === 0) total = page.total;
+    out.push(...page.rows);
+    // With an exact count, page until every row is in; the server may cap pages below `size` (Supabase max-rows).
+    if (total !== undefined ? out.length >= total || !page.rows.length : page.rows.length < size) break;
   }
+  if (total !== undefined && out.length !== total) throw new Error(`${table}: got ${out.length} of ${total} rows`);
+  return out;
 }
 
 export async function fetchExamRows(cfg: DbConfig, key: string): Promise<ExamRows> {
-  const f = `exam_key=eq.${encodeURIComponent(key)}`;
+  const k = encodeURIComponent(key), f = `exam_key=eq.${k}`;
   const [exams, domains, lessons, lesson_sections, questions, question_options, flashcards, sources] = await Promise.all([
-    get(cfg, `exams?key=eq.${encodeURIComponent(key)}&select=*`),
+    get(cfg, `exams?key=eq.${k}&select=*`).then(p => p.rows),
     ...(['domains', 'lessons', 'lesson_sections', 'questions', 'question_options', 'flashcards', 'sources'] as const).map(t => getAll(cfg, t, f)),
   ]);
   if (!exams.length) throw new Error(`exam ${key} is not in the database`);
+  // The tables are read in separate requests. If a reload committed in between, the exam's version changed:
+  // reject the mix of old and new rows (the caller falls back) rather than show or cache it.
+  const after = (await get(cfg, `exams?key=eq.${k}&select=version`)).rows[0];
+  if ((after?.version ?? null) !== (exams[0].version ?? null)) throw new Error(`exam ${key} changed while it was being read`);
   return { exam: exams[0], domains, lessons, lesson_sections, questions, question_options, flashcards, sources };
 }
 
@@ -82,7 +94,7 @@ export async function fetchExam(cfg: DbConfig, key: string): Promise<Exam> {
 
 /** The track's study guide (Markdown), or an error when it is missing. */
 export async function fetchGuide(cfg: DbConfig, trackId: string): Promise<string> {
-  const rows = await get(cfg, `tracks?id=eq.${encodeURIComponent(trackId)}&select=guide_md`);
+  const { rows } = await get(cfg, `tracks?id=eq.${encodeURIComponent(trackId)}&select=guide_md`);
   const md = rows[0]?.guide_md;
   if (typeof md !== 'string' || !md.trim()) throw new Error(`track ${trackId} has no guide in the database`);
   return md;
