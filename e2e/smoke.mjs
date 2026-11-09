@@ -91,6 +91,14 @@ try {
   if ((await page.$$('details.week')).length !== 24) fail('roadmap does not show 24 weeks');
   await page.click('.this-week .tasks input[type=checkbox]'); await page.reload(); await page.waitForSelector('.this-week .tasks input');
   if (!(await page.$eval('.this-week .tasks input', i => i.checked))) fail('roadmap tick is not saved');
+  // Phone navigation: the bottom tab bar opens the menu, which reaches every track.
+  const phone = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  await phone.goto(`${B}/`); await phone.tap('.tabbar button');
+  await phone.waitForSelector('.sheet a[href$="/databricks"]').catch(() => fail('phone menu does not open or lists no tracks'));
+  await phone.tap('.sheet a[href$="/databricks"]'); await phone.waitForSelector('.exam-card');
+  if (await phone.$('.sheet')) fail('phone menu stays open after navigating');
+  if (await phone.evaluate(() => document.documentElement.scrollWidth > innerWidth)) fail('phone layout scrolls sideways');
+  await phone.close();
   await page.goto(`${B}/progress`); await page.waitForSelector('table').catch(() => fail('progress page has no table'));
   await page.goto(`${B}/no/such/page`); await page.waitForSelector('h1');
   if (!(await page.textContent('body')).includes('Page not found')) fail('unknown URL does not show the 404 page');

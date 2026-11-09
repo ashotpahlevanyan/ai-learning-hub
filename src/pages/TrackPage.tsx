@@ -54,11 +54,11 @@ export default function TrackPage() {
           <h2>Which order?</h2>
           <div className="card">
             <div className="table-wrap">
-              <table>
+              <table className="stack">
                 <thead><tr><th>You are</th><th>Order</th><th>Study</th><th>Why</th></tr></thead>
                 <tbody>
                   {track.paths.map(p => (
-                    <tr key={p.who}><td>{p.who}</td><td className="nowrap">{p.order.map(code).join(' → ')}</td><td className="nowrap">~{fmtHours(p.order.reduce((s, id) => s + study(id), 0))}</td><td>{p.why}</td></tr>
+                    <tr key={p.who}><td><strong>{p.who}</strong></td><td className="nowrap" data-label="Order">{p.order.map(code).join(' → ')}</td><td className="nowrap" data-label="Study">~{fmtHours(p.order.reduce((s, id) => s + study(id), 0))}</td><td data-label="Why">{p.why}</td></tr>
                   ))}
                 </tbody>
               </table>

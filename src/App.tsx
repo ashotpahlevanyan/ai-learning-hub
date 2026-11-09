@@ -1,8 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
-import { update, useAppState } from './lib/store';
-import { tracks } from './content';
+import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
+import SiteNav from './components/SiteNav';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
 
@@ -27,19 +26,6 @@ const MistakesPage = lazy(() => import('./exam/MistakesPage'));
 const TrapsPage = lazy(() => import('./exam/TrapsPage'));
 const PlanPage = lazy(() => import('./exam/PlanPage'));
 
-function ThemeToggle() {
-  const { theme } = useAppState();
-  useEffect(() => {
-    if (theme) document.documentElement.setAttribute('data-theme', theme);
-    else document.documentElement.removeAttribute('data-theme');
-  }, [theme]);
-  const toggle = () => {
-    const dark = theme ? theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-    update(s => { s.theme = dark ? 'light' : 'dark'; });
-  };
-  return <button className="btn small" onClick={toggle} aria-label="Toggle light or dark theme">◐</button>;
-}
-
 const Loading = () => <main className="page empty muted">Loading…</main>;
 
 export default function App() {
@@ -49,17 +35,7 @@ export default function App() {
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
-      <header className="topbar">
-        <Link to="/" className="brand"><span className="logo" aria-hidden="true">A</span> AI Learning Hub</Link>
-        <nav className="topnav" aria-label="Main">
-          {tracks.map(t => <NavLink key={t.id} to={`/${t.id}`}>{t.navLabel ?? t.name}</NavLink>)}
-          <NavLink to="/roadmap">Roadmap</NavLink>
-          <NavLink to="/library">Library</NavLink>
-          <NavLink to="/search">Search</NavLink>
-          <NavLink to="/progress">My progress</NavLink>
-          <ThemeToggle />
-        </nav>
-      </header>
+      <SiteNav />
       <div id="main" tabIndex={-1}>
         <ErrorBoundary key={pathname}>
           <Suspense fallback={<Loading />}>

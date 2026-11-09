@@ -35,6 +35,9 @@ export default function LibraryPage() {
         <label className="small"><input type="checkbox" checked={freeOnly} onChange={e => set('free', e.target.checked ? '1' : null)} /> Free to read only</label>
       </div>
       <p className="muted small" role="status">{shown.length} item{shown.length === 1 ? '' : 's'}</p>
+      <nav className="jump" aria-label="Jump to a topic">
+        {topics.filter(t => shown.some(i => i.topic === t.id)).map(t => <a key={t.id} href={`#${t.id}`}>{t.name}</a>)}
+      </nav>
 
       {topics.map(t => {
         const items = shown.filter(i => i.topic === t.id).sort((a, b) => Number(!!b.start) - Number(!!a.start));

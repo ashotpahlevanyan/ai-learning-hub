@@ -145,10 +145,10 @@ export default function RoadmapPage() {
         </div>
       </div>
 
-      <h2>The six months at a glance</h2>
+      <h2 id="months">The six months at a glance</h2>
       <div className="card">
         <div className="table-wrap">
-          <table>
+          <table className="stack">
             <thead><tr><th>Month</th><th>Focus</th><th>Exam</th><th>By the end</th><th>Done</th></tr></thead>
             <tbody>
               {months.map(m => {
@@ -157,9 +157,9 @@ export default function RoadmapPage() {
                   <tr key={m.n}>
                     <td className="nowrap"><a href={`#month-${m.n}`}>Month {m.n}</a>{start && <div className="muted small">{fmtDay(weekStart(m.weeks[0].n)!)}</div>}</td>
                     <td><strong>{m.title}</strong><div className="muted small">{m.skills.join(' · ')}</div></td>
-                    <td className="nowrap">{examsIn(m.tasks).join(', ') || <span className="muted">Optional</span>}</td>
-                    <td className="small">{m.milestone}</td>
-                    <td className="bar-cell"><div className="bar good"><span style={{ width: `${100 * k / m.tasks.length}%` }} /></div><span className="muted small">{k}/{m.tasks.length}</span></td>
+                    <td className="nowrap" data-label="Exam">{examsIn(m.tasks).join(', ') || <span className="muted">Optional</span>}</td>
+                    <td className="small" data-label="By the end">{m.milestone}</td>
+                    <td className="bar-cell" data-label="Done"><div className="bar good"><span style={{ width: `${100 * k / m.tasks.length}%` }} /></div><span className="muted small">{k}/{m.tasks.length}</span></td>
                   </tr>
                 );
               })}
@@ -167,6 +167,10 @@ export default function RoadmapPage() {
           </table>
         </div>
       </div>
+
+      <nav className="jump" aria-label="Jump to a month">
+        {months.map(m => <a key={m.n} href={`#month-${m.n}`}>{m.n}. {m.title}</a>)}
+      </nav>
 
       {months.map(m => (
         <section key={m.n} id={`month-${m.n}`} className="month">

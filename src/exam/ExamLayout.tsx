@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useOutletContext, useParams } from 'react-router-dom';
 import { getExamSummary, getTrack } from '../content';
 import type { Exam, ExamSummary, Track } from '../lib/types';
@@ -38,6 +38,13 @@ export default function ExamLayout() {
     summary.load().then(e => { cache.set(key, e); setExam(e); }).catch(() => setFailed(true));
   }, [key, summary]);
 
+  // On narrow screens the tabs scroll sideways: keep the current one in view.
+  const tabs = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const a = tabs.current?.querySelector<HTMLElement>('a.active');
+    if (a && tabs.current) tabs.current.scrollTo({ left: a.offsetLeft - tabs.current.clientWidth / 2 + a.clientWidth / 2, behavior: 'smooth' });
+  }, [pathname, exam]);
+
   if (!track || !summary) return <NotFound />;
   const base = `/${track.id}/${summary.id}`;
 
@@ -46,7 +53,7 @@ export default function ExamLayout() {
       <div className="subbar">
         <div className="subbar-inner">
           <div className="crumbs small"><Link to={`/${track.id}`}>{track.name}</Link> / <strong>{summary.code}</strong> <span className="muted">{summary.level}</span></div>
-          <nav className="tabs" aria-label="Exam sections">
+          <nav className="tabs" aria-label="Exam sections" ref={tabs}>
             {TABS.map(([path, label]) => (
               <NavLink key={path} to={path ? `${base}/${path}` : base} end={!path}>{path === 'mock' && summary.kind === 'course' ? 'Practice test' : label}</NavLink>
             ))}
