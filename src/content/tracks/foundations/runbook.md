@@ -1,8 +1,8 @@
-# AI Foundations: Math and Python Study Guide
+# Foundations: Math, Python and Algorithms Study Guide
 
-A deep path through the mathematics and the Python behind modern AI and LLMs. Use it alongside the two courses on this site: **Mathematics for AI and LLMs** (MATH-AI) and **Python for AI Engineering** (PY-AI). Each has lessons with worked examples and hands-on labs, flashcards, practice questions and a 40-question, 60-minute practice test.
+A deep path through the mathematics, Python and algorithms behind modern AI and software engineering. Use it alongside the four courses on this site: **Mathematics for AI and LLMs** (MATH-AI), **Python for AI Engineering** (PY-AI), **Python in Depth** (PY-DEEP) and **Data Structures and Algorithms** (DSA). Each has lessons with worked examples and hands-on labs, flashcards, practice questions and a 40-question, 60-minute practice test.
 
-> **Read this first.** These are this site's own deep-foundation courses, not vendor certifications. There is no official exam to book. The goal is fluency: you should be able to derive the key results on a whiteboard, implement them in NumPy and PyTorch, and explain in a design review why a system behaves the way it does. Facts and library behaviour below were checked against primary sources and official docs on 7 November 2026. Library defaults change between releases, so section 7 lists the version changes that matter.
+> **Read this first.** These are this site's own deep-foundation courses, not vendor certifications. There is no official exam to book. The goal is fluency: you should be able to derive the key results on a whiteboard, implement them in NumPy and PyTorch, and explain in a design review why a system behaves the way it does. Facts and library behaviour below were checked against primary sources and official docs on 7 November 2026 (PY-DEEP and DSA on 11 November 2026). Library defaults change between releases, so section 9 lists the version changes that matter.
 
 ---
 
@@ -13,11 +13,13 @@ A deep path through the mathematics and the Python behind modern AI and LLMs. Us
 3. [Free primary resources](#3-free-primary-resources)
 4. [Course: Mathematics for AI and LLMs (MATH-AI)](#4-course-mathematics-for-ai-and-llms-math-ai)
 5. [Course: Python for AI Engineering (PY-AI)](#5-course-python-for-ai-engineering-py-ai)
-6. [Derive it yourself](#6-derive-it-yourself)
-7. [Version notes](#7-version-notes)
-8. [Capstone projects](#8-capstone-projects)
-9. [Study schedules](#9-study-schedules)
-10. [Cheat sheets](#10-cheat-sheets)
+6. [Course: Python in Depth (PY-DEEP)](#6-course-python-in-depth-py-deep)
+7. [Course: Data Structures and Algorithms (DSA)](#7-course-data-structures-and-algorithms-dsa)
+8. [Derive it yourself](#8-derive-it-yourself)
+9. [Version notes](#9-version-notes)
+10. [Capstone projects](#10-capstone-projects)
+11. [Study schedules](#11-study-schedules)
+12. [Cheat sheets](#12-cheat-sheets)
 
 ---
 
@@ -29,7 +31,9 @@ A deep path through the mathematics and the Python behind modern AI and LLMs. Us
 |---|---|---|
 | An architect or tech lead who wants to speak with authority | **MATH-AI → PY-AI** | The math gives you the vocabulary (embeddings, gradients, attention, KV cache, scaling laws) to explain why a design works and what it will cost. Python then makes every idea concrete and testable. |
 | A developer moving into AI engineering | **PY-AI → MATH-AI** | Get productive with NumPy, PyTorch and LLM APIs first, then go back and learn the theory behind the code you already wrote. |
-| A senior engineer who wants to "become a beast" | **Both, interleaved** | Learn each idea as math, then implement it the same week. This is the schedule in section 9. |
+| A senior engineer who wants to "become a beast" | **Both, interleaved** | Learn each idea as math, then implement it the same week. This is the schedule in section 11. |
+| Preparing for senior coding interviews | **DSA → PY-DEEP** | DSA covers the algorithm rounds: complexity, the core structures, graphs and DP. PY-DEEP covers the language questions that separate senior candidates: the data model, generators, the GIL and asyncio. |
+| An experienced Python developer who wants to go deeper | **PY-DEEP, then PY-AI domains 3 and 4** | Understand the object model, memory and concurrency first, then apply them to PyTorch and LLM services. |
 | Already studying the Claude, Gemini, OpenAI or AWS tracks | **MATH-AI domains 4 and 5, PY-AI domain 4** | Decoding, tokens, context cost, structured output, tool loops and RAG show up in every vendor exam. |
 
 ### How the two courses pair
@@ -46,7 +50,7 @@ Every math domain has a Python counterpart. Study them as pairs: derive it, then
 | D3 Confidence intervals, hypothesis tests and A/B tests for model evals | D3 The scikit-learn workflow: splits, pipelines, cross-validation and honest metrics |
 | D4 Logits, softmax, sigmoid and the log-sum-exp trick; Entropy, cross-entropy, KL divergence and perplexity | D3 nn.Module, losses, optimisers and a correct training loop (`CrossEntropyLoss` takes raw logits) |
 | D5 Scaled dot-product attention, masking and multi-head attention; The transformer block | D3 Embeddings, scaled dot-product attention and a tiny transformer block from scratch |
-| D5 Compute and memory arithmetic; Numerics: fp32, fp16, bf16 and quantisation error | D2 Performance and memory: dtypes, chunking and Copy-on-Write; capstone D in section 8 |
+| D5 Compute and memory arithmetic; Numerics: fp32, fp16, bf16 and quantisation error | D2 Performance and memory: dtypes, chunking and Copy-on-Write; capstone D in section 10 |
 | D4 Decoding as operations on a distribution | D4 Streaming, retries with backoff and jitter, and rate limits; Structured output and tool-calling loops |
 
 The canonical example: learn attention in MATH-AI as
@@ -63,14 +67,14 @@ The same loop as every track on this site, with one extra step for this track: *
 
 1. **Read** the section of this guide for the domain you are on.
 2. **Learn** the lesson. Each one goes intuition, then formal definition, then a fully worked numeric example, then where it shows up in LLMs, then a common misconception.
-3. **Derive** the key result on paper without looking (section 6). If you cannot, reread the worked example and try again tomorrow.
+3. **Derive** the key result on paper without looking (section 8). If you cannot, reread the worked example and try again tomorrow.
 4. **Code** the lesson's lab. Then check your answer against the library function (`np.linalg.svd`, `torch.softmax`, `F.scaled_dot_product_attention`, `F.cross_entropy`).
 5. **Recall** with flashcards every day. Spaced repetition picks what to review.
-6. **Apply** with the capstone projects in section 8. Build them; do not just read about them.
+6. **Apply** with the capstone projects in section 10. Build them; do not just read about them.
 7. **Test** with Smart practice until every domain is above 80%, then take the timed practice test. Aim for 85% or more.
 8. **Fix** misses in the Mistakes notebook. For calculation misses, redo the calculation in Python and find the exact step you got wrong.
 
-**Daily routine (60–90 minutes):** 10 min flashcards → 15 min derivation from section 6 → 25–45 min lesson and its lab → 15 min practice questions, reading every option's rationale.
+**Daily routine (60–90 minutes):** 10 min flashcards → 15 min derivation from section 8 → 25–45 min lesson and its lab → 15 min practice questions, reading every option's rationale.
 
 **Three habits that separate fluent from familiar:**
 
@@ -283,7 +287,130 @@ Official docs, university course material and the original papers only.
 
 ---
 
-## 6. Derive it yourself
+## 6. Course: Python in Depth (PY-DEEP)
+
+27 lessons in six domains on how Python really works: the object model, the interpreter, concurrency and modern typing. Every code question was run on CPython 3.13. Where behaviour is a CPython implementation detail (reference counting, small-int caching, bytecode), the course says so. Where a feature is newer than 3.13, the course labels it.
+
+### 6.1 The data model and object system (22%)
+
+| Lesson | Master this |
+|---|---|
+| Special methods and protocols | Built-ins look up special methods on the type, not the instance. Objects that compare equal must have equal hashes; defining `__eq__` sets `__hash__` to None. Return `NotImplemented` (not `False`) for an unknown type. Without `__bool__`, truthiness falls back to `__len__` |
+| Attribute lookup, descriptors and `__slots__` | Lookup order: data descriptors on the type, then the instance `__dict__`, then non-data descriptors and class attributes, then `__getattr__`. Functions are non-data descriptors, which is how methods get bound. `property` is a data descriptor. `__slots__` removes the per-instance `__dict__` |
+| Inheritance: MRO, `super()` and ABCs | C3 linearization. `super()` means "next in the MRO", not "parent", so every class in a cooperative hierarchy must call it and accept `**kwargs`. ABCs refuse to instantiate while any `@abstractmethod` is unimplemented |
+| Class creation: `type`, metaclasses and hooks | A class statement runs its body in a namespace, then calls the metaclass. `__set_name__` runs before the parent's `__init_subclass__`. Prefer a class decorator or `__init_subclass__` to a metaclass |
+| Callables, methods and object identity | Bound methods are created on every access. Use `is` only for singletons such as None. Small-int and string interning are CPython details: never write code that depends on them |
+
+### 6.2 Functions, scopes, iterators and generators (16%)
+
+| Lesson | Master this |
+|---|---|
+| Scopes, closures and late binding | LEGB. Any assignment anywhere in a function makes the name local to all of it, which causes `UnboundLocalError`. Closures capture variables, not values. Default arguments are evaluated once, at `def` time |
+| Decorators | `@d` means `f = d(f)`. Always use `functools.wraps`. A decorator with arguments is a factory that returns a decorator. Stacked decorators apply bottom-up |
+| Iterators, generators and `yield from` | An iterator's `__iter__` returns itself, so it can be consumed only once. Prime a generator before calling `send`. `yield from` passes along `send` and `throw` and returns the subgenerator's return value. Use `contextlib.closing` for deterministic cleanup |
+| Lazy pipelines with itertools | `islice`, `chain`, `groupby` (only groups consecutive items), `batched` (3.12+). Generators are single-pass, and `tee` can buffer without limit |
+| functools and first-class functions | `partial`; `lru_cache` needs hashable arguments and keeps them alive; on methods it can keep `self` alive; `singledispatch` dispatches on the first argument (`bool` falls back to the `int` handler) |
+
+### 6.3 Memory, the interpreter and the import system (18%)
+
+| Lesson | Master this |
+|---|---|
+| Names, references and copying | Arguments are passed by assignment. Know when you mutate an object and when you only rebind a name. Shallow vs deep copy. `copy.deepcopy` of a module raises `TypeError` |
+| Memory management in CPython | Reference counting frees most objects at once. The cyclic collector handles cycles. `weakref` for caches and observers. Do not rely on `__del__`; use `tracemalloc` snapshots to find leaks |
+| How CPython runs your code | Source compiles to code objects, which run in frames. Read `dis` output for concepts, not exact opcodes. Since 3.12, list, dict and set comprehensions are inlined (PEP 709). 3.11 added the specializing adaptive interpreter |
+| The GIL and free-threaded Python | The GIL makes single bytecodes atomic, not your read-modify-write. 3.13's free-threaded build (`python3.13t`) is experimental; it is officially supported from 3.14 (PEP 779) |
+| The import system | `sys.modules` caches modules; finders and loaders do the work. Circular imports see a partly initialized module. A script run as `__main__` is a different module object from the same file imported by name |
+
+### 6.4 Concurrency and asyncio (18%)
+
+| Lesson | Master this |
+|---|---|
+| Threads, processes or asyncio | I/O-bound work: threads or asyncio. CPU-bound work: processes (on the default GIL build). `concurrent.futures` for both. A process pool needs picklable work and the `if __name__ == "__main__"` guard |
+| asyncio fundamentals | Calling a coroutine function only creates a coroutine object. `asyncio.run` runs the event loop. Keep references to tasks you create. `TaskGroup` cancels its other tasks when one fails; `gather` does not |
+| Cancellation, timeouts and exception groups | `cancel()` throws `CancelledError` at the task's current `await`. Re-raise it; never swallow it. Use `asyncio.timeout()`. `TaskGroup` failures arrive as an `ExceptionGroup`; handle them with `except*`. `shield` still cancels the awaiting task |
+| Common asyncio bugs | `time.sleep` or `requests` blocks the event loop: use `asyncio.to_thread`. A forgotten `await` gives a "never awaited" warning. Bound concurrency with a `Semaphore` |
+| Thread safety in CPython | `x += 1` is not atomic even with the GIL. Use `Lock`, `queue.Queue` for hand-off, and `Event`. Check the library FAQ for which operations are thread-safe |
+
+### 6.5 Modern typing and language features (14%)
+
+| Lesson | Master this |
+|---|---|
+| Generics and type-parameter syntax | PEP 695 syntax (3.12+): `def first[T](xs: list[T]) -> T` and `type Alias = ...`. `list` is invariant and `Sequence` is covariant. Annotations are evaluated eagerly in 3.13 and lazily from 3.14 |
+| Structural typing | `Protocol` is duck typing a type checker understands; `runtime_checkable` only checks that the attributes exist. Also `TypedDict`, `Literal`, `@overload`, `Self` and `ParamSpec` for typing decorators |
+| Dataclasses in depth | Mutable defaults need `field(default_factory=...)`. `frozen=True` plus `eq=True` makes instances hashable. `__post_init__` and `InitVar`. `slots=True`. When to use `NamedTuple` instead |
+| Pattern matching, enums, context managers and exception design | Bare names in a `case` capture, so match constants with dotted names. Mapping and class patterns; guards. Enums; `contextlib.contextmanager` and `ExitStack`; exception hierarchies and chaining with `raise ... from` |
+
+### 6.6 Performance, testing and packaging (12%)
+
+| Lesson | Master this |
+|---|---|
+| Cost model and measuring | `list.insert(0)` and `pop(0)` are O(n): use `deque`. Build strings with `str.join`. Time small snippets with `timeit`, whole programs with `cProfile` and memory with `tracemalloc`. Measure before you optimise |
+| Testing with pytest and unittest.mock | Fixtures and `parametrize`. Patch where a name is looked up, not where it is defined. `autospec` keeps mocks honest. Test async code with `IsolatedAsyncioTestCase` or a pytest plugin |
+| Packaging and clean public APIs | `pyproject.toml`, virtual environments and entry points. Pin dependencies in applications, not in libraries. `__all__`; keyword-only (`*`) and positional-only (`/`) parameters; deprecate with `warnings.warn("...", DeprecationWarning, stacklevel=2)` |
+
+---
+
+## 7. Course: Data Structures and Algorithms (DSA)
+
+24 lessons in six domains, all in Python. Every algorithm lesson gives its time and space complexity with a justification, a runnable implementation and a correctness argument. Every trace and compute question was run on CPython 3.13. Sources are MIT 6.006 and 6.046, Princeton's *Algorithms* (algs4) and the Python docs.
+
+### 7.1 Complexity and algorithmic thinking (14%)
+
+| Lesson | Master this |
+|---|---|
+| Asymptotic notation and the cases of analysis | O, Ω and Θ are bounds. Best, worst and average are cases. They are independent: "quicksort's worst case is Θ(n²)" is a precise statement |
+| Amortized analysis and Python's cost model | Appends are amortized O(1) because the list grows geometrically. CPython over-allocates by about 1.125×, not 2×. Watch for patterns that turn linear code quadratic: `s += x` in a loop, `x in list`, `pop(0)` |
+| Recursion, recurrences and correctness | Recursion trees and the master theorem: $$T(n)=2T(n/2)+O(n)\Rightarrow O(n\log n)$$. Python's default recursion limit is 1000, so make deep recursion iterative. Prove loops correct with invariants (initialization, maintenance, termination) |
+
+### 7.2 Arrays, linked lists, stacks, queues and hashing (18%)
+
+| Lesson | Master this |
+|---|---|
+| Dynamic arrays and linked lists | Arrays have O(1) indexing and cache-friendly memory. Linked lists only win with a node handle for O(1) splicing. In Python, `list` or `deque` nearly always wins |
+| Stacks, queues, deques and monotonic structures | Use `deque` for queues. A monotonic stack solves next-greater-element in O(n). A monotonic deque solves sliding-window maximum in O(n) |
+| Hash tables | Chaining vs open addressing, load factor and resizing. Average O(1), worst case O(n). Keys must be hashable and must not change their hash |
+| Array techniques | Two pointers on sorted data, sliding windows (variable and fixed), prefix sums for O(1) range sums, difference arrays for range updates |
+| Designing with hashing | `Counter`; dedup while keeping order with `dict.fromkeys`. LRU cache: a hash map plus a doubly linked list, or `OrderedDict.move_to_end` and `popitem(last=False)`, or `functools.lru_cache` |
+
+### 7.3 Trees, heaps and advanced structures (18%)
+
+| Lesson | Master this |
+|---|---|
+| Binary trees | Pre-, in-, post- and level-order traversals. Level order needs a real queue (`deque`). Iterative traversal avoids the recursion limit. Rebuild a tree from preorder plus inorder |
+| Binary search trees and balanced trees | The BST invariant. Insertion order decides the shape: sorted input gives a list. AVL and red-black trees keep height O(log n). BSTs offer ordered queries (floor, range, rank) that hash tables lack. In Python, use `bisect` on a sorted list or a sorted-containers library |
+| Heaps with heapq | `heapify` is O(n); push and pop are O(log n). On 3.13, get a max-heap by negating keys (the `*_max` functions are 3.14+). Break ties with `(priority, counter, item)`. Top-k with a size-k heap is O(n log k); `heapq.merge` does k-way merge |
+| Tries, union-find, segment and Fenwick trees | Tries for prefix search. Union-find with path compression and union by rank runs in nearly O(1) amortized time (inverse Ackermann). Fenwick trees and segment trees give O(log n) point updates and range queries |
+
+### 7.4 Sorting, searching and divide and conquer (14%)
+
+| Lesson | Master this |
+|---|---|
+| Comparison sorts and the lower bound | Mergesort: Θ(n log n), stable, O(n) extra space. Quicksort: expected O(n log n), worst case O(n²) unless you shuffle or randomize the pivot. Heapsort: in place, not stable. Any comparison sort needs Ω(n log n) comparisons: a decision tree has $$n!$$ leaves |
+| Linear-time sorts and sorting in Python | Counting sort is O(n + k); radix sort is O(d(n + k)). Python's sort is stable and adaptive: Timsort with the powersort merge policy. Do multi-key sorts with a `key=` tuple or stable multi-pass sorts |
+| Binary search, divide and conquer, and selection | Write binary search from an invariant. `bisect_left` is lower bound and `bisect_right` is upper bound. Binary search on the answer for monotone predicates. Quickselect finds the k-th element in expected O(n) |
+
+### 7.5 Graphs (18%)
+
+| Lesson | Master this |
+|---|---|
+| Representations, modelling and BFS | Adjacency lists use O(V + E) space and suit sparse graphs; matrices use O(V²). Model states as vertices. BFS gives shortest paths in unweighted graphs |
+| DFS, components, cycles and topological sort | Detect cycles in directed graphs with white, grey and black colouring. Topological sort with Kahn's algorithm (in-degree queue) or DFS postorder. Python's `graphlib.TopologicalSorter` |
+| Weighted shortest paths | Relaxation. Dijkstra with `heapq` and lazy deletion runs in O((V + E) log V) and needs non-negative weights. Bellman-Ford is O(VE) and detects negative cycles. In a DAG, relax edges in topological order in O(V + E) |
+| Minimum spanning trees and strongly connected components | The cut property. Kruskal uses sorting plus union-find; Prim uses a heap. Find strongly connected components with Kosaraju's or Tarjan's algorithm |
+
+### 7.6 Dynamic programming, greedy and problem solving (18%)
+
+| Lesson | Master this |
+|---|---|
+| Dynamic programming | Overlapping subproblems plus optimal substructure. Define the state, recurrence, base cases, evaluation order and answer (MIT 6.006's SRTBOT recipe). Memoization or tabulation. Rebuild the solution from the table, not just its value |
+| Classic DP problems | Grid paths. 0/1 knapsack in O(nW), which is pseudopolynomial. LIS in O(n log n) with `bisect`. Edit distance and LCS. Interval DP |
+| Greedy algorithms and exchange arguments | Prove greedy correct with an exchange argument. Interval scheduling sorts by end time. Huffman coding. Greedy works for fractional knapsack but not for 0/1 knapsack |
+| Backtracking | The choose, explore, un-choose template. Permutations and subsets. Prune early and order choices well |
+| Problem-solving method and P vs NP | A repeatable interview method: clarify, examples, brute force, optimise, code, test. Recognise DP vs greedy vs search. Reductions go from the known-hard problem to yours. For NP-hard problems, use approximation, heuristics or exact search on small n |
+
+---
+
+## 8. Derive it yourself
 
 A strong engineer should be able to do each of these on a whiteboard, without notes, and then check it in Python. Tick them off as you go.
 
@@ -346,7 +473,7 @@ The official tutorial calls `zero_grad()` after `step()`. Either order is correc
 
 ---
 
-## 7. Version notes
+## 9. Version notes
 
 Library behaviour that changed recently. The course teaches current behaviour; older tutorials and answers will contradict it.
 
@@ -362,7 +489,7 @@ Library behaviour that changed recently. The course teaches current behaviour; o
 
 ---
 
-## 8. Capstone projects
+## 10. Capstone projects
 
 Each project joins the two courses: derive the math, implement it, then check it against a library or a known number.
 
@@ -374,7 +501,7 @@ Each project joins the two courses: derive the math, implement it, then check it
 - Add sinusoidal positions, a pre-norm block (LayerNorm or RMSNorm, attention, residual, MLP, residual) and a tied output head.
 - Port it to PyTorch with `nn.Embedding`, `nn.Linear` and your own attention. Assert that your attention matches `F.scaled_dot_product_attention(q, k, v, is_causal=True)` to within 1e-5.
 - Count parameters by hand with the 12·n_layer·d_model² rule, then compare with `sum(p.numel() for p in model.parameters())` and explain the gap (embeddings, norms, biases).
-- Train it at character level on a small text with AdamW, warmup and gradient clipping, using the training loop from section 6. Sample with temperature and top-p.
+- Train it at character level on a small text with AdamW, warmup and gradient clipping, using the training loop from section 8. Sample with temperature and top-p.
 
 **Done when:** the initial loss is within a few percent of ln V, your attention matches SDPA, your parameter count matches PyTorch's after accounting for embeddings, and the loss falls steadily without spikes.
 
@@ -429,7 +556,7 @@ Each project joins the two courses: derive the math, implement it, then check it
 
 ---
 
-## 9. Study schedules
+## 11. Study schedules
 
 Both schedules interleave the courses so that you learn an idea as math and implement it in the same week.
 
@@ -457,7 +584,7 @@ Both schedules interleave the courses so that you learn an idea as math and impl
 
 ---
 
-## 10. Cheat sheets
+## 12. Cheat sheets
 
 ### Linear algebra
 

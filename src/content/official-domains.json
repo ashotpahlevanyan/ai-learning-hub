@@ -59,7 +59,8 @@
     "claude.com",
     "openai.com",
     "ai.google.dev",
-    "cloud.google.com"
+    "cloud.google.com",
+    "princeton.edu"
   ],
   "azure": [
     "learn.microsoft.com",

@@ -71,7 +71,7 @@ The production CSP adds the Supabase origin to `connect-src` automatically at bu
 
 ### 3. Content database
 
-1. Add the `DATABASE_URL` secret and re-run the deploy. The "Publish content to the database" step loads every table and then confirms that the REST API returns exactly what is bundled. Its log ends with `22 match, 0 differ` (or the current exam count).
+1. Add the `DATABASE_URL` secret and re-run the deploy. The "Publish content to the database" step loads every table and then confirms that the REST API returns exactly what is bundled. Its log ends with `24 match, 0 differ` (or the current exam count).
 2. Only then set `CONTENT_SOURCE` = `db` and re-run the deploy.
 3. Check: open an exam with the browser's network tab open. You should see requests to `<ref>.supabase.co/rest/v1/...` and no console errors.
 

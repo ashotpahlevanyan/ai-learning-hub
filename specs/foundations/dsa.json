@@ -1,0 +1,111 @@
+{
+  "track": "foundations",
+  "kind": "course",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "id": "dsa",
+  "code": "DSA",
+  "name": "Data Structures and Algorithms",
+  "level": "Deep-foundations course · no official exam",
+  "audience": "Developers preparing for technical interviews or wanting a solid algorithms foundation, using Python. Basic Python assumed.",
+  "format": "This site's course with a 40-question practice test of complexity analysis, trace-the-algorithm, choose-the-structure and debugging questions.",
+  "scenarios": [
+    "A coding interview at a large tech company",
+    "Choosing a data structure for a cache",
+    "Routing and dependency resolution",
+    "Ranking and top-k over a stream",
+    "Optimizing an O(n²) hot path"
+  ],
+  "verifyNotes": "This is the site's own deep-foundations course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources). Goal: the learner can explain and reason about every idea confidently in a senior interview or design review. Lessons go deep: intuition first, then the precise definition or mechanism, then a fully worked example, then where it matters in real systems (including AI/ML and LLM application code where natural), then a common misconception. Write math in LaTeX between double dollars only: $$...$$; NEVER single-dollar math (single $ renders literally). In JSON strings escape backslashes (\\\\log). Code in fenced ```python blocks that run as-is. Every lesson has a hands-on lab: a small Python exercise with the expected output. Verifiers MUST run every compute and code-output question with /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/py313/bin/python (CPython 3.13, standard library only) and fix keys that disagree; state any randomness seed in the stem; never depend on dict/set ordering that Python does not guarantee, or on id() values. Question mix: ~35% concept/judgment (choose the structure or algorithm, state its complexity), ~40% trace or compute (run the algorithm by hand on given input, give the result or the cost), ~25% debug-or-choose-the-right-approach (off-by-one, wrong invariant, wrong base case). Every algorithm lesson states time and space complexity with a short justification, gives a correct runnable Python implementation, and includes a correctness argument (loop invariant, exchange argument or induction) at a working level. Use Python's own structures where they exist (list, dict, set, collections.deque, heapq, bisect) and explain their costs. Sources: MIT OpenCourseWare (6.006, 6.046), Princeton Algorithms (algs4.cs.princeton.edu), Stanford course pages, and docs.python.org (including the TimeComplexity wiki page on wiki.python.org) only; no blogs, Medium or LeetCode solution posts.",
+  "sources": [
+    "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/",
+    "https://ocw.mit.edu/courses/6-046j-design-and-analysis-of-algorithms-spring-2015/",
+    "https://algs4.cs.princeton.edu/home/",
+    "https://wiki.python.org/moin/TimeComplexity",
+    "https://docs.python.org/3/library/heapq.html",
+    "https://docs.python.org/3/library/bisect.html",
+    "https://docs.python.org/3/library/collections.html"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Complexity and algorithmic thinking",
+      "weight": 14,
+      "skills": [
+        "Asymptotic notation: Big-O, Theta, Omega; best, worst and average case",
+        "Amortized analysis: dynamic array growth, aggregate and accounting arguments",
+        "Recursion and recurrences: recursion trees and the master theorem",
+        "Correctness: loop invariants, induction, and testing edge cases",
+        "Python's cost model: list, dict, set, deque and string operation costs"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Arrays, linked lists, stacks, queues and hashing",
+      "weight": 18,
+      "skills": [
+        "Dynamic arrays and linked lists: operations, costs and when each wins",
+        "Stacks, queues, deques and monotonic stacks/queues",
+        "Hash tables: hashing, collisions (chaining, open addressing), load factor and resizing",
+        "Array techniques: two pointers, sliding window, prefix sums and difference arrays",
+        "Designing with hashing: frequency counts, deduplication, LRU cache (OrderedDict or hash map + linked list)"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Trees, heaps and advanced structures",
+      "weight": 18,
+      "skills": [
+        "Binary trees: traversals (pre, in, post, level order), height and recursion on trees",
+        "Binary search trees and balanced trees (AVL and red-black at a conceptual level)",
+        "Heaps and priority queues: heapify, push/pop costs, top-k and k-way merge with heapq",
+        "Tries and prefix search",
+        "Union-find with path compression and union by rank; segment and Fenwick trees for range queries"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Sorting, searching and divide and conquer",
+      "weight": 14,
+      "skills": [
+        "Comparison sorts: merge sort, quicksort, heapsort; stability; the Omega(n log n) lower bound",
+        "Non-comparison sorts: counting and radix sort; Python's Timsort and key functions",
+        "Binary search: invariants, lower/upper bound with bisect, searching on the answer",
+        "Divide and conquer and quickselect for order statistics",
+        "Choosing the right sort or search for the data"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Graphs",
+      "weight": 18,
+      "skills": [
+        "Graph representations (adjacency list vs matrix) and modelling problems as graphs",
+        "BFS and DFS: shortest paths in unweighted graphs, connected components, cycle detection",
+        "Topological sort (Kahn and DFS) and dependency resolution",
+        "Weighted shortest paths: Dijkstra with a heap, Bellman-Ford and negative edges",
+        "Minimum spanning trees (Kruskal, Prim) and strongly connected components"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Dynamic programming, greedy and problem solving",
+      "weight": 18,
+      "skills": [
+        "Dynamic programming: optimal substructure, memoization vs tabulation, state design",
+        "Classic DP: knapsack, longest increasing subsequence, edit distance, grid paths, interval DP",
+        "Greedy algorithms and exchange arguments: interval scheduling, Huffman coding",
+        "Backtracking: permutations, subsets, constraint search and pruning",
+        "Problem-solving method for interviews; P, NP and NP-completeness at a working level"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 22,
+    "flashcards": 120,
+    "questions": 120
+  },
+  "out": "src/content/tracks/foundations/exams/dsa.json"
+}

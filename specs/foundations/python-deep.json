@@ -1,0 +1,115 @@
+{
+  "track": "foundations",
+  "kind": "course",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "id": "python-deep",
+  "code": "PY-DEEP",
+  "name": "Python in Depth",
+  "level": "Deep-foundations course · no official exam",
+  "audience": "Experienced developers who already write Python and want to understand how it really works: the object model, the interpreter, concurrency and modern typing.",
+  "format": "This site's course with a 40-question practice test of code-reading, predict-the-output, debugging and design questions.",
+  "scenarios": [
+    "Debugging a production memory leak",
+    "Designing a plugin framework",
+    "Speeding up a slow data pipeline",
+    "Moving a sync service to asyncio",
+    "Reviewing a library's public API"
+  ],
+  "verifyNotes": "This is the site's own deep-foundations course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources). Goal: the learner can explain and reason about every idea confidently in a senior interview or design review. Lessons go deep: intuition first, then the precise definition or mechanism, then a fully worked example, then where it matters in real systems (including AI/ML and LLM application code where natural), then a common misconception. Write math in LaTeX between double dollars only: $$...$$; NEVER single-dollar math (single $ renders literally). In JSON strings escape backslashes (\\\\log). Code in fenced ```python blocks that run as-is. Every lesson has a hands-on lab: a small Python exercise with the expected output. Verifiers MUST run every compute and code-output question with /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/py313/bin/python (CPython 3.13, standard library only) and fix keys that disagree; state any randomness seed in the stem; never depend on dict/set ordering that Python does not guarantee, or on id() values. Question mix: ~35% concept/judgment, ~40% predict-the-output or behaviour of a snippet, ~25% debug-or-choose-the-right-approach. Target Python 3.13 (note when a feature is 3.12+ or 3.13+, e.g. type-parameter syntax, free-threaded build, the new REPL) and say CPython when behaviour is an implementation detail (refcounting, small-int caching, bytecode). Bytecode questions: ask about concepts, not exact opcode listings, which change between versions. Sources: docs.python.org (reference, library, howto, glossary, whatsnew), peps.python.org and the CPython devguide only; no blogs or Medium.",
+  "sources": [
+    "https://docs.python.org/3/reference/datamodel.html",
+    "https://docs.python.org/3/howto/descriptor.html",
+    "https://docs.python.org/3/howto/mro.html",
+    "https://docs.python.org/3/reference/executionmodel.html",
+    "https://docs.python.org/3/library/asyncio.html",
+    "https://docs.python.org/3/library/typing.html",
+    "https://docs.python.org/3/howto/free-threading-python.html",
+    "https://docs.python.org/3/library/gc.html",
+    "https://docs.python.org/3/reference/import.html",
+    "https://peps.python.org/pep-0695/",
+    "https://devguide.python.org/internals/"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "The data model and object system",
+      "weight": 22,
+      "skills": [
+        "Special methods and protocols: __repr__, __eq__/__hash__ contract, rich comparison, container and numeric protocols, __bool__ and __len__",
+        "Attribute lookup: instance and class dicts, __getattr__ vs __getattribute__, descriptors, property, __slots__",
+        "Inheritance: MRO and C3 linearization, cooperative super(), mixins and abstract base classes",
+        "Class creation: type, metaclasses, __init_subclass__, __set_name__, class decorators, and when to use each",
+        "Callables and object identity: bound methods, staticmethod/classmethod, is vs ==, interning and caching as CPython details"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Functions, scopes, iterators and generators",
+      "weight": 16,
+      "skills": [
+        "Scopes: LEGB, closures and late binding, global and nonlocal, default-argument evaluation",
+        "Decorators: functools.wraps, decorators with arguments, stacking order, decorating methods",
+        "The iterator protocol, iterables vs iterators, generators, yield from, send/throw/close",
+        "Lazy pipelines with itertools and generator expressions; memory and laziness trade-offs",
+        "functools: partial, lru_cache/cache, singledispatch, reduce; first-class functions"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Memory, the interpreter and the import system",
+      "weight": 18,
+      "skills": [
+        "Names, references and mutability: aliasing, shallow vs deep copy, argument passing",
+        "Memory management in CPython: reference counting, the cyclic garbage collector, weakref, __del__ pitfalls, finding leaks with tracemalloc",
+        "How code runs: compilation to bytecode, code objects and frames, the dis module at a conceptual level",
+        "The GIL, what it does and does not protect, and the free-threaded build (PEP 703) in 3.13+",
+        "The import system: modules, packages, sys.path, finders and loaders, circular imports, __main__"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Concurrency and asyncio",
+      "weight": 18,
+      "skills": [
+        "Choosing threads, processes or asyncio for I/O-bound vs CPU-bound work; concurrent.futures",
+        "asyncio fundamentals: coroutines, the event loop, tasks, await, gather vs TaskGroup",
+        "Cancellation, timeouts (asyncio.timeout), exception groups and except*",
+        "Common async bugs: blocking calls in the loop, forgotten awaits, unbounded concurrency; semaphores and to_thread",
+        "Thread safety: races, locks, queues, and what is atomic in CPython"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Modern typing and language features",
+      "weight": 14,
+      "skills": [
+        "Type hints and static checking: generics, TypeVar and 3.12 type-parameter syntax, variance at a working level",
+        "Structural typing with Protocol; TypedDict, Literal, overload, Self, ParamSpec",
+        "dataclasses in depth: field defaults, frozen, slots, __post_init__, ordering; vs NamedTuple and attrs-style classes",
+        "Structural pattern matching (match/case): patterns, guards and pitfalls",
+        "Enums, context managers (contextlib) and exception design"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Performance, testing and packaging",
+      "weight": 12,
+      "skills": [
+        "Cost model of built-ins: list, dict, set and deque operation complexity; string building",
+        "Measuring: timeit, cProfile, tracemalloc; optimizing hot paths without guessing",
+        "Testing with pytest: fixtures, parametrize, mocking with unittest.mock, testing async code",
+        "Packaging: pyproject.toml, virtual environments, entry points, version pinning",
+        "Writing a clean public API: __all__, keyword-only arguments, deprecation, documentation"
+      ]
+    }
+  ],
+  "targets": {
+    "lessons": 22,
+    "flashcards": 120,
+    "questions": 120
+  },
+  "out": "src/content/tracks/foundations/exams/python-deep.json"
+}
