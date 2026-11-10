@@ -22,7 +22,7 @@ A push to `main` runs these steps, and any failure stops the deploy:
 2. A settings check fails fast if `CONTENT_SOURCE=db` is set without the `DATABASE_URL` secret, or if database content is on without the Supabase variables.
 3. `npm run build` with the base path and site URL taken from `public/CNAME`.
 4. `npm run test:e2e`: every exam in Chrome at phone width, plus a pass under the real Content-Security-Policy.
-5. `npm run test:e2e:a11y`: an axe-core audit (WCAG 2.2 AA) of 20 pages in light and dark themes, at desktop and phone width. Serious and critical violations fail the run.
+5. `npm run test:e2e:a11y`: an axe-core audit (WCAG 2.2 AA) of 23 pages in light and dark themes, at desktop and phone width. Serious and critical violations fail the run.
 6. `npm run test:e2e:db`: database-mode content and its fallbacks, against a local REST stand-in.
 7. Only when the `DATABASE_URL` secret is set: re-run `supabase/content.sql` (idempotent, applies new columns), reload the content tables in one transaction (`export/load.sql`), then `content:verify-db`.
 8. Upload `dist/` and deploy it to Pages.
@@ -71,7 +71,7 @@ The production CSP adds the Supabase origin to `connect-src` automatically at bu
 
 ### 3. Content database
 
-1. Add the `DATABASE_URL` secret and re-run the deploy. The "Publish content to the database" step loads every table and then confirms that the REST API returns exactly what is bundled. Its log ends with `24 match, 0 differ` (or the current exam count).
+1. Add the `DATABASE_URL` secret and re-run the deploy. The "Publish content to the database" step loads every table and then confirms that the REST API returns exactly what is bundled. Its log ends with `28 match, 0 differ` (or the current exam count).
 2. Only then set `CONTENT_SOURCE` = `db` and re-run the deploy.
 3. Check: open an exam with the browser's network tab open. You should see requests to `<ref>.supabase.co/rest/v1/...` and no console errors.
 

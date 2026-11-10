@@ -1,0 +1,114 @@
+{
+  "track": "engineering",
+  "kind": "course",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "level": "In-depth engineering course · no official exam",
+  "targets": {
+    "lessons": 22,
+    "flashcards": 120,
+    "questions": 120
+  },
+  "id": "postgres",
+  "code": "PG-SQL",
+  "name": "PostgreSQL and SQL in Depth",
+  "audience": "Developers and architects who use PostgreSQL (directly or via Supabase/Neon) as the main database and want expert-level SQL, schema design and performance skills.",
+  "format": "This site's course with a 40-question practice test of predict-the-result, read-the-plan, schema design and concurrency questions.",
+  "scenarios": [
+    "A slow query in production",
+    "Designing a multi-tenant schema with row-level security",
+    "A job queue in Postgres",
+    "Adding vector search to an app",
+    "A zero-downtime migration"
+  ],
+  "verifyNotes": "This is the site's own in-depth engineering course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources) and on what is current as of November 2026. Goal: a senior engineer or architect who builds products alone or in a team of 2-3 can apply every idea confidently in real work, a design review or a senior interview. Lessons go deep: intuition first, then the precise mechanism, then a fully worked example with real numbers or code, then where it matters in production, then a common misconception. Write math in LaTeX between double dollars only: $$...$$; NEVER single-dollar math (single $ renders literally; in SQL or shell code use code fences). In JSON strings escape backslashes. Markdown tables: never put a raw | inside a cell (escape it as \\\\| or use \\\\lvert in math). Every lesson has a hands-on lab: a small exercise with the expected output. State any randomness seed. Question mix: ~40% predict the result of a query or statement on given data, ~30% judgment (schema, index or isolation choice), ~30% debug (wrong results, slow plans, deadlocks, migration hazards). Verifiers MUST run every SQL example, lab and predict-the-result question on real PostgreSQL 18 with `node /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/sql/run.mjs <file.sql>` (fresh in-memory PGlite; pgvector and pg_trgm available via CREATE EXTENSION) and fix keys that disagree; give exact table data in the stem and add ORDER BY wherever row order matters. PGlite is single-connection: verify multi-session concurrency (locks, isolation anomalies, deadlocks) by careful reasoning against the PostgreSQL docs, and note EXPLAIN plans depend on data and statistics (ask about plan shapes and concepts, not exact costs). Target PostgreSQL 18 and mention when a feature is new (e.g. uuidv7(), virtual generated columns, asynchronous I/O in 18; MERGE ... RETURNING in 17). Sources: postgresql.org docs and wiki only, plus github.com/pgvector/pgvector, supabase.com/docs for Supabase-specific RLS and pooling, and pgbouncer.org; no blogs.",
+  "sources": [
+    "https://www.postgresql.org/docs/current/",
+    "https://www.postgresql.org/docs/current/queries-with.html",
+    "https://www.postgresql.org/docs/current/tutorial-window.html",
+    "https://www.postgresql.org/docs/current/indexes.html",
+    "https://www.postgresql.org/docs/current/using-explain.html",
+    "https://www.postgresql.org/docs/current/mvcc.html",
+    "https://www.postgresql.org/docs/current/ddl-rowsecurity.html",
+    "https://www.postgresql.org/docs/current/textsearch.html",
+    "https://github.com/pgvector/pgvector",
+    "https://www.postgresql.org/docs/release/18.0/"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "SQL querying in depth",
+      "weight": 20,
+      "skills": [
+        "Joins in depth: inner, outer, semi and anti joins (EXISTS, NOT EXISTS vs NOT IN with NULLs), LATERAL",
+        "Aggregation: GROUP BY, HAVING, FILTER, GROUPING SETS, ROLLUP and DISTINCT ON",
+        "Window functions: PARTITION BY, ORDER BY, frames, ranking, running totals, gaps and islands",
+        "CTEs and recursive queries: hierarchies, graphs, materialization",
+        "NULL and three-valued logic, type casting, and set operations"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Schema design and data modelling",
+      "weight": 16,
+      "skills": [
+        "Normalization and when to denormalize; modelling one-to-many, many-to-many and hierarchies",
+        "Keys: bigint identity vs UUID (uuidv7 in 18), natural vs surrogate keys, foreign keys and ON DELETE",
+        "Constraints as correctness: NOT NULL, CHECK, UNIQUE (NULLS NOT DISTINCT), exclusion constraints",
+        "Choosing types: timestamptz vs timestamp, numeric vs float, text, jsonb, arrays, enums vs lookup tables, generated columns",
+        "Declarative partitioning: range, list, hash; partition pruning and when partitioning helps"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Indexes and query performance",
+      "weight": 20,
+      "skills": [
+        "B-tree indexes: how they work, multicolumn column order, sort order and index-only scans",
+        "Partial, expression and covering (INCLUDE) indexes; why a function on a column skips the index",
+        "GIN, GiST, BRIN and hash indexes: which index for which query",
+        "Reading EXPLAIN (ANALYZE, BUFFERS): scan and join types, estimates vs actuals, statistics and ANALYZE",
+        "Query anti-patterns: OFFSET pagination vs keyset, N+1 queries, SELECT *, implicit casts, OR across columns"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Transactions, MVCC and concurrency",
+      "weight": 18,
+      "skills": [
+        "Isolation levels in PostgreSQL: read committed, repeatable read, serializable (SSI) and the anomalies each allows",
+        "MVCC: tuple versions, xmin/xmax, visibility, and why UPDATE creates a new row version",
+        "VACUUM, autovacuum, bloat, HOT updates and transaction ID wraparound",
+        "Locks: row locks (FOR UPDATE, FOR NO KEY UPDATE, SKIP LOCKED, NOWAIT), table lock levels, deadlocks",
+        "Concurrency patterns: upserts with ON CONFLICT, MERGE, advisory locks, retrying serialization failures"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "PostgreSQL as an application platform",
+      "weight": 14,
+      "skills": [
+        "jsonb: operators, containment, GIN indexes, jsonb_path and when JSON columns are a mistake",
+        "Full-text search: tsvector, tsquery, ranking, GIN indexes; trigram similarity with pg_trgm",
+        "Vector search with pgvector: distance operators, HNSW vs IVFFlat, filtering and hybrid search",
+        "Queues and events in Postgres: SKIP LOCKED job queues, LISTEN/NOTIFY, outbox tables",
+        "Security: roles and grants, row-level security policies, security definer functions, Supabase-style RLS"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Operating PostgreSQL in production",
+      "weight": 12,
+      "skills": [
+        "Connection management: max_connections, poolers (PgBouncer, Supavisor), transaction vs session pooling pitfalls",
+        "Zero-downtime migrations: CREATE INDEX CONCURRENTLY, adding columns and constraints safely (NOT VALID), lock timeouts",
+        "Backups and recovery: pg_dump vs physical backups, WAL and point-in-time recovery",
+        "Replication: streaming and logical replication, read replicas and replication lag",
+        "Monitoring and tuning: pg_stat_statements, pg_stat_activity, key settings (shared_buffers, work_mem), upgrades"
+      ]
+    }
+  ],
+  "out": "src/content/tracks/engineering/exams/postgres.json"
+}

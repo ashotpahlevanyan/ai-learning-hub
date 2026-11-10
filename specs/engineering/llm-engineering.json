@@ -1,0 +1,114 @@
+{
+  "track": "engineering",
+  "kind": "course",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "level": "In-depth engineering course · no official exam",
+  "targets": {
+    "lessons": 22,
+    "flashcards": 120,
+    "questions": 120
+  },
+  "id": "llm-engineering",
+  "code": "LLM-ENG",
+  "name": "LLM Application Engineering",
+  "audience": "Software engineers and architects building production LLM features, RAG systems and agents, alone or in small teams.",
+  "format": "This site's course with a 40-question practice test of design, debugging, evaluation and cost questions across providers.",
+  "scenarios": [
+    "Shipping a support assistant with RAG",
+    "Building an agent with tools and MCP",
+    "Cutting LLM cost and latency in half",
+    "Setting up evals before a model upgrade",
+    "Defending an app against prompt injection"
+  ],
+  "verifyNotes": "This is the site's own in-depth engineering course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources) and on what is current as of November 2026. Goal: a senior engineer or architect who builds products alone or in a team of 2-3 can apply every idea confidently in real work, a design review or a senior interview. Lessons go deep: intuition first, then the precise mechanism, then a fully worked example with real numbers or code, then where it matters in production, then a common misconception. Write math in LaTeX between double dollars only: $$...$$; NEVER single-dollar math (single $ renders literally; in SQL or shell code use code fences). In JSON strings escape backslashes. Markdown tables: never put a raw | inside a cell (escape it as \\\\| or use \\\\lvert in math). Every lesson has a hands-on lab: a small exercise with the expected output. State any randomness seed. Question mix: ~45% design and judgment in a concrete scenario, ~25% compute (token and cost estimates, cache savings, retrieval metrics like recall@k, MRR and nDCG, eval statistics), ~30% debugging (bad retrieval, tool-loop bugs, judge bias, injection). Code in fenced ```python blocks; verifiers run every computation and code question with /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/py313/bin/python (CPython 3.13, standard library only; no network: code that calls an LLM API must be checked by reading the official SDK docs, never by guessing methods). Stay provider-neutral and show official SDK patterns of Anthropic, OpenAI and Google exactly as their docs show them; never invent API fields. Prices, model names, context sizes and limits change fast: state them conceptually or with an 'as of November 2026' note backed by a source. Sources: docs.claude.com / docs.anthropic.com, anthropic.com engineering and research posts, platform.openai.com docs and openai.com, ai.google.dev, modelcontextprotocol.io, genai.owasp.org, opentelemetry.io, github.com/pgvector/pgvector, arxiv.org primary papers, python.org; no Medium or vendor-marketing blogs of third parties.",
+  "sources": [
+    "https://docs.claude.com/en/docs/build-with-claude/tool-use/overview",
+    "https://docs.claude.com/en/docs/build-with-claude/prompt-caching",
+    "https://www.anthropic.com/engineering/building-effective-agents",
+    "https://www.anthropic.com/research/contextual-retrieval",
+    "https://platform.openai.com/docs/guides/structured-outputs",
+    "https://ai.google.dev/gemini-api/docs",
+    "https://modelcontextprotocol.io/specification/latest",
+    "https://genai.owasp.org/llm-top-10/",
+    "https://opentelemetry.io/docs/specs/semconv/gen-ai/",
+    "https://arxiv.org/abs/2005.11401"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Model APIs, prompting and structured output",
+      "weight": 18,
+      "skills": [
+        "Messages APIs across providers: roles, system prompts, multi-turn state, stop reasons",
+        "Prompt engineering that holds up: clear instructions, examples, XML/sections, prefill, chain of thought and extended thinking",
+        "Structured outputs: JSON Schema, strict modes, validation with Pydantic and repair strategies",
+        "Tokens and context windows: counting, budgeting, long-context trade-offs and context rot",
+        "Model choice and routing: capability vs cost vs latency tiers, fallbacks across providers"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Retrieval and RAG",
+      "weight": 20,
+      "skills": [
+        "RAG architecture: ingestion, chunking strategies, metadata, and when RAG beats long context or fine-tuning",
+        "Embeddings: what they capture, normalisation, dimensions, choosing and versioning a model",
+        "Search: vector indexes (HNSW), BM25 and hybrid search with reciprocal rank fusion, filters",
+        "Reranking, query rewriting and contextual retrieval",
+        "Evaluating retrieval: recall@k, precision@k, MRR, nDCG, and building a labelled set"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Tools, agents and MCP",
+      "weight": 20,
+      "skills": [
+        "The tool-use loop: tool definitions, tool results, parallel tool calls, turn limits and errors",
+        "Workflows vs agents: prompt chaining, routing, parallelisation, orchestrator-workers, evaluator-optimizer",
+        "Designing good tools: names, descriptions, inputs, output size, idempotency and least privilege",
+        "Model Context Protocol: hosts, clients and servers; tools, resources and prompts; transports and authorization",
+        "Context engineering for agents: memory, summarisation and compaction, sub-agents, and long-running tasks"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Evaluation",
+      "weight": 18,
+      "skills": [
+        "Why evals: regression safety for prompt and model changes; building an eval set from real traffic",
+        "Grading methods: exact and programmatic checks, LLM-as-judge (rubrics, pairwise), human review",
+        "Judge pitfalls: position and verbosity bias, self-preference, calibration against human labels",
+        "Statistics for evals: sample size, confidence intervals, comparing two systems, flaky evals",
+        "Running evals in CI and production: online metrics, A/B tests, guardrail metrics and dashboards"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Production: cost, latency and reliability",
+      "weight": 12,
+      "skills": [
+        "Cost modelling: input/output/cached tokens, batch discounts, per-feature unit economics",
+        "Latency: streaming, time to first token, prompt caching, smaller models, parallel calls",
+        "Reliability: rate limits, retries with backoff, timeouts, idempotency, provider fallbacks",
+        "Observability: tracing LLM calls and tool spans (OpenTelemetry GenAI conventions), logging prompts safely",
+        "Shipping safely: feature flags, shadow traffic, gradual rollout of model and prompt versions"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Security, safety and privacy",
+      "weight": 12,
+      "skills": [
+        "Prompt injection: direct and indirect, why it cannot be fully filtered, and architectural defences",
+        "The OWASP Top 10 for LLM applications and how each shows up in real apps",
+        "Agent security: tool permissions, sandboxing, data exfiltration channels, human-in-the-loop approvals",
+        "Privacy and data handling: PII, retention, zero data retention options, tenant isolation in RAG",
+        "Content safety and guardrails: input and output filtering, refusals, and abuse monitoring"
+      ]
+    }
+  ],
+  "out": "src/content/tracks/engineering/exams/llm-engineering.json"
+}

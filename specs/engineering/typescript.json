@@ -1,0 +1,114 @@
+{
+  "track": "engineering",
+  "kind": "course",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "level": "In-depth engineering course · no official exam",
+  "targets": {
+    "lessons": 22,
+    "flashcards": 120,
+    "questions": 120
+  },
+  "id": "typescript",
+  "code": "TS-DEEP",
+  "name": "TypeScript in Depth",
+  "audience": "Developers who use TypeScript daily and want to master the type system, the JavaScript runtime beneath it and modern tooling for full-stack apps.",
+  "format": "This site's course with a 40-question practice test of does-it-type-check, predict-the-output, type design and debugging questions.",
+  "scenarios": [
+    "Designing a type-safe API client",
+    "Migrating a codebase to strict mode",
+    "Debugging an async race in Node",
+    "Publishing a library with correct types",
+    "Typing a React component library"
+  ],
+  "verifyNotes": "This is the site's own in-depth engineering course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources) and on what is current as of November 2026. Goal: a senior engineer or architect who builds products alone or in a team of 2-3 can apply every idea confidently in real work, a design review or a senior interview. Lessons go deep: intuition first, then the precise mechanism, then a fully worked example with real numbers or code, then where it matters in production, then a common misconception. Write math in LaTeX between double dollars only: $$...$$; NEVER single-dollar math (single $ renders literally; in SQL or shell code use code fences). In JSON strings escape backslashes. Markdown tables: never put a raw | inside a cell (escape it as \\\\| or use \\\\lvert in math). Every lesson has a hands-on lab: a small exercise with the expected output. State any randomness seed. Question mix: ~35% does-this-type-check or what-type-is-inferred, ~25% predict the runtime output (event loop, promises, coercion, closures), ~40% design and debugging judgment. Code in fenced ```ts blocks. Verifiers MUST type-check and run every code example, lab and code question with `sh /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/ts/check.sh <file.ts>` (TypeScript 7.0 native compiler with --strict, then Node 24 with type stripping) and fix keys that disagree; quote the exact compiler error code (e.g. TS2322) only when verified. Node type stripping does not support enums, namespaces with values or parameter properties (erasableSyntaxOnly): say so where relevant. Target TypeScript 7.x (the Go-based native compiler; note behaviour or option changes vs 5.x/6.x, such as removed options and new defaults, only if the release notes confirm them), ES2025 and Node 24 LTS. React examples follow React 19 and may be verified by type reasoning against react.dev. Sources: typescriptlang.org (handbook, tsconfig reference, release notes), devblogs.microsoft.com/typescript, github.com/microsoft/typescript-go, developer.mozilla.org, tc39.es, nodejs.org docs, react.dev, zod.dev and vitest.dev; no blogs or Medium.",
+  "sources": [
+    "https://www.typescriptlang.org/docs/handbook/intro.html",
+    "https://www.typescriptlang.org/tsconfig/",
+    "https://www.typescriptlang.org/docs/handbook/2/narrowing.html",
+    "https://www.typescriptlang.org/docs/handbook/2/conditional-types.html",
+    "https://devblogs.microsoft.com/typescript/",
+    "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop",
+    "https://nodejs.org/api/typescript.html",
+    "https://nodejs.org/api/packages.html",
+    "https://react.dev/learn/typescript",
+    "https://zod.dev/"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "The type system foundations",
+      "weight": 20,
+      "skills": [
+        "Structural typing, assignability, excess property checks and type widening",
+        "Inference, contextual typing, literal types, as const and satisfies",
+        "Unions and narrowing: typeof, in, instanceof, equality, type predicates and assertion functions",
+        "Discriminated unions and exhaustiveness checking with never",
+        "any vs unknown vs never, type assertions, and the soundness holes to know"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Advanced types",
+      "weight": 20,
+      "skills": [
+        "Generics: constraints, defaults, inference from arguments, const type parameters",
+        "Conditional types, infer and distributive behaviour",
+        "Mapped types, key remapping with as, and template literal types",
+        "The built-in utility types and how they are implemented (Partial, Pick, Omit, Record, ReturnType, Awaited)",
+        "Variance, function parameter bivariance, overloads vs generics, and keeping types fast to check"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "The JavaScript runtime beneath TypeScript",
+      "weight": 18,
+      "skills": [
+        "The event loop: call stack, microtasks vs macrotasks, ordering of promises, timers and await",
+        "Promises and async/await: error propagation, unhandled rejections, Promise.all/allSettled/any/race, AbortController",
+        "this, closures, scope and hoisting; arrow functions vs methods",
+        "Equality, coercion, numbers (IEEE 754, BigInt) and common runtime surprises",
+        "Modules: ESM vs CommonJS, import/export semantics, top-level await, dynamic import"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Designing with types",
+      "weight": 14,
+      "skills": [
+        "Modelling domains: making illegal states unrepresentable, branded and opaque types",
+        "Errors as values (Result types) vs exceptions; typing unknown errors in catch",
+        "Runtime validation at boundaries with Zod: schemas, z.infer, parsing vs validating",
+        "Type-safe APIs end to end: shared types, inference across client and server, OpenAPI generation",
+        "Declaration files, module augmentation, and typing third-party JavaScript"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Tooling, configuration and the TypeScript 7 compiler",
+      "weight": 14,
+      "skills": [
+        "tsconfig essentials: strict family, noUncheckedIndexedAccess, exactOptionalPropertyTypes, target and lib",
+        "Module settings: module and moduleResolution (nodenext vs bundler), verbatimModuleSyntax, isolatedModules",
+        "Running TypeScript: tsc vs bundlers vs Node type stripping (erasableSyntaxOnly); the native TypeScript 7 compiler and its speed",
+        "Monorepos and project references; build performance and incremental builds",
+        "Publishing libraries: package.json exports and types conditions, dual ESM/CJS, declaration output"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "TypeScript for full-stack apps",
+      "weight": 14,
+      "skills": [
+        "Node.js with TypeScript: fetch, streams, events, worker threads and graceful shutdown",
+        "Typing HTTP handlers and middleware (Hono or Express style), request validation and typed responses",
+        "React 19 with TypeScript: props, children, events, refs, hooks and generic components",
+        "Testing TypeScript with Vitest: typed mocks, type tests with expectTypeOf",
+        "Linting and code quality: typescript-eslint rules that catch real bugs, strictness migration strategy"
+      ]
+    }
+  ],
+  "out": "src/content/tracks/engineering/exams/typescript.json"
+}

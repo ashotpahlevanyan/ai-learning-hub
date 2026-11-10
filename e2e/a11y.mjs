@@ -11,7 +11,7 @@ const axe = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.mi
 const port = 4319, B = `http://localhost:${port}`;
 const PAGES = ['/', '/claude', '/claude/ccar-f', '/claude/ccar-f/learn', '/claude/ccar-f/cards', '/claude/ccar-f/practice',
   '/claude/ccar-f/mock', '/claude/ccar-f/traps', '/claude/ccar-f/plan', '/claude/ccar-f/guide', '/claude/guide',
-  '/foundations/math-ai/learn', '/progress', '/library', '/roadmap', '/about', '/search?q=agents', '/no-such-page'];
+  '/foundations/math-ai/learn', '/engineering', '/engineering/postgres/learn', '/engineering/guide', '/progress', '/library', '/roadmap', '/about', '/search?q=agents', '/no-such-page'];
 
 const server = spawn('npx', ['vite', 'preview', '--port', String(port), '--strictPort', '--base', '/'], { stdio: 'ignore' });
 const blocking = [], minor = new Map();

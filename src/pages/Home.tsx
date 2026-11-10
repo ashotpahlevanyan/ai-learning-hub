@@ -19,7 +19,7 @@ export default function Home() {
         <h1 className="display">Learn the AI platforms you build on, then prove it.</h1>
         <p className="lede">
           AI Learning Hub turns official documentation and exam blueprints into study paths you can finish: lessons,
-          flashcards, practice questions and timed mocks for Anthropic Claude, Google, OpenAI, AWS, Microsoft Azure, NVIDIA and Databricks, plus deep foundations in the math and Python behind AI.
+          flashcards, practice questions and timed mocks for Anthropic Claude, Google, OpenAI, AWS, Microsoft Azure, NVIDIA and Databricks, plus deep foundations in math, Python and algorithms, and engineering courses on system design, PostgreSQL, TypeScript and LLM applications.
         </p>
         <div className="row">
           <Link className="btn primary" to="/claude">Start the Claude track</Link>
