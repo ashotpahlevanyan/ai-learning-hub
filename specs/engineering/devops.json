@@ -1,0 +1,114 @@
+{
+  "track": "engineering",
+  "kind": "course",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "level": "In-depth engineering course · no official exam",
+  "targets": {
+    "lessons": 22,
+    "flashcards": 120,
+    "questions": 120
+  },
+  "id": "devops",
+  "code": "DEVOPS",
+  "name": "DevOps for Small Teams",
+  "audience": "Developers and architects who ship and run their own products and need production-grade delivery, infrastructure and operations without a dedicated platform team.",
+  "format": "This site's course with a 40-question practice test of choose-the-setup, read-the-config, incident and cost questions.",
+  "scenarios": [
+    "Setting up CI/CD for a new product",
+    "Containerising and deploying a web app",
+    "Managing cloud infrastructure as code",
+    "Handling a production incident at 2 a.m.",
+    "Cutting the cloud bill without losing reliability"
+  ],
+  "verifyNotes": "This is the site's own in-depth engineering course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources) and on what is current as of November 2026. Goal: a senior engineer or architect who builds products alone or in a team of 2-3 can apply every idea confidently in real work, a design review or a senior interview. Lessons go deep: intuition first, then the precise mechanism, then a fully worked example with real numbers or code, then where it matters in production, then a common misconception. Write math in LaTeX between double dollars only: $$...$$; NEVER single-dollar math (single $ renders literally; in SQL or shell code use code fences). In JSON strings escape backslashes. Markdown tables: never put a raw | inside a cell (escape it as \\\\| or use \\\\lvert in math). Every lesson has a hands-on lab: a small exercise with the expected output. State any randomness seed. Question mix: ~35% judgment (pick the setup a 1-3 person team can run), ~35% read or debug a config (Dockerfile, GitHub Actions workflow, Terraform/OpenTofu, compose file, alert rule) or a log, ~30% incident and failure-mode reasoning. Code in fenced blocks with the right language (dockerfile, yaml, hcl, bash). Verifiers MUST parse every YAML example with /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/py313/bin/python (CPython 3.13 with PyYAML) and check GitHub Actions syntax and expressions against docs.github.com; Docker and Terraform cannot be run here, so verify Dockerfile, compose and HCL behaviour against the official reference docs line by line and never guess flags. Compute every number (costs, error budgets, cache hit savings) with Python. Prefer managed services and simple setups; say when Kubernetes, service meshes or multi-region are overkill. Version-sensitive facts (GitHub Actions runner images and action major versions, Docker BuildKit features, Terraform/OpenTofu versions and licensing) must come from current docs with a date. Sources: docs.github.com, docs.docker.com, developer.hashicorp.com, opentofu.org, kubernetes.io, opentelemetry.io, sre.google, AWS/Azure/Google Cloud official docs (aws.amazon.com, docs.aws.amazon.com, learn.microsoft.com, cloud.google.com), slsa.dev, openssf.org, owasp.org, letsencrypt.org, the twelve-factor app (12factor.net) and cncf.io; no Medium or vendor-marketing blogs.",
+  "sources": [
+    "https://docs.github.com/en/actions",
+    "https://docs.docker.com/build/building/best-practices/",
+    "https://docs.docker.com/reference/dockerfile/",
+    "https://developer.hashicorp.com/terraform/docs",
+    "https://opentofu.org/docs/",
+    "https://opentelemetry.io/docs/",
+    "https://sre.google/sre-book/table-of-contents/",
+    "https://slsa.dev/spec/",
+    "https://12factor.net/",
+    "https://kubernetes.io/docs/concepts/"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "Delivery: Git workflows and CI/CD",
+      "weight": 20,
+      "skills": [
+        "Trunk-based development, short-lived branches, feature flags and code review that keeps flow fast",
+        "GitHub Actions in depth: workflows, jobs, steps, matrices, caching, artifacts, reusable workflows and concurrency groups",
+        "Secure CI: least-privilege GITHUB_TOKEN permissions, OIDC to clouds instead of long-lived keys, pinning actions by SHA, pull_request_target risks",
+        "Testing in the pipeline: test pyramid, fast feedback, flaky tests, preview environments per pull request",
+        "Deployment strategies: rolling, blue-green, canary and feature-flag releases; database migrations in the release flow; rollback"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Containers",
+      "weight": 18,
+      "skills": [
+        "Container fundamentals: images, layers, namespaces and cgroups at a working level; containers vs VMs",
+        "Writing good Dockerfiles: multi-stage builds, layer caching order, .dockerignore, small base images, non-root users",
+        "BuildKit features: cache mounts, secrets mounts, multi-platform builds; image tagging and immutable digests",
+        "Local development with Docker Compose: services, networks, volumes, healthchecks and depends_on conditions",
+        "Running containers in production: managed container platforms (Cloud Run, App Runner/ECS, Fly-style) vs Kubernetes, and when Kubernetes is worth it"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Infrastructure as code and cloud foundations",
+      "weight": 18,
+      "skills": [
+        "Infrastructure as code with Terraform/OpenTofu: providers, resources, variables, outputs, modules",
+        "State: remote state, locking, drift, import, and why state files are secrets",
+        "Plan and apply in CI: reviewing plans, environments and workspaces, avoiding destroy surprises (lifecycle, prevent_destroy)",
+        "Cloud foundations for small teams: accounts/projects per environment, IAM least privilege, networking basics (VPC, subnets, security groups), managed databases",
+        "Secrets and configuration: twelve-factor config, secret managers, rotation, never baking secrets into images"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Observability and incident response",
+      "weight": 16,
+      "skills": [
+        "The three signals in practice: structured logs, metrics and traces; OpenTelemetry instrumentation and collectors",
+        "Dashboards and alerting that do not burn you out: symptom-based alerts, SLO burn-rate alerts, avoiding noisy pages",
+        "Uptime and synthetic checks, error tracking and release health",
+        "Incident response for a tiny team: on-call, severity levels, communication, mitigation before root cause",
+        "Blameless postmortems, action items and learning from near misses"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Reliability, backups and security operations",
+      "weight": 14,
+      "skills": [
+        "Backups and disaster recovery: RPO and RTO, tested restores, point-in-time recovery, cross-region copies",
+        "Availability on a budget: health checks, multiple instances, zero-downtime deploys, graceful shutdown and connection draining",
+        "TLS and domains: DNS records, certificates (ACME/Let's Encrypt), HSTS, CDN and WAF basics",
+        "Supply chain security: dependency scanning, SBOMs, signed images and provenance (SLSA levels), Dependabot/Renovate",
+        "Patching and vulnerability management; least privilege in production access; audit logs"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Cost and platform choices",
+      "weight": 14,
+      "skills": [
+        "Cloud cost basics: compute, storage, egress and managed-service pricing models; estimating a monthly bill",
+        "Cost control: right-sizing, autoscaling to zero, reserved/savings plans, budgets and alerts, tagging",
+        "Choosing a platform: PaaS vs containers vs serverless vs VMs for a 1-3 person team",
+        "Serverless trade-offs: cold starts, timeouts, concurrency limits, vendor coupling, and cost at scale",
+        "Building a minimal internal platform: templates, golden paths and automation that pay off for small teams"
+      ]
+    }
+  ],
+  "out": "src/content/tracks/engineering/exams/devops.json"
+}

@@ -1,23 +1,26 @@
 # Software Engineering for Builders Study Guide
 
-This track covers the stack for building and running whole products alone or with one or two other developers. Use it alongside the four courses on this site:
+This track covers the stack for building and running whole products alone or with one or two other developers. Use it alongside the six courses on this site:
 
 - **System Design for Builders** (SYS-DESIGN)
 - **PostgreSQL and SQL in Depth** (PG-SQL)
 - **TypeScript in Depth** (TS-DEEP)
 - **LLM Application Engineering** (LLM-ENG)
+- **React and Next.js in Depth** (REACT-NEXT)
+- **DevOps for Small Teams** (DEVOPS)
 
 Each course has lessons with worked examples and hands-on labs, flashcards, practice questions and a 40-question, 60-minute practice test.
 
 > **Read this first.** These are this site's own courses, not vendor certifications, and there is no exam to book. The goal is judgment you can use at work: choose the simplest design a small team can run, make the database do the hard work correctly, write TypeScript the compiler can protect, and ship LLM features you can measure.
 >
-> Facts were checked against official docs on 11 November 2026, and code was checked by running it:
+> Facts were checked against official docs on 11 November 2026, and code was checked by running it where possible:
 >
 > - SQL on PostgreSQL 18.
-> - TypeScript with the TypeScript 7.0 compiler and Node 24.
+> - TypeScript with the TypeScript 7.0 compiler and Node 24 (React and Next.js code against their real types).
+> - YAML examples parsed with PyYAML.
 > - Python on CPython 3.13.
 >
-> These tools move fast, so section 8 lists the version changes that matter.
+> These tools move fast, so section 10 lists the version changes that matter.
 
 ---
 
@@ -29,9 +32,11 @@ Each course has lessons with worked examples and hands-on labs, flashcards, prac
 4. [Course: PostgreSQL and SQL in Depth (PG-SQL)](#4-course-postgresql-and-sql-in-depth-pg-sql)
 5. [Course: TypeScript in Depth (TS-DEEP)](#5-course-typescript-in-depth-ts-deep)
 6. [Course: LLM Application Engineering (LLM-ENG)](#6-course-llm-application-engineering-llm-eng)
-7. [Capstone projects](#7-capstone-projects)
-8. [Version notes](#8-version-notes)
-9. [Study schedules](#9-study-schedules)
+7. [Course: React and Next.js in Depth (REACT-NEXT)](#7-course-react-and-nextjs-in-depth-react-next)
+8. [Course: DevOps for Small Teams (DEVOPS)](#8-course-devops-for-small-teams-devops)
+9. [Capstone projects](#9-capstone-projects)
+10. [Version notes](#10-version-notes)
+11. [Study schedules](#11-study-schedules)
 
 ---
 
@@ -41,14 +46,15 @@ Each course has lessons with worked examples and hands-on labs, flashcards, prac
 
 | You are… | Order | Why |
 |---|---|---|
-| A solo founder or small-team builder | **TS-DEEP → PG-SQL → LLM-ENG → SYS-DESIGN** | Master the language and the database you build on, add the AI layer, then learn to design and operate the whole system. |
+| A solo founder or small-team builder | **TS-DEEP → REACT-NEXT → PG-SQL → LLM-ENG → DEVOPS → SYS-DESIGN** | Master the language, the UI framework and the database you build on, add the AI layer, learn to ship and run it, then design the whole system. |
 | An architect or tech lead | **SYS-DESIGN → PG-SQL → LLM-ENG → TS-DEEP** | Start with trade-offs and reliability, go deep on the data layer, then the AI systems you will be asked to review. |
 | Preparing for senior interviews | **SYS-DESIGN → TS-DEEP → PG-SQL**, plus Foundations **DSA** | System design rounds, then the language and database depth senior loops probe. DSA covers the coding rounds. |
+| A backend or data engineer moving to full-stack | **TS-DEEP → REACT-NEXT → DEVOPS** | The language and runtime first, then rendering, data flow and caching on the web, then delivery and operations. |
 | Already building LLM features | **LLM-ENG → PG-SQL domain 5 → SYS-DESIGN domain 6** | Evals, retrieval and agent security first, then pgvector and hybrid search, then gateway and RAG service design. |
 
 ### How the courses connect
 
-The four courses describe one system from different sides. Study the pairs together:
+The six courses describe one system from different sides. Study the pairs together:
 
 | Topic | Where it appears |
 |---|---|
@@ -59,7 +65,10 @@ The four courses describe one system from different sides. Study the pairs toget
 | Timeouts, retries and idempotency | SYS-DESIGN D3 · TS-DEEP D3 (`AbortSignal`) · LLM-ENG D5 (rate limits, fallbacks) |
 | Vector and hybrid search | PG-SQL D5 (pgvector, HNSW) · LLM-ENG D2 (RRF, reranking, retrieval metrics) |
 | Validation at boundaries | TS-DEEP D4 and D6 (Zod) · LLM-ENG D1 (structured outputs and repair) |
-| Observability and SLOs | SYS-DESIGN D1 and D6 (burn-rate alerts) · LLM-ENG D5 (OpenTelemetry GenAI spans) |
+| Observability and SLOs | SYS-DESIGN D1 and D6 (burn-rate alerts) · DEVOPS D4 (alerts, incidents) · LLM-ENG D5 (OpenTelemetry GenAI spans) |
+| Caching and CDNs | SYS-DESIGN D2 (cache-aside, HTTP caching) · REACT-NEXT D4 (`'use cache'`, revalidation) |
+| Secrets, identity and CI security | SYS-DESIGN D5 · DEVOPS D1 and D3 (OIDC, secret managers) · REACT-NEXT D6 (`NEXT_PUBLIC_`, server-only) |
+| Streaming AI interfaces | LLM-ENG D5 (streaming, time to first token) · REACT-NEXT D6 (route handlers, cancellation) |
 
 ---
 
@@ -69,7 +78,7 @@ The four courses describe one system from different sides. Study the pairs toget
 2. **Predict before you run.** For every SQL query, type-check question or retry calculation, write your answer down before checking. Wrong predictions are what you learn from.
 3. **Flashcards daily**, 10 minutes, spaced repetition.
 4. **Practice questions by domain**, reading every option's rationale, not just the correct one.
-5. **Apply it** in the capstones in section 7, or better, in your own product.
+5. **Apply it** in the capstones in section 9, or better, in your own product.
 6. **Mock test** once you are scoring above 80% by domain.
 
 **Daily routine (60–90 minutes):** 10 min flashcards → 30–45 min lesson and lab → 15 min practice questions → 10 min on your capstone.
@@ -323,9 +332,130 @@ The four courses describe one system from different sides. Study the pairs toget
 
 ---
 
-## 7. Capstone projects
+## 7. Course: React and Next.js in Depth (REACT-NEXT)
 
-Build these; each one exercises all four courses.
+23 lessons in six domains, targeting React 19.3 and Next.js 16.4 with the App Router. Code was type-checked with TypeScript 7.0 against the real React and Next.js types. Server and browser behaviour was checked against react.dev and nextjs.org.
+
+### 7.1 The React model (20%)
+
+| Lesson | Master this |
+|---|---|
+| Rendering, reconciliation and identity | State is tied to a component's type and position. A new type or key resets the subtree. Keys must be stable: index keys break on reorder. Never declare a component inside another |
+| State: snapshots, batching and placement | A state variable is fixed for the whole render. Updater functions read queued values. Derive what you can; lift shared state to the closest common parent |
+| Effects | Effects synchronise with external systems. List every dependency, return a cleanup, and guard fetches against races. Strict Mode adds an extra setup and cleanup cycle in development |
+| Refs, context and reducers | Don't read refs during render. In React 19, `ref` is a prop and ref callbacks can return a cleanup. A new provider value re-renders every consumer, so memoize and split contexts |
+| Actions, optimistic UI, `use()` and the Compiler | `useActionState(prev, formData)`. `useOptimistic` setters run inside a Transition. `use()` needs a stable promise and Suspense. The Compiler memoizes automatically; keep existing memoization |
+
+### 7.2 Server Components and the App Router (20%)
+
+| Lesson | Master this |
+|---|---|
+| Server and Client Components | Components are Server Components by default. `'use client'` pulls a module and all its imports into the client bundle. Props crossing the boundary must be serializable. Push the boundary down to interactive leaves |
+| File conventions | Layouts persist across navigations; templates remount. `params` and `searchParams` must be awaited in 16. `error.js` does not catch errors from its own segment's layout |
+| Server data fetching and streaming | Use `Promise.all` to avoid waterfalls. Pass an unawaited promise down and read it with `use()`. Streaming commits a 200 status, so a later `notFound` or `redirect` is handled in the page |
+| Route handlers, proxy and runtimes | `proxy.ts` replaces `middleware.ts` in 16 and runs on Node.js only. Use proxy for optimistic checks and authorize again near the data. The Edge runtime is deprecated |
+
+### 7.3 Mutations, forms and server functions (16%)
+
+| Lesson | Master this |
+|---|---|
+| Server Functions and forms | `'use server'`. Actions are invoked by POST, so arguments must be serializable. Server-rendered forms work before JavaScript loads. Call actions from handlers inside `startTransition` |
+| Validation and error boundaries | Validate on the server with `safeParse`. Return expected errors as values; throw unexpected ones. Production replaces error messages with a digest |
+| Revalidation and optimistic UI | `updateTag` (Server Actions only) gives read-your-own-writes. `revalidateTag(tag, 'max')` is stale-while-revalidate; the one-argument form is deprecated. `redirect()` throws |
+| Securing server functions | Every action is a public endpoint: authenticate, authorize the specific resource, validate input and return minimal data. Neither proxy nor a layout is an authorization boundary |
+
+### 7.4 Rendering strategies and caching (16%)
+
+| Lesson | Master this |
+|---|---|
+| Static vs dynamic, per page | Request-time APIs must be awaited. With Cache Components, only the Suspense-wrapped hole is dynamic. Choose per page: cached marketing, a shell plus holes for dashboards, uncached for real-time |
+| `'use cache'`, `cacheLife` and `cacheTag` | The cache key includes arguments and closed-over values. Request APIs are forbidden inside a cache. Default storage is per-instance memory. Very short lifetimes turn the entry into a dynamic hole |
+| Revalidation and CDN headers | Time-based revalidation serves the old value to the first visitor after the window. Hashed assets are immutable for a year; dynamic pages are `private, no-store` |
+| Images, fonts and scripts | Mark the LCP image with `preload`; `priority` is deprecated in 16. Reserve image space to avoid layout shift. `next/font` self-hosts fonts. Choose `next/script` strategies deliberately |
+
+### 7.5 Performance and user experience (14%)
+
+| Lesson | Master this |
+|---|---|
+| Core Web Vitals | Scored at the 75th percentile of field data. Good means LCP ≤ 2.5 s, INP ≤ 200 ms and CLS ≤ 0.1. Lighthouse cannot measure INP |
+| Rendering performance and bundle size | The React Compiler is stable in Next 16 but off by default. `useDeferredValue` helps only if the slow child is memoized. Virtualize long lists. Use dynamic imports for heavy client code |
+| Hydration and accessibility | Mismatch causes: invalid nesting, `typeof window` branches, dates and locales, and browser extensions. Each Suspense boundary hydrates on its own. Give every route a unique title, and know the WCAG 2.2 AA additions |
+
+### 7.6 Production: auth, security, testing and deployment (14%)
+
+| Lesson | Master this |
+|---|---|
+| Auth, cookies and web security | Session cookies: HttpOnly, Secure, SameSite=Lax. Authorize in a server-only data access layer. Sanitize before `dangerouslySetInnerHTML`. A nonce-based CSP forces dynamic rendering. `NEXT_PUBLIC_` values ship to the browser |
+| Testing and streaming AI UIs | Test async Server Components end to end with Playwright. In Testing Library, query by role first. Stream from a route handler, forward `request.signal`, and decode with `{ stream: true }` |
+| Deploying and observing | Deployment options: a Node server, Docker (`standalone` output), static export or adapters. Running several instances needs a shared cache handler and the same action encryption key. `instrumentation.ts` with `onRequestError` |
+
+---
+
+## 8. Course: DevOps for Small Teams (DEVOPS)
+
+26 lessons in six domains. Every YAML example was parsed and every number was recomputed in Python. Dockerfile, Compose and Terraform behaviour was checked line by line against the official references. The bias throughout: managed platforms and the fewest moving parts a team of one to three can run.
+
+### 8.1 Delivery: Git workflows and CI/CD (20%)
+
+| Lesson | Master this |
+|---|---|
+| Trunk-based development | Integrate at least daily. Keep the mainline releasable. Hide unfinished work behind release toggles, then remove them after rollout. Keep pull requests small |
+| GitHub Actions in depth | Jobs run in parallel unless linked by `needs`. Use caches for dependencies and artifacts for build outputs. `workflow_dispatch` only appears once the workflow is on the default branch. Reusable workflows and concurrency groups, including the new `queue` key |
+| Securing the pipeline | A read-only `GITHUB_TOKEN` by default. Use OIDC instead of stored cloud keys; new repos get an immutable, ID-based `sub` claim. Pin actions by SHA or use workflow lockfiles (GA 2026-10-28). Pass untrusted event fields through `env`. `pull_request_target` changes |
+| Testing in the pipeline | Run fast tests first and gate slow ones with `needs`. Quarantine flaky tests instead of retrying blindly. Preview environments need a teardown when the PR closes |
+| Deployment strategies | Rolling, blue-green, canary and feature flags. Expand and contract migrations. Build once and promote the same artifact |
+
+### 8.2 Containers (18%)
+
+| Lesson | Master this |
+|---|---|
+| Fundamentals | Namespaces limit what a process can see; cgroups limit what it can use. A file deleted in a later layer still exists in the earlier one. Containers share the host kernel |
+| Good Dockerfiles | Copy the dependency manifests and install before copying the source. Multi-stage builds. `.dockerignore`. Pin base images by digest. Run as a non-root user. Use exec-form `ENTRYPOINT` so the app receives SIGTERM |
+| BuildKit | Cache mounts; `--cache-to` with `mode=max`. Pass secrets through `--mount=type=secret`, never ARG or ENV. Cross-compile with `--platform=$BUILDPLATFORM`. Deploy by digest |
+| Docker Compose | The `version` key is obsolete. `depends_on` with `service_healthy`. Bind local-only tools to 127.0.0.1. `down -v` deletes volumes |
+| Production platforms | Managed container platforms are the default for small teams. App Runner is closed to new customers, so on AWS use ECS Express Mode or Fargate. Kubernetes pays off only with many services or unusual needs |
+
+### 8.3 Infrastructure as code and cloud foundations (18%)
+
+| Lesson | Master this |
+|---|---|
+| Terraform and OpenTofu | Commit `.terraform.lock.hcl`. Callers see a child module only through its outputs. Shared modules plus a thin root configuration per environment. Terraform uses the BUSL licence; OpenTofu uses MPL and adds state encryption |
+| State, locking, drift and import | S3 backend with `use_lockfile` (DynamoDB locking is deprecated) and bucket versioning. State holds secrets in plain text. `-refresh-only`, `import`, `moved`, and `removed` with `destroy = false` |
+| Plan and apply in CI | Apply the exact saved plan. Read every destroy and replace line. Use separate backends per environment rather than workspaces. `prevent_destroy` does not stop someone deleting the resource block |
+| Cloud foundations | An account or project per environment. SCPs grant no permissions. Federated people, roles for workloads. Private subnets. Idle NAT gateways cost money, while S3 gateway endpoints are free |
+| Secrets and configuration | Twelve-factor config. One image, configured per environment. A secret manager with rotation. ARG and ENV values persist in the image |
+
+### 8.4 Observability and incident response (16%)
+
+| Lesson | Master this |
+|---|---|
+| Signals and OpenTelemetry | Metrics say something is wrong, traces say where, logs say exactly what happened. Put `trace_id` in logs. Name spans by route template. A 4xx leaves the server span unset |
+| Alerts that do not burn you out | Page on symptoms users feel. Burn rate = error rate / (1 − SLO); 14.4× over 1 hour spends 2% of a 30-day budget. Multiwindow alerts |
+| Synthetics, error tracking and release health | Probe from outside, from several locations, through the full path. Page on new issues and regressions. Compare each release against the previous one |
+| Incident response and postmortems | Declare incidents early. Keep the incident commander explicit. Mitigate first: roll back or turn off the flag. Run the status page outside your own infrastructure. Write blameless postmortems |
+
+### 8.5 Reliability, backups and security operations (14%)
+
+| Lesson | Master this |
+|---|---|
+| Backups and DR | RPO bounds data loss and RTO bounds downtime. Replication copies corruption too, so keep point-in-time backups. RDS point-in-time recovery creates a new instance. Test your restores |
+| Availability on a budget | Two instances in two zones. Readiness checks remove traffic; liveness checks restart, and should not test dependencies. Handle SIGTERM. Use connection draining |
+| TLS, domains and the edge | CNAME is not allowed at the zone apex. Wildcard certificates need DNS-01. Let's Encrypt lifetimes are shrinking (64 days in 2027), so use ARI and monitor expiry. Roll out HSTS carefully |
+| Supply chain and access | SBOMs are opt-in. Dependabot groups and cooldowns. Artifact attestations reach SLSA Build L2, or L3 from a shared reusable workflow. Patch by rebuilding images. Production access should be federated and temporary |
+
+### 8.6 Cost and platform choices (14%)
+
+| Lesson | Master this |
+|---|---|
+| Estimating and controlling a cloud bill | Name the billing unit of every component. Idle plumbing can rival compute cost. Right-size from measured use before buying commitments. Set budgets, alerts and tags |
+| Platforms and serverless trade-offs | Managed containers are a strong default. Lambda has a 15-minute timeout and 1,000 default concurrent executions per Region. Cloud Run handles 80 concurrent requests per instance by default and has an in-memory filesystem |
+| A minimal internal platform | Start with the thinnest viable platform and one golden path. Use template repos, reusable workflows and versioned modules. Automate the deploy first |
+
+---
+
+## 9. Capstone projects
+
+Build these; together they exercise all six courses.
 
 ### Project A: A multi-tenant SaaS backend on Postgres
 
@@ -350,7 +480,16 @@ Build these; each one exercises all four courses.
 - **Security:** untrusted content is labelled in tool results; outbound actions need human approval that shows the exact arguments.
 - **Tracing:** OpenTelemetry GenAI spans for model calls and tool executions.
 
-### Project D: A system design review of your own product
+### Project D: Ship it: a Next.js front end with a real delivery pipeline
+
+- **App:** a Next.js 16 App Router front end for Project A or B. Server Components fetch data; Server Functions handle mutations with Zod validation and per-resource authorization.
+- **Caching:** cache marketing pages with `'use cache'` and tags. Use `updateTag` after writes so users read their own changes. Keep the dashboard a static shell with Suspense-wrapped dynamic holes.
+- **Quality:** Playwright end-to-end tests and Testing Library component tests. Measure Core Web Vitals from real users.
+- **Pipeline:** trunk-based development with GitHub Actions. Use least-privilege `GITHUB_TOKEN` permissions, OIDC to the cloud, pinned actions, a multi-stage non-root Docker image deployed by digest, and a preview environment per PR.
+- **Infrastructure:** Terraform or OpenTofu with remote state and locking, applying a saved plan from CI.
+- **Operations:** one SLO with a multiwindow burn-rate alert, an external synthetic check, a tested database restore and a one-page incident runbook.
+
+### Project E: A system design review of your own product
 
 1. Write down peak QPS, storage growth, latency targets and SLOs.
 2. Draw the data flow.
@@ -359,7 +498,7 @@ Build these; each one exercises all four courses.
 
 ---
 
-## 8. Version notes
+## 10. Version notes
 
 Checked on 11 November 2026.
 
@@ -392,19 +531,35 @@ Checked on 11 November 2026.
   | OpenAI API docs | developers.openai.com |
   | Gemini docs | aistudio.google.com |
 
+- **React and Next.js:**
+  - React 19.3 and Next.js 16.4 are current.
+  - In Next 16, `proxy.ts` replaces `middleware.ts` and runs on Node.js only. Request APIs (`params`, `searchParams`, `cookies()`, `headers()`) must be awaited.
+  - Cache Components (`'use cache'`, `cacheLife`, `cacheTag`) replace the older implicit caching. Calling `revalidateTag` with one argument is deprecated; use `revalidateTag(tag, 'max')` for stale-while-revalidate, or `updateTag` inside Server Actions for read-your-own-writes.
+  - Turbopack is the default bundler. `next/image` uses `preload` instead of the deprecated `priority`. The React Compiler is stable but off by default.
+  - Next 17 is expected in early 2027; recheck then.
+- **DevOps:**
+  - GitHub Actions workflow lockfiles became generally available on 28 October 2026. `pull_request_target` behaviour changes in December 2026.
+  - New repositories get an immutable, ID-based OIDC `sub` claim.
+  - Terraform 1.17.1 (BUSL licence) and OpenTofu 1.13.9 (MPL, with state encryption). The S3 backend's `use_lockfile` replaces DynamoDB locking.
+  - AWS App Runner is closed to new customers; use ECS Express Mode or Fargate.
+  - Let's Encrypt certificate lifetimes drop to 64 days in 2027.
+  - The Compose `version` key is obsolete.
+
 ---
 
-## 9. Study schedules
+## 11. Study schedules
 
-### Twelve weeks, about 6 hours a week (all four courses)
+### Sixteen weeks, about 6 hours a week (all six courses)
 
 | Weeks | Focus |
 |---|---|
 | 1–3 | TS-DEEP: one domain every 3–4 days; start Project A's typed API layer |
-| 4–6 | PG-SQL: domains 1–3, then 4–6; build Project A's schema, RLS and queue |
-| 7–9 | LLM-ENG: domains 1–3, then 4–6; build Project B |
-| 10–11 | SYS-DESIGN: all six domains; do Project D on your own product |
-| 12 | Mock tests for all four courses; review every missed question's rationale; Project C |
+| 4–5 | REACT-NEXT: domains 1–3, then 4–6; start Project D's front end |
+| 6–8 | PG-SQL: domains 1–3, then 4–6; build Project A's schema, RLS and queue |
+| 9–11 | LLM-ENG: domains 1–3, then 4–6; build Project B |
+| 12–13 | DEVOPS: all six domains; finish Project D's pipeline and operations |
+| 14–15 | SYS-DESIGN: all six domains; do Project E on your own product |
+| 16 | Mock tests for all six courses; review every missed question's rationale; Project C |
 
 ### Four weeks, interview sprint
 

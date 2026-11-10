@@ -164,6 +164,24 @@
     "builder.aws.com",
     "jepsen.io",
     "google.aip.dev",
-    "brendangregg.com"
+    "brendangregg.com",
+    "nextjs.org",
+    "github.com/vercel",
+    "web.dev",
+    "w3.org",
+    "tanstack.com",
+    "playwright.dev",
+    "testing-library.com",
+    "docs.github.com",
+    "docs.docker.com",
+    "developer.hashicorp.com",
+    "opentofu.org",
+    "kubernetes.io",
+    "slsa.dev",
+    "openssf.org",
+    "letsencrypt.org",
+    "12factor.net",
+    "cncf.io",
+    "github.blog"
   ]
 }

@@ -1,0 +1,114 @@
+{
+  "track": "engineering",
+  "kind": "course",
+  "price": "Free",
+  "items": 40,
+  "minutes": 60,
+  "passing": 720,
+  "level": "In-depth engineering course · no official exam",
+  "targets": {
+    "lessons": 22,
+    "flashcards": 120,
+    "questions": 120
+  },
+  "id": "react-next",
+  "code": "REACT-NEXT",
+  "name": "React and Next.js in Depth",
+  "audience": "Developers building full-stack web products with React and Next.js who want to understand rendering, data flow and performance well enough to ship fast, correct apps.",
+  "format": "This site's course with a 40-question practice test of predict-the-render, choose-the-rendering-strategy, debugging and performance questions.",
+  "scenarios": [
+    "Building a SaaS dashboard with the App Router",
+    "Fixing a slow, janky React page",
+    "Adding auth and server mutations safely",
+    "Choosing static, dynamic or streaming rendering",
+    "Shipping an AI chat UI with streaming"
+  ],
+  "verifyNotes": "This is the site's own in-depth engineering course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources) and on what is current as of November 2026. Goal: a senior engineer or architect who builds products alone or in a team of 2-3 can apply every idea confidently in real work, a design review or a senior interview. Lessons go deep: intuition first, then the precise mechanism, then a fully worked example with real numbers or code, then where it matters in production, then a common misconception. Write math in LaTeX between double dollars only: $$...$$; NEVER single-dollar math (single $ renders literally; in SQL or shell code use code fences). In JSON strings escape backslashes. Markdown tables: never put a raw | inside a cell (escape it as \\\\| or use \\\\lvert in math). Every lesson has a hands-on lab: a small exercise with the expected output. State any randomness seed. Question mix: ~35% predict what renders, re-renders or runs where (server vs client, effect order, cache hits), ~35% judgment (rendering strategy, state placement, data fetching, caching), ~30% debugging (hydration errors, stale closures, waterfalls, cache surprises, security of server actions). Code in fenced ```tsx or ```ts blocks. Verifiers MUST type-check every code example and code question with `NORUN=1 sh /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/ts/check.sh <file>` (TypeScript 7.0 strict; react 19.3, react-dom, @types/react, next 16.4 and zod resolve; files go through the script so imports resolve) and run plain-TS logic with `sh /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/ts/check.sh <file>`; behaviour that needs a browser or a running Next.js server must be checked against react.dev and nextjs.org docs, never guessed. Target React 19.x (Actions, useActionState, useOptimistic, use, ref as a prop, the React Compiler) and Next.js 16.x App Router (Server Components, Server Functions/Actions, caching with the 'use cache' directive and cacheLife/cacheTag if the current docs confirm them, Partial Prerendering status, proxy/middleware naming, Turbopack). Version-sensitive Next.js caching defaults changed several times: state only what the current docs say and add the version. Sources: react.dev, nextjs.org docs and blog, github.com/vercel/next.js, developer.mozilla.org, web.dev, w3.org (WCAG), owasp.org; no Medium or third-party blogs.",
+  "sources": [
+    "https://react.dev/learn",
+    "https://react.dev/reference/react",
+    "https://react.dev/learn/you-might-not-need-an-effect",
+    "https://react.dev/reference/rsc/server-components",
+    "https://react.dev/reference/rsc/server-functions",
+    "https://nextjs.org/docs/app",
+    "https://nextjs.org/docs/app/getting-started/caching-and-revalidating",
+    "https://nextjs.org/blog",
+    "https://web.dev/articles/vitals",
+    "https://developer.mozilla.org/en-US/docs/Web/Performance"
+  ],
+  "domains": [
+    {
+      "id": "d1",
+      "name": "React's model: rendering, state and effects",
+      "weight": 20,
+      "skills": [
+        "Rendering as a pure function of props and state; reconciliation, keys and component identity",
+        "State: batching, updater functions, snapshots and stale closures; where state should live (lifting, colocation)",
+        "Effects: synchronisation with external systems, dependencies, cleanup, Strict Mode double-invocation, and when you do not need an effect",
+        "Refs, context and reducers: escape hatches, avoiding context re-render storms, useReducer for complex state",
+        "React 19: Actions, useActionState, useOptimistic, use(), ref as a prop, and the React Compiler's automatic memoization"
+      ]
+    },
+    {
+      "id": "d2",
+      "name": "Server Components and the App Router",
+      "weight": 20,
+      "skills": [
+        "Server vs Client Components: the 'use client' boundary, what can cross it (serializable props), and bundle impact",
+        "App Router structure: layouts, pages, templates, route groups, dynamic segments, loading and error boundaries, not-found",
+        "Data fetching on the server: async components, parallel vs sequential fetching and request waterfalls",
+        "Streaming and Suspense: progressive rendering, loading UI, and how Partial Prerendering fits",
+        "Route handlers, proxy/middleware and edge vs Node runtimes: what runs where"
+      ]
+    },
+    {
+      "id": "d3",
+      "name": "Mutations, forms and data consistency",
+      "weight": 16,
+      "skills": [
+        "Server Functions (Server Actions): defining, calling from forms and event handlers, progressive enhancement",
+        "Validation and errors: parsing FormData with Zod, returning field errors with useActionState, error boundaries",
+        "Revalidation after mutations: revalidatePath, revalidateTag/updateTag, redirect, and optimistic UI",
+        "Securing server functions: they are public endpoints; authentication, authorization and input validation in every action",
+        "Client-side data: when to use a client cache (TanStack Query/SWR style) vs server rendering; race conditions and cancellation"
+      ]
+    },
+    {
+      "id": "d4",
+      "name": "Rendering strategies and caching",
+      "weight": 16,
+      "skills": [
+        "Static vs dynamic rendering; what makes a route dynamic (cookies, headers, searchParams)",
+        "The Next.js caching layers and current defaults; 'use cache', cacheLife and cacheTag; opting in and out",
+        "Incremental and on-demand revalidation; time-based vs tag-based invalidation; CDN caching headers",
+        "Images, fonts and scripts: next/image, next/font, next/script and their performance effects",
+        "Choosing a strategy per page for a SaaS app: marketing, dashboard, user-specific and real-time pages"
+      ]
+    },
+    {
+      "id": "d5",
+      "name": "Performance and user experience",
+      "weight": 14,
+      "skills": [
+        "Core Web Vitals: LCP, INP and CLS, how they are measured, and the common causes of each",
+        "Rendering performance: unnecessary re-renders, memoization (and when the React Compiler makes it unnecessary), virtualization, transitions (useTransition, useDeferredValue)",
+        "Bundle size: code splitting, dynamic import, server-only code, analysing bundles",
+        "Hydration: what it is, hydration mismatch errors and their causes, selective hydration",
+        "Accessibility in React apps: semantic HTML, focus management on navigation, forms and live regions (WCAG 2.2 AA)"
+      ]
+    },
+    {
+      "id": "d6",
+      "name": "Production apps: auth, testing, AI UIs and deployment",
+      "weight": 14,
+      "skills": [
+        "Authentication patterns in Next.js: sessions vs JWT cookies, protecting routes and data at the data layer, CSRF and cookies (SameSite, HttpOnly, Secure)",
+        "Security: XSS and dangerouslySetInnerHTML, Content-Security-Policy with nonces, environment variables (NEXT_PUBLIC_ exposure), server-only modules",
+        "Testing: component tests with Testing Library, end-to-end with Playwright, testing Server Components and actions",
+        "Streaming AI interfaces: streaming responses from route handlers, rendering partial output, cancellation and backpressure",
+        "Deployment: self-hosting vs managed platforms, output modes, caching behind a CDN, observability and error reporting"
+      ]
+    }
+  ],
+  "out": "src/content/tracks/engineering/exams/react-next.json"
+}
