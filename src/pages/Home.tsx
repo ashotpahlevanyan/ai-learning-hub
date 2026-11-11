@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { tracks } from '../content';
 import { useMeta } from '../lib/useMeta';
 import TodayPanel from '../components/TodayPanel';
+import CourseIcon from '../components/CourseIcon';
 
 const METHOD = [
   { title: 'Learn', text: 'Short lessons per exam domain, each with key points, exam traps and a hands-on lab.' },
@@ -36,7 +37,7 @@ export default function Home() {
         <div className="grid tracks">
           {tracks.map(t => (
             <Link key={t.id} to={`/${t.id}`} className="card track-card">
-              <div className="muted small">{t.provider}</div>
+              <div className="card-id"><CourseIcon track={t.id} size={40} /><span className="muted small">{t.provider}</span></div>
               <h3>{t.name}</h3>
               <p>{t.tagline}</p>
               <div className="chips">

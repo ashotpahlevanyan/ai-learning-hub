@@ -1,3 +1,4 @@
+import CourseIcon from '../components/CourseIcon';
 import { Link, useParams } from 'react-router-dom';
 import { getTrack } from '../content';
 import { useAppState } from '../lib/store';
@@ -18,16 +19,18 @@ export default function TrackPage() {
   const code = (id: string) => track.exams.find(e => e.id === id)?.code ?? id;
   const study = (id: string) => studyTimes[`${track.id}/${id}`]?.total ?? 0;
 
+  const allCourses = track.exams.every(e => e.kind === 'course');
   return (
     <main className="page">
       <section className="hero compact">
+        <CourseIcon track={track.id} size={52} />
         <p className="eyebrow">{track.provider} track</p>
         <h1 className="display">{track.name}</h1>
         <p className="lede">{track.description}</p>
         <Link className="btn" to={`/${track.id}/guide`}>Read the full study runbook</Link>
       </section>
 
-      <h2>{track.exams.every(e => e.kind === 'course') ? 'Courses' : 'Exams and courses'}</h2>
+      <h2>{allCourses ? 'Courses' : 'Exams and courses'}</h2>
       <div className="grid exams">
         {orderForListing(track.exams).map(e => {
           const p = state.ex[`${track.id}/${e.id}`];
@@ -35,10 +38,10 @@ export default function TrackPage() {
           const retired = isRetired(e), next = replacementOf(track, e);
           return (
             <Link key={e.id} to={`/${track.id}/${e.id}`} className={`card exam-card tier-${e.tier.toLowerCase()}${retired ? ' retired' : ''}`}>
-              <div className="spread"><span className="code">{e.code}</span>{retired
+              <div className="spread"><span className="card-id"><CourseIcon track={track.id} exam={e.id} size={36} /><span className="code">{e.code}</span></span>{retired
                 ? <span className="tag bad">Retired</span>
                 : isRetiring(e) ? <span className="tag warn">Last day {fmtDay(e.lastDay!)}</span>
-                : <span className="tag">{e.kind === 'course' ? 'Course' : e.tier}</span>}</div>
+                : allCourses ? null : <span className="tag">{e.kind === 'course' ? 'Course' : e.tier}</span>}</div>
               <h3>{e.name}</h3>
               <div className="muted small">{e.level}</div>
               {retired && <p className="small"><strong>No longer offered</strong> (last day {fmtDay(e.lastDay!)}).{next ? ` Study ${next.code} instead.` : ''}</p>}

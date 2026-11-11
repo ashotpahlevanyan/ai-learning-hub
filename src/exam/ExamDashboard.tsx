@@ -6,6 +6,7 @@ import { barTone, domainStats, fmtTime, readiness } from '../lib/quiz';
 import { Bar, StatCard, Tag, pct } from '../components/ui';
 import { fmtHours, studyTime } from '../lib/studyTime';
 import ScoreTrend from '../components/ScoreTrend';
+import CourseIcon from '../components/CourseIcon';
 import { fmtDay, isRetired, isRetiring, replacementOf } from '../lib/retire';
 
 export default function ExamDashboard() {
@@ -49,7 +50,9 @@ export default function ExamDashboard() {
       )}
       <section className="card hero-card">
         <div className="spread">
-          <div>
+          <div className="hero-title">
+            <CourseIcon track={track.id} exam={summary.id} size={56} />
+            <div>
             <div className="muted small">{exam.level}</div>
             <h1>{exam.name}</h1>
             <div className="muted small">{exam.kind === 'course'
@@ -59,6 +62,7 @@ export default function ExamDashboard() {
             <div className="muted small">{exam.review
               ? <>Questions verified {exam.review.date}: {exam.review.questionsChecked} re-answered blind, {exam.review.fixed} corrections, {exam.review.dropped} dropped. <Link to="/about">How</Link></>
               : <>Questions not yet independently verified. <Link to="/about">What this means</Link></>}</div>
+            </div>
           </div>
           <div className="readiness">
             <div className="muted small">Readiness</div>

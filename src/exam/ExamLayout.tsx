@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation, useOutletContext, useParams } from 
 import { getExamSummary, getTrack } from '../content';
 import type { Exam, ExamSummary, Track } from '../lib/types';
 import NotFound from '../pages/NotFound';
+import CourseIcon from '../components/CourseIcon';
 import { useMeta } from '../lib/useMeta';
 
 export interface ExamCtx {
@@ -56,7 +57,7 @@ export default function ExamLayout() {
     <>
       <div className="subbar">
         <div className="subbar-inner">
-          <div className="crumbs small"><Link to={`/${track.id}`}>{track.name}</Link> / <strong>{summary.code}</strong> <span className="muted">{summary.level}</span></div>
+          <div className="crumbs small"><CourseIcon track={track.id} exam={summary.id} size={22} /><Link to={`/${track.id}`}>{track.name}</Link> / <strong>{summary.code}</strong> <span className="muted">{summary.level}</span></div>
           <nav className="tabs" aria-label="Exam sections" ref={tabs}>
             {TABS.map(([path, label]) => (
               <NavLink key={path} to={path ? `${base}/${path}` : base} end={!path}>{path === 'mock' && summary.kind === 'course' ? 'Practice test' : label}</NavLink>

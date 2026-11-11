@@ -30,6 +30,7 @@
     --good: #5cc08a; --good-soft: #17322a; --bad: #ec7a71; --bad-soft: #3a2220; --warn: #e3ad4a; --warn-soft: #362c18;
     --scrim: rgba(0, 0, 0, .6); color-scheme: dark;
   }
+  :root:not([data-theme="light"]) .course-icon { color: color-mix(in oklab, var(--brand) 62%, white); --tile: color-mix(in oklab, var(--brand) 20%, var(--surface)); }
 }
 :root[data-theme="dark"] {
   --bg: #0e1418; --surface: #152026; --surface-2: #1d2a31; --text: #e1e9ed; --muted: #92a2ac;
@@ -37,6 +38,7 @@
   --good: #5cc08a; --good-soft: #17322a; --bad: #ec7a71; --bad-soft: #3a2220; --warn: #e3ad4a; --warn-soft: #362c18;
   --scrim: rgba(0, 0, 0, .6); color-scheme: dark;
 }
+:root[data-theme="dark"] .course-icon { color: color-mix(in oklab, var(--brand) 62%, white); --tile: color-mix(in oklab, var(--brand) 20%, var(--surface)); }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; }
@@ -85,6 +87,20 @@ a.card { color: var(--text); text-decoration: none; display: block; transition: 
 a.card:hover { border-color: var(--accent); }
 .track-card h3, .exam-card h3 { margin: 6px 0; font-size: 19px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.course-icon {
+  --tile: color-mix(in oklab, var(--brand) 13%, var(--surface));
+  display: inline-grid; place-items: center; flex: none; border-radius: 22%;
+  background: var(--tile); color: var(--brand); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--brand) 22%, transparent);
+}
+.course-icon-letters { font-weight: 700; letter-spacing: -.02em; line-height: 1; }
+:root:not([data-theme="dark"]) .course-icon-letters { color: color-mix(in oklab, var(--brand) 62%, black); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .course-icon-letters { color: inherit; } }
+.card-id { display: inline-flex; align-items: center; gap: 10px; }
+.crumbs .course-icon { vertical-align: middle; margin-right: 8px; }
+.hero .course-icon { margin-bottom: 14px; }
+.hero-title { display: flex; gap: 16px; align-items: flex-start; }
+.hero-title .course-icon { margin-top: 4px; }
+@media (max-width: 559px) { .hero-title { flex-direction: column; gap: 10px; } }
 .code { font-family: var(--mono); font-weight: 600; color: var(--accent); letter-spacing: .02em; }
 .exam-card.tier-professional { border-top: 3px solid var(--accent); }
 .exam-card.retired { opacity: .72; border-top-color: var(--border); }
@@ -303,13 +319,13 @@ select { max-width: 100%; }
 .roadmap .controls input[type=date] { font: inherit; padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); }
 .segmented { gap: 4px; }
 
-/* Navigation: full links on wide screens, a menu sheet below 1280px, a bottom tab bar on phones. */
+/* Navigation: full links on wide screens, a menu sheet below 1380px, a bottom tab bar on phones. */
 .top-actions { display: flex; align-items: center; gap: 4px; }
 .icon-btn { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; border: 1px solid transparent; background: transparent; color: var(--text); cursor: pointer; }
 .icon-btn:hover { background: var(--surface-2); }
 .icon-btn:focus-visible, .tab:focus-visible, .sheet-list a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .narrow-only, .menu-btn { display: none; }
-@media (max-width: 1279px) {
+@media (max-width: 1379px) {
   .wide-only { display: none; }
   .menu-btn, .narrow-only { display: inline-grid; }
 }
