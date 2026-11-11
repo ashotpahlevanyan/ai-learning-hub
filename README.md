@@ -84,6 +84,24 @@ The stages are Research (check facts against the sources) → Coverage (gap anal
 
 Run it from Claude Code with args `{ "root": "<path to web>", "spec": "<path to spec>", "date": "YYYY-MM-DD" }`. Assemble stamps a `review` record on the bundle, and the exam dashboard shows it. Read the report and the diff before committing.
 
+### Code verifiers (set up once per machine)
+
+Specs tell the write and verify agents to run code examples on real tools under `.pipeline/` (gitignored). On a new machine, create them with:
+
+```sh
+sh pipeline/verifiers/setup.sh   # needs Node 24+ and python3
+```
+
+This creates `.pipeline/sql/run.mjs` (PostgreSQL 18 via PGlite, with pgvector and pg_trgm), `.pipeline/ts/check.sh` (TypeScript 7 strict check, then run with Node; `NORUN=1` to only type-check), `.pipeline/py313` (CPython 3.13 with PyYAML) and `.pipeline/py` (numpy, pandas, scipy, sympy, scikit-learn, torch).
+
+If a run's assemble stage does not write `report.md`, rebuild the report from the run journal:
+
+```sh
+python3 scripts/build-report.py <journal.jsonl> src/content/tracks/<track>/exams/<id>.json "<Title>" pipeline/reports/<track>-<id>-<date>.md [YYYY-MM-DD]
+```
+
+Dated rechecks live in `pipeline/rechecks.json`; `npm run check:rechecks` lists the ones due.
+
 ## Moving content to a database
 
 Content ships as JSON and TypeScript in `src/content`, so the site needs no server. Everything is shaped to move into Postgres (Supabase, Neon, RDS and others) without changing ids, URLs or saved progress:
