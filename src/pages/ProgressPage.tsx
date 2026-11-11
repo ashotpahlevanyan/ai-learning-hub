@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { tracks } from '../content';
-import { replaceState, streak, today, update, useAppState, type AppState } from '../lib/store';
+import { getState, normalizeState, replaceState, streak, today, update, useAppState } from '../lib/store';
 import { useMeta } from '../lib/useMeta';
 import TodayPanel from '../components/TodayPanel';
 import SyncPanel from '../components/SyncPanel';
@@ -27,10 +27,12 @@ export default function ProgressPage() {
 
   const importProgress = async (file: File) => {
     try {
-      const data = JSON.parse(await file.text()) as AppState;
-      if (!data || typeof data.ex !== 'object') throw new Error('shape');
+      const data = normalizeState(JSON.parse(await file.text()));
+      if (!data) throw new Error('shape');
       if (!confirm('Replace your current progress with this backup?')) return;
-      replaceState({ ...data, v: 1, days: data.days || [] });
+      // Keep this device's theme and reading settings; a backup carries progress only.
+      const { theme, reading } = getState();
+      replaceState({ ...data, theme, reading });
       pushReplacement();
       setMessage('Backup imported.');
     } catch {

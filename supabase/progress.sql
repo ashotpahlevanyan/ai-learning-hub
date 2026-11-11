@@ -7,7 +7,7 @@ create table if not exists public.progress (
   state jsonb not null,
   updated_at timestamptz not null default now(),
   -- Progress for every exam is a few hundred KB at most; refuse anything far larger.
-  constraint progress_state_size check (pg_column_size(state) < 2000000)
+  constraint progress_state_size check (octet_length(state::text) < 2000000)
 );
 
 alter table public.progress enable row level security;

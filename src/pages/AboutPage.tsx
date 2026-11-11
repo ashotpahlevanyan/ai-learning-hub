@@ -21,15 +21,26 @@ export default function AboutPage() {
 
       <h2>Privacy</h2>
       <ul>
-        <li>There are no cookies, analytics or ads, and you never need an account.</li>
+        <li><strong>Who runs it:</strong> Ashot Pahlevanyan, as a personal, non-commercial project. Questions about your data go to the <a href="https://github.com/ashotpahlevanyan/ai-learning-hub/issues">project's GitHub issues</a>.</li>
+        <li>There are no cookies, analytics, ads or third-party trackers, and you never need an account. Fonts and icons are served from this site, not from a third-party service.</li>
+        <li><strong>Hosting:</strong> the site is served by GitHub Pages. Like any web server, GitHub processes your IP address to deliver pages and may keep it in short-lived security logs; see <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub's privacy statement</a>.</li>
         <li>Your progress (answers, flashcard schedule, mock results, study plan) is stored in your browser's local storage. It never leaves your device unless you export it or sign in to sync.</li>
-        {syncConfigured && <li>Signing in to sync is optional. If you do, your sign-in identity (email or GitHub/Google account) and a copy of your progress are stored in the site's Supabase database, readable only by your account. Delete that copy at any time from <Link to="/progress">My progress</Link>.</li>}
+        {syncConfigured && <li>Signing in to sync is optional. If you do, your sign-in identity (email or GitHub/Google account) and a copy of your progress are stored in the site's Supabase database, readable only by your account. Delete that copy at any time from <Link to="/progress">My progress</Link>. That removes your progress but not the sign-in account itself; to have the account deleted too, ask in the <a href="https://github.com/ashotpahlevanyan/ai-learning-hub/issues">project's GitHub issues</a> and it will be removed.</li>}
         <li>Clearing your browser data erases the progress stored there, so sign in to sync or export a backup from <Link to="/progress">My progress</Link> now and then.</li>
-        <li>The site loads fonts from Google Fonts, which receives your IP address when fonts are fetched.</li>
+        <li>Your reading settings (theme, text size, typeface) are saved in the same local storage and are never synced.</li>
+        <li>You can ask what data is held about you, have it corrected or deleted, or object to its use, through the GitHub issues link above. If you are in the EU or UK you can also complain to your data protection authority.</li>
       </ul>
 
       <h2>Found a mistake?</h2>
-      <p>If a question's answer looks wrong or a fact is out of date, please report it on the project's GitHub repository so it can be fixed for everyone.</p>
+      <p>If a question's answer looks wrong or a fact is out of date, please report it on the <a href="https://github.com/ashotpahlevanyan/ai-learning-hub/issues">project's GitHub repository</a> so it can be fixed for everyone.</p>
+
+      <h2>Credits and licences</h2>
+      <ul>
+        <li>Typefaces: IBM Plex Sans, Serif and Mono, and Atkinson Hyperlegible Next, all under the SIL Open Font License 1.1, served from this site.</li>
+        <li>Math rendering: KaTeX and its fonts (MIT licence).</li>
+        <li>Brand marks: <a href="https://simpleicons.org">Simple Icons</a> (CC0). The marks remain trademarks of their owners.</li>
+        <li>Other open-source libraries are listed in the repository's <a href="https://github.com/ashotpahlevanyan/ai-learning-hub/blob/main/THIRD_PARTY_NOTICES.md">third-party notices</a>.</li>
+      </ul>
     </main>
   );
 }

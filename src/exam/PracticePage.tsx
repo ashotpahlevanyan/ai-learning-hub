@@ -143,7 +143,8 @@ function PracticeQuestion({ session: s, setSession: set }: { session: Session; s
   // A new question starts at the top; an answer brings its feedback into view (on a phone it is below the options).
   const feedback = useRef<HTMLDivElement>(null);
   useEffect(() => { window.scrollTo({ top: 0 }); }, [s.i]);
-  useEffect(() => { if (item.done) feedback.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, [item.done]);
+  // Focus moves to the feedback too, so screen readers read the result and keyboard users continue from there.
+  useEffect(() => { if (item.done) { feedback.current?.focus({ preventScroll: true }); feedback.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } }, [item.done]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -164,7 +165,7 @@ function PracticeQuestion({ session: s, setSession: set }: { session: Session; s
       <Bar value={s.i / s.items.length} tone="accent" label="Questions done in this session" />
       <div className="card q-card">
         <QuestionView q={q} order={item.order} picked={item.picked} reveal={item.done} onPick={pick} />
-        {item.done && <div ref={feedback} className={`feedback ${right ? 'good' : 'bad'}`} role="status"><strong>{right ? 'Correct.' : 'Not quite.'}</strong> <Md>{q.explanation}</Md><Sources list={q.sources} /></div>}
+        {item.done && <div ref={feedback} tabIndex={-1} className={`feedback ${right ? 'good' : 'bad'}`}><strong>{right ? 'Correct.' : 'Not quite.'}</strong> <Md>{q.explanation}</Md><Sources list={q.sources} /></div>}
         <div className="spread q-actions">
           <span className="muted small">Difficulty {'●'.repeat(q.difficulty ?? 2)}{'○'.repeat(3 - (q.difficulty ?? 2))}</span>
           {item.done ? <button className="btn primary" onClick={next}>{s.i + 1 < s.items.length ? 'Next →' : 'See results'}</button>

@@ -11,8 +11,8 @@ import { studyTime, type StudyTime } from './src/lib/studyTime';
 const cspFor = (supabase?: string) => [
   "default-src 'self'",
   "script-src 'self'",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "font-src 'self' data: https://fonts.gstatic.com",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self' data:",
   "img-src 'self' data:",
   `connect-src 'self'${supabase ? ` ${new URL(supabase).origin}` : ''}`,
   "base-uri 'self'",
@@ -23,7 +23,8 @@ const cspFor = (supabase?: string) => [
 const csp = (supabase?: string): Plugin => ({
   name: 'csp-meta',
   apply: 'build',
-  transformIndexHtml: html => html.replace('<head>', `<head>\n    <meta http-equiv="Content-Security-Policy" content="${cspFor(supabase)}" />`),
+  // Placed right after <meta charset> (the charset must come first in the document).
+  transformIndexHtml: html => html.replace('<meta charset="UTF-8" />', `<meta charset="UTF-8" />\n    <meta http-equiv="Content-Security-Policy" content="${cspFor(supabase)}" />`),
 });
 
 // Track pages show study time without loading every exam bundle, so it is summed here at build time.

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Accessibility check of the built site with axe-core (WCAG 2.2 A and AA rules), in light and dark themes, at
-// desktop and phone width. Run after `npm run build` with `npm run test:e2e:a11y`. It fails on any serious or
+// Accessibility check of the built site with axe-core (WCAG 2.2 A and AA rules), in every reading theme (system
+// light and dark, Paper with the serif face, Night with large hyperlegible text), at desktop and phone width. Run after `npm run build` with `npm run test:e2e:a11y`. It fails on any serious or
 // critical violation and lists the moderate and minor ones.
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
@@ -19,14 +19,20 @@ const blocking = [], minor = new Map();
 try {
   for (let i = 0; ; i++) { try { await fetch(`${B}/`); break; } catch { if (i > 50) throw new Error('preview server did not start'); await new Promise(r => setTimeout(r, 200)); } }
   const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || undefined, headless: true });
-  for (const [scheme, width] of [['light', 1280], ['dark', 390]]) {
+  const RUNS = [['light', 1280, null], ['dark', 390, null],
+    ['light', 1280, { theme: 'paper', reading: { font: 'serif' } }], ['light', 390, { theme: 'black', reading: { font: 'legible', size: 'xl' } }]];
+  for (const [scheme, width, prefs] of RUNS) {
     const page = await browser.newPage({ viewport: { width, height: 900 }, colorScheme: scheme, bypassCSP: true });
-    for (const path of [...PAGES, '/claude/ccar-f/learn/first-lesson', '/claude/ccar-f/practice#question', '/claude/ccar-f#mock-history']) {
+    const label = prefs ? `${prefs.theme} ${width}px` : `${scheme} ${width}px`;
+    if (prefs) { await page.goto(`${B}/`); await page.evaluate(p => localStorage.setItem('aiLearningHub.v1', JSON.stringify({ v: 1, ex: {}, days: [], updatedAt: 1, ...p })), prefs); }
+    for (const path of [...PAGES, '/claude/ccar-f/learn/first-lesson', '/claude/ccar-f/practice#question', '/claude/ccar-f#mock-history', '/#reading-settings']) {
       if (path.endsWith('#mock-history')) {
         // Saved mocks, so the dashboard shows its score trend chart and history table.
         const mocks = [610, 705, 760].map((score, i) => ({ date: Date.UTC(2026, 9, 1 + i), pct: score / 1000, score, n: 20, ok: 14, secs: 1500, dom: {} }));
-        await page.evaluate(m => localStorage.setItem('aiLearningHub.v1', JSON.stringify({ v: 1, ex: { 'claude/ccar-f': { q: {}, cards: {}, lessons: {}, newCards: {}, mocks: m } }, days: [], updatedAt: 1 })), mocks);
+        await page.evaluate(([m, p]) => localStorage.setItem('aiLearningHub.v1', JSON.stringify({ v: 1, ex: { 'claude/ccar-f': { q: {}, cards: {}, lessons: {}, newCards: {}, mocks: m } }, days: [], updatedAt: 1, ...(p || {}) })), [mocks, prefs]);
         await page.goto(`${B}/claude/ccar-f`); await page.waitForSelector('.trend svg');
+      } else if (path.endsWith('#reading-settings')) {
+        await page.goto(`${B}/`); await page.click('.aa-btn'); await page.waitForSelector('.reading-panel');
       } else if (path.endsWith('first-lesson')) {
         await page.goto(`${B}/claude/ccar-f/learn`); await page.click('.lesson-list a >> nth=0'); await page.waitForSelector('article h1');
       } else if (path.endsWith('#question')) {
@@ -38,7 +44,7 @@ try {
       await page.addScriptTag({ content: axe });
       const res = await page.evaluate(() => window.axe.run(document, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] } }));
       for (const v of res.violations) {
-        const where = `${scheme} ${width}px ${path}`;
+        const where = `${label} ${path}`;
         const nodes = v.nodes.slice(0, 3).map(n => n.target.join(' ')).join(' | ') + (v.nodes[0]?.any[0]?.message ? ` — ${v.nodes[0].any[0].message}` : '');
         if (v.impact === 'serious' || v.impact === 'critical') blocking.push(`${where}: [${v.impact}] ${v.id}: ${v.help} (${v.nodes.length}×: ${nodes})`);
         else minor.set(v.id, `${v.help} (e.g. ${where}: ${nodes})`);

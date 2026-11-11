@@ -27,9 +27,18 @@ export interface RoadmapState {
   cloud?: 'aws' | 'azure';
   start?: string;
 }
+export type Theme = 'light' | 'paper' | 'dark' | 'black';
+export interface ReadingPrefs {
+  size?: 's' | 'm' | 'l' | 'xl';
+  font?: 'sans' | 'serif' | 'legible';
+  leading?: 'normal' | 'relaxed';
+  width?: 'narrow' | 'medium' | 'wide';
+}
 export interface AppState {
   v: 1;
-  theme?: 'light' | 'dark';
+  theme?: Theme;
+  /** Device-only reading preferences (text size, typeface, spacing, line length). */
+  reading?: ReadingPrefs;
   /** keyed by "<trackId>/<examId>" so tracks never collide */
   ex: Record<string, ExamProgress>;
   days: string[];
@@ -40,11 +49,44 @@ export interface AppState {
 const KEY = 'aiLearningHub.v1';
 const MAX_DETAILED_MOCKS = 15;
 
+const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
+
+/**
+ * Coerce stored or imported data into a usable AppState: wrong-typed parts are replaced with empty ones,
+ * so one damaged field can never crash every page. Returns null when there is no exam progress object at all.
+ */
+export function normalizeState(data: unknown): AppState | null {
+  if (!isObj(data) || !isObj(data.ex)) return null;
+  const ex: Record<string, ExamProgress> = {};
+  for (const [k, p] of Object.entries(data.ex)) {
+    if (!isObj(p)) continue;
+    ex[k] = {
+      ...(p as Partial<ExamProgress>),
+      q: isObj(p.q) ? (p.q as ExamProgress['q']) : {},
+      cards: isObj(p.cards) ? (p.cards as ExamProgress['cards']) : {},
+      lessons: isObj(p.lessons) ? (p.lessons as ExamProgress['lessons']) : {},
+      newCards: isObj(p.newCards) ? (p.newCards as ExamProgress['newCards']) : {},
+      mocks: Array.isArray(p.mocks) ? (p.mocks as MockRecord[]).filter(isObj) : [],
+      ...(isObj(p.activeMock) && Array.isArray(p.activeMock.qids) ? {} : { activeMock: undefined }),
+    };
+  }
+  const themes = ['light', 'paper', 'dark', 'black'];
+  return {
+    v: 1,
+    ex,
+    days: Array.isArray(data.days) ? data.days.filter((d): d is string => typeof d === 'string') : [],
+    ...(isObj(data.roadmap) && isObj(data.roadmap.tasks) ? { roadmap: data.roadmap as unknown as RoadmapState } : {}),
+    ...(typeof data.theme === 'string' && themes.includes(data.theme) ? { theme: data.theme as Theme } : {}),
+    ...(isObj(data.reading) ? { reading: data.reading as ReadingPrefs } : {}),
+    updatedAt: typeof data.updatedAt === 'number' ? data.updatedAt : 0,
+  };
+}
+
 function read(): AppState {
   const empty: AppState = { v: 1, ex: {}, days: [], updatedAt: 0 };
   try {
     const raw = localStorage.getItem(KEY);
-    return raw ? { ...empty, ...JSON.parse(raw) } : empty;
+    return (raw && normalizeState(JSON.parse(raw))) || empty;
   } catch {
     return empty;
   }

@@ -101,7 +101,7 @@ async function syncOnce() {
       try { replaceState(merged); } finally { applying = false; }
     }
     if (!remote?.ex || !sameProgress(merged, remote)) {
-      const { theme: _theme, ...shared } = merged;
+      const { theme: _theme, reading: _reading, ...shared } = merged;
       const { error: e2 } = await client.from(TABLE).upsert({ user_id: user.id, state: shared, updated_at: new Date().toISOString() });
       if (e2) throw e2;
     }
@@ -130,7 +130,7 @@ export async function replaceCloud() {
   if (!client || !user) return;
   clearTimeout(timer);
   if (running) await running;
-  const { theme: _theme, ...shared } = getState();
+  const { theme: _theme, reading: _reading, ...shared } = getState();
   const { error } = await client.from(TABLE).upsert({ user_id: user.id, state: shared, updated_at: new Date().toISOString() });
   if (error) { setStatus({ phase: 'error', error: error.message }); throw error; }
   setStatus({ phase: 'synced', lastSync: Date.now() });

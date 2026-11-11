@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { tracks } from '../content';
-import { update, useAppState } from '../lib/store';
+import ReadingSettings from './ReadingSettings';
 
 // Small stroke icons, drawn in currentColor so they follow the theme.
 const Icon = ({ d, label }: { d: string; label?: string }) => (
@@ -17,7 +17,6 @@ const ICONS = {
   progress: 'M4 20V10m6 10V4m6 16v-7m4 7H3',
   search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Zm5-2 4.5 4.5',
   close: 'M6 6l12 12M18 6 6 18',
-  theme: 'M12 3a9 9 0 1 0 0 18V3Z M12 3a9 9 0 0 1 0 18',
 };
 
 const LINKS = [
@@ -26,19 +25,6 @@ const LINKS = [
   { to: '/search', label: 'Search', icon: ICONS.search, note: 'Lessons and questions' },
   { to: '/progress', label: 'My progress', icon: ICONS.progress, note: 'Scores, export, sync' },
 ];
-
-function ThemeToggle() {
-  const { theme } = useAppState();
-  useEffect(() => {
-    if (theme) document.documentElement.setAttribute('data-theme', theme);
-    else document.documentElement.removeAttribute('data-theme');
-  }, [theme]);
-  const toggle = () => {
-    const dark = theme ? theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-    update(s => { s.theme = dark ? 'light' : 'dark'; });
-  };
-  return <button className="icon-btn" onClick={toggle} aria-label="Toggle light or dark theme" title="Light or dark theme"><Icon d={ICONS.theme} /></button>;
-}
 
 const count = (exams: { kind: string }[]) => {
   const word = exams.every(e => e.kind === 'course') ? 'course' : 'exam';
@@ -124,7 +110,7 @@ export default function SiteNav() {
         </nav>
         <div className="top-actions">
           <Link to="/search" className="icon-btn narrow-only" aria-label="Search"><Icon d={ICONS.search} /></Link>
-          <ThemeToggle />
+          <ReadingSettings />
           <button className="icon-btn menu-btn" onClick={() => setOpen(true)} aria-label="Open menu" aria-expanded={open} aria-haspopup="dialog"><Icon d={ICONS.tracks} /></button>
         </div>
       </header>

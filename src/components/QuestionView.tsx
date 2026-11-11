@@ -22,8 +22,9 @@ export default function QuestionView({ q, order, picked, reveal, onPick }: Props
         {order.map((oi, pos) => {
           let cls = picked.includes(oi) ? 'selected' : '';
           if (reveal) cls = q.answer.includes(oi) ? 'correct' : picked.includes(oi) ? 'wrong' : '';
+          // aria-disabled (not disabled) once answered, so the focused option keeps keyboard focus instead of dropping it to <body>.
           return (
-            <button key={oi} className={`opt ${cls}`} disabled={reveal} onClick={() => onPick?.(oi)}
+            <button key={oi} className={`opt ${cls}`} aria-disabled={reveal || undefined} onClick={() => { if (!reveal) onPick?.(oi); }}
               role={multi ? 'checkbox' : 'radio'} aria-checked={picked.includes(oi)}>
               <span className="key">{letter(pos)}</span>
               <span>

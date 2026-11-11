@@ -4,7 +4,7 @@ import { pruneMocks } from './store';
 /**
  * Combine progress from two devices without losing work from either.
  * Per item, the most recently touched copy wins; lists (lessons, days, mocks) are unioned.
- * Device-only settings (theme) come from `local`.
+ * Device-only settings (theme, reading preferences) come from `local`.
  */
 export function mergeStates(local: AppState, remote: AppState): AppState {
   const ex: Record<string, ExamProgress> = {};
@@ -15,6 +15,7 @@ export function mergeStates(local: AppState, remote: AppState): AppState {
   return {
     v: 1,
     theme: local.theme,
+    ...(local.reading ? { reading: local.reading } : {}),
     ex,
     days: [...new Set([...local.days, ...remote.days])].sort().slice(-400),
     ...(local.roadmap || remote.roadmap ? { roadmap: mergeRoadmap(local.roadmap, remote.roadmap, local.updatedAt >= remote.updatedAt) } : {}),

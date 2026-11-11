@@ -14,7 +14,7 @@ export default function TrackPage() {
   const { trackId } = useParams();
   const track = getTrack(trackId);
   const state = useAppState();
-  useMeta(track ? `${track.name} certification prep` : undefined, track?.description);
+  useMeta(track ? `${track.name} ${track.exams.every(e => e.kind === 'course') ? 'courses' : 'certification prep'}` : undefined, track?.description);
   if (!track) return <NotFound />;
   const code = (id: string) => track.exams.find(e => e.id === id)?.code ?? id;
   const study = (id: string) => studyTimes[`${track.id}/${id}`]?.total ?? 0;
