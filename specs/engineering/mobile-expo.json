@@ -1,0 +1,112 @@
+{
+ "track": "engineering",
+ "kind": "course",
+ "price": "Free",
+ "items": 40,
+ "minutes": 60,
+ "passing": 720,
+ "level": "In-depth engineering course · no official exam",
+ "targets": {
+  "lessons": 22,
+  "flashcards": 120,
+  "questions": 120
+ },
+ "id": "mobile-expo",
+ "code": "MOBILE",
+ "name": "Mobile Apps with Expo and React Native",
+ "audience": "Web and TypeScript developers who need to ship and maintain a production iOS and Android app with a small team.",
+ "format": "This site's course with a 40-question practice test of choose-the-approach, read-the-code and release-and-failure questions.",
+ "scenarios": [
+  "Turning a web product into a mobile app",
+  "Shipping a fix to users without a store review",
+  "Debugging a slow list or janky animation",
+  "Getting through App Store and Google Play review",
+  "Handling offline use and flaky networks"
+ ],
+ "verifyNotes": "This is the site's own in-depth engineering course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources) and on what is current as of November 2026. Goal: a senior engineer or architect who builds products alone or in a team of 2-3 can apply every idea confidently in real work, a design review or a senior interview. Lessons go deep: intuition first, then the precise mechanism, then a fully worked example with real numbers or code, then where it matters in production, then a common misconception. Write math in LaTeX between double dollars only: $$...$$; NEVER single-dollar math (single $ renders literally; in SQL or shell code use code fences). In JSON strings escape backslashes. Markdown tables: never put a raw | inside a cell (escape it as \\\\| or use \\\\lvert in math). Every lesson has a hands-on lab: a small exercise with the expected output. State any randomness seed. Code in fenced blocks with the right language. Question mix: ~35% judgment (pick the approach a 1-3 person team can maintain), ~35% read or debug code or config (components, hooks, expo-router files, app.json/app.config, eas.json), ~30% release, store-policy and failure-mode reasoning. Verifiers MUST type-check every TypeScript/TSX example with `sh /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/ts/check.sh <file>` (TypeScript 7.0 strict, Node 24; set NORUN=1 for .tsx or code that needs network; installed: zod 4, react 19, react-native 0.88 types, next 16, vitest 5, @modelcontextprotocol/sdk 1.32, @anthropic-ai/sdk 1.3, jose 6). Expo SDK, EAS Build/Submit/Update and expo-router behaviour cannot be run here: verify against docs.expo.dev line by line and never guess config keys or CLI flags. Store rules (App Store Review Guidelines, Google Play policies, privacy manifests, data safety forms) must come from developer.apple.com and developer.android.com / support.google.com/googleplay with a date. Version-sensitive facts (Expo SDK version, React Native New Architecture status, minimum OS versions, store target-API deadlines) must be dated. Sources: docs.expo.dev, expo.dev, reactnative.dev, react.dev, developer.apple.com, developer.android.com, support.google.com/googleplay, web.dev, developer.mozilla.org, owasp.org (MASVS/MASTG at mas.owasp.org), w3.org; no Medium or vendor-marketing blogs.",
+ "sources": [
+  "https://docs.expo.dev/",
+  "https://reactnative.dev/docs/getting-started",
+  "https://docs.expo.dev/router/introduction/",
+  "https://docs.expo.dev/eas-update/introduction/",
+  "https://docs.expo.dev/build/introduction/",
+  "https://developer.apple.com/app-store/review/guidelines/",
+  "https://developer.android.com/guide",
+  "https://mas.owasp.org/MASVS/"
+ ],
+ "domains": [
+  {
+   "id": "d1",
+   "name": "React Native and Expo foundations",
+   "weight": 18,
+   "skills": [
+    "How React Native renders native views: the New Architecture (Fabric, TurboModules, JSI) and what changed from the bridge",
+    "Expo vs bare React Native: managed workflow, development builds, prebuild and config plugins, and when you need native code",
+    "Core components and styling: View, Text, Image, Pressable, flexbox defaults that differ from the web, platform-specific code",
+    "TypeScript project setup, the Metro bundler, environment variables and app config (app.json / app.config.ts)",
+    "Debugging: React DevTools, logs, error boundaries and crash reporting"
+   ]
+  },
+  {
+   "id": "d2",
+   "name": "Navigation, state and data",
+   "weight": 18,
+   "skills": [
+    "expo-router: file-based routes, layouts, stacks, tabs, modals, dynamic routes and deep links / universal links",
+    "Server state with TanStack Query: caching, refetch on focus and reconnect, optimistic updates, pagination",
+    "Local state and persistence: React state, context, Zustand-style stores, AsyncStorage vs SecureStore vs SQLite",
+    "Forms and input on mobile: keyboard handling, validation with Zod, accessibility of inputs",
+    "Offline-first: queued mutations, conflict handling, sync on reconnect"
+   ]
+  },
+  {
+   "id": "d3",
+   "name": "Native capabilities and platform integration",
+   "weight": 16,
+   "skills": [
+    "Permissions model on iOS and Android: requesting at the right moment, handling denial, settings deep links",
+    "Push notifications: Expo push service vs APNs/FCM directly, tokens, channels, notification handling in foreground and background",
+    "Camera, media library, location and background tasks: battery and policy limits",
+    "Secure storage, biometrics and auth flows: OAuth/OIDC with PKCE via the system browser, refresh tokens",
+    "Writing a small native module or config plugin when no library exists"
+   ]
+  },
+  {
+   "id": "d4",
+   "name": "Performance and user experience",
+   "weight": 16,
+   "skills": [
+    "The JS thread vs UI thread, frame budget at 60/120 Hz and what causes jank",
+    "Lists: FlatList vs FlashList tuning, keys, getItemLayout, image caching and memory",
+    "Animations and gestures: Reanimated worklets and react-native-gesture-handler, running on the UI thread",
+    "Startup time and bundle size: Hermes, lazy loading, asset optimisation, measuring with profilers",
+    "Accessibility on mobile: VoiceOver and TalkBack, accessibilityRole/Label, dynamic type, touch target sizes, reduced motion"
+   ]
+  },
+  {
+   "id": "d5",
+   "name": "Build, release and over-the-air updates",
+   "weight": 18,
+   "skills": [
+    "EAS Build profiles, credentials, signing (certificates, provisioning profiles, keystores) and build numbers",
+    "Over-the-air updates with EAS Update: runtime versions, channels and branches, rollouts and rollback, what OTA may and may not change under store rules",
+    "App Store and Google Play submission: TestFlight, internal/closed testing tracks, review guidelines that commonly cause rejection",
+    "Privacy requirements: Apple privacy manifests and nutrition labels, Google Play data safety, account deletion requirements",
+    "CI for mobile: automated builds on merge, preview builds for pull requests, versioning strategy"
+   ]
+  },
+  {
+   "id": "d6",
+   "name": "Quality, security and operations",
+   "weight": 14,
+   "skills": [
+    "Testing pyramid on mobile: Jest with React Native Testing Library, end-to-end with Maestro or Detox",
+    "Mobile security per OWASP MASVS: secrets never in the bundle, certificate handling, jailbreak/root realities, secure storage",
+    "Crash and performance monitoring, release health and staged rollouts",
+    "Supporting old app versions: API versioning, forced-update prompts, feature flags",
+    "Choosing between a mobile app, a PWA and a responsive web app for a small team"
+   ]
+  }
+ ],
+ "out": "src/content/tracks/engineering/exams/mobile-expo.json"
+}

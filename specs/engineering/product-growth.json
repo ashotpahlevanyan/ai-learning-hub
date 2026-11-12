@@ -1,0 +1,112 @@
+{
+ "track": "engineering",
+ "kind": "course",
+ "price": "Free",
+ "items": 40,
+ "minutes": 60,
+ "passing": 720,
+ "level": "In-depth engineering course · no official exam",
+ "targets": {
+  "lessons": 22,
+  "flashcards": 120,
+  "questions": 120
+ },
+ "id": "product-growth",
+ "code": "GROWTH",
+ "name": "Product Analytics and Growth for Builders",
+ "audience": "Founders and engineers in small teams who own the product numbers: what to measure, how to run experiments and how to grow without a data team.",
+ "format": "This site's course with a 40-question practice test of metric-design, read-the-query, interpret-the-experiment and pricing questions.",
+ "scenarios": [
+  "Choosing a north-star metric for a new product",
+  "Instrumenting events for a launch",
+  "Reading an A/B test result correctly",
+  "Finding why users churn after week one",
+  "Setting a first price and packaging"
+ ],
+ "verifyNotes": "This is the site's own in-depth engineering course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources) and on what is current as of November 2026. Goal: a senior engineer or architect who builds products alone or in a team of 2-3 can apply every idea confidently in real work, a design review or a senior interview. Lessons go deep: intuition first, then the precise mechanism, then a fully worked example with real numbers or code, then where it matters in production, then a common misconception. Write math in LaTeX between double dollars only: $$...$$; NEVER single-dollar math (single $ renders literally; in SQL or shell code use code fences). In JSON strings escape backslashes. Markdown tables: never put a raw | inside a cell (escape it as \\\\| or use \\\\lvert in math). Every lesson has a hands-on lab: a small exercise with the expected output. State any randomness seed. Code in fenced blocks with the right language. Question mix: ~30% judgment (which metric, which experiment, which growth loop), ~35% read or debug a SQL query, an event schema or a dashboard, ~35% quantitative interpretation (significance, power, cohorts, funnel and unit economics) with real numbers. Run every SQL example with `node /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/sql/run.mjs <file.sql>` (PostgreSQL 18 via PGlite, pgvector and pg_trgm available). Run every Python example and compute every number with /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/py313/bin/python (CPython 3.13 + PyYAML) or /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/py/bin/python (numpy, pandas, scipy, scikit-learn). Compute every statistic (sample sizes, p-values, confidence intervals, lift, retention, LTV, CAC payback) in Python with scipy and state the inputs; prefer worked numbers over formulas alone. Teach statistics correctly: no peeking without sequential methods, multiple-comparison pitfalls, Simpson's paradox, novelty effects. Privacy: consent and GDPR/ePrivacy basics for analytics, cookieless options, data minimisation — cite official regulators (edpb.europa.eu, ico.org.uk, commission.europa.eu). Tools are examples, not endorsements: show PostHog, Amplitude, Mixpanel or GA4 concepts via their official docs only. Sources: posthog.com/docs, amplitude.com/docs, docs.mixpanel.com, support.google.com/analytics and developers.google.com/analytics, stripe.com/docs and stripe.com/resources, web.dev, w3.org, edpb.europa.eu, ico.org.uk, gdpr-info.eu is NOT allowed (use eur-lex.europa.eu), scipy.org, statsmodels.org, exp-platform/Microsoft Research papers, research.google, arxiv.org, nist.gov; no Medium or growth-hacking blogs.",
+ "sources": [
+  "https://posthog.com/docs",
+  "https://amplitude.com/docs",
+  "https://docs.mixpanel.com/docs/",
+  "https://support.google.com/analytics/answer/9304153",
+  "https://docs.stripe.com/billing",
+  "https://docs.scipy.org/doc/scipy/reference/stats.html",
+  "https://www.edpb.europa.eu/",
+  "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/"
+ ],
+ "domains": [
+  {
+   "id": "d1",
+   "name": "Metrics that matter",
+   "weight": 18,
+   "skills": [
+    "North-star and input metrics, metric trees, and avoiding vanity metrics",
+    "Activation, engagement, retention and revenue metrics (AARRR) defined precisely for a SaaS or consumer app",
+    "Guardrail and counter metrics; Goodhart's law",
+    "Leading vs lagging indicators and choosing metric windows",
+    "Writing metric definitions people can compute the same way twice"
+   ]
+  },
+  {
+   "id": "d2",
+   "name": "Instrumentation and data",
+   "weight": 18,
+   "skills": [
+    "Event design: naming conventions, properties, identities, a tracking plan and schema validation",
+    "Identity resolution: anonymous to signed-in users, aliasing, cross-device and group (account) analytics",
+    "Client vs server-side events, ad blockers, sampling and data loss",
+    "Privacy by design: consent, cookieless and first-party analytics, PII minimisation, retention and deletion",
+    "Warehouse basics for small teams: Postgres or a warehouse, event tables, idempotent loads"
+   ]
+  },
+  {
+   "id": "d3",
+   "name": "Analysis with SQL",
+   "weight": 18,
+   "skills": [
+    "Funnels with time windows and step ordering in SQL",
+    "Cohort retention curves and tables; unbounded vs bounded retention",
+    "Segmentation and the traps: Simpson's paradox, survivorship and selection bias",
+    "Window functions for sessions, streaks and time between events",
+    "Dashboards that answer questions: one decision per chart, annotations, honest axes"
+   ]
+  },
+  {
+   "id": "d4",
+   "name": "Experimentation",
+   "weight": 18,
+   "skills": [
+    "A/B test design: hypothesis, unit of randomisation, primary and guardrail metrics, minimum detectable effect",
+    "Sample size and power calculations; why small products struggle and what to do instead",
+    "Analysis: significance, confidence intervals, peeking, sequential testing and multiple comparisons",
+    "Pitfalls: sample ratio mismatch, novelty and primacy effects, interference, bucketing bugs",
+    "Feature flags and staged rollouts as experiments; when not to A/B test"
+   ]
+  },
+  {
+   "id": "d5",
+   "name": "Growth loops and acquisition",
+   "weight": 14,
+   "skills": [
+    "Growth loops vs funnels: viral, content, paid and sales-led loops",
+    "Onboarding and time-to-value; activation experiments",
+    "SEO and content for developer and B2B products; technical SEO basics",
+    "Referral, sharing and network effects; measuring K-factor honestly",
+    "Channel economics: CAC by channel, attribution limits and incrementality"
+   ]
+  },
+  {
+   "id": "d6",
+   "name": "Pricing and unit economics",
+   "weight": 14,
+   "skills": [
+    "Pricing models: per seat, usage-based, tiered, freemium and free trials; packaging and value metrics",
+    "Unit economics: gross margin with AI inference costs, LTV, CAC and payback period",
+    "Churn types and revenue retention: gross and net revenue retention, expansion",
+    "Billing implementation: subscriptions, proration, taxes and merchant of record vs direct",
+    "Price changes and testing prices responsibly"
+   ]
+  }
+ ],
+ "out": "src/content/tracks/engineering/exams/product-growth.json"
+}

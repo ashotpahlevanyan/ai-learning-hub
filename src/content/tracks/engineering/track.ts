@@ -41,6 +41,26 @@ export const engineering: Track = {
       audience: 'Developers who ship and run their own products', items: 40, minutes: 60, price: 'Free',
       load: () => load(import('./exams/devops.json')),
     },
+    {
+      kind: 'course', id: 'product-growth', code: 'GROWTH', name: 'Product Analytics and Growth for Builders', level: 'In-depth engineering course · no official exam', tier: 'Course',
+      audience: 'Founders and engineers who own the product numbers', items: 40, minutes: 60, price: 'Free',
+      load: () => load(import('./exams/product-growth.json')),
+    },
+    {
+      kind: 'course', id: 'agents-mcp', code: 'AGENTS-MCP', name: 'AI Agents and MCP in Depth', level: 'In-depth engineering course · no official exam', tier: 'Course',
+      audience: 'Engineers who build agents, tool integrations and MCP servers', items: 40, minutes: 60, price: 'Free',
+      load: () => load(import('./exams/agents-mcp.json')),
+    },
+    {
+      kind: 'course', id: 'mobile-expo', code: 'MOBILE', name: 'Mobile Apps with Expo and React Native', level: 'In-depth engineering course · no official exam', tier: 'Course',
+      audience: 'Web developers shipping iOS and Android apps', items: 40, minutes: 60, price: 'Free',
+      load: () => load(import('./exams/mobile-expo.json')),
+    },
+    {
+      kind: 'course', id: 'app-security', code: 'APPSEC', name: 'Application Security for Web and LLM Apps', level: 'In-depth engineering course · no official exam', tier: 'Course',
+      audience: 'Engineers who build and run web products and AI features without a security team', items: 40, minutes: 60, price: 'Free',
+      load: () => load(import('./exams/app-security.json')),
+    },
   ],
   resources: [
     { title: 'The Amazon Builders’ Library', url: 'https://builder.aws.com/learn/topics/builders-library', note: 'How Amazon builds and operates reliable systems: timeouts, retries, caching, load shedding.' },

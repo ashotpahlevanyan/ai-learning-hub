@@ -1,0 +1,112 @@
+{
+ "track": "engineering",
+ "kind": "course",
+ "price": "Free",
+ "items": 40,
+ "minutes": 60,
+ "passing": 720,
+ "level": "In-depth engineering course · no official exam",
+ "targets": {
+  "lessons": 22,
+  "flashcards": 120,
+  "questions": 120
+ },
+ "id": "app-security",
+ "code": "APPSEC",
+ "name": "Application Security for Web and LLM Apps",
+ "audience": "Engineers and architects who build and run web products and AI features and must keep them secure without a dedicated security team.",
+ "format": "This site's course with a 40-question practice test of find-the-vulnerability, choose-the-control, read-the-config and incident questions.",
+ "scenarios": [
+  "Reviewing a pull request for security bugs",
+  "Designing authentication and authorization for a SaaS",
+  "Shipping an LLM feature that reads user documents",
+  "Responding to a leaked secret",
+  "Preparing for a customer security questionnaire"
+ ],
+ "verifyNotes": "This is the site's own in-depth engineering course, not a vendor certification: there are no exam facts to confirm, so spend Research on finding the best official/primary sources per topic (URLs that will be cited as sources) and on what is current as of November 2026. Goal: a senior engineer or architect who builds products alone or in a team of 2-3 can apply every idea confidently in real work, a design review or a senior interview. Lessons go deep: intuition first, then the precise mechanism, then a fully worked example with real numbers or code, then where it matters in production, then a common misconception. Write math in LaTeX between double dollars only: $$...$$; NEVER single-dollar math (single $ renders literally; in SQL or shell code use code fences). In JSON strings escape backslashes. Markdown tables: never put a raw | inside a cell (escape it as \\\\| or use \\\\lvert in math). Every lesson has a hands-on lab: a small exercise with the expected output. State any randomness seed. Code in fenced blocks with the right language. Question mix: ~35% find-the-vulnerability in code or config (TypeScript/Node, SQL, HTTP headers, CSP, OAuth flows, prompts and tool definitions), ~35% choose-the-control (the simplest effective fix a small team can run), ~30% threat-modelling and incident reasoning. Verifiers MUST type-check every TypeScript/TSX example with `sh /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/ts/check.sh <file>` (TypeScript 7.0 strict, Node 24; set NORUN=1 for .tsx or code that needs network; installed: zod 4, react 19, react-native 0.88 types, next 16, vitest 5, @modelcontextprotocol/sdk 1.32, @anthropic-ai/sdk 1.3, jose 6). Run every SQL example with `node /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/sql/run.mjs <file.sql>` (PostgreSQL 18 via PGlite, pgvector and pg_trgm available). Run every Python example and compute every number with /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/py313/bin/python (CPython 3.13 + PyYAML) or /Users/ashotpahlevanyan/MyProjects/maark/claude-cert/web/.pipeline/py/bin/python (numpy, pandas, scipy, scikit-learn). Never include working exploit chains against real products; show vulnerable and fixed code side by side on toy apps. Verify headers, cookies and CSP against MDN and the W3C/WHATWG specs; OAuth against RFC 9700 (OAuth 2.0 Security BCP) and the OAuth 2.1 draft; passwords against NIST SP 800-63B and OWASP cheat sheets; LLM risks against the OWASP Top 10 for LLM Applications 2025 and the OWASP agentic security guidance. OWASP Top 10:2025 is the current web edition. Version-sensitive facts must be dated. Sources: owasp.org, cheatsheetseries.owasp.org, genai.owasp.org, developer.mozilla.org, w3.org, whatwg.org, rfc-editor.org, ietf.org, oauth.net, openid.net, nist.gov (csrc.nist.gov, pages.nist.gov), cwe.mitre.org, cve.org, cisa.gov, docs.github.com (secret scanning, Dependabot, code scanning), slsa.dev, openssf.org, nodejs.org, postgresql.org, platform.claude.com and developers.openai.com for LLM-provider guidance; no Medium or vendor-marketing blogs.",
+ "sources": [
+  "https://owasp.org/Top10/",
+  "https://cheatsheetseries.owasp.org/",
+  "https://genai.owasp.org/llm-top-10/",
+  "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP",
+  "https://www.rfc-editor.org/rfc/rfc9700",
+  "https://pages.nist.gov/800-63-4/sp800-63b.html",
+  "https://cwe.mitre.org/top25/",
+  "https://docs.github.com/en/code-security"
+ ],
+ "domains": [
+  {
+   "id": "d1",
+   "name": "Threat modelling and secure design",
+   "weight": 14,
+   "skills": [
+    "Threat modelling a small product: data-flow diagrams, trust boundaries, STRIDE, and ranking by likelihood and impact",
+    "Secure defaults and least privilege across app, database and cloud",
+    "Security requirements for a small team: OWASP ASVS levels and what to do first",
+    "Logging and monitoring for security: what to log, what never to log, alerting on abuse",
+    "Security in the delivery flow: reviews, SAST, dependency and secret scanning without drowning in noise"
+   ]
+  },
+  {
+   "id": "d2",
+   "name": "Authentication and sessions",
+   "weight": 18,
+   "skills": [
+    "Passwords done right per NIST SP 800-63B: length over complexity, breached-password checks, argon2id/bcrypt hashing and rate limiting",
+    "Passkeys and WebAuthn, MFA options and account recovery that is not the weakest link",
+    "Session management: cookie attributes (HttpOnly, Secure, SameSite, __Host- prefix), rotation, expiry and logout",
+    "OAuth 2.0 / OpenID Connect for apps: authorization code with PKCE, redirect URI rules, state and nonce, token storage in browsers and mobile",
+    "JWTs: when to use them, algorithm confusion, validation of iss/aud/exp, revocation strategies"
+   ]
+  },
+  {
+   "id": "d3",
+   "name": "Authorization and data protection",
+   "weight": 16,
+   "skills": [
+    "Broken access control: IDOR/BOLA, missing function-level checks, and tenant isolation in multi-tenant SaaS",
+    "Authorization models: RBAC, ABAC and relationship-based; enforcing in one place; Postgres row-level security",
+    "Data protection: encryption in transit and at rest, key management, field-level encryption for secrets and PII",
+    "Secrets management: never in code or images, rotation, short-lived credentials, responding to a leak",
+    "Privacy engineering basics: minimisation, retention, deletion and audit trails"
+   ]
+  },
+  {
+   "id": "d4",
+   "name": "Injection and browser security",
+   "weight": 20,
+   "skills": [
+    "SQL and NoSQL injection, command injection and safe query building; ORMs are not automatic protection",
+    "Cross-site scripting: contexts, output encoding, sanitising HTML, framework escape hatches like dangerouslySetInnerHTML",
+    "Content Security Policy: nonces and hashes, strict-dynamic, reporting, and why unsafe-inline undermines it",
+    "CSRF and SameSite cookies, CORS misconfigurations, clickjacking and frame-ancestors",
+    "Server-side request forgery, path traversal, unsafe deserialisation and file upload handling"
+   ]
+  },
+  {
+   "id": "d5",
+   "name": "LLM and agent application security",
+   "weight": 18,
+   "skills": [
+    "OWASP Top 10 for LLM Applications 2025 applied to a real feature",
+    "Prompt injection, direct and indirect: why it cannot be fully filtered, and architectural mitigations (privilege separation, untrusted-content labelling, human approval, egress limits)",
+    "Sensitive data in LLM apps: leakage through prompts, logs, retrieval permissions and model providers' data policies",
+    "Insecure output handling: rendering model output as HTML/Markdown, executing model-written code or SQL, tool argument validation",
+    "Securing RAG and agents: document-level permissions at retrieval time, tool scopes, MCP server trust"
+   ]
+  },
+  {
+   "id": "d6",
+   "name": "Supply chain, infrastructure and incident response",
+   "weight": 14,
+   "skills": [
+    "Dependency risk: lockfiles, audits, typosquatting, install scripts, and update policies with Dependabot",
+    "Build integrity: SLSA levels, provenance and artifact attestations, pinning CI actions",
+    "Cloud and container hardening basics: IAM, public buckets, non-root containers, network exposure",
+    "Security headers and TLS configuration: HSTS, cookies, referrer policy, permissions policy",
+    "Incident response for a small team: detect, contain, rotate, notify (including breach-notification duties), and the postmortem"
+   ]
+  }
+ ],
+ "out": "src/content/tracks/engineering/exams/app-security.json"
+}

@@ -11,8 +11,13 @@ export const meta = {
   ],
 }
 
-// args: { root: absolute path to web/, spec: <spec object from web/specs/...> }
+// args: { root: absolute path to web/, spec: <spec object from web/specs/...>, reuse? }
+// reuse (to finish an interrupted run): { research?, coverage?, verified?: [verify results], written?: [domain ids] }.
+// Stages with a reused result are skipped; domains in `verified` skip write+verify, domains in `written` skip write only.
 const { root, spec } = args
+const reuse = args.reuse || {}
+const reusedVerify = new Map((reuse.verified || []).map(v => [v.domain, v]))
+const written = new Set(reuse.written || [])
 const work = `${root}/.pipeline/${spec.track}-${spec.id}`
 const out = `${root}/${spec.out}`
 const perDomain = d => ({
@@ -26,7 +31,7 @@ const SHAPE = `Exam JSON shape (see ${root}/src/lib/types.ts): lessons {id, doma
 const RULES = `Content rules: original practice items only, never presented as real exam questions. Exactly the keyed answer(s) must be defensible from the sources. Scenario-based judgment items with plausible distractors (common anti-patterns), mostly difficulty 2-3, ~15% multiple-response. Do not state a product fact you cannot support from research.md or an official source; phrase fast-changing specifics (prices, limits, versions) conceptually. Every lesson and question cites public official docs in "sources" (https, on an official domain of the provider listed in ${root}/src/content/official-domains.json; the specific feature page that backs the content, short "Topic — Doc set" titles). Prefer URLs already cited in research.md; never invent deep paths.`
 
 phase('Research')
-const research = await agent(
+const research = reuse.research || await agent(
   `You are the research stage of a certification-prep pipeline for ${spec.name} (${spec.code}).
 Spec: ${JSON.stringify(spec)}
 1. Create ${work}/ if needed.
@@ -50,7 +55,7 @@ Return the structured summary.`,
 log(`Research: ${research.sourcesRead} sources read, ${research.corrections.length} corrections, ${research.unverified.length} unverified`)
 
 phase('Coverage')
-const coverage = await agent(
+const coverage = reuse.coverage || await agent(
   `Coverage stage for ${spec.code}. Read ${work}/research.md and the current bundle at ${out} (it may be "{}" or missing: then everything is a gap).
 For every skill in every domain of the spec, list which existing lesson ids, flashcard ids and question ids cover it, and whether coverage is adequate (a lesson section plus at least 2 questions per skill). Also list existing items that look factually doubtful given research.md.
 Targets per domain: ${JSON.stringify(spec.domains.map(d => ({ id: d.id, ...perDomain(d) })))}.
@@ -69,7 +74,8 @@ Write the full map to ${work}/coverage.json and return the summary.`,
     },
   },
 )
-log(`Coverage: ${coverage.gaps.length} skill gaps, ${coverage.doubtful.length} doubtful items`)
+const count = x => (Array.isArray(x) ? x.length : x)
+log(`Coverage: ${count(coverage.gaps)} skill gaps, ${count(coverage.doubtful)} doubtful items`)
 
 const VERIFY_SCHEMA = {
   type: 'object',
@@ -87,7 +93,7 @@ const VERIFY_SCHEMA = {
 
 const results = await pipeline(
   spec.domains,
-  (d) => agent(
+  (d) => reusedVerify.has(d.id) || written.has(d.id) ? d : agent(
     `Writer for domain ${d.id} "${d.name}" (${d.weight}%) of ${spec.code}.
 Inputs: ${work}/research.md, ${work}/coverage.json, current bundle ${out}.
 Skills for this domain: ${JSON.stringify(d.skills)}
@@ -100,7 +106,7 @@ ${RULES}
 Generate the file with a throwaway Node script under ${work}/ so escaping stays valid; confirm it parses with node. Return a one-line summary with counts.`,
     { label: `write:${d.id}`, phase: 'Write' },
   ),
-  (_, d) => agent(
+  (_, d) => reusedVerify.get(d.id) || agent(
     `Independent verifier for domain ${d.id} "${d.name}" of ${spec.code}. You did not write this content; be skeptical.
 File: ${work}/domain-${d.id}.json. Sources: ${work}/research.md (and the official URLs it cites).
 Step 1, blind solve: print the questions WITHOUT keys using
@@ -143,4 +149,4 @@ Return the structured result.`,
   },
 )
 
-return { spec: `${spec.track}/${spec.id}`, research, coverage: { existing: coverage.existing, gaps: coverage.gaps.length, doubtful: coverage.doubtful.length }, verified, assembled }
+return { spec: `${spec.track}/${spec.id}`, research, coverage: { existing: coverage.existing, gaps: count(coverage.gaps), doubtful: count(coverage.doubtful) }, verified, assembled }
