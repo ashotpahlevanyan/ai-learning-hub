@@ -12,9 +12,11 @@ export const meta = {
 }
 
 // args: { root: absolute path to web/, spec: <spec object from web/specs/...>, reuse? }
+// Specs never hold absolute paths: they write {{root}} (e.g. {{root}}/.pipeline/py/bin/python), filled in here from args.root.
 // reuse (to finish an interrupted run): { research?, coverage?, verified?: [verify results], written?: [domain ids] }.
 // Stages with a reused result are skipped; domains in `verified` skip write+verify, domains in `written` skip write only.
-const { root, spec } = args
+const root = args.root.replace(/\/+$/, '')
+const spec = JSON.parse(JSON.stringify(args.spec).replaceAll('{{root}}', JSON.stringify(root).slice(1, -1)))
 const reuse = args.reuse || {}
 const reusedVerify = new Map((reuse.verified || []).map(v => [v.domain, v]))
 const written = new Set(reuse.written || [])
